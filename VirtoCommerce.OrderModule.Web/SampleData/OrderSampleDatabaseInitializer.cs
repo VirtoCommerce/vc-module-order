@@ -1,6 +1,6 @@
 ﻿using VirtoCommerce.OrderModule.Data.Repositories;
 
-namespace VirtoCommerce.OrderModule.Data.Orders
+namespace VirtoCommerce.OrderModule.Web.SampleData
 {
     public class OrderSampleDatabaseInitializer : OrderDatabaseInitializer
     {
@@ -10,7 +10,7 @@ namespace VirtoCommerce.OrderModule.Data.Orders
 
             foreach (var file in _orderFiles)
             {
-                ExecuteSqlScriptFile(context, file, "Orders");
+                ExecuteSqlScriptFile(context, file, "SampleData");
             }
         }
 

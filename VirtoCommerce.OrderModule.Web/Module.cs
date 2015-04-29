@@ -1,14 +1,14 @@
 ﻿using System;
 using Microsoft.Practices.Unity;
+using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Inventory.Services;
 using VirtoCommerce.Domain.Order.Services;
-using VirtoCommerce.Foundation.Data.Infrastructure.Interceptors;
-using VirtoCommerce.Foundation.Frameworks.Workflow.Services;
-using VirtoCommerce.OrderModule.Data.Orders;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Data.Workflow;
+using VirtoCommerce.OrderModule.Web.SampleData;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
 namespace VirtoCommerce.OrderModule.Web
 {
