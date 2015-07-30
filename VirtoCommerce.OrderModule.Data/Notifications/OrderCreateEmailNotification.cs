@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VirtoCommerce.Platform.Core.Notification;
+using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Data.Infrastructure;
 
-namespace VirtoCommerce.OrderModule.Data.Notification
+namespace VirtoCommerce.OrderModule.Data.Notifications
 {
 	public class OrderCreateEmailNotification : EmailNotification
 	{
