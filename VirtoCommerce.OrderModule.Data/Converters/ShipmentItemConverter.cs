@@ -30,15 +30,15 @@ namespace VirtoCommerce.OrderModule.Data.Converters
 			return retVal;
 		}
 
-		public static ShipmentItem ToCoreShipmentItemModel(this cartCoreModel.LineItem lineItem)
+		public static ShipmentItem ToOrderCoreModel(this cartCoreModel.ShipmentItem shipmentItem)
 		{
-			if (lineItem == null)
-				throw new ArgumentNullException("lineItem");
+			if (shipmentItem == null)
+				throw new ArgumentNullException("shipmentItem");
 
 			var retVal = new ShipmentItem();
-			retVal.InjectFrom(lineItem);
+			retVal.InjectFrom(shipmentItem);
 
-			retVal.LineItem = lineItem.ToCoreModel();
+			retVal.LineItem = shipmentItem.LineItem.ToOrderCoreModel();
 			return retVal;
 		}
 
@@ -51,12 +51,26 @@ namespace VirtoCommerce.OrderModule.Data.Converters
 			var retVal = new ShipmentItemEntity();
             pkMap.AddPair(shipmentItem, retVal);
             retVal.InjectFrom(shipmentItem);
-			
-			if(shipmentItem.LineItem != null)
-			{
-				retVal.LineItem = orderEntity.Items.FirstOrDefault(x => x.ProductId == shipmentItem.LineItem.ProductId);
-			}
-			return retVal;
+
+            //Try to find cart line item by shipment item
+            if (!String.IsNullOrEmpty(shipmentItem.LineItemId))
+            {
+                retVal.LineItem = orderEntity.Items.FirstOrDefault(x => x.Id == shipmentItem.LineItemId);
+            }
+            if (retVal.LineItem == null && shipmentItem.LineItem != null)
+            {
+                retVal.LineItem = orderEntity.Items.FirstOrDefault(x => x.Id == shipmentItem.LineItem.Id);
+            }
+            if (retVal.LineItem == null && shipmentItem.LineItem != null)
+            {
+                retVal.LineItem = orderEntity.Items.FirstOrDefault(x => x.ProductId == shipmentItem.LineItem.ProductId);
+            }
+            if (retVal.LineItem != null && !String.IsNullOrEmpty(retVal.LineItem.Id))
+            {
+                retVal.LineItemId = retVal.LineItem.Id;
+                retVal.LineItem = null;
+            }
+            return retVal;
 		}
 
 		/// <summary>
