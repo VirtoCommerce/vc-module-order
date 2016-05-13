@@ -17,6 +17,7 @@ using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.Platform.Data.Common;
 using coreModel = VirtoCommerce.Domain.Order.Model;
 using webModel = VirtoCommerce.OrderModule.Web.Model;
@@ -56,8 +57,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <param name="criteria">criteria</param>
         [HttpPost]
-        [ResponseType(typeof(webModel.SearchResult))]
         [Route("search")]
+        [ResponseType(typeof(webModel.SearchResult))]
         public IHttpActionResult Search(coreModel.SearchCriteria criteria)
         {
             //Scope bound ACL filtration
@@ -73,8 +74,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="number">customer order number</param>
         [HttpGet]
-        [ResponseType(typeof(webModel.CustomerOrder))]
         [Route("number/{number}")]
+        [ResponseType(typeof(webModel.CustomerOrder))]
         public IHttpActionResult GetByNumber(string number)
         {
             var retVal = _customerOrderService.GetByOrderNumber(number, coreModel.CustomerOrderResponseGroup.Full);
@@ -104,8 +105,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="id">customer order id</param>
         [HttpGet]
-        [ResponseType(typeof(webModel.CustomerOrder))]
         [Route("{id}")]
+        [ResponseType(typeof(webModel.CustomerOrder))]
         public IHttpActionResult GetById(string id)
         {
             var retVal = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
@@ -133,8 +134,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <param name="id">shopping cart id</param>
         [HttpPost]
-        [ResponseType(typeof(webModel.CustomerOrder))]
         [Route("{id}")]
+        [ResponseType(typeof(webModel.CustomerOrder))]
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
         public IHttpActionResult CreateOrderFromCart(string id)
         {
@@ -150,8 +151,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="paymentId">payment id</param>
         /// <param name="bankCardInfo">banking card information</param>
         [HttpPost]
-        [ResponseType(typeof(webModel.ProcessPaymentResult))]
         [Route("{orderId}/processPayment/{paymentId}")]
+        [ResponseType(typeof(webModel.ProcessPaymentResult))]
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
             //search first by order number
@@ -201,8 +202,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <param name="customerOrder">customer order</param>
         [HttpPost]
-        [ResponseType(typeof(webModel.CustomerOrder))]
         [Route("")]
+        [ResponseType(typeof(webModel.CustomerOrder))]
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
         public IHttpActionResult CreateOrder(webModel.CustomerOrder customerOrder)
         {
@@ -215,8 +216,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <param name="customerOrder">customer order</param>
         [HttpPut]
-        [ResponseType(typeof(void))]
         [Route("")]
+        [ResponseType(typeof(void))]
         public IHttpActionResult Update(webModel.CustomerOrder customerOrder)
         {
             var coreOrder = customerOrder.ToCoreModel();
@@ -238,8 +239,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <remarks>Return new shipment document with populates all required properties.</remarks>
         /// <param name="id">customer order id </param>
         [HttpGet]
-        [ResponseType(typeof(webModel.Shipment))]
         [Route("{id}/shipments/new")]
+        [ResponseType(typeof(webModel.Shipment))]
         public IHttpActionResult GetNewShipment(string id)
         {
             var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
@@ -272,8 +273,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <remarks>Return new payment  document with populates all required properties.</remarks>
         /// <param name="id">customer order id </param>
         [HttpGet]
-        [ResponseType(typeof(webModel.PaymentIn))]
         [Route("{id}/payments/new")]
+        [ResponseType(typeof(webModel.PaymentIn))]
         public IHttpActionResult GetNewPayment(string id)
         {
             var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
@@ -298,8 +299,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <param name="ids">customer order ids for delete</param>
         [HttpDelete]
-        [ResponseType(typeof(void))]
         [Route("")]
+        [ResponseType(typeof(void))]
         [CheckPermission(Permission = OrderPredefinedPermissions.Delete)]
         public IHttpActionResult DeleteOrdersByIds([FromUri] string[] ids)
         {
@@ -313,8 +314,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="id">customer order id</param>
         /// <param name="operationId">operation id</param>
         [HttpDelete]
-        [ResponseType(typeof(void))]
         [Route("~/api/order/customerOrders/{id}/operations/{operationId}")]
+        [ResponseType(typeof(void))]
         public IHttpActionResult Delete(string id, string operationId)
         {
             var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
@@ -351,8 +352,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="start">start interval date</param>
         /// <param name="end">end interval date</param>
         [HttpGet]
-        [ResponseType(typeof(webModel.DashboardStatisticsResult))]
         [Route("~/api/order/dashboardStatistics")]
+        [ResponseType(typeof(webModel.DashboardStatisticsResult))]
         [OverrideAuthorization]
         public IHttpActionResult GetDashboardStatistics([FromUri]DateTime? start = null, [FromUri]DateTime? end = null)
         {
@@ -375,6 +376,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
             return Ok(retVal);
         }
+
 
         private coreModel.SearchCriteria FilterOrderSearchCriteria(string userName, coreModel.SearchCriteria criteria)
         {

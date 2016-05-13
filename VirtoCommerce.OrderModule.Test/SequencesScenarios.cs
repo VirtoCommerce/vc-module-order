@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtoCommerce.CoreModule.Data.Repositories;
 using VirtoCommerce.CoreModule.Data.Services;
-using VirtoCommerce.Domain.Order.Model;
-using VirtoCommerce.OrderModule.Data.Services;
 
 namespace VirtoCommerce.OrderModule.Test
 {
     [TestClass]
     public class SequencesScenarios
     {
-
         public static Dictionary<string, string> GlobalNumbers = new Dictionary<string, string>();
         public static int RunCount = 0;
 

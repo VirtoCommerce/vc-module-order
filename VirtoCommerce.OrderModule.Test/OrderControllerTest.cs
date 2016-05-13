@@ -213,7 +213,7 @@ namespace VirtoCommerce.OrderModule.Test
                 CustomerId = "vasja customer",
                 EmployeeId = "employe",
                 StoreId = "test store",
-                Addresses = new webModel.Address[]
+                Addresses = new[]
                 {
                     new webModel.Address {
                     AddressType = AddressType.Shipping,
