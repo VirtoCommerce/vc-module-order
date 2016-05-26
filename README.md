@@ -15,6 +15,13 @@ Installing the module:
 * Automatically: in VC Manager go to Configuration -> Modules -> Order module -> Install
 * Manually: download module zip package from https://github.com/VirtoCommerce/vc-module-order/releases. In VC Manager go to Configuration -> Modules -> Advanced -> upload module package -> Install.
 
+# Settings
+* **Order.Status** - customer order statuses (Processing, Cancelled, Completed, etc.);
+* **Shipment.Status** - shipment statuses (New, PickPack, ReadyToSend, etc.);
+* **PaymentIn.Status** - incoming payment statuses (New, Pending, Authorized, etc.);
+* **Order.CustomerOrderNewNumberTemplate** - template for new Order number generation;
+* **Order.ShipmentNewNumberTemplate** - template for new shipment number generation;
+* **Order.PaymentInNewNumberTemplate** - template for new incoming payment number generation.
 
 # Available resources
 * Module related service implementations as a <a href="https://www.nuget.org/packages/VirtoCommerce.OrderModule.Data" target="_blank">NuGet package</a>
