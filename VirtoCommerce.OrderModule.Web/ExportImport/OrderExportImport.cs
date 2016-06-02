@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -75,9 +76,20 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 			progressCallback(progressInfo);
 
             retVal.CustomerOrders = searchResponse.CustomerOrders.Select((x) => _customerOrderService.GetById(x.Id, responseGroup)).ToList();
-            
+            //Do not serialize shipment and payment methods
+            var allPayments = retVal.CustomerOrders.SelectMany(x => x.InPayments);
+            var allShipments = retVal.CustomerOrders.SelectMany(x => x.Shipments);
+            foreach(var payment in allPayments)
+            {
+                payment.PaymentMethod = null;
+            }
+            foreach (var shipment in allShipments)
+            {
+                shipment.ShippingMethod = null;
+            }
             return retVal;
-        }
+        }   
+
 
     }
 }
