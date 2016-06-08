@@ -41,6 +41,7 @@ namespace VirtoCommerce.OrderModule.Data.Converters
 
 			var retVal = new LineItem();
 			retVal.InjectFrom(lineItem);
+            retVal.Id = null;
 
 			retVal.IsGift = lineItem.IsGift;
             retVal.BasePrice = lineItem.ListPrice;

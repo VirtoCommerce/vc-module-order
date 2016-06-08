@@ -44,6 +44,7 @@ namespace VirtoCommerce.OrderModule.Data.Converters
 
             var retVal = new PaymentIn();
             retVal.InjectFrom(payment);
+            retVal.Id = null;
             retVal.Currency = payment.Currency;
             retVal.GatewayCode = payment.PaymentGatewayCode;
             retVal.Sum = payment.Amount;

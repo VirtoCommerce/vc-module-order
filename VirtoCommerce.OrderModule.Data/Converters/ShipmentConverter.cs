@@ -62,6 +62,7 @@ namespace VirtoCommerce.OrderModule.Data.Converters
 		{
 			var retVal = new Shipment();
 			retVal.InjectFrom(shipment);
+            retVal.Id = null;
 			retVal.Currency = shipment.Currency;
 			retVal.Sum = shipment.Total;
 			retVal.Tax = shipment.TaxTotal;
