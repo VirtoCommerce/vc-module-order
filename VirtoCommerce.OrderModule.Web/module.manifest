@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <module>
     <id>VirtoCommerce.Orders</id>
-    <version>2.10.0</version>
-    <platformVersion>2.10.0</platformVersion>
+    <version>2.11.0</version>
+    <platformVersion>2.11.0</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Core" version="2.10.0" />
-        <dependency id="VirtoCommerce.Catalog" version="2.10.0" />
-        <dependency id="VirtoCommerce.Pricing" version="2.10.0" />
+        <dependency id="VirtoCommerce.Core" version="2.11.0" />
+        <dependency id="VirtoCommerce.Catalog" version="2.11.0" />
+        <dependency id="VirtoCommerce.Pricing" version="2.11.0" />
     </dependencies>
 
     <title>Order module</title>
@@ -25,6 +25,7 @@
 
     <assemblyFile>VirtoCommerce.OrderModule.Web.dll</assemblyFile>
     <moduleType>VirtoCommerce.OrderModule.Web.Module, VirtoCommerce.OrderModule.Web</moduleType>
+
     <styles>
         <directory virtualPath="$/Content/css" searchPattern="*.css" searchSubdirectories="true" />
     </styles>
@@ -112,6 +113,7 @@
             </setting>
         </group>
     </settings>
+
     <permissions>
         <group name="Order">
             <permission id="order:access" name="Open orders menu" description="Permission to open orders menu."/>
