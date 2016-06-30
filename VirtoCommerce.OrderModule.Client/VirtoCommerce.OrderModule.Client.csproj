@@ -69,11 +69,14 @@
     <Compile Include="Model\DynamicObjectProperty.cs" />
     <Compile Include="Model\DynamicPropertyName.cs" />
     <Compile Include="Model\DynamicPropertyObjectValue.cs" />
+    <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\LineItem.cs" />
     <Compile Include="Model\Money.cs" />
     <Compile Include="Model\Operation.cs" />
+    <Compile Include="Model\PaymentCallbackParameters.cs" />
     <Compile Include="Model\PaymentIn.cs" />
     <Compile Include="Model\PaymentMethod.cs" />
+    <Compile Include="Model\PostProcessPaymentResult.cs" />
     <Compile Include="Model\ProcessPaymentResult.cs" />
     <Compile Include="Model\QuarterPeriodMoney.cs" />
     <Compile Include="Model\SearchCriteria.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -375,6 +376,65 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 });
             }
             return Ok(retVal);
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        /// <param name="callback">payment callback parameters</param>
+        [HttpPost]
+        [Route("~/api/paymentcallback")]
+        [ResponseType(typeof(PostProcessPaymentResult))]
+        public IHttpActionResult PostProcessPayment(webModel.PaymentCallbackParameters callback)
+        {
+            if (callback != null && callback.Parameters != null && callback.Parameters.Any(param => param.Key.EqualsInvariant("orderid")))
+            {
+                var orderId = callback.Parameters.First(param => param.Key.EqualsInvariant("orderid")).Value;
+                //some payment method require customer number to be passed and returned. First search customer order by number
+                var order = _customerOrderService.GetByOrderNumber(orderId, coreModel.CustomerOrderResponseGroup.Full);
+
+                //if order not found by order number search by order id
+                if (order == null)
+                    order = _customerOrderService.GetById(orderId, coreModel.CustomerOrderResponseGroup.Full);
+
+                var store = _storeService.GetById(order.StoreId);
+                var parameters = new NameValueCollection();
+                foreach (var param in callback.Parameters)
+                {
+                    parameters.Add(param.Key, param.Value);
+                }
+                var paymentMethod = store.PaymentMethods.Where(x => x.IsActive).FirstOrDefault(x => x.ValidatePostProcessRequest(parameters).IsSuccess);
+                if (paymentMethod != null)
+                {
+                    var paymentOuterId = paymentMethod.ValidatePostProcessRequest(parameters).OuterId;
+
+                    var payment = order.InPayments.FirstOrDefault(x => string.IsNullOrEmpty(x.OuterId) || x.OuterId == paymentOuterId);
+                    if (payment == null)
+                    {
+                        throw new NullReferenceException("appropriate paymentMethod not found");
+                    }
+
+                    var context = new PostProcessPaymentEvaluationContext
+                    {
+                        Order = order,
+                        Payment = payment,
+                        Store = store,
+                        OuterId = paymentOuterId,
+                        Parameters = parameters
+                    };
+
+                    var retVal = paymentMethod.PostProcessPayment(context);
+                    if (retVal != null)
+                    {
+                        _customerOrderService.Update(new[] { order });
+                    }
+
+                    // order Number is required
+                    retVal.OrderId = order.Number;
+                    return Ok(retVal);
+                }
+            }
+            return Ok(new PostProcessPaymentResult { ErrorMessage = "cancel payment" });
         }
 
 
