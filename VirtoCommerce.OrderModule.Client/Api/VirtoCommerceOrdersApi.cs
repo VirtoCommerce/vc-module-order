@@ -208,6 +208,27 @@ namespace VirtoCommerce.OrderModule.Client.Api
         /// <returns>ApiResponse of Shipment</returns>
         ApiResponse<Shipment> OrderModuleGetNewShipmentWithHttpInfo(string id);
         /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>PostProcessPaymentResult</returns>
+        PostProcessPaymentResult OrderModulePostProcessPayment(PaymentCallbackParameters callback);
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>ApiResponse of PostProcessPaymentResult</returns>
+        ApiResponse<PostProcessPaymentResult> OrderModulePostProcessPaymentWithHttpInfo(PaymentCallbackParameters callback);
+        /// <summary>
         /// Register customer order payment in external payment system
         /// </summary>
         /// <remarks>
@@ -469,6 +490,27 @@ namespace VirtoCommerce.OrderModule.Client.Api
         /// <param name="id">customer order id</param>
         /// <returns>Task of ApiResponse (Shipment)</returns>
         System.Threading.Tasks.Task<ApiResponse<Shipment>> OrderModuleGetNewShipmentAsyncWithHttpInfo(string id);
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>Task of PostProcessPaymentResult</returns>
+        System.Threading.Tasks.Task<PostProcessPaymentResult> OrderModulePostProcessPaymentAsync(PaymentCallbackParameters callback);
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>Task of ApiResponse (PostProcessPaymentResult)</returns>
+        System.Threading.Tasks.Task<ApiResponse<PostProcessPaymentResult>> OrderModulePostProcessPaymentAsyncWithHttpInfo(PaymentCallbackParameters callback);
         /// <summary>
         /// Register customer order payment in external payment system
         /// </summary>
@@ -1887,6 +1929,174 @@ namespace VirtoCommerce.OrderModule.Client.Api
             return new ApiResponse<Shipment>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 (Shipment)ApiClient.Deserialize(localVarResponse, typeof(Shipment)));
+            
+        }
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system 
+        /// </summary>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>PostProcessPaymentResult</returns>
+        public PostProcessPaymentResult OrderModulePostProcessPayment(PaymentCallbackParameters callback)
+        {
+             ApiResponse<PostProcessPaymentResult> localVarResponse = OrderModulePostProcessPaymentWithHttpInfo(callback);
+             return localVarResponse.Data;
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system 
+        /// </summary>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>ApiResponse of PostProcessPaymentResult</returns>
+        public ApiResponse<PostProcessPaymentResult> OrderModulePostProcessPaymentWithHttpInfo(PaymentCallbackParameters callback)
+        {
+            // verify the required parameter 'callback' is set
+            if (callback == null)
+                throw new ApiException(400, "Missing required parameter 'callback' when calling VirtoCommerceOrdersApi->OrderModulePostProcessPayment");
+
+            var localVarPath = "/api/paymentcallback";
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new Dictionary<string, string>();
+            var localVarHeaderParams = new Dictionary<string, string>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
+            object localVarPostBody = null;
+
+            // to determine the Content-Type header
+            string[] localVarHttpContentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/xml", 
+                "text/xml", 
+                "application/x-www-form-urlencoded"
+            };
+            string localVarHttpContentType = ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+
+            // to determine the Accept header
+            string[] localVarHttpHeaderAccepts = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/xml", 
+                "text/xml"
+            };
+            string localVarHttpHeaderAccept = ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            if (localVarHttpHeaderAccept != null)
+                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
+
+            // set "format" to json by default
+            // e.g. /pet/{petId}.{format} becomes /pet/{petId}.json
+            localVarPathParams.Add("format", "json");
+            if (callback.GetType() != typeof(byte[]))
+            {
+                localVarPostBody = ApiClient.Serialize(callback); // http body (model) parameter
+            }
+            else
+            {
+                localVarPostBody = callback; // byte array
+            }
+
+
+            // make the HTTP request
+            IRestResponse localVarResponse = (IRestResponse)ApiClient.CallApi(localVarPath,
+                Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
+                localVarPathParams, localVarHttpContentType);
+
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
+
+            if (localVarStatusCode >= 400 && (localVarStatusCode != 404 || Configuration.ThrowExceptionWhenStatusCodeIs404))
+                throw new ApiException(localVarStatusCode, "Error calling OrderModulePostProcessPayment: " + localVarResponse.Content, localVarResponse.Content);
+            else if (localVarStatusCode == 0)
+                throw new ApiException(localVarStatusCode, "Error calling OrderModulePostProcessPayment: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
+
+            return new ApiResponse<PostProcessPaymentResult>(localVarStatusCode,
+                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
+                (PostProcessPaymentResult)ApiClient.Deserialize(localVarResponse, typeof(PostProcessPaymentResult)));
+            
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system 
+        /// </summary>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>Task of PostProcessPaymentResult</returns>
+        public async System.Threading.Tasks.Task<PostProcessPaymentResult> OrderModulePostProcessPaymentAsync(PaymentCallbackParameters callback)
+        {
+             ApiResponse<PostProcessPaymentResult> localVarResponse = await OrderModulePostProcessPaymentAsyncWithHttpInfo(callback);
+             return localVarResponse.Data;
+
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system 
+        /// </summary>
+        /// <exception cref="VirtoCommerce.OrderModule.Client.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="callback">payment callback parameters</param>
+        /// <returns>Task of ApiResponse (PostProcessPaymentResult)</returns>
+        public async System.Threading.Tasks.Task<ApiResponse<PostProcessPaymentResult>> OrderModulePostProcessPaymentAsyncWithHttpInfo(PaymentCallbackParameters callback)
+        {
+            // verify the required parameter 'callback' is set
+            if (callback == null)
+                throw new ApiException(400, "Missing required parameter 'callback' when calling VirtoCommerceOrdersApi->OrderModulePostProcessPayment");
+
+            var localVarPath = "/api/paymentcallback";
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new Dictionary<string, string>();
+            var localVarHeaderParams = new Dictionary<string, string>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
+            object localVarPostBody = null;
+
+            // to determine the Content-Type header
+            string[] localVarHttpContentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/xml", 
+                "text/xml", 
+                "application/x-www-form-urlencoded"
+            };
+            string localVarHttpContentType = ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+
+            // to determine the Accept header
+            string[] localVarHttpHeaderAccepts = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/xml", 
+                "text/xml"
+            };
+            string localVarHttpHeaderAccept = ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            if (localVarHttpHeaderAccept != null)
+                localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
+
+            // set "format" to json by default
+            // e.g. /pet/{petId}.{format} becomes /pet/{petId}.json
+            localVarPathParams.Add("format", "json");
+            if (callback.GetType() != typeof(byte[]))
+            {
+                localVarPostBody = ApiClient.Serialize(callback); // http body (model) parameter
+            }
+            else
+            {
+                localVarPostBody = callback; // byte array
+            }
+
+
+            // make the HTTP request
+            IRestResponse localVarResponse = (IRestResponse)await ApiClient.CallApiAsync(localVarPath,
+                Method.POST, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
+                localVarPathParams, localVarHttpContentType);
+
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
+
+            if (localVarStatusCode >= 400 && (localVarStatusCode != 404 || Configuration.ThrowExceptionWhenStatusCodeIs404))
+                throw new ApiException(localVarStatusCode, "Error calling OrderModulePostProcessPayment: " + localVarResponse.Content, localVarResponse.Content);
+            else if (localVarStatusCode == 0)
+                throw new ApiException(localVarStatusCode, "Error calling OrderModulePostProcessPayment: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
+
+            return new ApiResponse<PostProcessPaymentResult>(localVarStatusCode,
+                localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
+                (PostProcessPaymentResult)ApiClient.Deserialize(localVarResponse, typeof(PostProcessPaymentResult)));
             
         }
         /// <summary>
