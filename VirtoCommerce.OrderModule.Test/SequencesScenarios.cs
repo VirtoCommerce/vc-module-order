@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VirtoCommerce.CoreModule.Data.Repositories;
 using VirtoCommerce.CoreModule.Data.Services;
+using VirtoCommerce.Platform.Testing.Bases;
+using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
+using VirtoCommerce.Platform.Data.Infrastructure;
+using VirtoCommerce.CoreModule.Data.Migrations;
+using System.Data.Entity;
+using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
-    [TestClass]
-    public class SequencesScenarios
+    [Trait("Category", "CI")]
+    public class SequencesScenarios : FunctionalTestBase
     {
         public static Dictionary<string, string> GlobalNumbers = new Dictionary<string, string>();
         public static int RunCount = 0;
 
+        /*
         [ClassInitialize]
         public static void Initialize(TestContext context)
         {
@@ -33,14 +39,18 @@ namespace VirtoCommerce.OrderModule.Test
             repository.Database.ExecuteSqlCommand(sql);
 
         }
+        */
 
-
+            /*
         [TestMethod]
         [DeploymentItem("connectionStrings.config")]
         [DeploymentItem("Configs/AppConfig.config", "Configs")]
-        public void RunSequencesPerformance()
+        */
+
+        [Fact]
+        public void Can_run_sequences_performance()
         {
-            var repository = new CommerceRepositoryImpl("VirtoCommerce");
+            var repository = GetRepository();
             var sequence = new SequenceUniqueNumberGeneratorServiceImpl(() => repository);
 
             for (var i = 1; i < SequenceUniqueNumberGeneratorServiceImpl.SequenceReservationRange; i++)
@@ -49,13 +59,43 @@ namespace VirtoCommerce.OrderModule.Test
                 Debug.WriteLine(result);
 
                 //This would fail if any duplicate generated
-                Assert.IsFalse(GlobalNumbers.ContainsKey(result));
+                Assert.False(GlobalNumbers.ContainsKey(result));
                 GlobalNumbers.Add(result, result);
 
+                /* don't need second checks here
                 const string sql = "INSERT UniqueSequence VALUES(@p0);";
+
                 //This would fail if any duplicate generated beause we use primary key
                 var sqlResult = repository.Database.ExecuteSqlCommand(sql, result);
-                Assert.AreEqual(1, sqlResult);
+                Assert.Equal(1, sqlResult);
+                */
+            }
+        }
+
+        protected CommerceRepositoryImpl GetRepository()
+        {
+            var repository = new CommerceRepositoryImpl(ConnectionString, new EntityPrimaryKeyGeneratorInterceptor(), new AuditableInterceptor(null));
+            EnsureDatabaseInitialized(() => new CommerceRepositoryImpl(ConnectionString), () => Database.SetInitializer(new SetupDatabaseInitializer<CommerceRepositoryImpl, Configuration>()));
+
+            /*
+            const string sql =
+                @"IF OBJECT_ID('dbo.UniqueSequence', 'U') IS NULL
+                    CREATE TABLE [dbo].[UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
+                    WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON))";
+
+            repository.Database.ExecuteSqlCommand(sql);
+            */
+
+            return repository;
+        }
+
+        public override void Dispose()
+        {
+            // Ensure LocalDb databases are deleted after use so that LocalDb doesn't throw if
+            // the temp location in which they are stored is later cleaned.
+            using (var context = new CommerceRepositoryImpl(ConnectionString))
+            {
+                context.Database.Delete();
             }
         }
     }
