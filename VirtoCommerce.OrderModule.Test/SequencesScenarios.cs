@@ -62,11 +62,13 @@ namespace VirtoCommerce.OrderModule.Test
                 Assert.False(GlobalNumbers.ContainsKey(result));
                 GlobalNumbers.Add(result, result);
 
+                /* don't need second checks here
                 const string sql = "INSERT UniqueSequence VALUES(@p0);";
 
                 //This would fail if any duplicate generated beause we use primary key
                 var sqlResult = repository.Database.ExecuteSqlCommand(sql, result);
                 Assert.Equal(1, sqlResult);
+                */
             }
         }
 
@@ -75,12 +77,14 @@ namespace VirtoCommerce.OrderModule.Test
             var repository = new CommerceRepositoryImpl(ConnectionString, new EntityPrimaryKeyGeneratorInterceptor(), new AuditableInterceptor(null));
             EnsureDatabaseInitialized(() => new CommerceRepositoryImpl(ConnectionString), () => Database.SetInitializer(new SetupDatabaseInitializer<CommerceRepositoryImpl, Configuration>()));
 
+            /*
             const string sql =
                 @"IF OBJECT_ID('dbo.UniqueSequence', 'U') IS NULL
                     CREATE TABLE [dbo].[UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
                     WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON))";
 
             repository.Database.ExecuteSqlCommand(sql);
+            */
 
             return repository;
         }
