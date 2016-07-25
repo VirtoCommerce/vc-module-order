@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.objCompareService', 'platformWebApp.settings',
-    function ($scope, dialogService, bladeNavigationService, order_res_customerOrders, order_res_fulfilmentCenters, order_res_stores, objCompareService, settings) {
+.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.objCompareService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members',
+    function ($scope, dialogService, bladeNavigationService, order_res_customerOrders, order_res_fulfilmentCenters, order_res_stores, objCompareService, settings, members) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -37,6 +37,21 @@
                 blade.stores = order_res_stores.query();
                 $scope.statuses = settings.getValues({ id: 'Order.Status' });
 
+                // load employees
+                members.search(
+                   {
+                       memberType: 'Employee',
+                       //memberId: parent org. ID,
+                       sort: 'fullName:asc',
+                       take: 1000
+                   },
+                   function (data) {
+                       blade.employees = data.members;
+                   });
+
+                $scope.resetEmployeeName = function (newVal) {
+                    blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
+                };
             }
             else if (operation.operationType.toLowerCase() == 'shipment') {
                 blade.currentEntity = _.find(copy.shipments, function (x) { return x.id == operation.id; });
