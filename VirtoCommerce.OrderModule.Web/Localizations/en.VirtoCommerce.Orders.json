@@ -7,6 +7,7 @@
         "subtitle": "Edit order details and related documents",
         "labels": {
           "approved": "Approved",
+          "employee": "Assigned to",
           "order-number": "Customer order number",
           "status": "Status",
           "store": "Store",
@@ -15,8 +16,9 @@
           "customer": "Customer"
         },
         "placeholders": {
+          "employee": "Select assignee",
           "status": "Select...",
-          "store": "Select or search a country in the list..."
+          "store": "Select..."
         }
       },
       "customerOrder-items": {
