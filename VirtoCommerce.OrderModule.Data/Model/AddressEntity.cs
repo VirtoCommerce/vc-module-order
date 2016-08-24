@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -52,5 +54,64 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
 		public virtual PaymentInEntity PaymentIn { get; set; }
 		public string PaymentInId { get; set; }
-	}
+
+
+        public virtual Address ToModel(Address address)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
+            address.InjectFrom(this);
+            address.AddressType = EnumUtility.SafeParse<AddressType>(this.AddressType, Domain.Commerce.Model.AddressType.BillingAndShipping);
+            return address;
+        }
+
+        public virtual AddressEntity FromModel(Address address)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
+
+            this.InjectFrom(address);
+            this.AddressType = address.AddressType.ToString();
+            return this;
+        }
+
+        public virtual void Patch(AddressEntity target)
+        {
+            target.City = this.City;
+            target.CountryCode = this.CountryCode;
+            target.CountryName = this.CountryName;
+            target.Phone = this.Phone;
+            target.PostalCode = this.PostalCode;
+            target.RegionId = this.RegionId;
+            target.RegionName = this.RegionName;
+            target.AddressType = this.AddressType;
+            target.City = this.City;
+            target.Email = this.Email;
+            target.FirstName = this.FirstName;
+            target.LastName = this.LastName;
+            target.Line1 = this.Line1;
+            target.Line2 = this.Line2;            
+        }
+
+    }
+
+    public class AddressComparer : IEqualityComparer<AddressEntity>
+    {
+        #region IEqualityComparer<Discount> Members
+
+        public bool Equals(AddressEntity x, AddressEntity y)
+        {
+            return GetHashCode(x) == GetHashCode(y);
+        }
+
+        public int GetHashCode(AddressEntity obj)
+        {
+            var result = String.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
+                                          obj.Email, obj.FirstName, obj.LastName, obj.Line1, obj.Line2, obj.Phone, obj.PostalCode, obj.RegionId, obj.RegionName);
+            return result.GetHashCode();
+        }
+
+
+        #endregion
+    }
 }

@@ -5,7 +5,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
+using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
@@ -46,5 +49,70 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
 		public string ShipmentId { get; set; }
 		public virtual ShipmentEntity Shipment { get; set; }
-	}
+
+        public override OrderOperation ToModel(OrderOperation operation)
+        {
+            base.ToModel(operation);
+
+            var payment = operation as PaymentIn;
+            if (payment == null)
+                throw new ArgumentNullException("payment");
+
+            payment.InjectFrom(this);
+            payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
+
+            if (!this.Addresses.IsNullOrEmpty())
+            {
+                payment.BillingAddress =  this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+            }        
+
+            payment.ChildrenOperations = payment.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { payment }).ToList();
+            return payment;
+        }
+
+        public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
+        {
+            base.FromModel(operation, pkMap);
+
+            var payment = operation as PaymentIn;
+            if (payment == null)
+                throw new ArgumentNullException("payment");
+
+            this.Status = payment.PaymentStatus.ToString();
+
+            if (payment.BillingAddress != null)
+            {
+                this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
+            }
+
+            return this;
+        }
+
+        public override void Patch(OperationEntity operation)
+        {
+            base.Patch(operation);
+
+            var target = operation as PaymentInEntity;
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            target.CustomerId = this.CustomerId;
+            target.OrganizationId = this.OrganizationId;
+            target.GatewayCode = this.GatewayCode;
+            target.Purpose = this.Purpose;
+            target.OuterId = this.OuterId;
+            target.Status = this.Status;
+            target.AuthorizedDate = this.AuthorizedDate;
+            target.CapturedDate = this.CapturedDate;
+            target.VoidedDate = this.VoidedDate;
+            target.IsCancelled = this.IsCancelled;
+            target.CancelledDate = this.CancelledDate;
+            target.CancelReason = this.CancelReason;
+     
+            if (!this.Addresses.IsNullCollection())
+            {
+                this.Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+            }
+        }
+    }
 }

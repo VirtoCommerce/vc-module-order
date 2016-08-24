@@ -8,19 +8,18 @@ using System.Web.Http.Description;
 using CacheManager.Core;
 using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Common;
+using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Web.BackgroundJobs;
-using VirtoCommerce.OrderModule.Web.Converters;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Core.Web.Security;
 using VirtoCommerce.Platform.Data.Common;
-using coreModel = VirtoCommerce.Domain.Order.Model;
 using webModel = VirtoCommerce.OrderModule.Web.Model;
 
 namespace VirtoCommerce.OrderModule.Web.Controllers.Api
@@ -59,14 +58,19 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
-        [ResponseType(typeof(webModel.SearchResult))]
-        public IHttpActionResult Search(coreModel.SearchCriteria criteria)
+        [ResponseType(typeof(webModel.CustomerOrderSearchResult))]
+        public IHttpActionResult Search(CustomerOrderSearchCriteria criteria)
         {
             //Scope bound ACL filtration
             criteria = FilterOrderSearchCriteria(HttpContext.Current.User.Identity.Name, criteria);
 
-            var retVal = _searchService.Search(criteria);
-            return Ok(retVal.ToWebModel());
+            var result = _searchService.SearchCustomerOrders(criteria);
+            var retVal = new webModel.CustomerOrderSearchResult
+            {
+                CustomerOrders = result.Results,
+                TotalCount = result.TotalCount
+            };
+            return Ok(retVal);
         }
 
         /// <summary>
@@ -76,27 +80,23 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="number">customer order number</param>
         [HttpGet]
         [Route("number/{number}")]
-        [ResponseType(typeof(webModel.CustomerOrder))]
+        [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetByNumber(string number)
         {
-            var retVal = _customerOrderService.GetByOrderNumber(number, coreModel.CustomerOrderResponseGroup.Full);
+            var result =  _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = number, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
 
-            if (retVal == null)
+            var retVal = result.Results.FirstOrDefault();
+            if(retVal != null)
             {
-                return Ok();
+                var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
+                 if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
+                {
+                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                }
+                //Set scopes for UI scope bounded ACL checking
+                retVal.Scopes = scopes;
             }
-            //Scope bound security check
-            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
-            if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-
-            var result = retVal.ToWebModel();
-            //Set scopes for UI scope bounded ACL checking
-            result.Scopes = scopes;
-
-            return Ok(result);
+            return Ok(retVal);
         }
 
 
@@ -107,10 +107,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="id">customer order id</param>
         [HttpGet]
         [Route("{id}")]
-        [ResponseType(typeof(webModel.CustomerOrder))]
+        [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id)
         {
-            var retVal = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
+            var retVal = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
             if (retVal == null)
             {
@@ -123,11 +123,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
 
-            var result = retVal.ToWebModel();
             //Set scopes for UI scope bounded ACL checking
-            result.Scopes = scopes;
+            retVal.Scopes = scopes;
 
-            return Ok(result);
+            return Ok(retVal);
         }
 
         /// <summary>
@@ -136,12 +135,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="id">shopping cart id</param>
         [HttpPost]
         [Route("{id}")]
-        [ResponseType(typeof(webModel.CustomerOrder))]
+        [ResponseType(typeof(CustomerOrder))]
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
         public IHttpActionResult CreateOrderFromCart(string id)
         {
-            var retVal = _customerOrderService.CreateByShoppingCart(id);
-            return Ok(retVal.ToWebModel());
+            throw new NotImplementedException();
+            //var retVal = _customerOrderService.CreateByShoppingCart(id);
+            //return Ok(retVal.ToWebModel());
         }
 
         /// <summary>
@@ -156,13 +156,12 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(webModel.ProcessPaymentResult))]
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
-            //search first by order number
-            var order = _customerOrderService.GetByOrderNumber(orderId, coreModel.CustomerOrderResponseGroup.Full);
-
-            //if not found by order number search by order id
-            if (order == null)
-                order = _customerOrderService.GetById(orderId, coreModel.CustomerOrderResponseGroup.Full);
-
+            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            if(order == null)
+            {
+                order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
+            }         
+        
             if (order == null)
             {
                 throw new NullReferenceException("order");
@@ -189,7 +188,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             var result = paymentMethod.ProcessPayment(context);
 
-            _customerOrderService.Update(new[] { order });
+            _customerOrderService.SaveChanges(new[] { order });
 
             var retVal = new webModel.ProcessPaymentResult();
             retVal.InjectFrom(result);
@@ -204,12 +203,12 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="customerOrder">customer order</param>
         [HttpPost]
         [Route("")]
-        [ResponseType(typeof(webModel.CustomerOrder))]
+        [ResponseType(typeof(CustomerOrder))]
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
-        public IHttpActionResult CreateOrder(webModel.CustomerOrder customerOrder)
+        public IHttpActionResult CreateOrder(CustomerOrder customerOrder)
         {
-            var retVal = _customerOrderService.Create(customerOrder.ToCoreModel());
-            return Ok(retVal.ToWebModel());
+            _customerOrderService.SaveChanges(new[] { customerOrder });
+            return Ok(customerOrder);
         }
 
         /// <summary>
@@ -219,18 +218,16 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpPut]
         [Route("")]
         [ResponseType(typeof(void))]
-        public IHttpActionResult Update(webModel.CustomerOrder customerOrder)
-        {
-            var coreOrder = customerOrder.ToCoreModel();
-
+        public IHttpActionResult Update(CustomerOrder customerOrder)
+        {         
             //Check scope bound permission
-            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(coreOrder).ToArray();
+            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(customerOrder).ToArray();
             if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
 
-            _customerOrderService.Update(new[] { coreOrder });
+            _customerOrderService.SaveChanges(new[] { customerOrder });
             return StatusCode(HttpStatusCode.NoContent);
         }
 
@@ -241,28 +238,30 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="id">customer order id </param>
         [HttpGet]
         [Route("{id}/shipments/new")]
-        [ResponseType(typeof(webModel.Shipment))]
+        [ResponseType(typeof(Shipment))]
         public IHttpActionResult GetNewShipment(string id)
         {
-            var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
+            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
             if (order != null)
             {
-                var retVal = new coreModel.Shipment
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Currency = order.Currency
-                };
+                var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
+
+                retVal.Id = Guid.NewGuid().ToString();
+                retVal.Currency = order.Currency;
+
                 var numberTemplate = _settingManager.GetValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
 
-                //Detect not whole shipped items
-                //TODO: LineItem partial shipping
-                var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
+                return Ok(retVal);
 
-                //TODO Add check for digital products (don't add to shipment)
-                retVal.Items = order.Items.Where(x => !shippedLineItemIds.Contains(x.Id))
-                              .Select(x => new coreModel.ShipmentItem(x)).ToList();
-                return Ok(retVal.ToWebModel());
+                ////Detect not whole shipped items
+                ////TODO: LineItem partial shipping
+                //var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
+
+                ////TODO Add check for digital products (don't add to shipment)
+                //retVal.Items = order.Items.Where(x => !shippedLineItemIds.Contains(x.Id))
+                //              .Select(x => new coreModel.ShipmentItem(x)).ToList();
+                //return Ok(retVal.ToWebModel());
             }
 
             return NotFound();
@@ -275,21 +274,20 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="id">customer order id </param>
         [HttpGet]
         [Route("{id}/payments/new")]
-        [ResponseType(typeof(webModel.PaymentIn))]
+        [ResponseType(typeof(PaymentIn))]
         public IHttpActionResult GetNewPayment(string id)
         {
-            var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
+            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
             if (order != null)
             {
-                var retVal = new coreModel.PaymentIn
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Currency = order.Currency,
-                    CustomerId = order.CustomerId
-                };
+                var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+                retVal.Id = Guid.NewGuid().ToString();
+                retVal.Currency = order.Currency;
+                retVal.CustomerId = order.CustomerId;
+
                 var numberTemplate = _settingManager.GetValue("Order.PaymentInNewNumberTemplate", "PI{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
-                return Ok(retVal.ToWebModel());
+                return Ok(retVal);
             }
 
             return NotFound();
@@ -309,44 +307,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        /// <summary>
-        ///  Delete a concrete customer order operation (document) 
-        /// </summary>
-        /// <param name="id">customer order id</param>
-        /// <param name="operationId">operation id</param>
-        [HttpDelete]
-        [Route("~/api/order/customerOrders/{id}/operations/{operationId}")]
-        [ResponseType(typeof(void))]
-        public IHttpActionResult Delete(string id, string operationId)
-        {
-            var order = _customerOrderService.GetById(id, coreModel.CustomerOrderResponseGroup.Full);
-            if (order != null)
-            {
-                var operation = order.GetFlatObjectsListWithInterface<coreModel.IOperation>().FirstOrDefault(x => ((Entity)x).Id == operationId);
-                if (operation != null)
-                {
-                    var shipment = operation as coreModel.Shipment;
-                    var payment = operation as coreModel.PaymentIn;
-                    if (shipment != null)
-                    {
-                        order.Shipments.Remove(shipment);
-                    }
-                    else if (payment != null)
-                    {
-                        //If payment not belong to order need remove payment in shipment
-                        if (!order.InPayments.Remove(payment))
-                        {
-                            var paymentContainsShipment = order.Shipments.FirstOrDefault(x => x.InPayments.Contains(payment));
-                            paymentContainsShipment.InPayments.Remove(payment);
-                        }
-                    }
-                }
-                _customerOrderService.Update(new[] { order });
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
+        
         /// <summary>
         ///  Get a some order statistic information for Commerce manager dashboard
         /// </summary>
@@ -391,11 +352,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 var orderId = callback.Parameters.First(param => param.Key.EqualsInvariant("orderid")).Value;
                 //some payment method require customer number to be passed and returned. First search customer order by number
-                var order = _customerOrderService.GetByOrderNumber(orderId, coreModel.CustomerOrderResponseGroup.Full);
+                var order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
 
                 //if order not found by order number search by order id
                 if (order == null)
-                    order = _customerOrderService.GetById(orderId, coreModel.CustomerOrderResponseGroup.Full);
+                    order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+
+                if(order == null)
+                    throw new NullReferenceException("order not found");
 
                 var store = _storeService.GetById(order.StoreId);
                 var parameters = new NameValueCollection();
@@ -426,7 +390,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     var retVal = paymentMethod.PostProcessPayment(context);
                     if (retVal != null)
                     {
-                        _customerOrderService.Update(new[] { order });
+                        _customerOrderService.SaveChanges(new[] { order });
                     }
 
                     // order Number is required
@@ -438,7 +402,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         }
 
 
-        private coreModel.SearchCriteria FilterOrderSearchCriteria(string userName, coreModel.SearchCriteria criteria)
+        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {
 
             if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))

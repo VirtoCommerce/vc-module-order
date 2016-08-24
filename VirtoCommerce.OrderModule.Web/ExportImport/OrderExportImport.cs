@@ -34,48 +34,33 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 
 		public void DoImport(Stream backupStream, Action<ExportImportProgressInfo> progressCallback)
         {
-			var originalObject = GetBackupObject(progressCallback);
             var backupObject = backupStream.DeserializeJson<BackupObject>();
 
 			var progressInfo = new ExportImportProgressInfo();
 			progressInfo.Description = String.Format("{0} orders importing", backupObject.CustomerOrders.Count());
 			progressCallback(progressInfo);
 
-            UpdateOrders(originalObject.CustomerOrders, backupObject.CustomerOrders);
-        }
-
-        private void UpdateOrders(ICollection<CustomerOrder> original, ICollection<CustomerOrder> backup)
-        {
-            var toUpdate = new List<CustomerOrder>();
-
-            backup.CompareTo(original, EqualityComparer<Operation>.Default, (state, x, y) =>
-            {
-                switch (state)
-                {
-                    case EntryState.Modified:
-                        toUpdate.Add(x);
-                        break;
-                    case EntryState.Added:
-                        _customerOrderService.Create(x);
-                        break;
-                }
-            });
-            _customerOrderService.Update(toUpdate.ToArray());
-        }
+            _customerOrderService.SaveChanges(backupObject.CustomerOrders.ToArray());
+        }      
 
 		private BackupObject GetBackupObject(Action<ExportImportProgressInfo> progressCallback)
         {
 			var retVal = new BackupObject();
 			var progressInfo = new ExportImportProgressInfo();
-            const CustomerOrderResponseGroup responseGroup = CustomerOrderResponseGroup.WithAddresses | CustomerOrderResponseGroup.WithItems
-                | CustomerOrderResponseGroup.WithShipments | CustomerOrderResponseGroup.WithInPayments;
 
-            var searchResponse = _customerOrderSearchService.Search(new SearchCriteria { Count = int.MaxValue });
+            var take = 20;
+            
+            var searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Take = 0, ResponseGroup = CustomerOrderResponseGroup.Default.ToString() });
 
-			progressInfo.Description = String.Format("{0} orders loading", searchResponse.CustomerOrders.Count());
-			progressCallback(progressInfo);
+            for(int skip = 0; skip < searchResponse.TotalCount; skip += take)
+            {
+                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria {Skip = skip, Take = take, ResponseGroup = CustomerOrderResponseGroup.Default.ToString() });
 
-            retVal.CustomerOrders = searchResponse.CustomerOrders.Select((x) => _customerOrderService.GetById(x.Id, responseGroup)).ToList();
+                progressInfo.Description = String.Format("{0} of {1} orders loading", Math.Min(skip + take, searchResponse.TotalCount), searchResponse.TotalCount);
+                progressCallback(progressInfo);
+                retVal.CustomerOrders.AddRange(searchResponse.Results);
+            }
+        
             //Do not serialize shipment and payment methods
             var allPayments = retVal.CustomerOrders.SelectMany(x => x.InPayments);
             var allShipments = retVal.CustomerOrders.SelectMany(x => x.Shipments);

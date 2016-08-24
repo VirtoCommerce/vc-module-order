@@ -4,6 +4,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Model;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
@@ -213,19 +214,19 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             get { return GetAsQueryable<LineItemEntity>(); }
         }
 
-        public CustomerOrderEntity GetCustomerOrderById(string id, CustomerOrderResponseGroup responseGroup)
+        public virtual CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup)
         {
-            var query = CustomerOrders.Where(x => x.Id == id)
+            var query = CustomerOrders.Where(x => ids.Contains(x.Id))
                                       .Include(x => x.Discounts)
-                                      .Include(x => x.TaxDetails);
+                                      .Include(x => x.TaxDetails);            
 
             if ((responseGroup & CustomerOrderResponseGroup.WithAddresses) == CustomerOrderResponseGroup.WithAddresses)
             {
-                var addresses = Addresses.Where(x => x.CustomerOrderId == id).ToArray();
+                var addresses = Addresses.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             }
             if ((responseGroup & CustomerOrderResponseGroup.WithInPayments) == CustomerOrderResponseGroup.WithInPayments)
             {
-                var inPayments = InPayments.Where(x => x.CustomerOrderId == id).ToArray();
+                var inPayments = InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var paymentsIds = inPayments.Select(x => x.Id).ToArray();
                 var paymentAddresses = Addresses.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }
@@ -233,7 +234,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             {
                 var lineItems = LineItems.Include(x => x.TaxDetails)
                                          .Include(x => x.Discounts)
-                                         .Where(x => x.CustomerOrderId == id).ToArray();
+                                         .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             }
             if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
             {
@@ -241,31 +242,20 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                                          .Include(x => x.Discounts)
                                          .Include(x => x.Items)
                                          .Include(x => x.Packages.Select(y => y.Items))
-                                         .Where(x => x.CustomerOrderId == id).ToArray();
+                                         .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var shipmentIds = shipments.Select(x => x.Id).ToArray();
                 var addresses = Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
             }
-            return query.FirstOrDefault();
+            return query.ToArray();
         }
 
-        public CustomerOrderEntity GetCustomerOrderByNumber(string orderNumber, CustomerOrderResponseGroup responseGroup)
+        public virtual void RemoveOrdersByIds(string[] ids)
         {
-            var id = CustomerOrders.Where(x => x.Number == orderNumber).Select(x => x.Id).FirstOrDefault();
-            if (id != null)
+            var orders = GetCustomerOrdersByIds(ids, CustomerOrderResponseGroup.Full);
+            foreach(var order in orders)
             {
-                return GetCustomerOrderById(id, responseGroup);
+                Remove(order);
             }
-            return null;
-        }
-
-        public ShipmentEntity GetShipmentById(string id, CustomerOrderResponseGroup responseGroup)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PaymentInEntity GetInPaymentById(string id, CustomerOrderResponseGroup responseGroup)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

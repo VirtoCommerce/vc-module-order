@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Linq;
+using System.Web.Http;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CoreModule.Data.Services;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
+using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
+using VirtoCommerce.Domain.Payment.Services;
+using VirtoCommerce.Domain.Shipping.Services;
+using VirtoCommerce.OrderModule.Data.Model;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Observers;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.ExportImport;
+using VirtoCommerce.OrderModule.Web.JsonConverters;
 using VirtoCommerce.OrderModule.Web.Resources;
 using VirtoCommerce.OrderModule.Web.Security;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -59,7 +67,11 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<IUniqueNumberGenerator, SequenceUniqueNumberGeneratorServiceImpl>();
 
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
-            _container.RegisterType<ICustomerOrderSearchService, CustomerOrderSearchServiceImpl>();
+            _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
+
+            AbstractTypeFactory<IOperation>.RegisterType<CustomerOrder>();
+            AbstractTypeFactory<IOperation>.RegisterType<Shipment>();
+            AbstractTypeFactory<IOperation>.RegisterType<PaymentIn>();
         }
 
         public override void PostInitialize()
@@ -135,6 +147,11 @@ namespace VirtoCommerce.OrderModule.Web
             var securityScopeService = _container.Resolve<IPermissionScopeService>();
             securityScopeService.RegisterSope(() => new OrderStoreScope());
             securityScopeService.RegisterSope(() => new OrderResponsibleScope());
+
+            //Next lines allow to use polymorph types in API controller methods
+            var httpConfiguration = _container.Resolve<HttpConfiguration>();
+            httpConfiguration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new PolymorphicOperationJsonConverter(_container.Resolve<IPaymentMethodsService>(), _container.Resolve<IShippingMethodsService>()));
+
         }
 
         #endregion

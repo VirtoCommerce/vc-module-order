@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VirtoCommerce.Domain.Order.Model;
 
 namespace VirtoCommerce.OrderModule.Web.Model
 {
-	public class SearchResult
+	public class CustomerOrderSearchResult
 	{
-		public SearchResult()
+		public CustomerOrderSearchResult()
 		{
 			CustomerOrders = new List<CustomerOrder>();
 		}

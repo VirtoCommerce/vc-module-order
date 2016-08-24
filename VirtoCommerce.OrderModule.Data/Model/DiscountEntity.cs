@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
@@ -33,7 +35,51 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
 		public virtual LineItemEntity LineItem { get; set; }
 		public string LineItemId { get; set; }
-		
 
-	}
+        public virtual Discount ToModel(Discount discount)
+        {
+            if (discount == null)
+                throw new ArgumentNullException("discount");
+
+            discount.InjectFrom(this);
+
+            if (this.Currency != null)
+            {
+                discount.Currency = this.Currency;
+            }
+
+            if (this.CouponCode != null)
+            {
+                discount.Coupon = new Coupon
+                {
+                    Code = this.CouponCode                  
+                };
+            }            
+            return discount;
+        }
+
+        public virtual DiscountEntity FromModel(Discount discount)
+        {
+            if (discount == null)
+                throw new ArgumentNullException("discount");
+
+        
+            this.InjectFrom(discount);
+            this.Currency = discount.Currency;
+            if(discount.Coupon != null)
+            {
+                this.CouponCode = discount.Coupon.Code;
+            }
+            return this;
+        }
+
+        public virtual void Patch(DiscountEntity target)
+        {
+            target.CouponCode = this.CouponCode;
+            target.Currency = this.Currency;
+            target.DiscountAmount = this.DiscountAmount;
+            target.PromotionDescription = this.PromotionDescription;
+            target.PromotionId = this.PromotionId;       
+        }
+    }
 }
