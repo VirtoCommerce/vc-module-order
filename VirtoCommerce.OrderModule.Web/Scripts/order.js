@@ -32,8 +32,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
   }]
 )
 .run(
-  ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores',
-	function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores) {
+  ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.customerModule.members',
+	function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, members) {
 	    //Register module in main menu
 	    var menuItem = {
 	        path: 'browse/orders',
@@ -45,6 +45,67 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	    };
 	    mainMenuService.addMenuItem(menuItem);
 
+	    // register CustomerOrder, PaymentIn and Shipment types as known operations
+	    OrderModule_knownOperations.push({
+	        type: 'CustomerOrder',
+	        treeTemplateUrl: 'orderOperationDefault.tpl.html',
+	        getDetailBlade: function (operation, blade) {
+	            if (blade.id === 'orderDetail') {
+	                bladeNavigationService.closeChildrenBlades(blade);
+	            } else {
+	                return new OrderModule_orderDetailBlade(operation);
+	            }
+	        }
+	    });
+
+	    var operation = {
+	        type: 'PaymentIn',
+	        // treeTemplateUrl: 'orderOperationDefault.tpl.html',
+	        getDetailBlade: function (operation, blade) { return new OrderModule_paymentDetailBlade(operation, blade); },
+	        newInstanceMetadata: {
+	            name: 'orders.blades.newOperation-wizard.menu.payment-operation.title',
+	            descr: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
+	            action: function (blade) {
+	                customerOrders.getNewPayment({ id: blade.customerOrder.id }, function (result) {
+	                    bladeNavigationService.closeBlade(blade);
+
+	                    result.paymentMethod = undefined;
+	                    blade.customerOrder.inPayments.push(result);
+	                    blade.customerOrder.childrenOperations.push(result);
+
+	                    var newBlade = operation.getDetailBlade(result, blade);
+	                    newBlade.isNew = true;
+	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
+	                },
+                    function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
+	            }
+	        }
+	    }
+	    OrderModule_knownOperations.push(operation);
+
+	    operation = {
+	        type: 'Shipment',
+	        getDetailBlade: function (operation, blade) { return new OrderModule_shipmentDetailBlade(operation, blade); },
+	        newInstanceMetadata: {
+	            name: 'orders.blades.newOperation-wizard.menu.shipment-operation.title',
+	            descr: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
+	            action: function (blade) {
+	                customerOrders.getNewShipment({ id: blade.customerOrder.id }, function (result) {
+	                    bladeNavigationService.closeBlade(blade);
+
+	                    result.shippingMethod = undefined;
+	                    blade.customerOrder.shipments.push(result);
+	                    blade.customerOrder.childrenOperations.push(result);
+
+	                    var newBlade = operation.getDetailBlade(result, blade);
+	                    newBlade.isNew = true;
+	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
+	                },
+                    function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
+	            }
+	        }
+	    };
+	    OrderModule_knownOperations.push(operation);
 
 	    //Register widgets
 	    var operationItemsWidget = {
@@ -269,3 +330,113 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        }
 	    });
 	}]);
+
+// define OrderModule known Operations to be accessible platform-wide:
+var OrderModule_knownOperations = [];
+
+// define base blade information for operations
+function OrderModule_operationDetailBlade() {
+    this.id = 'operationDetail';
+    this.controller = 'virtoCommerce.orderModule.operationDetailController';
+}
+
+// define ORDER detail blade
+function OrderModule_orderDetailBlade(node) {
+    this.id = 'orderDetail';
+    this.customerOrder = node;
+    this.title = 'orders.blades.customerOrder-detail.title';
+    this.titleValues = { customer: node.customerName };
+    this.subtitle = 'orders.blades.customerOrder-detail.subtitle';
+    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html';
+    this.availableChildrenTypes = ['Shipment', 'PaymentIn'];
+}
+
+// inherit form base operation
+OrderModule_orderDetailBlade.prototype = new OrderModule_operationDetailBlade();
+
+// register order metaFields
+OrderModule_orderDetailBlade.prototype.metaFields = [
+    {
+        name: 'isApproved',
+        title: "orders.blades.customerOrder-detail.labels.approved",
+        valueType: "Boolean",
+        isVisibleFn: function (blade) { return !blade.isNew; }
+        //initializeFn: function (blade) { this.values = [{ value: blade.currentEntity.isApproved }]; },
+        // dataSaveFn: function (blade) { return blade.currentEntity.isApproved = this.values[0].value; }
+    },
+    {
+        name: 'employeeId',
+        title: "orders.blades.customerOrder-detail.labels.employee",
+        templateUrl: 'employeeSelector.html'
+    },
+    {
+        name: 'number',
+        isRequired: true,
+        title: "orders.blades.customerOrder-detail.labels.order-number",
+        valueType: "ShortText",
+        isVisibleFn: function (blade) { return !blade.isNew; }
+    },
+    {
+        name: 'createdDate',
+        isReadonly: true,
+        title: "orders.blades.customerOrder-detail.labels.from",
+        valueType: "DateTime"
+    },
+    {
+        name: 'status',
+        templateUrl: 'statusSelector.html'
+    },
+    {
+        name: 'customerName',
+        title: "orders.blades.customerOrder-detail.labels.customer",
+        templateUrl: 'customerSelector.html'
+    },
+   {
+       name: 'storeId',
+       title: "orders.blades.customerOrder-detail.labels.store",
+       templateUrl: 'storeSelector.html'
+   }
+];
+
+// PAYMENT detail blade
+function OrderModule_paymentDetailBlade(operation, blade) {
+    this.currentEntity = operation;
+    this.customerOrder = blade.customerOrder;
+    this.stores = blade.stores;
+    this.title = 'orders.blades.payment-detail.title';
+    this.titleValues = { number: operation.number };
+    this.subtitle = 'orders.blades.payment-detail.subtitle';
+    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html';
+}
+
+// inherit form base operation
+OrderModule_paymentDetailBlade.prototype = new OrderModule_operationDetailBlade();
+
+OrderModule_paymentDetailBlade.prototype.metaFields = [
+    {
+        name: 'number',
+        isRequired: true,
+        title: "orders.blades.payment-detail.labels.payment-number",
+        valueType: "ShortText"
+    },
+    {
+        name: 'createdDate',
+        isReadonly: true,
+        title: "orders.blades.payment-detail.labels.from",
+        valueType: "DateTime"
+    }
+];
+
+// SHIPMENT detail blade
+function OrderModule_shipmentDetailBlade(operation, blade) {
+    this.currentEntity = operation;
+    this.customerOrder = blade.customerOrder;
+    this.stores = blade.stores;
+    this.title = 'orders.blades.shipment-detail.title';
+    this.titleValues = { number: operation.number };
+    this.subtitle = 'orders.blades.shipment-detail.subtitle';
+    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html';
+}
+
+// inherit form base operation
+OrderModule_shipmentDetailBlade.prototype = new OrderModule_operationDetailBlade();

@@ -27,17 +27,13 @@ function ($scope, order_res_customerOrders, bladeUtils, dialogService, authServi
 
     $scope.selectNode = function (node) {
         $scope.selectedNodeId = node.id;
-        var newBlade = {
-            id: 'orderDetail',
-            title: 'orders.blades.customerOrder-detail.title',
-            titleValues: { customer: node.customerName },
-            subtitle: 'orders.blades.customerOrder-detail.subtitle',
-            customerOrder: node,
-            controller: 'virtoCommerce.orderModule.operationDetailController',
-            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html'
-        };
 
-        bladeNavigationService.showBlade(newBlade, blade);
+        var foundTemplate = _.findWhere(OrderModule_knownOperations, { type: node.operationType });
+        if (foundTemplate && foundTemplate.getDetailBlade) {
+            var newBlade = foundTemplate.getDetailBlade(node, blade);
+            if (newBlade)
+                bladeNavigationService.showBlade(newBlade, blade);
+        }
     };
 
     $scope.deleteList = function (list) {

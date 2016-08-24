@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.objCompareService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members',
-    function ($scope, dialogService, bladeNavigationService, order_res_customerOrders, order_res_fulfilmentCenters, order_res_stores, objCompareService, settings, members) {
+.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.objCompareService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
+    function ($scope, dialogService, bladeNavigationService, order_res_customerOrders, order_res_fulfilmentCenters, order_res_stores, objCompareService, settings, members, memberTypesResolverService) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -31,7 +31,7 @@
 
             blade.customerOrder = copy;
 
-            if (operation.operationType.toLowerCase() == 'customerorder') {
+            if (operation.operationType == 'CustomerOrder') {
                 blade.currentEntity = copy;
                 blade.origEntity = customerOrder;
                 blade.stores = order_res_stores.query();
@@ -53,14 +53,14 @@
                     blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
                 };
             }
-            else if (operation.operationType.toLowerCase() == 'shipment') {
+            else if (operation.operationType === 'Shipment') {
                 blade.currentEntity = _.find(copy.shipments, function (x) { return x.id == operation.id; });
                 blade.origEntity = _.find(customerOrder.shipments, function (x) { return x.id == operation.id; });
                 $scope.fulfillmentCenters = order_res_fulfilmentCenters.query();
                 $scope.statuses = settings.getValues({ id: 'Shipment.Status' });
                 $scope.currentStore = _.findWhere(blade.stores, { id: customerOrder.storeId });
             }
-            else if (operation.operationType.toLowerCase() == 'paymentin') {
+            else if (operation.operationType === 'PaymentIn') {
                 $scope.currentStore = _.findWhere(blade.stores, { id: customerOrder.storeId });
                 blade.currentEntity = _.find(copy.inPayments, function (x) { return x.id == operation.id; });
                 blade.origEntity = _.find(customerOrder.inPayments, function (x) { return x.id == operation.id; });
@@ -81,7 +81,7 @@
 
         function saveChanges() {
             blade.isLoading = true;
-            order_res_customerOrders.update({}, blade.customerOrder, function (data, headers) {
+            order_res_customerOrders.update({}, blade.customerOrder, function (data) {
                 blade.isNew = false;
                 blade.refresh();
                 blade.parentBlade.refresh();
@@ -96,7 +96,7 @@
                 template: 'Modules/$(VirtoCommerce.Core)/Scripts/fulfillment/blades/fulfillment-center-list.tpl.html'
             };
             bladeNavigationService.showBlade(newBlade, blade);
-        }
+        };
 
         $scope.openStatusSettingManagement = function () {
             var newBlade = {
@@ -111,28 +111,50 @@
             bladeNavigationService.showBlade(newBlade, blade);
         };
 
+        $scope.openCustomerDetails = function () {
+            var customerMemberType = 'Contact';
+            var memberTypeDefinition = _.findWhere(memberTypesResolverService.objects, { memberType: customerMemberType });
+            if (memberTypeDefinition) {
+                var newBlade = {
+                    id: "listMemberDetail",
+                    currentEntity: { id: blade.customerOrder.customerId, memberType: customerMemberType },
+                    title: blade.customerOrder.customerName,
+                    memberTypeDefinition: memberTypeDefinition,
+                    controller: memberTypeDefinition.controller,
+                    template: memberTypeDefinition.template
+                };
+                bladeNavigationService.showBlade(newBlade, blade);
+            } else {
+                dialogService.showNotificationDialog({
+                    id: "error",
+                    title: "customer.dialogs.unknown-member-type.title",
+                    message: "customer.dialogs.unknown-member-type.message",
+                    messageValues: { memberType: customerMemberType },
+                });
+            }
+        };
+
         blade.headIcon = 'fa-file-text';
 
         blade.toolbarCommands = [
             {
                 name: "orders.commands.new-document", icon: 'fa fa-plus',
                 executeMethod: function () {
-
                     var newBlade = {
                         id: "newOperationWizard",
                         customerOrder: blade.customerOrder,
                         currentEntity: blade.currentEntity,
                         stores: blade.stores,
+                        availableChildrenTypes : blade.availableChildrenTypes,
                         title: "orders.blades.newOperation-wizard.title",
                         subtitle: 'orders.blades.newOperation-wizard.subtitle',
                         controller: 'virtoCommerce.orderModule.newOperationWizardController',
                         template: 'Modules/$(VirtoCommerce.Orders)/Scripts/wizards/newOperation/newOperation-wizard.tpl.html'
                     };
                     bladeNavigationService.showBlade(newBlade, blade);
-
                 },
                 canExecuteMethod: function () {
-                    return blade.currentEntity && blade.currentEntity.operationType.toLowerCase() === 'customerorder';
+                    return _.any(blade.availableChildrenTypes);
                 },
                 permission: blade.updatePermission
             },
@@ -159,14 +181,14 @@
                         message: "orders.dialogs.operation-delete.message",
                         callback: function (remove) {
                             if (remove) {
-
-                                if (blade.currentEntity.operationType.toLowerCase() != 'customerorder') {
-                                    order_res_customerOrders.deleteOperation({ id: blade.customerOrder.id, operationId: blade.currentEntity.id },
-                                    function () {
-                                        blade.parentBlade.refresh();
-                                        bladeNavigationService.closeBlade(blade);
-                                    },
-                                    function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
+                                if (blade.currentEntity.operationType !== 'CustomerOrder') {
+                                    // blade.customerOrder.
+                                    //order_res_customerOrders.update(blade.customerOrder,
+                                    //function () {
+                                    //    blade.parentBlade.refresh();
+                                    //    bladeNavigationService.closeBlade(blade);
+                                    //},
+                                    //function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
                                 }
                                 else {
                                     order_res_customerOrders.delete({ ids: blade.customerOrder.id },
