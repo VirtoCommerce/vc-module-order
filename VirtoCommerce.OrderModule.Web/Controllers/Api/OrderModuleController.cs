@@ -67,7 +67,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var result = _searchService.SearchCustomerOrders(criteria);
             var retVal = new webModel.CustomerOrderSearchResult
             {
-                CustomerOrders = result.Results,
+                CustomerOrders = result.Results.ToList(),
                 TotalCount = result.TotalCount
             };
             return Ok(retVal);
