@@ -1,76 +1,33 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.objCompareService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
-    function ($scope, dialogService, bladeNavigationService, order_res_customerOrders, order_res_fulfilmentCenters, order_res_stores, objCompareService, settings, members, memberTypesResolverService) {
+.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService',
+    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
-        blade.refresh = function (noRefresh) {
-            blade.isLoading = true;
-            $scope.fulfillmentCenters = [];
-            $scope.statuses = [];
-
-            if (!noRefresh) {
-                order_res_customerOrders.get({ id: blade.customerOrder.id }, function (result) {
+        blade.refresh = function () {
+            if (blade.id === 'operationDetail') {
+                initialize(blade.currentEntity);
+            }
+            else {
+                blade.isLoading = true;
+                customerOrders.get({ id: blade.customerOrder.id }, function (result) {
+                    blade.customerOrder = result;
                     initialize(result);
                     //necessary for scope bounded ACL checks 
                     blade.securityScopes = result.scopes;
-                },
-                function (error) {
-                    bladeNavigationService.setError('Error ' + error.status, blade);
                 });
-            }
-            else {
-                initialize(blade.customerOrder);
             }
         }
 
-        function initialize(customerOrder) {
+        function initialize(operation) {
+            blade.origEntity = operation;
+            blade.currentEntity = angular.copy(operation);
 
-            var operation = angular.isDefined(blade.currentEntity) ? blade.currentEntity : customerOrder;
-            var copy = angular.copy(customerOrder);
-
-            blade.customerOrder = copy;
-
-            if (operation.operationType == 'CustomerOrder') {
-                blade.currentEntity = copy;
-                blade.origEntity = customerOrder;
-                blade.stores = order_res_stores.query();
-                $scope.statuses = settings.getValues({ id: 'Order.Status' });
-
-                // load employees
-                members.search(
-                   {
-                       memberType: 'Employee',
-                       //memberId: parent org. ID,
-                       sort: 'fullName:asc',
-                       take: 1000
-                   },
-                   function (data) {
-                       blade.employees = data.members;
-                   });
-
-                $scope.resetEmployeeName = function (newVal) {
-                    blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
-                };
-            }
-            else if (operation.operationType === 'Shipment') {
-                blade.currentEntity = _.find(copy.shipments, function (x) { return x.id == operation.id; });
-                blade.origEntity = _.find(customerOrder.shipments, function (x) { return x.id == operation.id; });
-                $scope.fulfillmentCenters = order_res_fulfilmentCenters.query();
-                $scope.statuses = settings.getValues({ id: 'Shipment.Status' });
-                $scope.currentStore = _.findWhere(blade.stores, { id: customerOrder.storeId });
-            }
-            else if (operation.operationType === 'PaymentIn') {
-                $scope.currentStore = _.findWhere(blade.stores, { id: customerOrder.storeId });
-                blade.currentEntity = _.find(copy.inPayments, function (x) { return x.id == operation.id; });
-                blade.origEntity = _.find(customerOrder.inPayments, function (x) { return x.id == operation.id; });
-                $scope.statuses = settings.getValues({ id: 'PaymentIn.Status' });
-            }
             blade.isLoading = false;
         }
 
         function isDirty() {
-            return blade.origEntity && (!objCompareService.equal(blade.origEntity, blade.currentEntity) || blade.isNew) && blade.hasUpdatePermission();
+            return blade.origEntity && !objCompareService.equal(blade.origEntity, blade.currentEntity) && !blade.isNew && blade.hasUpdatePermission();
         }
 
         function canSave() {
@@ -79,62 +36,23 @@
 
         $scope.setForm = function (form) { $scope.formScope = form; };
 
-        function saveChanges() {
-            blade.isLoading = true;
-            order_res_customerOrders.update({}, blade.customerOrder, function (data) {
-                blade.isNew = false;
-                blade.refresh();
-                blade.parentBlade.refresh();
-            },
-            function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
-        };
-
-        $scope.openFulfillmentCentersList = function () {
-            var newBlade = {
-                id: 'fulfillmentCenterList',
-                controller: 'virtoCommerce.coreModule.fulfillment.fulfillmentListController',
-                template: 'Modules/$(VirtoCommerce.Core)/Scripts/fulfillment/blades/fulfillment-center-list.tpl.html'
-            };
-            bladeNavigationService.showBlade(newBlade, blade);
-        };
-
-        $scope.openStatusSettingManagement = function () {
-            var newBlade = {
-                id: 'moduleSettingsSection',
-                moduleId: 'VirtoCommerce.Orders',
-                // parentWidget: $scope.widget,
-                title: 'Order settings',
-                //subtitle: '',
-                controller: 'platformWebApp.settingsDetailController',
-                template: '$(Platform)/Scripts/app/settings/blades/settings-detail.tpl.html'
-            };
-            bladeNavigationService.showBlade(newBlade, blade);
-        };
-
-        $scope.openCustomerDetails = function () {
-            var customerMemberType = 'Contact';
-            var memberTypeDefinition = _.findWhere(memberTypesResolverService.objects, { memberType: customerMemberType });
-            if (memberTypeDefinition) {
-                var newBlade = {
-                    id: "listMemberDetail",
-                    currentEntity: { id: blade.customerOrder.customerId, memberType: customerMemberType },
-                    title: blade.customerOrder.customerName,
-                    memberTypeDefinition: memberTypeDefinition,
-                    controller: memberTypeDefinition.controller,
-                    template: memberTypeDefinition.template
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
+        $scope.cancelChanges = function () {
+            blade.currentEntity = blade.origEntity;
+            $scope.bladeClose();
+        }
+        $scope.saveChanges = function () {
+            if (blade.id === 'operationDetail') {
+                angular.copy(blade.currentEntity, blade.origEntity);
+                $scope.bladeClose();
             } else {
-                dialogService.showNotificationDialog({
-                    id: "error",
-                    title: "customer.dialogs.unknown-member-type.title",
-                    message: "customer.dialogs.unknown-member-type.message",
-                    messageValues: { memberType: customerMemberType },
+                blade.isLoading = true;
+                customerOrders.update(blade.customerOrder, function () {
+                    blade.isNew = false;
+                    blade.refresh();
+                    blade.parentBlade.refresh();
                 });
             }
         };
-
-        blade.headIcon = 'fa-file-text';
 
         blade.toolbarCommands = [
             {
@@ -145,7 +63,7 @@
                         customerOrder: blade.customerOrder,
                         currentEntity: blade.currentEntity,
                         stores: blade.stores,
-                        availableChildrenTypes : blade.availableChildrenTypes,
+                        availableChildrenTypes: blade.availableChildrenTypes,
                         title: "orders.blades.newOperation-wizard.title",
                         subtitle: 'orders.blades.newOperation-wizard.subtitle',
                         controller: 'virtoCommerce.orderModule.newOperationWizardController',
@@ -160,7 +78,7 @@
             },
             {
                 name: "platform.commands.save", icon: 'fa fa-save',
-                executeMethod: saveChanges,
+                executeMethod: $scope.saveChanges,
                 canExecuteMethod: canSave,
                 permission: blade.updatePermission
             },
@@ -181,17 +99,13 @@
                         message: "orders.dialogs.operation-delete.message",
                         callback: function (remove) {
                             if (remove) {
-                                if (blade.currentEntity.operationType !== 'CustomerOrder') {
-                                    // blade.customerOrder.
-                                    //order_res_customerOrders.update(blade.customerOrder,
-                                    //function () {
-                                    //    blade.parentBlade.refresh();
-                                    //    bladeNavigationService.closeBlade(blade);
-                                    //},
-                                    //function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
+                                if (blade.id === 'operationDetail') {
+                                    var idx = blade.customerOrder.childrenOperations.indexOf(blade.origEntity);
+                                    blade.customerOrder.childrenOperations.splice(idx, 1);
+                                    bladeNavigationService.closeBlade(blade);
                                 }
                                 else {
-                                    order_res_customerOrders.delete({ ids: blade.customerOrder.id },
+                                    customerOrders.delete({ ids: blade.customerOrder.id },
                                     function () {
                                         blade.parentBlade.refresh();
                                         bladeNavigationService.closeBlade(blade);
@@ -218,7 +132,7 @@
                                 blade.currentEntity.cancelReason = reason;
                                 blade.currentEntity.isCancelled = true;
                                 blade.currentEntity.status = 'Cancelled';
-                                saveChanges();
+                                $scope.saveChanges();
                             }
                         }
                     };
@@ -231,8 +145,13 @@
             }
         ];
 
+        // no save for children operations
+        if (blade.id === 'operationDetail') {
+            blade.toolbarCommands.splice(1, 1);
+        }
+
         blade.onClose = function (closeCallback) {
-            bladeNavigationService.showConfirmationIfNeeded(isDirty(), canSave(), blade, saveChanges, closeCallback, "orders.dialogs.operation-save.title", "orders.dialogs.operation-save.message");
+            bladeNavigationService.showConfirmationIfNeeded(isDirty(), canSave(), blade, $scope.saveChanges, closeCallback, "orders.dialogs.operation-save.title", "orders.dialogs.operation-save.message");
         };
 
         $scope.cancelOperationResolution = function (resolution) {
@@ -240,7 +159,7 @@
         };
 
         // actions on load
-        blade.refresh(blade.isNew);
+        blade.refresh();
     }
 ])
 .controller('virtoCommerce.orderModule.confirmCancelDialogController', ['$scope', '$modalInstance', function ($scope, $modalInstance, dialog) {

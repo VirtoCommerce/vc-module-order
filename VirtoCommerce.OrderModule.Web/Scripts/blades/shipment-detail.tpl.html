@@ -1,4 +1,5 @@
-﻿<div class="blade-content __medium-wide">
+﻿<div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
+<div class="blade-content __medium-wide">
     <div class="blade-inner">
         <div class="inner-block">
             <div class="order-status canceled" ng-if="blade.currentEntity.status">
@@ -19,7 +20,7 @@
                     <div class="form-input">
                         <ui-select ng-model="blade.currentEntity.shippingMethod" required>
                             <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.shipment-method' | translate }}">{{$select.selected.name}}</ui-select-match>
-                            <ui-select-choices repeat="x in currentStore.shippingMethods | filter: { name: $select.search }">
+                            <ui-select-choices repeat="x in blade.currentStore.shippingMethods | filter: { name: $select.search }">
                                 <span ng-bind-html="x.name | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
@@ -34,23 +35,20 @@
                         </label>
                     </div>
                 </div>
+
+                <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-metaform>
+
                 <div class="form columns clearfix">
                     <div class="column">
                         <div class="form-group">
-                            <label class="form-label">{{ 'orders.blades.shipment-detail.labels.shipment-number' | translate }}</label>
-                            <div class="form-input">
-                                <input required ng-model="blade.currentEntity.number">
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <label class="form-label">
                                 {{ 'orders.blades.shipment-detail.labels.status' | translate }}
-                                <a href="" ng-click="openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+                                <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
                             </label>
                             <div class="form-input">
                                 <ui-select ng-model="blade.currentEntity.status">
                                     <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
-                                    <ui-select-choices repeat="x as x in statuses | filter: $select.search ">
+                                    <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
                                         <span ng-bind-html="x | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
@@ -59,12 +57,12 @@
                         <div class="form-group">
                             <label class="form-label">
                                 {{ 'orders.blades.shipment-detail.labels.fulfillment-center' | translate }}
-                                <a href="" ng-click="openFulfillmentCentersList()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+                                <a href="" ng-click="blade.openFulfillmentCentersList()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
                             </label>
                             <div class="form-input">
                                 <ui-select ng-model="blade.currentEntity.fulfillmentCenterId">
                                     <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.fulfillment-center' | translate }}">{{$select.selected.name}}</ui-select-match>
-                                    <ui-select-choices repeat="center.id as center in fulfillmentCenters | filter: { name: $select.search }">
+                                    <ui-select-choices repeat="center.id as center in blade.fulfillmentCenters | filter: { name: $select.search }">
                                         <span ng-bind-html="center.name | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
@@ -72,12 +70,6 @@
                         </div>
                     </div>
                     <div class="column">
-                        <div class="form-group">
-                            <label class="form-label">{{ 'orders.blades.shipment-detail.labels.from' | translate }}</label>
-                            <div class="form-input">
-                                <div class="form-text">{{blade.currentEntity.createdDate | date:'short'}}</div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="form-label">{{ 'orders.blades.shipment-detail.labels.employee' | translate }}</label>
                             <div class="form-input">

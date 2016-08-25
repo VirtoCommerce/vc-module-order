@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'dateFilter',
-function ($scope, order_res_customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, dateFilter) {
+function ($scope, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, dateFilter) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -14,7 +14,7 @@ function ($scope, order_res_customerOrders, bladeUtils, dialogService, authServi
             start: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
             count: $scope.pageSettings.itemsPerPageCount
         };
-        order_res_customerOrders.search(criteria, function (data) {
+        customerOrders.search(criteria, function (data) {
             blade.isLoading = false;
 
             $scope.pageSettings.totalItems = data.totalCount;
@@ -46,7 +46,7 @@ function ($scope, order_res_customerOrders, bladeUtils, dialogService, authServi
                     closeChildrenBlades();
 
                     var itemIds = _.pluck(list, 'id');
-                    order_res_customerOrders.remove({ ids: itemIds }, function (data, headers) {
+                    customerOrders.remove({ ids: itemIds }, function (data, headers) {
                         blade.refresh();
                     },
                     function (error) {
