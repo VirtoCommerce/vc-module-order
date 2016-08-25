@@ -42,12 +42,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException("package");
 
             package.InjectFrom(this);
-
-            if (!this.Items.IsNullOrEmpty())
-            {
-                package.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
-            }
-
+            package.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
             return package;
         }
 

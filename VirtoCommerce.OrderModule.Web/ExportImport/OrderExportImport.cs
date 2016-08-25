@@ -12,6 +12,10 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 {
     public sealed class BackupObject
     {
+        public BackupObject()
+        {
+            CustomerOrders = new List<CustomerOrder>();
+        }
         public ICollection<CustomerOrder> CustomerOrders { get; set; }
     }
 
@@ -37,7 +41,18 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
             var backupObject = backupStream.DeserializeJson<BackupObject>();
 
 			var progressInfo = new ExportImportProgressInfo();
-			progressInfo.Description = String.Format("{0} orders importing", backupObject.CustomerOrders.Count());
+            var totalCount = backupObject.CustomerOrders.Count();
+            var take = 20;
+            for (int skip = 0; skip < totalCount; skip += take)
+            {
+                _customerOrderService.SaveChanges(backupObject.CustomerOrders.ToArray());
+
+                progressInfo.Description = String.Format("{0} of {1} orders imported", Math.Min(skip + take, totalCount), totalCount);
+                progressCallback(progressInfo);
+            }
+
+
+            progressInfo.Description = String.Format("{0} orders importing", backupObject.CustomerOrders.Count());
 			progressCallback(progressInfo);
 
             _customerOrderService.SaveChanges(backupObject.CustomerOrders.ToArray());
@@ -54,7 +69,7 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 
             for(int skip = 0; skip < searchResponse.TotalCount; skip += take)
             {
-                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria {Skip = skip, Take = take, ResponseGroup = CustomerOrderResponseGroup.Default.ToString() });
+                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria {Skip = skip, Take = take, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
 
                 progressInfo.Description = String.Format("{0} of {1} orders loading", Math.Min(skip + take, searchResponse.TotalCount), searchResponse.TotalCount);
                 progressCallback(progressInfo);

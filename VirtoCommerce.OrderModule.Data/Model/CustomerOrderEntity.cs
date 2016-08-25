@@ -59,12 +59,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public virtual ObservableCollection<DiscountEntity> Discounts { get; set; }
 
         public override OrderOperation ToModel(OrderOperation operation)
-        {
-            base.ToModel(operation);
-
+        {          
             var order = operation as CustomerOrder;
             if (order == null)
-                throw new ArgumentNullException("order");
+                throw new NullReferenceException("order");
 
             base.ToModel(order);
 
@@ -72,38 +70,24 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 order.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
             }
-            if (!this.Items.IsNullOrEmpty())
-            {
-                order.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
-            }
-            if (!this.Addresses.IsNullOrEmpty())
-            {
-                order.Addresses = this.Addresses.Select(x => x.ToModel(AbstractTypeFactory<Address>.TryCreateInstance())).ToList();
-            }
-            if (!this.Shipments.IsNullOrEmpty())
-            {
-                order.Shipments = this.Shipments.Select(x => x.ToModel(AbstractTypeFactory<Shipment>.TryCreateInstance())).OfType<Shipment>().ToList();
-            }
-            if (!this.InPayments.IsNullOrEmpty())
-            {
-                order.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
-            }
-            if(!this.TaxDetails.IsNullOrEmpty())
-            {
-                order.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
-            }
-            order.ChildrenOperations = order.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { order }).ToList();
+
+            order.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
+            order.Addresses = this.Addresses.Select(x => x.ToModel(AbstractTypeFactory<Address>.TryCreateInstance())).ToList();
+            order.Shipments = this.Shipments.Select(x => x.ToModel(AbstractTypeFactory<Shipment>.TryCreateInstance())).OfType<Shipment>().ToList();
+            order.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
+            order.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+
+            base.ToModel(order);
 
             return order;
         }
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            base.FromModel(operation, pkMap);
-
+         
             var order = operation as CustomerOrder;
             if (order == null)
-                throw new ArgumentNullException("order");
+                throw new NullReferenceException("order");
         
             if (order.Addresses != null)
             {
@@ -130,16 +114,16 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 this.TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x))); 
             }
 
+            base.FromModel(order, pkMap);
+
             return this;
         }
 
         public override void Patch(OperationEntity operation)
         {
-            base.Patch(operation);
-
             var target = operation as CustomerOrderEntity;
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new NullReferenceException("target");
 
             target.CustomerId = this.CustomerId;
             target.StoreId = this.StoreId;
@@ -176,6 +160,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
                 this.TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
+
+            base.Patch(operation);
         }
     }
 }

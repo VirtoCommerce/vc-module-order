@@ -101,10 +101,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 lineItem.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
             }
-            if (!this.TaxDetails.IsNullOrEmpty())
-            {
-                lineItem.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
-            }
+            lineItem.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             return lineItem;
         }
 

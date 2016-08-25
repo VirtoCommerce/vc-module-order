@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -47,6 +48,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             orderOperation.InjectFrom(this);
 
+            orderOperation.ChildrenOperations = orderOperation.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { orderOperation }).ToList();
             return orderOperation;
         }
 
@@ -58,6 +60,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             pkMap.AddPair(orderOperation, this);
 
             this.InjectFrom(orderOperation);
+
             return this;
         }
 

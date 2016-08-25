@@ -76,11 +76,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public override OrderOperation ToModel(OrderOperation operation)
         {
-            base.ToModel(operation);
-
             var shipment = operation as Shipment;
             if (shipment == null)
-                throw new ArgumentNullException("shipment");
+                throw new NullReferenceException("shipment");
 
             if (!this.Addresses.IsNullOrEmpty())
             {
@@ -90,39 +88,25 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 shipment.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
             }
-            if (!this.Items.IsNullOrEmpty())
-            {
-                shipment.Items = this.Items.Select(x=> x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
-            }
-            if (!this.InPayments.IsNullOrEmpty())
-            {
-                shipment.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
-            }
-            if (!this.Packages.IsNullOrEmpty())
-            {
-                shipment.Packages = this.Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
-            }
-            if (!this.TaxDetails.IsNullOrEmpty())
-            {
-                shipment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
-            }
+            shipment.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
 
-            shipment.ChildrenOperations = shipment.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { shipment }).ToList();
+            shipment.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
+            shipment.Packages = this.Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
+
+            shipment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+
+            base.ToModel(shipment);
 
             return shipment;
         }
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            base.FromModel(operation, pkMap);
-
             var shipment = operation as Shipment;
             if (shipment == null)
-                throw new ArgumentNullException("shipment");
+                throw new NullReferenceException("shipment");
 
             this.InjectFrom(shipment);
-
-            pkMap.AddPair(shipment, this);
 
             //Allow to empty address
             this.Addresses = new ObservableCollection<AddressEntity>();
@@ -145,7 +129,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipment.Discount != null)
             {
                 this.Discounts = new ObservableCollection<DiscountEntity>(new DiscountEntity[] { AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(shipment.Discount) });
-            }            
+            }
+
+            base.FromModel(shipment, pkMap);
+
             return this;
         }
 
@@ -155,7 +142,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             var target = operation as ShipmentEntity;
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new NullReferenceException("target");
 
 
             target.FulfillmentCenterId = this.FulfillmentCenterId;

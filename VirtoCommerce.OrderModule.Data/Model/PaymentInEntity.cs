@@ -51,12 +51,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public virtual ShipmentEntity Shipment { get; set; }
 
         public override OrderOperation ToModel(OrderOperation operation)
-        {
-            base.ToModel(operation);
-
+        {        
             var payment = operation as PaymentIn;
             if (payment == null)
-                throw new ArgumentNullException("payment");
+                throw new NullReferenceException("payment");
 
             payment.InjectFrom(this);
             payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
@@ -64,19 +62,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (!this.Addresses.IsNullOrEmpty())
             {
                 payment.BillingAddress =  this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
-            }        
+            }
 
-            payment.ChildrenOperations = payment.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { payment }).ToList();
+            base.ToModel(payment);
+
             return payment;
         }
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            base.FromModel(operation, pkMap);
-
             var payment = operation as PaymentIn;
             if (payment == null)
-                throw new ArgumentNullException("payment");
+                throw new NullReferenceException("payment");
 
             this.Status = payment.PaymentStatus.ToString();
 
@@ -84,6 +81,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
             }
+
+            base.FromModel(payment, pkMap);
 
             return this;
         }
