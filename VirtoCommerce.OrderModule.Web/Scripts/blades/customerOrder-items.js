@@ -22,7 +22,7 @@
         blade.isLoading = false;
         blade.selectedAll = false;
     };
-    
+
     function addProductsToOrder(products) {
         angular.forEach(products, function (product) {
             items.get({ id: product.id }, function (data) {
@@ -110,8 +110,6 @@
         };
         bladeNavigationService.showBlade(newBlade, $scope.blade);
     }
-
-    blade.headIcon = 'fa-file-text';
 
     blade.toolbarCommands = [
         {

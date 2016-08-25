@@ -6,7 +6,7 @@
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
             <form name="formScope">
-                <va-generic-inputs-container registered-inputs="blade.metaFields" blade="blade" column-count="2" ng-init="setForm(formScope)"></va-generic-inputs-container>
+                <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2" ng-init="setForm(formScope)"></va-metaform>
             </form>
 
             <va-widget-container group="customerOrderDetailWidgets" blade="blade" gridster-opts="{width: 526}"></va-widget-container>
@@ -16,7 +16,7 @@
 
 <script type="text/ng-template" id="employeeSelector.html">
     <div class="form-input">
-        <ui-select ng-model="blade.currentEntity.employeeId" ng-change="resetEmployeeName($select.selected)">
+        <ui-select ng-model="blade.currentEntity.employeeId" ng-change="blade.resetEmployeeName($select.selected)">
             <ui-select-match allow-clear placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.employee' | translate }}">{{$select.selected.fullName}}</ui-select-match>
             <ui-select-choices repeat="x.id as x in blade.employees | filter: { fullName: $select.search }">
                 <span ng-bind-html="x.fullName | highlight: $select.search"></span>
@@ -28,12 +28,12 @@
 <script type="text/ng-template" id="statusSelector.html">
     <label class="form-label">
         {{ 'orders.blades.customerOrder-detail.labels.status' | translate }}
-        <a href="" ng-click="openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+        <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
     </label>
     <div class="form-input">
         <ui-select ng-model="blade.currentEntity.status">
             <ui-select-match placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
-            <ui-select-choices repeat="x as x in statuses | filter: $select.search ">
+            <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
                 <span ng-bind-html="x | highlight: $select.search"></span>
             </ui-select-choices>
         </ui-select>
@@ -54,7 +54,7 @@
 <script type="text/ng-template" id="customerSelector.html">
     <div class="form-input">
         <label class="form-label" style="height:34px;">
-            <a href="" ng-click="openCustomerDetails()">{{ blade.currentEntity.customerName }}</a>
+            <a href="" ng-click="blade.openCustomerDetails()">{{ blade.currentEntity.customerName }}</a>
         </label>
     </div>
 </script>

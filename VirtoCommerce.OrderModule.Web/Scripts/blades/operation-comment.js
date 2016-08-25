@@ -28,7 +28,5 @@
 		$scope.bladeClose();
 	};
     
-	$scope.blade.headIcon = 'fa-file-text';
-
 	initializeBlade();
 }]);

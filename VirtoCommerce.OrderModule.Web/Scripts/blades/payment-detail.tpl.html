@@ -1,4 +1,5 @@
-﻿<div class="blade-content __medium-wide">
+﻿<div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
+<div class="blade-content __medium-wide">
     <div class="blade-inner">
         <div class="inner-block">
             <div class="order-status canceled" ng-if="blade.currentEntity.status">
@@ -19,7 +20,7 @@
                     <div class="form-input">
                         <ui-select ng-model="blade.currentEntity.paymentMethod" required>
                             <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.payment-gateway' | translate }}">{{$select.selected.name}}</ui-select-match>
-                            <ui-select-choices repeat="x in currentStore.paymentMethods | filter: { name: $select.search }">
+                            <ui-select-choices repeat="x in blade.currentStore.paymentMethods | filter: { name: $select.search }">
                                 <span ng-bind-html="x.name | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
@@ -35,19 +36,19 @@
                         </label>
                     </div>
                 </div>
-                <va-generic-inputs-container registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-generic-inputs-container>
+                <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-metaform>
 
                 <div class="form columns clearfix">
                     <div class="column">
                         <div class="form-group">
                             <label class="form-label">
                                 {{ 'orders.blades.payment-detail.labels.status' | translate }}
-                                <a href="" ng-click="openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+                                <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
                             </label>
                             <div class="form-input">
                                 <ui-select ng-model="blade.currentEntity.status">
                                     <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
-                                    <ui-select-choices repeat="x as x in statuses | filter: $select.search ">
+                                    <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
                                         <span ng-bind-html="x | highlight: $select.search"></span>
                                     </ui-select-choices>
                                 </ui-select>
