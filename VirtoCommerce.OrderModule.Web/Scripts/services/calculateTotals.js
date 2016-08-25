@@ -4,7 +4,7 @@
 	function recalculateTotals(operation)
 	{
 		if (angular.isDefined(operation.operationType)) {
-			if (operation.operationType.toLowerCase() == 'customerorder') {
+		    if (operation.operationType === 'CustomerOrder') {
 
 				operation._subTotal = _.reduce(operation.items, function (memo, x) { return memo + x.basePrice * x.quantity; }, 0);
 				operation._shippingTotal = _.reduce(operation.shipments, function (memo, x) { return memo + x.sum; }, 0);
@@ -34,7 +34,7 @@
 				operation._total = Math.round(operation.sum * 100) / 100;
 				
 			}
-			else if (operation.operationType.toLowerCase() == 'shipment') {
+			else if (operation.operationType === 'Shipment') {
 
 				operation._discountTotal = parseFloat(operation.discountAmount);
 				_.each(operation.items, function (x) {

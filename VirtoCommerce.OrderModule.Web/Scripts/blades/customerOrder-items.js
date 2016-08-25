@@ -120,7 +120,7 @@
                 openAddEntityWizard();
             },
             canExecuteMethod: function () {
-                return blade.currentEntity.operationType.toLowerCase() == 'customerorder';
+                return blade.currentEntity.operationType === 'CustomerOrder';
             },
             permission: blade.updatePermission
         },

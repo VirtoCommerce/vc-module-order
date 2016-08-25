@@ -1,49 +1,35 @@
 ﻿angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
     var blade = $scope.blade;
-    $scope.operation = {};
-    $scope.$watch('widget.blade.customerOrder', function (operation) {
-        $scope.operation = operation;
+
+    $scope.$watch('widget.blade.customerOrder', function (order) {
         if (!$scope.currentOperationId) {
-            $scope.currentOperationId = operation.id;
+            $scope.currentOperationId = order.id;
         }
+
+        var treeRoot = {};
+        buildOperationsTree(order, treeRoot)
+        $scope.node = treeRoot.childrenNodes[0];
+
     });
 
-    $scope.selectOperation = function (operation) {
-        if ($scope.currentOperationId != operation.id) {
-            $scope.currentOperationId = operation.id;
-            var newBlade = undefined;
-            if (operation.operationType.toLowerCase() == 'shipment') {
-                newBlade = {
-                    id: 'operationDetail',
-                    title: 'orders.blades.shipment-detail.title',
-                    titleValues: { number: operation.number },
-                    subtitle: 'orders.blades.shipment-detail.subtitle',
-                    customerOrder: blade.customerOrder,
-                    currentEntity: operation,
-                    controller: 'virtoCommerce.orderModule.operationDetailController',
-                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html'
-                };
-            }
-            else if (operation.operationType.toLowerCase() == 'customerorder') {
-                bladeNavigationService.closeChildrenBlades(blade);
-            }
-            else if (operation.operationType.toLowerCase() == 'paymentin') {
-                newBlade = {
-                    id: 'operationDetail',
-                    title: 'orders.blades.payment-detail.title',
-                    titleValues: { number: operation.number },
-                    subtitle: 'orders.blades.payment-detail.subtitle',
-                    customerOrder: blade.customerOrder,
-                    currentEntity: operation,
-                    stores: blade.stores,
-                    controller: 'virtoCommerce.orderModule.operationDetailController',
-                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html'
-                };
-            }
-            if (newBlade) {
+    function buildOperationsTree(op, tree) {
+        var foundTemplate = _.findWhere(OrderModule_knownOperations, { type: op.operationType }) || {};
+        var nodeTemplate = angular.copy(foundTemplate);
+        nodeTemplate.operation = op;
+        tree.childrenNodes = tree.childrenNodes || [];
+        tree.childrenNodes.push(nodeTemplate);
+        _.each(op.childrenOperations, function (o) {
+            buildOperationsTree(o, nodeTemplate);
+        });
+    }
+
+    $scope.selectOperation = function (node) {
+        $scope.currentOperationId = node.operation.id;
+        if (node.getDetailBlade) {
+            var newBlade = node.getDetailBlade(node.operation, blade);
+            if (newBlade)
                 bladeNavigationService.showBlade(newBlade, blade);
-            }
         }
     };
 

@@ -35,14 +35,10 @@
                         </label>
                     </div>
                 </div>
+                <va-generic-inputs-container registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-generic-inputs-container>
+
                 <div class="form columns clearfix">
                     <div class="column">
-                        <div class="form-group">
-                            <label class="form-label">{{ 'orders.blades.payment-detail.labels.payment-number' | translate }}</label>
-                            <div class="form-input">
-                                <input required type="text" ng-model="blade.currentEntity.number">
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="form-label">
                                 {{ 'orders.blades.payment-detail.labels.status' | translate }}
@@ -66,12 +62,6 @@
                         </div>
                     </div>
                     <div class="column">
-                        <div class="form-group">
-                            <label class="form-label">{{ 'orders.blades.payment-detail.labels.from' | translate }}</label>
-                            <div class="form-input">
-                                <div class="form-text">{{blade.currentEntity.createdDate | date:'short'}}</div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="form-label">{{ 'orders.blades.payment-detail.labels.payment-purpose' | translate }}</label>
                             <div class="form-input">
