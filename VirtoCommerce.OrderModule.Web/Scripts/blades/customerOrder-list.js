@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'dateFilter',
-function ($scope, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, dateFilter) {
+.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'dateFilter', 'virtoCommerce.orderModule.knownOperations',
+function ($scope, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, dateFilter, knownOperations) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -28,11 +28,11 @@ function ($scope, customerOrders, bladeUtils, dialogService, authService, uiGrid
     $scope.selectNode = function (node) {
         $scope.selectedNodeId = node.id;
 
-        var foundTemplate = _.findWhere(OrderModule_knownOperations, { type: node.operationType });
-        if (foundTemplate && foundTemplate.getDetailBlade) {
-            var newBlade = foundTemplate.getDetailBlade(node, blade);
-            if (newBlade)
-                bladeNavigationService.showBlade(newBlade, blade);
+        var foundTemplate = knownOperations.getOperation(node.operationType);
+        if (foundTemplate) {
+            var newBlade = angular.copy(foundTemplate.detailBlade);
+            newBlade.customerOrder = node;
+            bladeNavigationService.showBlade(newBlade, blade);
         }
     };
 

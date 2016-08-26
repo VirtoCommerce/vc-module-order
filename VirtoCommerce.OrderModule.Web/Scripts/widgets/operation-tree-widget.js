@@ -1,20 +1,17 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
+.controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.knownOperations', function ($scope, bladeNavigationService, knownOperations) {
     var blade = $scope.blade;
 
-    $scope.$watch('widget.blade.customerOrder', function (order) {
-        if (!$scope.currentOperationId) {
-            $scope.currentOperationId = order.id;
-        }
+    $scope.$watchCollection('blade.customerOrder.childrenOperations', function () {
+        $scope.currentOperationId = blade.customerOrder.id;
 
         var treeRoot = {};
-        buildOperationsTree(order, treeRoot)
+        buildOperationsTree(blade.customerOrder, treeRoot)
         $scope.node = treeRoot.childrenNodes[0];
-
     });
 
     function buildOperationsTree(op, tree) {
-        var foundTemplate = _.findWhere(OrderModule_knownOperations, { type: op.operationType }) || {};
+        var foundTemplate = knownOperations.getOperation(op.operationType);
         var nodeTemplate = angular.copy(foundTemplate);
         nodeTemplate.operation = op;
         tree.childrenNodes = tree.childrenNodes || [];
@@ -26,10 +23,14 @@
 
     $scope.selectOperation = function (node) {
         $scope.currentOperationId = node.operation.id;
-        if (node.getDetailBlade) {
-            var newBlade = node.getDetailBlade(node.operation, blade);
-            if (newBlade)
-                bladeNavigationService.showBlade(newBlade, blade);
+
+        if (node.operation.id === blade.customerOrder.id) {
+            bladeNavigationService.closeChildrenBlades(blade);
+        } else {
+            var newBlade = node.detailBlade;
+            newBlade.customerOrder = blade.customerOrder;
+            newBlade.currentEntity = node.operation;
+            bladeNavigationService.showBlade(newBlade, blade);
         }
     };
 

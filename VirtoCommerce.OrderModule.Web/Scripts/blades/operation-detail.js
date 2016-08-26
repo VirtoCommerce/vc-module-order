@@ -43,6 +43,10 @@
         $scope.saveChanges = function () {
             if (blade.id === 'operationDetail') {
                 angular.copy(blade.currentEntity, blade.origEntity);
+                if (blade.isNew) {
+                    blade.realOperationsCollection.push(blade.currentEntity);
+                    blade.customerOrder.childrenOperations.push(blade.currentEntity);
+                }
                 $scope.bladeClose();
             } else {
                 blade.isLoading = true;
@@ -63,7 +67,7 @@
                         customerOrder: blade.customerOrder,
                         currentEntity: blade.currentEntity,
                         stores: blade.stores,
-                        availableChildrenTypes: blade.availableChildrenTypes,
+                        availableTypes: blade.knownChildrenOperations,
                         title: "orders.blades.newOperation-wizard.title",
                         subtitle: 'orders.blades.newOperation-wizard.subtitle',
                         controller: 'virtoCommerce.orderModule.newOperationWizardController',
@@ -72,7 +76,7 @@
                     bladeNavigationService.showBlade(newBlade, blade);
                 },
                 canExecuteMethod: function () {
-                    return _.any(blade.availableChildrenTypes);
+                    return _.any(blade.knownChildrenOperations);
                 },
                 permission: blade.updatePermission
             },
@@ -100,8 +104,11 @@
                         callback: function (remove) {
                             if (remove) {
                                 if (blade.id === 'operationDetail') {
-                                    var idx = blade.customerOrder.childrenOperations.indexOf(blade.origEntity);
+                                    var idx = _.findIndex(blade.customerOrder.childrenOperations, function (x) { return x.id === blade.origEntity.id; });
                                     blade.customerOrder.childrenOperations.splice(idx, 1);
+                                    var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
+                                    blade.realOperationsCollection.splice(idx, 1);
+
                                     bladeNavigationService.closeBlade(blade);
                                 }
                                 else {

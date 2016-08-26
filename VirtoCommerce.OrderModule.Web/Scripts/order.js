@@ -31,9 +31,34 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
           });
   }]
 )
+// define known Operations to be accessible platform-wide
+.factory('virtoCommerce.orderModule.knownOperations', ['platformWebApp.bladeNavigationService', function (bladeNavigationService) {
+    var map = {};
+
+    function registerOperation(op) {
+        var copy = angular.copy(op);
+        copy.detailBlade = angular.extend({
+            id: 'operationDetail',
+            knownChildrenOperations: [],
+            metaFields: [],
+            controller: 'virtoCommerce.orderModule.operationDetailController'
+        }, copy.detailBlade);
+
+        map[op.type] = copy;
+    }
+
+    function getOperation(type) {
+        return map[type];
+    }
+
+    return {
+        registerOperation: registerOperation,
+        getOperation: getOperation
+    };
+}])
 .run(
-  ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.customerModule.members', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.order_res_stores', 'virtoCommerce.customerModule.memberTypesResolverService',
-	function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, members, settings, order_res_fulfilmentCenters, order_res_stores, memberTypesResolverService) {
+  ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations',
+	function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations) {
 	    //Register module in main menu
 	    var menuItem = {
 	        path: 'browse/orders',
@@ -46,147 +71,147 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	    mainMenuService.addMenuItem(menuItem);
 
 	    // register CustomerOrder, PaymentIn and Shipment types as known operations
-	    OrderModule_knownOperations.push({
+	    knownOperations.registerOperation({
 	        type: 'CustomerOrder',
 	        treeTemplateUrl: 'orderOperationDefault.tpl.html',
-	        getDetailBlade: function (operation, parentBlade) {
-	            if (parentBlade.id === 'orderDetail') {
-	                bladeNavigationService.closeChildrenBlades(parentBlade);
-	            } else {
-	                var blade = new OrderModule_orderDetailBlade(operation);
-	                blade.stores = order_res_stores.query();
-	                blade.statuses = settings.getValues({ id: 'Order.Status' });
-	                blade.openStatusSettingManagement = function () {
-	                    var newBlade = new DictionarySettingDetailBlade('Order.Status');
-	                    newBlade.parentRefresh = function (data) { blade.statuses = data; };
-	                    bladeNavigationService.showBlade(newBlade, blade);
-	                };
-
-	                blade.openCustomerDetails = function () {
-	                    var customerMemberType = 'Contact';
-	                    var memberTypeDefinition = _.findWhere(memberTypesResolverService.objects, { memberType: customerMemberType });
-	                    if (memberTypeDefinition) {
-	                        var newBlade = {
-	                            id: "listMemberDetail",
-	                            currentEntity: {
-	                                id: blade.customerOrder.customerId, memberType: customerMemberType
-	                            },
-	                            title: blade.customerOrder.customerName,
-	                            memberTypeDefinition: memberTypeDefinition,
-	                            controller: memberTypeDefinition.controller,
-	                            template: memberTypeDefinition.template
-	                        };
-	                        bladeNavigationService.showBlade(newBlade, blade);
-	                    } else {
-	                        dialogService.showNotificationDialog({
-	                            id: "error",
-	                            title: "customer.dialogs.unknown-member-type.title",
-	                            message: "customer.dialogs.unknown-member-type.message",
-	                            messageValues: { memberType: customerMemberType },
-	                        });
-	                    }
-	                };
-
-	                // load employees
-	                members.search(
-                       {
-                           memberType: 'Employee',
-                           //memberId: parent org. ID,
-                           sort: 'fullName:asc',
-                           take: 1000
-                       },
-                       function (data) {
-                           blade.employees = data.members;
-                       });
-
-	                blade.resetEmployeeName = function (newVal) {
-	                    blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
-	                };
-
-	                return blade;
-	            }
+	        detailBlade: {
+	            id: 'orderDetail',
+	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html',
+	            knownChildrenOperations: ['Shipment', 'PaymentIn'],
+	            metaFields: [
+                    {
+                        name: 'isApproved',
+                        title: "orders.blades.customerOrder-detail.labels.approved",
+                        valueType: "Boolean",
+                        isVisibleFn: function (blade) {
+                            return !blade.isNew;
+                        }
+                    },
+                    {
+                        name: 'employeeId',
+                        title: "orders.blades.customerOrder-detail.labels.employee",
+                        templateUrl: 'employeeSelector.html'
+                    },
+                    {
+                        name: 'number',
+                        isRequired: true,
+                        title: "orders.blades.customerOrder-detail.labels.order-number",
+                        valueType: "ShortText"
+                    },
+                    {
+                        name: 'createdDate',
+                        isReadonly: true,
+                        title: "orders.blades.customerOrder-detail.labels.from",
+                        valueType: "DateTime"
+                    },
+                    {
+                        name: 'status',
+                        templateUrl: 'statusSelector.html'
+                    },
+                    {
+                        name: 'customerName',
+                        title: "orders.blades.customerOrder-detail.labels.customer",
+                        templateUrl: 'customerSelector.html'
+                    },
+                    {
+                        name: 'storeId',
+                        title: "orders.blades.customerOrder-detail.labels.store",
+                        templateUrl: 'storeSelector.html'
+                    }
+	            ]
 	        }
 	    });
 
-	    var operationPayment = {
+	    var paymentInOperation = {
 	        type: 'PaymentIn',
 	        // treeTemplateUrl: 'orderOperationDefault.tpl.html',
-	        getDetailBlade: function (operation, parentBlade) {
-	            var blade = new OrderModule_paymentDetailBlade(operation, parentBlade);
-	            blade.statuses = settings.getValues({ id: 'PaymentIn.Status' });
-	            blade.openStatusSettingManagement = function () {
-	                var newBlade = new DictionarySettingDetailBlade('PaymentIn.Status');
-	                newBlade.parentRefresh = function (data) {
-	                    blade.statuses = data;
-	                };
-	                bladeNavigationService.showBlade(newBlade, blade);
-	            };
-
-	            return blade;
+	        detailBlade: {
+	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html',
+	            metaFields: [
+                    {
+                        name: 'number',
+                        isRequired: true,
+                        title: "orders.blades.payment-detail.labels.payment-number",
+                        valueType: "ShortText"
+                    },
+                    {
+                        name: 'createdDate',
+                        isReadonly: true,
+                        title: "orders.blades.payment-detail.labels.from",
+                        valueType: "DateTime"
+                    }
+	            ]
 	        },
 	        newInstanceMetadata: {
 	            name: 'orders.blades.newOperation-wizard.menu.payment-operation.title',
 	            descr: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
 	            action: function (blade) {
+	                blade.isLoading = true;
 	                customerOrders.getNewPayment({ id: blade.customerOrder.id }, function (result) {
 	                    bladeNavigationService.closeBlade(blade);
 
-	                    blade.customerOrder.inPayments.push(result);
-	                    blade.customerOrder.childrenOperations.push(result);
-
-	                    var newBlade = operationPayment.getDetailBlade(result, blade);
+	                    var foundTemplate = knownOperations.getOperation(paymentInOperation.type);
+	                    var newBlade = angular.copy(foundTemplate.detailBlade);
+	                    newBlade.currentEntity = result;
+	                    newBlade.customerOrder = blade.customerOrder;
 	                    newBlade.isNew = true;
-	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
-	                });
-	            }
-	        }
-	    }
-	    OrderModule_knownOperations.push(operationPayment);
+	                    var foundField = _.findWhere(newBlade.metaFields, { name: 'createdDate' });
+	                    if (foundField) {
+	                        foundField.isReadonly = false;
+	                    }
 
-	    var operationShipment = {
-	        type: 'Shipment',
-	        getDetailBlade: function (operation, parentBlade) {
-	            var blade = new OrderModule_shipmentDetailBlade(operation, parentBlade);
-	            blade.statuses = settings.getValues({ id: 'Shipment.Status' });
-	            blade.openStatusSettingManagement = function () {
-	                var newBlade = new DictionarySettingDetailBlade('Shipment.Status');
-	                newBlade.parentRefresh = function (data) {
-	                    blade.statuses = data;
-	                };
-	                bladeNavigationService.showBlade(newBlade, blade);
-	            };
-
-	            blade.fulfillmentCenters = order_res_fulfilmentCenters.query();
-	            blade.openFulfillmentCentersList = function () {
-	                var newBlade = {
-	                    id: 'fulfillmentCenterList',
-	                    controller: 'virtoCommerce.coreModule.fulfillment.fulfillmentListController',
-	                    template: 'Modules/$(VirtoCommerce.Core)/Scripts/fulfillment/blades/fulfillment-center-list.tpl.html'
-	                };
-	                bladeNavigationService.showBlade(newBlade, blade);
-	            };
-
-	            return blade;
-	        },
-	        newInstanceMetadata: {
-	            name: 'orders.blades.newOperation-wizard.menu.shipment-operation.title',
-	            descr: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
-	            action: function (blade) {
-	                customerOrders.getNewShipment({ id: blade.customerOrder.id }, function (result) {
-	                    bladeNavigationService.closeBlade(blade);
-
-	                    result.shippingMethod = undefined;
-	                    blade.customerOrder.shipments.push(result);
-	                    blade.customerOrder.childrenOperations.push(result);
-
-	                    var newBlade = operationShipment.getDetailBlade(result, blade);
-	                    newBlade.isNew = true;
 	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
 	                });
 	            }
 	        }
 	    };
-	    OrderModule_knownOperations.push(operationShipment);
+	    knownOperations.registerOperation(paymentInOperation);
+
+	    var shipmentOperation = {
+	        type: 'Shipment',
+	        detailBlade: {
+	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
+	            metaFields: [
+                    {
+                        name: 'number',
+                        isRequired: true,
+                        title: "orders.blades.shipment-detail.labels.shipment-number",
+                        valueType: "ShortText"
+                    },
+                    {
+                        name: 'createdDate',
+                        isReadonly: true,
+                        title: "orders.blades.shipment-detail.labels.from",
+                        valueType: "DateTime"
+                    }
+	            ]
+	        },
+	        newInstanceMetadata: {
+	            name: 'orders.blades.newOperation-wizard.menu.shipment-operation.title',
+	            descr: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
+	            action: function (blade) {
+	                blade.isLoading = true;
+	                customerOrders.getNewShipment({ id: blade.customerOrder.id }, function (result) {
+	                    bladeNavigationService.closeBlade(blade);
+
+	                    var foundTemplate = knownOperations.getOperation(shipmentOperation.type);
+	                    var newBlade = angular.copy(foundTemplate.detailBlade);
+	                    newBlade.currentEntity = result;
+	                    newBlade.customerOrder = blade.customerOrder;
+	                    newBlade.isNew = true;
+	                    var foundField = _.findWhere(newBlade.metaFields, {
+	                        name: 'createdDate'
+	                    });
+	                    if (foundField) {
+	                        foundField.isReadonly = false;
+	                    }
+
+	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
+	                });
+	            }
+	        }
+	    };
+	    knownOperations.registerOperation(shipmentOperation);
 
 	    //Register widgets
 	    var operationItemsWidget = {
@@ -336,12 +361,20 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	            customerOrders.getDashboardStatistics({ start: startDate, end: now }, function (data) {
 	                // prepare statistics
 	                var statisticsToChartRows = function (statsList, allCurrencies) {
-	                    var groupedQuarters = _.groupBy(statsList, function (stats) { return stats.year + ' Q' + stats.quarter; });
+	                    var groupedQuarters = _.groupBy(statsList, function (stats) {
+	                        return stats.year + ' Q' + stats.quarter;
+	                    });
 	                    return _.map(groupedQuarters, function (stats, key) {
-	                        var values = [{ v: key }];
+	                        var values = [{
+	                            v: key
+	                        }];
 	                        _.each(allCurrencies, function (x) {
-	                            var stat = _.findWhere(stats, { currency: x });
-	                            values.push({ v: stat ? stat.amount : 0 });
+	                            var stat = _.findWhere(stats, {
+	                                currency: x
+	                            });
+	                            values.push({
+	                                v: stat ? stat.amount : 0
+	                            });
 	                        });
 	                        return {
 	                            c: values
@@ -351,9 +384,13 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 
 	                var allCurrencies = _.unique(_.pluck(data.avgOrderValuePeriodDetails, 'currency').sort());
 
-	                var cols = [{ id: "quarter", label: "Quarter", type: "string" }];
+	                var cols = [{
+	                    id: "quarter", label: "Quarter", type: "string"
+	                }];
 	                _.each(allCurrencies, function (x) {
-	                    cols.push({ id: "revenue" + x, label: x, type: "number" });
+	                    cols.push({
+	                        id: "revenue" + x, label: x, type: "number"
+	                    });
 	                });
 
 	                data.chartRevenueByQuarter = {
@@ -364,10 +401,14 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	                    },
 	                    "options": {
 	                        "title": "Revenue by quarter",
-	                        "legend": { position: 'top' },
+	                        "legend": {
+	                            position: 'top'
+	                        },
 	                        "vAxis": {
 	                            // "title": "Sales unit",
-	                            gridlines: { count: 8 }
+	                            gridlines: {
+	                                count: 8
+	                            }
 	                        },
 	                        "hAxis": {
 	                            // "title": "Date"
@@ -378,9 +419,13 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	                    "formatters": {}
 	                };
 
-	                cols = [{ id: "quarter", label: "Quarter", type: "string" }];
+	                cols = [{
+	                    id: "quarter", label: "Quarter", type: "string"
+	                }];
 	                _.each(allCurrencies, function (x) {
-	                    cols.push({ id: "avg-orderValue" + x, label: x, type: "number" });
+	                    cols.push({
+	                        id: "avg-orderValue" + x, label: x, type: "number"
+	                    });
 	                });
 
 	                data.chartOrderValueByQuarter = {
@@ -391,9 +436,13 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	                    },
 	                    "options": {
 	                        "title": "Average Order value by quarter",
-	                        "legend": { position: 'top' },
+	                        "legend": {
+	                            position: 'top'
+	                        },
 	                        "vAxis": {
-	                            gridlines: { count: 8 }
+	                            gridlines: {
+	                                count: 8
+	                            }
 	                        },
 	                        "hAxis": {
 	                            slantedText: true,
@@ -411,133 +460,6 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        }
 	    });
 	}]);
-
-// define OrderModule known Operations to be accessible platform-wide:
-var OrderModule_knownOperations = [];
-
-// define base blade information for operations
-function OrderModule_operationDetailBlade() {
-    this.id = 'operationDetail';
-    this.controller = 'virtoCommerce.orderModule.operationDetailController';
-}
-
-// define ORDER detail blade
-function OrderModule_orderDetailBlade(node) {
-    this.id = 'orderDetail';
-    this.customerOrder = node;
-    this.title = 'orders.blades.customerOrder-detail.title';
-    this.titleValues = { customer: node.customerName };
-    this.subtitle = 'orders.blades.customerOrder-detail.subtitle';
-    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html';
-}
-
-// inherit form base operation
-OrderModule_orderDetailBlade.prototype = new OrderModule_operationDetailBlade();
-OrderModule_orderDetailBlade.prototype.availableChildrenTypes = ['Shipment', 'PaymentIn'];
-
-// register order metaFields
-OrderModule_orderDetailBlade.prototype.metaFields = [
-{
-    name: 'isApproved',
-    title: "orders.blades.customerOrder-detail.labels.approved",
-    valueType: "Boolean",
-    isVisibleFn: function (blade) { return !blade.isNew; }
-    //initializeFn: function (blade) { this.values = [{ value: blade.currentEntity.isApproved }]; },
-    // dataSaveFn: function (blade) { return blade.currentEntity.isApproved = this.values[0].value; }
-},
-{
-    name: 'employeeId',
-    title: "orders.blades.customerOrder-detail.labels.employee",
-    templateUrl: 'employeeSelector.html'
-},
-{
-    name: 'number',
-    isRequired: true,
-    title: "orders.blades.customerOrder-detail.labels.order-number",
-    valueType: "ShortText",
-    isVisibleFn: function (blade) { return !blade.isNew; }
-},
-{
-    name: 'createdDate',
-    isReadonly: true,
-    title: "orders.blades.customerOrder-detail.labels.from",
-    valueType: "DateTime"
-},
-{
-    name: 'status',
-    templateUrl: 'statusSelector.html'
-},
-{
-    name: 'customerName',
-    title: "orders.blades.customerOrder-detail.labels.customer",
-    templateUrl: 'customerSelector.html'
-},
-{
-    name: 'storeId',
-    title: "orders.blades.customerOrder-detail.labels.store",
-    templateUrl: 'storeSelector.html'
-}
-];
-
-// PAYMENT detail blade
-function OrderModule_paymentDetailBlade(operation, blade) {
-    this.currentEntity = operation;
-    this.customerOrder = blade.customerOrder;
-    this.stores = blade.stores;
-    this.title = 'orders.blades.payment-detail.title';
-    this.titleValues = { number: operation.number };
-    this.subtitle = 'orders.blades.payment-detail.subtitle';
-    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html';
-    this.currentStore = _.findWhere(blade.stores, { id: blade.customerOrder.storeId });
-}
-
-// inherit form base operation
-OrderModule_paymentDetailBlade.prototype = new OrderModule_operationDetailBlade();
-
-OrderModule_paymentDetailBlade.prototype.metaFields = [
-{
-    name: 'number',
-    isRequired: true,
-    title: "orders.blades.payment-detail.labels.payment-number",
-    valueType: "ShortText"
-},
-{
-    name: 'createdDate',
-    isReadonly: true,
-    title: "orders.blades.payment-detail.labels.from",
-    valueType: "DateTime"
-}
-];
-
-// SHIPMENT detail blade
-function OrderModule_shipmentDetailBlade(operation, blade) {
-    this.currentEntity = operation;
-    this.customerOrder = blade.customerOrder;
-    this.stores = blade.stores;
-    this.title = 'orders.blades.shipment-detail.title';
-    this.titleValues = { number: operation.number };
-    this.subtitle = 'orders.blades.shipment-detail.subtitle';
-    this.template = 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html';
-    this.currentStore = _.findWhere(blade.stores, { id: blade.customerOrder.storeId });
-}
-
-// inherit form base operation
-OrderModule_shipmentDetailBlade.prototype = new OrderModule_operationDetailBlade();
-
-OrderModule_shipmentDetailBlade.prototype.metaFields = [
-{
-    name: 'number',
-    isRequired: true,
-    title: "orders.blades.shipment-detail.labels.shipment-number",
-    valueType: "ShortText"
-},
-{
-    name: 'createdDate',
-    isReadonly: true,
-    title: "orders.blades.shipment-detail.labels.from",
-    valueType: "DateTime"
-}
-];
 
 // generic
 function DictionarySettingDetailBlade(setting) {

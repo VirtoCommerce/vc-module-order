@@ -1,11 +1,10 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.newOperationWizardController', ['$scope', function ($scope) {
+.controller('virtoCommerce.orderModule.newOperationWizardController', ['$scope', 'virtoCommerce.orderModule.knownOperations', function ($scope, knownOperations) {
     var blade = $scope.blade;
-
-    var ops = _.filter(OrderModule_knownOperations, function (x) {
-        return blade.availableChildrenTypes.indexOf(x.type) >= 0;
+    
+    $scope.availableOperations = _.map(blade.availableTypes, function (type) {
+        return knownOperations.getOperation(type).newInstanceMetadata;
     });
-    $scope.availableOperations = _.pluck(ops, 'newInstanceMetadata');
 
     blade.isLoading = false;
 }]);
