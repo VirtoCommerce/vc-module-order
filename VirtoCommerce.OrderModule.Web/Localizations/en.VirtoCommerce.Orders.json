@@ -55,6 +55,7 @@
       },
       "payment-detail": {
         "title": "Incoming payment #{{number}}",
+        "title-new": "New Incoming payment",
         "subtitle": "Edit payment details and related documents",
         "labels": {
           "approved": "Approved",
@@ -72,6 +73,7 @@
       },
       "shipment-detail": {
         "title": "Shipment #{{number}}",
+        "title-new": "New Shipment",
         "subtitle": "Edit shipment details",
         "labels": {
           "shipment-method": "Shipment method",
@@ -107,12 +109,10 @@
         "subtitle": "Select operation type",
         "menu": {
           "shipment-operation": {
-            "title": "Shipment",
-            "description": "Add new shipment"
+            "description": "Shipment document"
           },
           "payment-operation": {
-            "title": "Incoming payment",
-            "description": "Add new incoming payment"
+            "description": "Incoming payment document"
           }
         }
       }

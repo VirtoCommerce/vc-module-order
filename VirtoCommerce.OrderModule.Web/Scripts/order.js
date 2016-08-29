@@ -124,6 +124,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 
 	    var paymentInOperation = {
 	        type: 'PaymentIn',
+	        description: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
 	        // treeTemplateUrl: 'orderOperationDefault.tpl.html',
 	        detailBlade: {
 	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html',
@@ -142,33 +143,15 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     }
 	            ]
 	        },
-	        newInstanceMetadata: {
-	            name: 'orders.blades.newOperation-wizard.menu.payment-operation.title',
-	            descr: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
-	            action: function (blade) {
-	                blade.isLoading = true;
-	                customerOrders.getNewPayment({ id: blade.customerOrder.id }, function (result) {
-	                    bladeNavigationService.closeBlade(blade);
-
-	                    var foundTemplate = knownOperations.getOperation(paymentInOperation.type);
-	                    var newBlade = angular.copy(foundTemplate.detailBlade);
-	                    newBlade.currentEntity = result;
-	                    newBlade.customerOrder = blade.customerOrder;
-	                    newBlade.isNew = true;
-	                    var foundField = _.findWhere(newBlade.metaFields, { name: 'createdDate' });
-	                    if (foundField) {
-	                        foundField.isReadonly = false;
-	                    }
-
-	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
-	                });
-	            }
+	        newInstanceFactoryMethod: function (blade) {
+	            return customerOrders.getNewPayment({ id: blade.customerOrder.id }).$promise;
 	        }
 	    };
 	    knownOperations.registerOperation(paymentInOperation);
 
 	    var shipmentOperation = {
 	        type: 'Shipment',
+	        description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
 	        detailBlade: {
 	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
 	            metaFields: [
@@ -186,29 +169,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     }
 	            ]
 	        },
-	        newInstanceMetadata: {
-	            name: 'orders.blades.newOperation-wizard.menu.shipment-operation.title',
-	            descr: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
-	            action: function (blade) {
-	                blade.isLoading = true;
-	                customerOrders.getNewShipment({ id: blade.customerOrder.id }, function (result) {
-	                    bladeNavigationService.closeBlade(blade);
-
-	                    var foundTemplate = knownOperations.getOperation(shipmentOperation.type);
-	                    var newBlade = angular.copy(foundTemplate.detailBlade);
-	                    newBlade.currentEntity = result;
-	                    newBlade.customerOrder = blade.customerOrder;
-	                    newBlade.isNew = true;
-	                    var foundField = _.findWhere(newBlade.metaFields, {
-	                        name: 'createdDate'
-	                    });
-	                    if (foundField) {
-	                        foundField.isReadonly = false;
-	                    }
-
-	                    bladeNavigationService.showBlade(newBlade, blade.parentBlade);
-	                });
-	            }
+	        newInstanceFactoryMethod: function (blade) {
+	            return customerOrders.getNewShipment({ id: blade.customerOrder.id }).$promise;
 	        }
 	    };
 	    knownOperations.registerOperation(shipmentOperation);
