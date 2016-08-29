@@ -51,7 +51,7 @@
                take: 1000
            },
            function (data) {
-               blade.employees = data.members;
+               blade.employees = data.results;
            });
 
         blade.resetEmployeeName = function (newVal) {
