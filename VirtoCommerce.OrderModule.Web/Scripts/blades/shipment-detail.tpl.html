@@ -42,20 +42,6 @@
                     <div class="column">
                         <div class="form-group">
                             <label class="form-label">
-                                {{ 'orders.blades.shipment-detail.labels.status' | translate }}
-                                <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
-                            </label>
-                            <div class="form-input">
-                                <ui-select ng-model="blade.currentEntity.status">
-                                    <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
-                                    <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
-                                        <span ng-bind-html="x | highlight: $select.search"></span>
-                                    </ui-select-choices>
-                                </ui-select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">
                                 {{ 'orders.blades.shipment-detail.labels.fulfillment-center' | translate }}
                                 <a href="" ng-click="blade.openFulfillmentCentersList()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
                             </label>
@@ -70,12 +56,6 @@
                         </div>
                     </div>
                     <div class="column">
-                        <div class="form-group">
-                            <label class="form-label">{{ 'orders.blades.shipment-detail.labels.employee' | translate }}</label>
-                            <div class="form-input">
-                                <select ng-model="blade.currentEntity.employeeName"></select>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="form-label">{{ 'orders.blades.shipment-detail.labels.shipment-amount' | translate }}</label>
                             <div class="form-input __currency">
@@ -92,4 +72,28 @@
     </div>
 </div>
 
+<script type="text/ng-template" id="statusSelector.html">
+    <label class="form-label">
+        {{ 'orders.blades.shipment-detail.labels.status' | translate }}
+        <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+    </label>
+    <div class="form-input">
+        <ui-select ng-model="blade.currentEntity.status">
+            <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
+            <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
+                <span ng-bind-html="x | highlight: $select.search"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+</script>
 
+<script type="text/ng-template" id="employeeSelector.html">
+    <div class="form-input">
+        <ui-select ng-model="blade.currentEntity.employeeId" ng-change="blade.resetEmployeeName($select.selected)">
+            <ui-select-match allow-clear placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.employee' | translate }}">{{$select.selected.fullName}}</ui-select-match>
+            <ui-select-choices repeat="x.id as x in blade.employees | filter: { fullName: $select.search }">
+                <span ng-bind-html="x.fullName | highlight: $select.search"></span>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+</script>

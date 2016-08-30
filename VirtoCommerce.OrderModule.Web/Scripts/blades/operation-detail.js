@@ -6,25 +6,26 @@
 
         blade.refresh = function () {
             if (blade.id === 'operationDetail') {
-                initialize(blade.currentEntity);
+                if (!blade.isNew)
+                    blade.initialize(blade.currentEntity);
             }
             else {
                 blade.isLoading = true;
                 customerOrders.get({ id: blade.customerOrder.id }, function (result) {
-                    blade.customerOrder = result;
-                    initialize(result);
+                    blade.initialize(result);
+                    blade.customerOrder = blade.currentEntity;
                     //necessary for scope bounded ACL checks 
                     blade.securityScopes = result.scopes;
                 });
             }
         }
 
-        function initialize(operation) {
+        blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
 
             blade.isLoading = false;
-        }
+        };
 
         function isDirty() {
             return blade.origEntity && !objCompareService.equal(blade.origEntity, blade.currentEntity) && !blade.isNew && blade.hasUpdatePermission();
@@ -46,6 +47,9 @@
                 if (blade.isNew) {
                     blade.realOperationsCollection.push(blade.currentEntity);
                     blade.customerOrder.childrenOperations.push(blade.currentEntity);
+                } else {
+                    var foundOp = _.findWhere(blade.realOperationsCollection, { id: blade.origEntity.id });
+                    angular.copy(blade.origEntity, foundOp);
                 }
                 $scope.bladeClose();
             } else {
@@ -59,83 +63,81 @@
         };
 
         blade.toolbarCommands = [
-            {
-                name: "orders.commands.new-document", icon: 'fa fa-plus',
-                executeMethod: function () {
-                    var newBlade = {
-                        id: "newOperationWizard",
-                        customerOrder: blade.customerOrder,
-                        currentEntity: blade.currentEntity,
-                        stores: blade.stores,
-                        availableTypes: blade.knownChildrenOperations,
-                        title: "orders.blades.newOperation-wizard.title",
-                        subtitle: 'orders.blades.newOperation-wizard.subtitle',
-                        controller: 'virtoCommerce.orderModule.newOperationWizardController',
-                        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/wizards/newOperation/newOperation-wizard.tpl.html'
-                    };
-                    bladeNavigationService.showBlade(newBlade, blade);
-                },
-                canExecuteMethod: function () {
-                    return _.any(blade.knownChildrenOperations);
-                },
-                permission: blade.updatePermission
+        {
+            name: "orders.commands.new-document", icon: 'fa fa-plus',
+            executeMethod: function () {
+                var newBlade = {
+                    id: "newOperationWizard",
+                    customerOrder: blade.customerOrder,
+                    currentEntity: blade.currentEntity,
+                    stores: blade.stores,
+                    availableTypes: blade.knownChildrenOperations,
+                    title: "orders.blades.newOperation-wizard.title",
+                    subtitle: 'orders.blades.newOperation-wizard.subtitle',
+                    controller: 'virtoCommerce.orderModule.newOperationWizardController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/wizards/newOperation/newOperation-wizard.tpl.html'
+                };
+                bladeNavigationService.showBlade(newBlade, blade);
             },
-            {
-                name: "platform.commands.save", icon: 'fa fa-save',
-                executeMethod: $scope.saveChanges,
-                canExecuteMethod: canSave,
-                permission: blade.updatePermission
+            canExecuteMethod: function () {
+                return _.any(blade.knownChildrenOperations);
             },
-            {
-                name: "platform.commands.reset", icon: 'fa fa-undo',
-                executeMethod: function () {
-                    angular.copy(blade.origEntity, blade.currentEntity);
-                },
-                canExecuteMethod: isDirty,
-                permission: blade.updatePermission
+            permission: blade.updatePermission
+        },
+        {
+            name: "platform.commands.save", icon: 'fa fa-save',
+            executeMethod: $scope.saveChanges,
+            canExecuteMethod: canSave,
+            permission: blade.updatePermission
+        },
+        {
+            name: "platform.commands.reset", icon: 'fa fa-undo',
+            executeMethod: function () {
+                angular.copy(blade.origEntity, blade.currentEntity);
             },
-            {
-                name: "platform.commands.delete", icon: 'fa fa-trash-o',
-                executeMethod: function () {
-                    var dialog = {
-                        id: "confirmDeleteItem",
-                        title: "orders.dialogs.operation-delete.title",
-                        message: "orders.dialogs.operation-delete.message",
-                        callback: function (remove) {
-                            if (remove) {
-                                if (blade.id === 'operationDetail') {
-                                    var idx = _.findIndex(blade.customerOrder.childrenOperations, function (x) { return x.id === blade.origEntity.id; });
-                                    blade.customerOrder.childrenOperations.splice(idx, 1);
-                                    var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
-                                    blade.realOperationsCollection.splice(idx, 1);
+            canExecuteMethod: isDirty,
+            permission: blade.updatePermission
+        },
+        {
+            name: "platform.commands.delete", icon: 'fa fa-trash-o',
+            executeMethod: function () {
+                var dialog = {
+                    id: "confirmDeleteItem",
+                    title: "orders.dialogs.operation-delete.title",
+                    message: "orders.dialogs.operation-delete.message",
+                    callback: function (remove) {
+                        if (remove) {
+                            if (blade.id === 'operationDetail') {
+                                var idx = _.findIndex(blade.customerOrder.childrenOperations, function (x) { return x.id === blade.origEntity.id; });
+                                blade.customerOrder.childrenOperations.splice(idx, 1);
+                                var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
+                                blade.realOperationsCollection.splice(idx, 1);
 
+                                bladeNavigationService.closeBlade(blade);
+                            }
+                            else {
+                                customerOrders.delete({ ids: blade.customerOrder.id }, function () {
+                                    blade.parentBlade.refresh();
                                     bladeNavigationService.closeBlade(blade);
-                                }
-                                else {
-                                    customerOrders.delete({ ids: blade.customerOrder.id },
-                                    function () {
-                                        blade.parentBlade.refresh();
-                                        bladeNavigationService.closeBlade(blade);
-                                    },
-                                    function (error) { bladeNavigationService.setError('Error ' + error.status, blade); });
-                                }
+                                });
                             }
                         }
-                    };
-                    dialogService.showConfirmationDialog(dialog);
-                },
-                canExecuteMethod: function () {
-                    return true;
-                },
-                permission: 'order:delete'
+                    }
+                };
+                dialogService.showConfirmationDialog(dialog);
             },
-            {
+            canExecuteMethod: function () {
+                return true;
+            },
+            permission: 'order:delete'
+        },
+        {
                 name: "orders.commands.cancel-document", icon: 'fa fa-remove',
                 executeMethod: function () {
                     var dialog = {
                         id: "confirmCancelOperation",
                         callback: function (reason) {
-                            if (reason) {
+                            if(reason) {
                                 blade.currentEntity.cancelReason = reason;
                                 blade.currentEntity.isCancelled = true;
                                 blade.currentEntity.status = 'Cancelled';
@@ -168,7 +170,7 @@
         // actions on load
         blade.refresh();
     }
-])
+    ])
 .controller('virtoCommerce.orderModule.confirmCancelDialogController', ['$scope', '$modalInstance', function ($scope, $modalInstance, dialog) {
 
     $scope.cancelReason = undefined;
@@ -179,4 +181,4 @@
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-}]);
+    }]);

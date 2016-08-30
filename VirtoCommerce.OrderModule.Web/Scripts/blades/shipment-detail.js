@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_fulfilmentCenters',
-    function ($scope, bladeNavigationService, dialogService, settings, order_res_fulfilmentCenters) {
+.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters) {
         var blade = $scope.blade;
 
         if (blade.isNew) {
@@ -10,6 +10,8 @@
             if (foundField) {
                 foundField.isReadonly = false;
             }
+
+            customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
         } else {
             blade.title = 'orders.blades.shipment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
@@ -26,6 +28,12 @@
                 blade.statuses = data;
             };
             bladeNavigationService.showBlade(newBlade, blade);
+        };
+
+        // load employees
+        blade.employees = blade.parentBlade.employees;
+        blade.resetEmployeeName = function (newVal) {
+            blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
         };
 
         blade.fulfillmentCenters = order_res_fulfilmentCenters.query();

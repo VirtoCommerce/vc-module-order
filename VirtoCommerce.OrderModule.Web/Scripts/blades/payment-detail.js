@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings',
-    function ($scope, bladeNavigationService, dialogService, settings) {
+.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings','virtoCommerce.orderModule.order_res_customerOrders',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders) {
         var blade = $scope.blade;
 
         if (blade.isNew) {
@@ -10,6 +10,8 @@
             if (foundField) {
                 foundField.isReadonly = false;
             }
+
+            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);
         } else {
             blade.title = 'orders.blades.payment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };

@@ -142,9 +142,6 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         valueType: "DateTime"
                     }
 	            ]
-	        },
-	        newInstanceFactoryMethod: function (blade) {
-	            return customerOrders.getNewPayment({ id: blade.customerOrder.id }).$promise;
 	        }
 	    };
 	    knownOperations.registerOperation(paymentInOperation);
@@ -166,11 +163,17 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         isReadonly: true,
                         title: "orders.blades.shipment-detail.labels.from",
                         valueType: "DateTime"
+                    },
+                    {
+                        name: 'status',
+                        templateUrl: 'statusSelector.html'
+                    },
+                    {
+                        name: 'employeeId',
+                        title: "orders.blades.shipment-detail.labels.employee",
+                        templateUrl: 'employeeSelector.html'
                     }
 	            ]
-	        },
-	        newInstanceFactoryMethod: function (blade) {
-	            return customerOrders.getNewShipment({ id: blade.customerOrder.id }).$promise;
 	        }
 	    };
 	    knownOperations.registerOperation(shipmentOperation);

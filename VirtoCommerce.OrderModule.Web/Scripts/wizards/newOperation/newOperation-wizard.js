@@ -7,16 +7,11 @@
     });
 
     $scope.openDetailsBlade = function (op) {
-        blade.isLoading = true;
-        op.newInstanceFactoryMethod(blade).then(function (result) {
-            var newBlade = angular.copy(op.detailBlade);
-            newBlade.currentEntity = result;
-            newBlade.customerOrder = blade.customerOrder;
-            newBlade.isNew = true;
+        var newBlade = angular.copy(op.detailBlade);        
+        newBlade.customerOrder = blade.customerOrder;
+        newBlade.isNew = true;
 
-            $scope.bladeClose();
-            bladeNavigationService.showBlade(newBlade, blade.parentBlade);
-        });
+        bladeNavigationService.showBlade(newBlade, blade.parentBlade);
     };
 
     blade.isLoading = false;
