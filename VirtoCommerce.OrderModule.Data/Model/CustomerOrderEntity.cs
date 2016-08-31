@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,8 +49,12 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		[StringLength(255)]
 		public string EmployeeName { get; set; }
 
+        [Column(TypeName = "Money")]
+        public decimal DiscountAmount { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal DiscountAmountWithTax { get; set; }
 
-		public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
+        public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
 		public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
 		public virtual ObservableCollection<PaymentInEntity> InPayments { get; set; }
 
@@ -129,6 +134,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.StoreId = this.StoreId;
             target.OrganizationId = this.OrganizationId;
             target.EmployeeId = this.EmployeeId;
+            target.DiscountAmount = this.DiscountAmount;
+            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
             
             if (!this.Addresses.IsNullCollection())
             {

@@ -130,18 +130,18 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         }
 
         /// <summary>
-        /// Create new customer order based on shopping cart.
-        /// </summary>
-        /// <param name="id">shopping cart id</param>
-        [HttpPost]
-        [Route("{id}")]
+		/// Calculate order totals after changes
+		/// </summary>
+		/// <remarks>Return order with recalculated totals</remarks>
+		/// <param name="order">Customer order</param>
+        [HttpPut]
+        [Route("recalculate")]
         [ResponseType(typeof(CustomerOrder))]
-        [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
-        public IHttpActionResult CreateOrderFromCart(string id)
+        public IHttpActionResult CalculateTotals(CustomerOrder order)
         {
-            throw new NotImplementedException();
-            //var retVal = _customerOrderService.CreateByShoppingCart(id);
-            //return Ok(retVal.ToWebModel());
+            //Nothing to do special because all order totals will be evaluated in domain CustomerOrder properties transiently        
+            return Ok(order);
+
         }
 
         /// <summary>

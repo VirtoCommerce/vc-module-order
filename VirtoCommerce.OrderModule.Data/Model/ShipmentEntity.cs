@@ -60,7 +60,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string TaxType { get; set; }
 
         [Column(TypeName = "Money")]
+        public decimal BasePrice { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal BasePriceWithTax { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal Price { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal PriceWithTax { get; set; }
+
+        [Column(TypeName = "Money")]
         public decimal DiscountAmount { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal DiscountAmountWithTax { get; set; }
 
         public string CustomerOrderId { get; set; }
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
@@ -144,7 +155,12 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (target == null)
                 throw new NullReferenceException("target");
 
-
+            target.BasePrice = this.BasePrice;
+            target.BasePriceWithTax = this.BasePriceWithTax;
+            target.Price = this.Price;
+            target.PriceWithTax = this.PriceWithTax;
+            target.DiscountAmount = this.DiscountAmount;
+            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
             target.FulfillmentCenterId = this.FulfillmentCenterId;
             target.OrganizationId = this.OrganizationId;
             target.EmployeeId = this.EmployeeId;
@@ -159,7 +175,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.WeightUnit = this.WeightUnit;
             target.Length = this.Length;
             target.TaxType = this.TaxType;
-            target.DiscountAmount = this.DiscountAmount;
             
 
             if (!this.InPayments.IsNullCollection())

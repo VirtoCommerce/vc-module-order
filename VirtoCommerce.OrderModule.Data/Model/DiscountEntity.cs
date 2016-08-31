@@ -22,7 +22,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public string Currency { get; set; }
 		[Column(TypeName = "Money")]
 		public decimal DiscountAmount { get; set; }
-		[StringLength(64)]
+        [Column(TypeName = "Money")]
+        public decimal DiscountAmountWithTax { get; set; }
+        [StringLength(64)]
 		public string CouponCode { get; set; }
 		[StringLength(1024)]
 		public string CouponInvalidDescription { get; set; }
@@ -78,6 +80,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.CouponCode = this.CouponCode;
             target.Currency = this.Currency;
             target.DiscountAmount = this.DiscountAmount;
+            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
             target.PromotionDescription = this.PromotionDescription;
             target.PromotionId = this.PromotionId;       
         }
