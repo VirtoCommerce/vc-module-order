@@ -11,8 +11,8 @@ function ($scope, customerOrders, bladeUtils, dialogService, authService, uiGrid
         var criteria = {
             keyword: filter.keyword,
             sort: uiGridHelper.getSortExpression($scope),
-            start: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
-            count: $scope.pageSettings.itemsPerPageCount
+            skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+            take: $scope.pageSettings.itemsPerPageCount
         };
         customerOrders.search(criteria, function (data) {
             blade.isLoading = false;
