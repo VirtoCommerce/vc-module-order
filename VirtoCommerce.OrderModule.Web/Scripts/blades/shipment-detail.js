@@ -11,7 +11,7 @@
                 foundField.isReadonly = false;
             }
 
-            customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
+            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);
         } else {
             blade.title = 'orders.blades.shipment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
@@ -44,5 +44,9 @@
                 template: 'Modules/$(VirtoCommerce.Core)/Scripts/fulfillment/blades/fulfillment-center-list.tpl.html'
             };
             bladeNavigationService.showBlade(newBlade, blade);
+        };
+
+        blade.customInitialize = function () {
+            blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.isCancelled;
         };
     }]);

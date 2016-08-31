@@ -19,18 +19,10 @@
 
         blade.openCustomerDetails = function () {
             var customerMemberType = 'Contact';
-            var memberTypeDefinition = _.findWhere(memberTypesResolverService.objects, { memberType: customerMemberType });
-            if (memberTypeDefinition) {
-                var newBlade = {
-                    id: "listMemberDetail",
-                    currentEntity: {
-                        id: blade.customerOrder.customerId, memberType: customerMemberType
-                    },
-                    title: blade.customerOrder.customerName,
-                    memberTypeDefinition: memberTypeDefinition,
-                    controller: memberTypeDefinition.controller,
-                    template: memberTypeDefinition.template
-                };
+            var foundTemplate = memberTypesResolverService.resolve(customerMemberType);
+            if (foundTemplate) {
+                var newBlade = angular.copy(foundTemplate.detailBlade);
+                newBlade.currentEntity = { id: blade.customerOrder.customerId, memberType: customerMemberType };
                 bladeNavigationService.showBlade(newBlade, blade);
             } else {
                 dialogService.showNotificationDialog({
@@ -56,5 +48,9 @@
 
         blade.resetEmployeeName = function (newVal) {
             blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
+        };
+
+        blade.customInitialize = function () {
+            blade.isLocked = blade.currentEntity.status == 'Completed' || blade.currentEntity.isCancelled;
         };
     }]);

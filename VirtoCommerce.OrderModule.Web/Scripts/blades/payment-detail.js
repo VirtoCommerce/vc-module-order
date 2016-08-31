@@ -11,7 +11,7 @@
                 foundField.isReadonly = false;
             }
 
-            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);
+            customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
         } else {
             blade.title = 'orders.blades.payment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
@@ -28,5 +28,9 @@
                 blade.statuses = data;
             };
             bladeNavigationService.showBlade(newBlade, blade);
+        };
+
+        blade.customInitialize = function () {
+            blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.isCancelled;
         };
     }]);

@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService',
-    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService) {
+.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout',
+    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -23,9 +23,15 @@
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
+            $timeout(function () {
+                blade.customInitialize();
+            });
 
             blade.isLoading = false;
         };
+
+        // base function to override as needed
+        blade.customInitialize = function () { };
 
         function isDirty() {
             return blade.origEntity && !objCompareService.equal(blade.origEntity, blade.currentEntity) && !blade.isNew && blade.hasUpdatePermission();
@@ -132,26 +138,26 @@
             permission: 'order:delete'
         },
         {
-                name: "orders.commands.cancel-document", icon: 'fa fa-remove',
-                executeMethod: function () {
-                    var dialog = {
-                        id: "confirmCancelOperation",
-                        callback: function (reason) {
-                            if(reason) {
-                                blade.currentEntity.cancelReason = reason;
-                                blade.currentEntity.isCancelled = true;
-                                blade.currentEntity.status = 'Cancelled';
-                                $scope.saveChanges();
-                            }
+            name: "orders.commands.cancel-document", icon: 'fa fa-remove',
+            executeMethod: function () {
+                var dialog = {
+                    id: "confirmCancelOperation",
+                    callback: function (reason) {
+                        if(reason) {
+                            blade.currentEntity.cancelReason = reason;
+                            blade.currentEntity.isCancelled = true;
+                            blade.currentEntity.status = 'Cancelled';
+                            $scope.saveChanges();
                         }
-                    };
-                    dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
-                },
-                canExecuteMethod: function () {
-                    return blade.currentEntity && !blade.currentEntity.isCancelled;
-                },
-                permission: blade.updatePermission
-            }
+                    }
+                };
+                dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
+            },
+            canExecuteMethod: function () {
+                return blade.currentEntity && !blade.currentEntity.isCancelled;
+            },
+            permission: blade.updatePermission
+        }
         ];
 
         // no save for children operations
@@ -170,7 +176,7 @@
         // actions on load
         blade.refresh();
     }
-    ])
+])
 .controller('virtoCommerce.orderModule.confirmCancelDialogController', ['$scope', '$modalInstance', function ($scope, $modalInstance, dialog) {
 
     $scope.cancelReason = undefined;
@@ -181,4 +187,4 @@
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-    }]);
+}]);
