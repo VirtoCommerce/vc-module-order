@@ -24,6 +24,7 @@
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.price' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.priceWithTax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</th>
                         </tr>
                     </thead>
@@ -34,7 +35,6 @@
                                     <input type="checkbox" ng-model="data.selected">
                                     <span class="check"></span>
                                 </label>
-                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
                             </td>
                             <td class="table-col">
                                 <div class="product-img">
@@ -44,7 +44,11 @@
 
                             </td>
                             <td class="table-col">
-                                <div class="__mini __number">{{data.quantity}}</div>
+                                <div class="form-input __mini __inline">
+                                    <div class="form-input __mini __number">
+                                        <input smart-float num-type="integer" required ng-model="data.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
+                                    </div>
+                                </div>
                             </td>
                             <td class="table-col">
                                 <span ng-class="{'error': data.avail <= 0}">{{data.avail || 0}}</span>
@@ -53,21 +57,29 @@
                                 <span class="list-price">{{data.basePrice | number:2}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.price | number:2}}</span>
+                                <div class="form-input __mini">
+                                    <input money required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
+                                </div>
                             </td>
                             <td class="table-col">
                                 <span class="list-price">{{data.discountAmount | number:2}}</span>
-                              </td>
+                            </td>
                             <td class="table-col">
                                 <span class="list-price">{{data.tax | number:2}}</span>
                             </td>
+                            <td class="table-col">
+                                <div class="form-input __mini __inline">
+                                    <input money required ng-model="data.priceWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="priceWithTax{{$index}}" focus-on="priceWithTax{{$index}}">
+                                </div>
+                            </td>
                             <td class="table-col __total">
-                                <span class="list-price">{{data._total | number:2 }}</span>
+                                <span class="list-price">{{data.extendedPriceWithTax | number:2 }}</span>
                             </td>
                         </tr>
                         <tr ng-repeat-end class="table-item" ng-class="{'__selected': data.id === selectedNodeId}" ng-click='selectItem(data)'>
-                            <td class="table-head" colspan="9" ng-click="openItemDetail(data)">
-                                {{data.name}}
+                            <td class="table-head" colspan="10">
+                                <span ng-click="openItemDetail(data)">{{data.name}}</span>
+                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
                             </td>
                         </tr>
                     </tbody>
@@ -78,19 +90,19 @@
                 <table class="table __collapsed __order-info">
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.sub-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity._subTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity._itemsDiscountTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.discountTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity._itemsTaxTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.taxTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item __total">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity._itemsTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotalWithTax | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                 </table>
             </div>

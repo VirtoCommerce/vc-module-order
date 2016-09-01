@@ -49,4 +49,8 @@
         blade.customInitialize = function () {
             blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.isCancelled;
         };
+
+        $scope.updateRecalculationFlag = function () {
+            blade.isTotalsRecalculationNeeded = blade.origEntity.sum != blade.currentEntity.sum;
+        }
     }]);

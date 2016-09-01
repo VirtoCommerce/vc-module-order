@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout',
-    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout) {
+.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus',
+    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -33,6 +33,22 @@
         // base function to override as needed
         blade.customInitialize = function () { };
 
+        blade.recalculate = function () {
+            blade.isLoading = true;
+            customerOrders.recalculate(blade.customerOrder, function (result) {
+                angular.copy(result, blade.customerOrder);
+
+                var idToFocus = document.activeElement.id;
+                if (idToFocus)
+                    $timeout(function () {
+                        focus(idToFocus);
+                        document.getElementById(idToFocus).select();
+                    });
+
+                blade.isLoading = false;
+            });
+        };
+
         function isDirty() {
             return blade.origEntity && !objCompareService.equal(blade.origEntity, blade.currentEntity) && !blade.isNew && blade.hasUpdatePermission();
         }
@@ -58,6 +74,10 @@
                     angular.copy(blade.origEntity, foundOp);
                 }
                 $scope.bladeClose();
+
+                if (blade.isTotalsRecalculationNeeded) {
+                    blade.recalculate();
+                }
             } else {
                 blade.isLoading = true;
                 customerOrders.update(blade.customerOrder, function () {
@@ -143,7 +163,7 @@
                 var dialog = {
                     id: "confirmCancelOperation",
                     callback: function (reason) {
-                        if(reason) {
+                        if (reason) {
                             blade.currentEntity.cancelReason = reason;
                             blade.currentEntity.isCancelled = true;
                             blade.currentEntity.status = 'Cancelled';

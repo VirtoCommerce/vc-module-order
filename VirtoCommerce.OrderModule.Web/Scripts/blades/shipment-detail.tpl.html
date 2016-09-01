@@ -61,7 +61,7 @@
                                 <label class="form-label">{{ 'orders.blades.shipment-detail.labels.shipment-amount' | translate }}</label>
                                 <div class="form-input __currency">
                                     <span class="currency">{{blade.currentEntity.currency}}</span>
-                                    <input money required type="text" ng-model="blade.currentEntity.sum">
+                                    <input money required ng-model="blade.currentEntity.sum" ng-change="updateRecalculationFlag()">
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.shipmentItemsWidgetController', ['$scope', '$translate', 'platformWebApp.bladeNavigationService', function ($scope, $translate, bladeNavigationService) {
-    $scope.blade = $scope.widget.blade;
-    $scope.operation = {};
+    var blade = $scope.widget.blade;
 
     $scope.$watch('widget.blade.currentEntity', function (operation) {
         $scope.operation = operation;
@@ -14,11 +13,11 @@
                 title: 'orders.blades.shipment-items.title',
                 titleValues: { title: result },
                 subtitle: 'orders.blades.shipment-items.subtitle',
-                currentEntity: $scope.blade.currentEntity,
+                currentEntity: blade.currentEntity,
                 controller: 'virtoCommerce.orderModule.shipmentItemsController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-items.tpl.html'
             };
-            bladeNavigationService.showBlade(newBlade, $scope.blade);
+            bladeNavigationService.showBlade(newBlade, blade);
         });
     };
 }]);

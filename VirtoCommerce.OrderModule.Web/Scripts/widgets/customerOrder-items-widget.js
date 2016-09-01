@@ -1,9 +1,8 @@
 ﻿angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderItemsWidgetController', ['$scope', '$translate', 'platformWebApp.bladeNavigationService',
     function ($scope, $translate, bladeNavigationService) {
-    $scope.blade = $scope.widget.blade;
-    $scope.operation = {};
-
+    var blade = $scope.widget.blade;
+    
     $scope.$watch('widget.blade.currentEntity', function (operation) {
         $scope.operation = operation;
     });
@@ -15,11 +14,12 @@
                 title: 'orders.widgets.customerOrder-items.blade-title',
                 titleValues: { title: result },
                 subtitle: 'orders.widgets.customerOrder-items.blade-subtitle',
-                currentEntity: $scope.blade.currentEntity,
+                currentEntity: blade.currentEntity,
+                recalculateFn: blade.recalculate,
                 controller: 'virtoCommerce.orderModule.customerOrderItemsController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
             };
-            bladeNavigationService.showBlade(newBlade, $scope.blade);
+            bladeNavigationService.showBlade(newBlade, blade);
         });
     };
 

@@ -31,11 +31,12 @@
             "basePrice": "Base price",
             "discount": "Discount",
             "tax": "Tax",
+            "priceWithTax": "Price with tax",
             "total": "Total",
             "dynamic-properties": "Dynamic properties",
-            "sub-total": "Sub Total",
-            "discount-total": "Discount Total",
-            "tax-total": "Tax Total"
+            "sub-total": "Sub total",
+            "discount-total": "Discount total",
+            "tax-total": "Tax total"
         }
       },
       "customerOrder-list": {
@@ -130,7 +131,10 @@
       "customerOrder-totals": {
         "sub-total": "Sub total",
         "shipping-total": "Shipping total",
-        "discount-total": "Discount Total",
+        "tax-total": "Tax total",
+        "discount": "Discount",
+        "discount-total": "Discount total",
+        "discount-total-with-tax": "Discount total with tax",
         "total": "Total"
       },
       "operation-comment": {
@@ -148,7 +152,7 @@
       "shipment-totals": {
         "tax-total": "Tax total",
         "shipment-total": "Shipment total",
-        "discount-total": "Discount Total",
+        "discount-total": "Discount total",
         "total": "Total"
       },
       "statistics-templates": {

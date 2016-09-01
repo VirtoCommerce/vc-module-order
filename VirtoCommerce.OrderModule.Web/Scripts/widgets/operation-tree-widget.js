@@ -28,8 +28,11 @@
             bladeNavigationService.closeChildrenBlades(blade);
         } else {
             var newBlade = node.detailBlade;
-            newBlade.customerOrder = blade.customerOrder;
-            newBlade.currentEntity = node.operation;
+            angular.extend(newBlade, {
+                customerOrder: blade.customerOrder,
+                currentEntity: node.operation
+            });
+
             bladeNavigationService.showBlade(newBlade, blade);
         }
     };

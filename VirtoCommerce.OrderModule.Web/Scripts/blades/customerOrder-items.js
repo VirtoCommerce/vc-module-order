@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.calculateTotalsService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', function ($scope, bladeNavigationService, dialogService, calculateTotalsService, items, prices) {
+.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', function ($scope, bladeNavigationService, dialogService, items, prices) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
 
@@ -13,10 +13,6 @@
 
     var selectedNode = null;
     var selectedProducts = [];
-
-    $scope.$watch("blade.currentEntity", function (operation) {
-        calculateTotalsService.recalculateTotals(operation);
-    }, true);
 
     blade.refresh = function () {
         blade.isLoading = false;
