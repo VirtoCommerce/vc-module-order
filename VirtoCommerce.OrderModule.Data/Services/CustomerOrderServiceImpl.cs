@@ -166,6 +166,10 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     query = query.Where(x => x.CustomerId == criteria.CustomerId);
                 }
+                if (criteria.Statuses != null && criteria.Statuses.Any())
+                {
+                    query = query.Where(x => criteria.Statuses.Contains(x.Status));
+                }
                 if (criteria.StoreIds != null && criteria.StoreIds.Any())
                 {
                     query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
