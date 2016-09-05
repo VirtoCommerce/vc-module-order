@@ -11,7 +11,6 @@
     $scope.pageSettings.numPages = 5;
     $scope.pageSettings.itemsPerPageCount = 4;
 
-    var selectedNode = null;
     var selectedProducts = [];
 
     blade.refresh = function () {
@@ -34,17 +33,15 @@
 					    imageUrl: data.imgSrc,
 					    sku: data.code,
 					    quantity: 1,
-					    price: price ? (price.sale ? price.sale : price.list) : 0,
-					    tax: 0,
-					    discountAmount: 0,
+					    price: price && price.list ? price.list : 0,
+					    discountAmount: price && price.list && price.sale ? price.list - price.sale : 0,
 					    currency: blade.currentEntity.currency
 					};
                     blade.currentEntity.items.push(newLineItem);
+                    blade.recalculateFn();
                     $scope.pageSettings.totalItems = blade.currentEntity.items.length;
-                },
-                function (error) { bladeNavigationService.setError('Error ' + error.status, $scope.blade); });
-            },
-            function (error) { bladeNavigationService.setError('Error ' + error.status, $scope.blade); });
+                });
+            });
         });
     };
 
@@ -123,6 +120,7 @@
             executeMethod: function () {
                 var lineItems = blade.currentEntity.items;
                 blade.currentEntity.items = _.difference(lineItems, _.filter(lineItems, function (x) { return x.selected }));
+                blade.recalculateFn();
                 $scope.pageSettings.totalItems = blade.currentEntity.items.length;
             },
             canExecuteMethod: function () {
@@ -135,11 +133,6 @@
     //$scope.$watch('pageSettings.currentPage', function (newPage) {
     //    blade.refresh();
     //});
-
-    $scope.selectItem = function (node) {
-        selectedNode = node;
-        $scope.selectedNodeId = selectedNode.id;
-    };
 
     $scope.checkAll = function (selected) {
         angular.forEach(blade.currentEntity.items, function (item) {

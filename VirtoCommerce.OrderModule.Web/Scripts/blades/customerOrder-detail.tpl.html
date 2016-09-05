@@ -42,6 +42,25 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="customerSelector.html">
+    <div class="form-input">
+        <label class="form-label" style="height:34px;">
+            <a href="" ng-click="blade.openCustomerDetails()">{{ blade.currentEntity.customerName }}</a>
+        </label>
+    </div>
+</script>
+
+<script type="text/ng-template" id="discountAmount.html">
+    <div class="form-input">
+        <input money required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
+    </div>
+</script>
+<script type="text/ng-template" id="discountAmountWithTax.html">
+    <div class="form-input">
+        <input money required ng-model="blade.currentEntity.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmountWithTax" focus-on="discountAmountWithTax">
+    </div>
+</script>
+
 <script type="text/ng-template" id="storeSelector.html">
     <div class="form-input">
         <ui-select ng-model="blade.currentEntity.storeId" ng-disabled="blade.isLocked">
@@ -50,13 +69,5 @@
                 <span ng-bind-html="store.name | highlight: $select.search"></span>
             </ui-select-choices>
         </ui-select>
-    </div>
-</script>
-
-<script type="text/ng-template" id="customerSelector.html">
-    <div class="form-input">
-        <label class="form-label" style="height:34px;">
-            <a href="" ng-click="blade.openCustomerDetails()">{{ blade.currentEntity.customerName }}</a>
-        </label>
     </div>
 </script>
