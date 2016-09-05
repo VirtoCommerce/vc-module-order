@@ -60,10 +60,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string TaxType { get; set; }
 
         [Column(TypeName = "Money")]
-        public decimal BasePrice { get; set; }
-        [Column(TypeName = "Money")]
-        public decimal BasePriceWithTax { get; set; }
-        [Column(TypeName = "Money")]
         public decimal Price { get; set; }
         [Column(TypeName = "Money")]
         public decimal PriceWithTax { get; set; }
@@ -154,9 +150,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var target = operation as ShipmentEntity;
             if (target == null)
                 throw new NullReferenceException("target");
-
-            target.BasePrice = this.BasePrice;
-            target.BasePriceWithTax = this.BasePriceWithTax;
+          
             target.Price = this.Price;
             target.PriceWithTax = this.PriceWithTax;
             target.DiscountAmount = this.DiscountAmount;

@@ -71,7 +71,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="VirtoCommerce.Domain, Version=2.16.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.17.0-rc14\lib\net451\VirtoCommerce.Domain.dll</HintPath>
+      <HintPath>..\packages\VirtoCommerce.Domain.2.17.0-rc16\lib\net451\VirtoCommerce.Domain.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.Platform.Core, Version=2.11.5.0, Culture=neutral, processorArchitecture=MSIL">
@@ -142,6 +142,10 @@
     <Compile Include="Migrations\201608311338331_NewTaxAndDiscountFields.cs" />
     <Compile Include="Migrations\201608311338331_NewTaxAndDiscountFields.Designer.cs">
       <DependentUpon>201608311338331_NewTaxAndDiscountFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609051138485_RemoveUnusedPrices.cs" />
+    <Compile Include="Migrations\201609051138485_RemoveUnusedPrices.Designer.cs">
+      <DependentUpon>201609051138485_RemoveUnusedPrices.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
@@ -217,6 +221,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608311338331_NewTaxAndDiscountFields.resx">
       <DependentUpon>201608311338331_NewTaxAndDiscountFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609051138485_RemoveUnusedPrices.resx">
+      <DependentUpon>201609051138485_RemoveUnusedPrices.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

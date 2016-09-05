@@ -25,11 +25,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string PriceId { get; set; }
         [Required]
         [StringLength(3)]
-        public string Currency { get; set; }
-        [Column(TypeName = "Money")]
-        public decimal BasePrice { get; set; }
-        [Column(TypeName = "Money")]
-        public decimal BasePriceWithTax { get; set; }
+        public string Currency { get; set; }     
         [Column(TypeName = "Money")]
         public decimal Price { get; set; }
         [Column(TypeName = "Money")]
@@ -137,8 +133,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (target == null)
                 throw new ArgumentNullException("target");
 
-            target.BasePrice = this.BasePrice;
-            target.BasePriceWithTax = this.BasePriceWithTax;
+          
             target.Price = this.Price;
             target.PriceWithTax = this.PriceWithTax;
             target.DiscountAmount = this.DiscountAmount;
