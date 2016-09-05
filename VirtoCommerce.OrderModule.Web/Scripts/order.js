@@ -425,12 +425,3 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        }
 	    });
 	}]);
-
-// generic
-function DictionarySettingDetailBlade(setting) {
-    this.id = 'dictionarySettingDetails';
-    this.currentEntityId = setting;
-    this.isApiSave = true;
-    this.controller = 'platformWebApp.settingDictionaryController';
-    this.template = '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html';
-}
