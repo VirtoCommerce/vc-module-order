@@ -124,10 +124,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     }
                 }
             }
-            foreach(var order in retVal)
-            {
-                DynamicPropertyService.LoadDynamicPropertyValues(order);
-            }           
+            DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray());
+
             return retVal.ToArray();
         }
 
