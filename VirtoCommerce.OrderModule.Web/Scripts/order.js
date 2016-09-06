@@ -114,6 +114,16 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         templateUrl: 'customerSelector.html'
                     },
                     {
+                        name: 'discountAmount',
+                        title: "orders.blades.customerOrder-items.labels.discount",
+                        templateUrl: 'discountAmount.html'
+                    },
+                    {
+                        name: 'discountAmountWithTax',
+                        title: "orders.blades.customerOrder-items.labels.discountWithTax",
+                        templateUrl: 'discountAmountWithTax.html'
+                    },
+                    {
                         name: 'storeId',
                         title: "orders.blades.customerOrder-detail.labels.store",
                         templateUrl: 'storeSelector.html'
@@ -172,6 +182,16 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         name: 'employeeId',
                         title: "orders.blades.shipment-detail.labels.employee",
                         templateUrl: 'employeeSelector.html'
+                    },
+                    {
+                        name: 'price',
+                        title: "orders.blades.shipment-detail.labels.price",
+                        templateUrl: 'price.html'
+                    },
+                    {
+                        name: 'priceWithTax',
+                        title: "orders.blades.shipment-detail.labels.price-with-tax",
+                        templateUrl: 'priceWithTax.html'
                     }
 	            ]
 	        }

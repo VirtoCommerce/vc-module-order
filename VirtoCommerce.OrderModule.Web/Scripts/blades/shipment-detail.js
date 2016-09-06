@@ -50,7 +50,7 @@
             blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.isCancelled;
         };
 
-        $scope.updateRecalculationFlag = function () {
-            blade.isTotalsRecalculationNeeded = blade.origEntity.sum != blade.currentEntity.sum;
+        blade.updateRecalculationFlag = function () {
+            blade.isTotalsRecalculationNeeded = blade.origEntity.price != blade.currentEntity.price || blade.origEntity.priceWithTax != blade.currentEntity.priceWithTax;
         }
     }]);

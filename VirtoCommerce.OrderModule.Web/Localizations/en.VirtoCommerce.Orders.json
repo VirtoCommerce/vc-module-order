@@ -25,13 +25,13 @@
                 "labels": {
                     "item": "Item",
                     "quantity": "Qty",
-                    "aviable": "Avail",
+                    "available": "Avail",
                     "await": "Await",
                     "price": "Price",
-                    "basePrice": "Base price",
-                    "discount": "Discount",
                     "tax": "Tax",
                     "priceWithTax": "Price with tax",
+                    "discount": "Discount",
+                    "discountWithTax": "Discount with tax",
                     "total": "Total",
                     "dynamic-properties": "Dynamic properties",
                     "sub-total": "Sub total",
@@ -103,8 +103,9 @@
                     "status": "Status",
                     "fulfillment-center": "Fulfillment center",
                     "from": "From",
-                    "employee": "Employee",
-                    "shipment-amount": "Shipment amount"
+                    "employee": "Assigned to",
+                    "price": "Shipment amount",
+                    "price-with-tax": "Shipment amount with tax"
                 },
                 "placeholders": {
                     "status": "Select...",

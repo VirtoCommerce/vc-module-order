@@ -39,7 +39,7 @@
 
                     <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-metaform>
 
-                    <div class="form columns clearfix">
+                    <div class="form columns">
                         <div class="column">
                             <div class="form-group">
                                 <label class="form-label">
@@ -57,13 +57,7 @@
                             </div>
                         </div>
                         <div class="column">
-                            <div class="form-group">
-                                <label class="form-label">{{ 'orders.blades.shipment-detail.labels.shipment-amount' | translate }}</label>
-                                <div class="form-input __currency">
-                                    <span class="currency">{{blade.currentEntity.currency}}</span>
-                                    <input money required ng-model="blade.currentEntity.sum" ng-change="updateRecalculationFlag()">
-                                </div>
-                            </div>
+                            <div style="height:60px">&nbsp;</div>
                         </div>
                     </div>
                 </fieldset>
@@ -97,5 +91,18 @@
                 <span ng-bind-html="x.fullName | highlight: $select.search"></span>
             </ui-select-choices>
         </ui-select>
+    </div>
+</script>
+
+<script type="text/ng-template" id="price.html">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
+        <input money required ng-model="blade.currentEntity.price" ng-change="blade.updateRecalculationFlag()">
+    </div>
+</script>
+<script type="text/ng-template" id="priceWithTax.html">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
+        <input money required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
     </div>
 </script>

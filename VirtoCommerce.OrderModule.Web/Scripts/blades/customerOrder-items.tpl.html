@@ -3,7 +3,7 @@
         <p class="form-count">{{'platform.list.count' | translate}}: <span class="count">{{pageSettings.totalItems}}</span></p>
     </div>
 </div>
-<div class="blade-content __large-wide">
+<div class="blade-content __xlarge-wide">
     <div class="blade-inner">
         <div class="inner-block">
             <form name="orderForm" novalidate></form>
@@ -19,22 +19,23 @@
                             </th>
                             <th class="table-col __proudct-img">{{ 'orders.blades.customerOrder-items.labels.item' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.quantity' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.aviable' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.basePrice' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.available' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.price' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.priceWithTax' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discountWithTax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': data.id === selectedNodeId}" ng-click='selectItem(data)'>
+                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
                             <td class="table-col">
                                 <label class="form-control __checkbox">
                                     <input type="checkbox" ng-model="data.selected">
                                     <span class="check"></span>
                                 </label>
+                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
                             </td>
                             <td class="table-col">
                                 <div class="product-img">
@@ -54,15 +55,9 @@
                                 <span ng-class="{'error': data.avail <= 0}">{{data.avail || 0}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.basePrice | number:2}}</span>
-                            </td>
-                            <td class="table-col">
                                 <div class="form-input __mini">
                                     <input money required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
-                            </td>
-                            <td class="table-col">
-                                <span class="list-price">{{data.discountAmount | number:2}}</span>
                             </td>
                             <td class="table-col">
                                 <span class="list-price">{{data.tax | number:2}}</span>
@@ -72,14 +67,23 @@
                                     <input money required ng-model="data.priceWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="priceWithTax{{$index}}" focus-on="priceWithTax{{$index}}">
                                 </div>
                             </td>
+                            <td class="table-col">
+                                <div class="form-input __mini __inline">
+                                    <input money required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
+                                </div>
+                            </td>
+                            <td class="table-col">
+                                <div class="form-input __mini __inline">
+                                    <input money required ng-model="data.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmountWithTax{{$index}}" focus-on="discountAmountWithTax{{$index}}">
+                                </div>
+                            </td>
                             <td class="table-col __total">
                                 <span class="list-price">{{data.extendedPriceWithTax | number:2 }}</span>
                             </td>
                         </tr>
-                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': data.id === selectedNodeId}" ng-click='selectItem(data)'>
-                            <td class="table-head" colspan="10">
-                                <span ng-click="openItemDetail(data)">{{data.name}}</span>
-                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
+                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
+                            <td class="table-head" colspan="10" ng-click="openItemDetail(data)">
+                                {{data.name}}
                             </td>
                         </tr>
                     </tbody>
