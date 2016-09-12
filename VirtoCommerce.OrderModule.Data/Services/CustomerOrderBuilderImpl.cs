@@ -31,23 +31,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             _customerOrderService.SaveChanges(new[] { customerOrder });
 
             customerOrder = _customerOrderService.GetByIds(new[] { customerOrder.Id }).FirstOrDefault();
-            var store = _storeService.GetById(cart.StoreId);
 
-            if (!customerOrder.InPayments.IsNullOrEmpty())
-            {
-                var incomingPayment = customerOrder.InPayments.FirstOrDefault();
-                if (incomingPayment != null)
-                {
-                    var context = new ProcessPaymentEvaluationContext
-                    {
-                        Order = customerOrder,
-                        Payment = incomingPayment,
-                        Store = store,
-                    };
-                    incomingPayment.PaymentMethod.ProcessPayment(context);
-                    _customerOrderService.SaveChanges(new[] { customerOrder });
-                }
-            }
             return customerOrder;
         }
 
@@ -78,11 +62,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 //Add shipping address to order
                 retVal.Addresses.AddRange(retVal.Shipments.Where(x => x.DeliveryAddress != null).Select(x => x.DeliveryAddress));
                 //Redistribute order line items to shipment if cart shipment items empty 
-                var shipment = retVal.Shipments.FirstOrDefault();
-                if (shipment != null && shipment.Items.IsNullOrEmpty())
-                {
-                    shipment.Items = retVal.Items.Select(x => new Domain.Order.Model.ShipmentItem { LineItem = x, Quantity = x.Quantity }).ToList();
-                }
+                //var shipment = retVal.Shipments.FirstOrDefault();
+                //if (shipment != null && shipment.Items.IsNullOrEmpty())
+                //{
+                //    shipment.Items = retVal.Items.Select(x => new Domain.Order.Model.ShipmentItem { LineItem = x, Quantity = x.Quantity }).ToList();
+                //}
             }
             if (cart.Payments != null)
             {
@@ -142,15 +126,18 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             retVal.DiscountAmount = shipment.DiscountTotal;
             retVal.DiscountAmountWithTax = shipment.DiscountTotalWithTax;
+            retVal.Price = shipment.ShippingPrice;
+            retVal.PriceWithTax = shipment.ShippingPriceWithTax;
+            retVal.Sum = shipment.Total;          
             retVal.Status = "New";
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = shipment.DeliveryAddress;
             }
-            if (shipment.Items != null)
-            {
-                retVal.Items = shipment.Items.Select(x => ToOrderModel(x)).ToList();
-            }
+            //if (shipment.Items != null)
+            //{
+            //    retVal.Items = shipment.Items.Select(x => ToOrderModel(x)).ToList();
+            //}
             if (shipment.Discounts != null)
             {
                 retVal.Discount = shipment.Discounts.Select(x => ToOrderModel(x)).FirstOrDefault();

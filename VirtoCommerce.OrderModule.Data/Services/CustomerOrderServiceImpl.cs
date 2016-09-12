@@ -59,6 +59,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 var dataExistOrders = repository.GetCustomerOrdersByIds(orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray(), CustomerOrderResponseGroup.Full);
                 foreach (var order in orders)
                 {
+                    EnsureThatAllOperationsHaveNumber(order);
+
                     var dataSourceOrder = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance(); 
                     if (dataSourceOrder != null)
                     {

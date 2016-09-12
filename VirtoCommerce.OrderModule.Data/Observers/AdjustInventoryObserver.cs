@@ -31,19 +31,19 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
 		public void OnNext(OrderChangeEvent value)
 		{
-			var origStockOutOperations = new ShipmentItem[] { };
-			var modifiedStockOutOperations = new ShipmentItem[] { };
+			var origStockOutOperations = new LineItem[] { };
+			var modifiedStockOutOperations = new LineItem[] { };
 			if (value.OrigOrder != null)
 			{
-				origStockOutOperations = value.OrigOrder.Shipments.SelectMany(x=>x.Items).ToArray();
+				origStockOutOperations = value.OrigOrder.Items.ToArray();
 			}
 			if (value.ModifiedOrder != null)
 			{
-				modifiedStockOutOperations = value.ModifiedOrder.Shipments.SelectMany(x => x.Items).ToArray();
+				modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
 			}
 
-			var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.LineItem.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
-			var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.LineItem.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+			var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+			var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
 
 			var changedInventoryInfos = new List<InventoryInfo>();
 
