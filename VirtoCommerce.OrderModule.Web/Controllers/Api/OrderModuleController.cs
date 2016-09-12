@@ -96,14 +96,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var retVal = result.Results.FirstOrDefault();
             if(retVal != null)
             {
-                var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
-                 if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
-                {
-                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
-                }
-                //Set scopes for UI scope bounded ACL checking
-                retVal.Scopes = scopes;
+            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
+            if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
+            {
+                throw new HttpResponseException(HttpStatusCode.Unauthorized);
             }
+            //Set scopes for UI scope bounded ACL checking
+                retVal.Scopes = scopes;
+        }
             return Ok(retVal);
         }
 
@@ -119,11 +119,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         public IHttpActionResult GetById(string id)
         {
             var retVal = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
-
             if (retVal == null)
             {
-                return Ok();
+                return NotFound();
             }
+
             //Scope bound security check
             var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
             if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
@@ -139,7 +139,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
         /// <summary>
 		/// Calculate order totals after changes
-		/// </summary>
+        /// </summary>
 		/// <remarks>Return order with recalculated totals</remarks>
 		/// <param name="order">Customer order</param>
         [HttpPut]
@@ -169,7 +169,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
             }         
-        
+
             if (order == null)
             {
                 throw new NullReferenceException("order");
@@ -242,7 +242,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [Route("")]
         [ResponseType(typeof(void))]
         public IHttpActionResult Update(CustomerOrder customerOrder)
-        {         
+        {
             //Check scope bound permission
             var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(customerOrder).ToArray();
             if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
@@ -330,7 +330,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        
+
         /// <summary>
         ///  Get a some order statistic information for Commerce manager dashboard
         /// </summary>
