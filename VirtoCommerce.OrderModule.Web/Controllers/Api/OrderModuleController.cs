@@ -2,17 +2,20 @@
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CacheManager.Core;
 using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Repositories;
+using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.BackgroundJobs;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Common;
@@ -36,10 +39,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly ISecurityService _securityService;
         private readonly IPermissionScopeService _permissionScopeService;
         private readonly ISettingsManager _settingManager;
+        private readonly ICustomerOrderBuilder _customerOrderBuilder;
+        private readonly IShoppingCartService _cartService;
         private static readonly object _lockObject = new object();
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
-                                     ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService, ISettingsManager settingManager)
+                                     ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
+                                     ISettingsManager settingManager, ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -50,6 +56,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _securityService = securityService;
             _permissionScopeService = permissionScopeService;
             _settingManager = settingManager;
+            _customerOrderBuilder = customerOrderBuilder;
+            _cartService = cartService;
         }
 
         /// <summary>
@@ -153,7 +161,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="bankCardInfo">banking card information</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
-        [ResponseType(typeof(webModel.ProcessPaymentResult))]
+        [ResponseType(typeof(ProcessPaymentResult))]
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
             var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
@@ -190,10 +198,25 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             _customerOrderService.SaveChanges(new[] { order });
 
-            var retVal = new webModel.ProcessPaymentResult();
-            retVal.InjectFrom(result);
-            retVal.PaymentMethodType = paymentMethod.PaymentMethodType;
+            return Ok(result);
+        }
 
+        /// <summary>
+        /// Create new customer order based on shopping cart.
+        /// </summary>
+        /// <param name="cartId">shopping cart id</param>
+        [HttpPost]
+        [ResponseType(typeof(CustomerOrder))]
+        [Route("{cartId}")]
+        [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
+        public async Task<IHttpActionResult> CreateOrderFromCart(string cartId)
+        {
+            CustomerOrder retVal = null;
+            using (await AsyncLock.GetLockByKey(cartId).LockAsync())
+            {
+                var cart = _cartService.GetByIds(new[] { cartId }).FirstOrDefault();
+                retVal = _customerOrderBuilder.PlaceCustomerOrderFromCart(cart);
+            }           
             return Ok(retVal);
         }
 

@@ -68,6 +68,7 @@ namespace VirtoCommerce.OrderModule.Web
 
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
+            _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
 
             //Thats need for PolymorphicOperationJsonConverter for API deserialization
             AbstractTypeFactory<IOperation>.RegisterType<CustomerOrder>();

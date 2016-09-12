@@ -156,7 +156,6 @@
     <Compile Include="Model\PaymentCallbackParameters.cs" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
     <Compile Include="ExportImport\OrderExportImport.cs" />
-    <Compile Include="Model\ProcessPaymentResult.cs" />
     <Compile Include="Model\DashboardStatisticsResult.cs" />
     <Compile Include="Model\CustomerOrderSearchResult.cs" />
     <Compile Include="Module.cs" />
