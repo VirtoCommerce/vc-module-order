@@ -21,7 +21,6 @@
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.quantity' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.available' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.price' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.priceWithTax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discountWithTax' | translate }}</th>
@@ -58,9 +57,6 @@
                                 <div class="form-input __mini">
                                     <input money required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
-                            </td>
-                            <td class="table-col">
-                                <span class="list-price">{{data.tax | number:2}}</span>
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
