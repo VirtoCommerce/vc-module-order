@@ -101,10 +101,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 shipment.DeliveryAddress = this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
-            if (!this.Discounts.IsNullOrEmpty())
-            {
-                shipment.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
-            }
+            shipment.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             shipment.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
 
             shipment.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
@@ -143,9 +140,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 this.TaxDetails = new ObservableCollection<TaxDetailEntity>(shipment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
-            if (shipment.Discount != null)
+            if (shipment.Discounts != null)
             {
-                this.Discounts = new ObservableCollection<DiscountEntity>(new DiscountEntity[] { AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(shipment.Discount) });
+                this.Discounts = new ObservableCollection<DiscountEntity>(shipment.Discounts.Select(x=> AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
 
             base.FromModel(shipment, pkMap);

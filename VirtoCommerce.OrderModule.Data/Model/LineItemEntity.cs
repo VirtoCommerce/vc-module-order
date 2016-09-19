@@ -100,10 +100,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException("lineItem");
 
             lineItem.InjectFrom(this);
-            if (!this.Discounts.IsNullOrEmpty())
-            {
-                lineItem.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
-            }
+            lineItem.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             return lineItem;
         }
@@ -117,9 +114,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             this.InjectFrom(lineItem);
 
-            if (lineItem.Discount != null)
+            if (lineItem.Discounts != null)
             {
-                this.Discounts = new ObservableCollection<DiscountEntity>(new DiscountEntity[] { AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(lineItem.Discount) });
+                this.Discounts = new ObservableCollection<DiscountEntity>();
+                this.Discounts.AddRange(lineItem.Discounts.Select(x=> AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
             if (lineItem.TaxDetails != null)
             {

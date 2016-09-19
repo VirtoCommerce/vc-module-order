@@ -48,7 +48,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             }
             if (cart.Discounts != null)
             {
-                retVal.Discount = cart.Discounts.Select(x => ToOrderModel(x)).FirstOrDefault();
+                retVal.Discounts = cart.Discounts.Select(x => ToOrderModel(x)).ToList();
             }
 
             if (cart.Addresses != null)
@@ -100,7 +100,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
             if (lineItem.Discounts != null)
             {
-                retVal.Discount = lineItem.Discounts.Select(x => ToOrderModel(x)).FirstOrDefault();
+                retVal.Discounts = lineItem.Discounts.Select(x => ToOrderModel(x)).ToList();
             }
             retVal.TaxDetails = lineItem.TaxDetails;
             return retVal;
@@ -135,7 +135,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             //}
             if (shipment.Discounts != null)
             {
-                retVal.Discount = shipment.Discounts.Select(x => ToOrderModel(x)).FirstOrDefault();
+                retVal.Discounts = shipment.Discounts.Select(x => ToOrderModel(x)).ToList();
             }
             retVal.TaxDetails = shipment.TaxDetails;
             return retVal;

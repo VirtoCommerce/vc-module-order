@@ -89,11 +89,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.ToModel(order);
 
-            if (!this.Discounts.IsNullOrEmpty())
-            {
-                order.Discount = this.Discounts.First().ToModel(AbstractTypeFactory<Discount>.TryCreateInstance());
-            }
-
+            order.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
             order.Addresses = this.Addresses.Select(x => x.ToModel(AbstractTypeFactory<Address>.TryCreateInstance())).ToList();
             order.Shipments = this.Shipments.Select(x => x.ToModel(AbstractTypeFactory<Shipment>.TryCreateInstance())).OfType<Shipment>().ToList();
@@ -128,9 +124,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 this.InPayments = new ObservableCollection<PaymentInEntity>(order.InPayments.Select(x => AbstractTypeFactory<PaymentInEntity>.TryCreateInstance().FromModel(x, pkMap)).OfType<PaymentInEntity>());
             }
-            if (order.Discount != null)
+            if (order.Discounts != null)
             {
-                this.Discounts = new ObservableCollection<DiscountEntity>(new DiscountEntity[] { AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(order.Discount) });
+                this.Discounts = new ObservableCollection<DiscountEntity>(order.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
             if (order.TaxDetails != null)
             {
