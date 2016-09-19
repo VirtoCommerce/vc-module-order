@@ -31,7 +31,7 @@
                                 width: '*', cellTemplate: 'order-list-name.cell.html'
                             },
                             { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: 87, cellClass: '__blue' },
-                            { name: 'customColumn2', displayName: 'orders.blades.customerOrder-list.labels.total', width: 76, field: 'sum', cellTemplate: 'total-list-name.cell.html' },
+                            { name: 'customColumn2', displayName: 'orders.blades.customerOrder-list.labels.total', width: 76, field: 'total', cellTemplate: 'total-list-name.cell.html' },
                             { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: 82, cellClass: 'table-date', cellFilter: 'date', sort: { direction: uiGridConstants.DESC } }
                 ]})">
                 <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>

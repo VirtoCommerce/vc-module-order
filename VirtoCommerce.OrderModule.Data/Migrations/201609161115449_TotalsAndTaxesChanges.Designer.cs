@@ -7,13 +7,13 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.1-30610")]
-    public sealed partial class RemoveUnusedPrices : IMigrationMetadata
+    public sealed partial class TotalsAndTaxesChanges : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemoveUnusedPrices));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(TotalsAndTaxesChanges));
         
         string IMigrationMetadata.Id
         {
-            get { return "201609051138485_RemoveUnusedPrices"; }
+            get { return "201609161115449_TotalsAndTaxesChanges"; }
         }
         
         string IMigrationMetadata.Source

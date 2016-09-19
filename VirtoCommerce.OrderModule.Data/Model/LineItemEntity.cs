@@ -35,7 +35,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal DiscountAmountWithTax { get; set; }
         [Column(TypeName = "Money")]
-        public decimal Tax { get; set; }
+        public decimal TaxTotal { get; set; }
+        public decimal TaxPercentRate { get; set; }
         public int Quantity { get; set; }
         [Required]
         [StringLength(64)]
@@ -139,7 +140,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.DiscountAmount = this.DiscountAmount;
             target.DiscountAmountWithTax = this.DiscountAmountWithTax;
             target.Quantity = this.Quantity;
-            target.Tax = this.Tax;
+            target.TaxTotal = this.TaxTotal;
+            target.TaxPercentRate = this.TaxPercentRate;
             target.Weight = this.Weight;
             target.Height = this.Height;
             target.Width = this.Width;

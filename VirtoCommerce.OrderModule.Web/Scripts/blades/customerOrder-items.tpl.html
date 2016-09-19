@@ -21,10 +21,10 @@
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.quantity' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.available' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.price' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.priceWithTax' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.priceWithTax' | translate }}</th>                           
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discountWithTax' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</th>
                         </tr>
                     </thead>
@@ -60,12 +60,7 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.tax | number:2}}</span>
-                            </td>
-                            <td class="table-col">
-                                <div class="form-input __mini __inline">
-                                    <input money required ng-model="data.priceWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="priceWithTax{{$index}}" focus-on="priceWithTax{{$index}}">
-                                </div>
+                                <span class="list-price">{{data.priceWithTax | number:2}}</span>
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
@@ -73,13 +68,15 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <div class="form-input __mini __inline">
-                                    <input money required ng-model="data.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmountWithTax{{$index}}" focus-on="discountAmountWithTax{{$index}}">
-                                </div>
+                                <span class="list-price">{{data.discountAmountWithTax | number:2}}</span>
+                            </td>
+                            <td class="table-col">
+                                <span class="list-price">{{data.taxTotal | number:2}}</span>
                             </td>
                             <td class="table-col __total">
                                 <span class="list-price">{{data.extendedPriceWithTax | number:2 }}</span>
                             </td>
+                           
                         </tr>
                         <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
                             <td class="table-head" colspan="10" ng-click="openItemDetail(data)">
@@ -98,15 +95,15 @@
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.discountTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotalDiscount | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.taxTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{ blade.currentEntity.subTotalTaxTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item __total">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.subTotalWithTax | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{ (blade.currentEntity.subTotalWithTax - blade.currentEntity.subTotalDiscountWithTax) | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
                     </tr>
                 </table>
             </div>

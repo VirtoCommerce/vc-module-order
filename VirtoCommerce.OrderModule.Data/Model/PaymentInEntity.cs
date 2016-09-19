@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public DateTime? CapturedDate { get; set; }
 		public DateTime? VoidedDate { get; set; }
 
-		public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal Sum { get; set; }
+
+        public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
 
 		public string CustomerOrderId { get; set; }
 		public virtual CustomerOrderEntity CustomerOrder { get; set; }
@@ -107,6 +111,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.IsCancelled = this.IsCancelled;
             target.CancelledDate = this.CancelledDate;
             target.CancelReason = this.CancelReason;
+            target.Sum = this.Sum;
      
             if (!this.Addresses.IsNullCollection())
             {

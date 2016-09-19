@@ -27,11 +27,11 @@
                     "quantity": "Qty",
                     "available": "Avail",
                     "await": "Await",
-                    "price": "Price",
+                    "price": "Unit price (excl tax)",
                     "tax": "Tax",
-                    "priceWithTax": "Price with tax",
-                    "discount": "Discount",
-                    "discountWithTax": "Discount with tax",
+                    "priceWithTax": "Unit price (incl tax)",
+                    "discount": "Discount (excl tax)",
+                    "discountWithTax": "Discount (incl tax)",
                     "total": "Total",
                     "dynamic-properties": "Dynamic properties",
                     "sub-total": "Sub total",
@@ -152,6 +152,7 @@
             "customerOrder-totals": {
                 "sub-total": "Sub total",
                 "shipping-total": "Shipping total",
+                "shipping-sub-total": "Shipping sub total",
                 "tax-total": "Tax total",
                 "discount": "Discount",
                 "discount-total": "Discount total",
@@ -173,6 +174,7 @@
             "shipment-totals": {
                 "tax-total": "Tax total",
                 "shipment-total": "Shipment total",
+                "shipment-price": "Shipping price",
                 "discount-total": "Discount total",
                 "total": "Total"
             },

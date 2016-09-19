@@ -82,8 +82,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
             //Save only disctinct addresses for order
             retVal.Addresses = retVal.Addresses.Distinct().ToList();
             retVal.TaxDetails = cart.TaxDetails;
-            retVal.Tax = cart.TaxTotal;
-            retVal.Sum = cart.Total;
             return retVal;
         }
 
@@ -96,8 +94,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.InjectFrom(lineItem);
             retVal.Id = null;
 
-            retVal.Price = lineItem.SalePrice;
-            retVal.PriceWithTax = lineItem.SalePriceWithTax;
+            retVal.Price = lineItem.ListPrice;
+          
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
             retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
             if (lineItem.Discounts != null)
@@ -124,11 +122,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.InjectFrom(shipment);
             retVal.Id = null;
 
-            retVal.DiscountAmount = shipment.DiscountTotal;
-            retVal.DiscountAmountWithTax = shipment.DiscountTotalWithTax;
-            retVal.Price = shipment.ShippingPrice;
-            retVal.PriceWithTax = shipment.ShippingPriceWithTax;
-            retVal.Sum = shipment.Total;          
+            retVal.DiscountAmount = shipment.DiscountAmount;
+            retVal.Price = shipment.Price;
             retVal.Status = "New";
             if (shipment.DeliveryAddress != null)
             {

@@ -69,6 +69,16 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal DiscountAmountWithTax { get; set; }
 
+
+        [Column(TypeName = "Money")]
+        public decimal Total { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal TotalWithTax { get; set; }
+
+        [Column(TypeName = "Money")]
+        public decimal TaxTotal { get; set; }
+        public decimal TaxPercentRate { get; set; }
+
         public string CustomerOrderId { get; set; }
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
@@ -169,7 +179,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.WeightUnit = this.WeightUnit;
             target.Length = this.Length;
             target.TaxType = this.TaxType;
-            
+            target.TaxPercentRate = this.TaxPercentRate;
+            target.TaxTotal = this.TaxTotal;
+            target.Total = this.Total;
+            target.TotalWithTax = this.TotalWithTax;
+
 
             if (!this.InPayments.IsNullCollection())
             {

@@ -117,12 +117,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         name: 'discountAmount',
                         title: "orders.blades.customerOrder-items.labels.discount",
                         templateUrl: 'discountAmount.html'
-                    },
-                    {
-                        name: 'discountAmountWithTax',
-                        title: "orders.blades.customerOrder-items.labels.discountWithTax",
-                        templateUrl: 'discountAmountWithTax.html'
-                    },
+                    },                   
                     {
                         name: 'storeId',
                         title: "orders.blades.customerOrder-detail.labels.store",

@@ -52,7 +52,25 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal DiscountAmount { get; set; }
         [Column(TypeName = "Money")]
-        public decimal DiscountAmountWithTax { get; set; }
+        public decimal TaxTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal Total { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal SubTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal SubTotalWithTax { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal ShippingTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal ShippingTotalWithTax { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal HandlingTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal HandlingTotalWithTax { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal DiscountTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal DiscountTotalWithTax { get; set; }
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
 		public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
@@ -135,8 +153,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.OrganizationId = this.OrganizationId;
             target.EmployeeId = this.EmployeeId;
             target.DiscountAmount = this.DiscountAmount;
-            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
-            
+            target.Total = this.Total;
+            target.SubTotal = this.SubTotal;
+            target.SubTotalWithTax = this.SubTotalWithTax;
+            target.ShippingTotal = this.ShippingTotal;
+            target.ShippingTotalWithTax = this.ShippingTotalWithTax;
+            target.HandlingTotal = this.HandlingTotal;
+            target.HandlingTotalWithTax = this.HandlingTotalWithTax;
+            target.DiscountTotal = this.DiscountTotal;
+            target.DiscountTotalWithTax = this.DiscountTotalWithTax;
+            target.DiscountAmount = this.DiscountAmount;
+            target.TaxTotal = this.TaxTotal;
+
             if (!this.Addresses.IsNullCollection())
             {
                 this.Addresses.Patch(target.Addresses, new AddressComparer(), (sourceItem, targetItem) => sourceItem.Patch(targetItem));

@@ -38,7 +38,7 @@ namespace VirtoCommerce.OrderModule.Web.BackgroundJobs
 				//avg order value
 				var avgValues = repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
 														 .GroupBy(x => x.Currency)
-														 .Select(x => new { Currency = x.Key, AvgValue = x.Select(y=>y.Sum).DefaultIfEmpty(0).Average() })
+														 .Select(x => new { Currency = x.Key, AvgValue = x.Select(y=>y.Total).DefaultIfEmpty(0).Average() })
 														 .ToArray();
 				retVal.AvgOrderValue = avgValues.Select(x=> new Money(x.Currency, x.AvgValue) ).ToList();
 
@@ -67,7 +67,7 @@ namespace VirtoCommerce.OrderModule.Web.BackgroundJobs
 														  .Where(x => !x.IsCancelled & x.Currency == currency).Select(x=>x.Sum).DefaultIfEmpty(0).Sum();
 						var avgOrderValue = repository.CustomerOrders.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate)
 														 .Where(x => x.Currency == currency)
-														 .Select(x=>x.Sum).DefaultIfEmpty(0).Average();
+														 .Select(x=>x.Total).DefaultIfEmpty(0).Average();
 
 						var periodStat = new QuarterPeriodMoney(currency, amount)
 						{

@@ -66,7 +66,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             if(IsOrderPaid(value))
             {
                 var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
-                notification.FullPrice = value.ModifiedOrder.Sum;
+                notification.FullPrice = value.ModifiedOrder.Total;
                 notification.PaidDate = DateTime.UtcNow;
                 notification.Currency = value.ModifiedOrder.Currency.ToString();
 
@@ -137,7 +137,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 var paidSum = value.ModifiedOrder.InPayments.Where(i => i.PaymentStatus == PaymentStatus.Paid).Sum(i => i.Sum);
                 if (modifiedPayment != null)
                 {
-                    retVal = modifiedPayment.PaymentStatus == PaymentStatus.Paid && origPayment.PaymentStatus != PaymentStatus.Paid && paidSum == value.ModifiedOrder.Sum;
+                    retVal = modifiedPayment.PaymentStatus == PaymentStatus.Paid && origPayment.PaymentStatus != PaymentStatus.Paid && paidSum == value.ModifiedOrder.Total;
                 }
                 if (retVal)
                     break;

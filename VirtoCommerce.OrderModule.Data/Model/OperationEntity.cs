@@ -28,18 +28,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Required]
         [StringLength(3)]
         public string Currency { get; set; }
-        public bool TaxIncluded { get; set; }
-
-        [Column(TypeName = "Money")]
-        public decimal Sum { get; set; }
-        [Column(TypeName = "Money")]
-        public decimal Tax { get; set; }
 
         public bool IsCancelled { get; set; }
         public DateTime? CancelledDate { get; set; }
         [StringLength(2048)]
         public string CancelReason { get; set; }
-
 
         public virtual OrderOperation ToModel(OrderOperation orderOperation)
         {
@@ -75,11 +68,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.Status = this.Status;
             target.IsCancelled = this.IsCancelled;
             target.CancelledDate = this.CancelledDate;
-            target.CancelReason = this.CancelReason;
-            target.Tax = this.Tax;
-            target.TaxIncluded = this.TaxIncluded;
+            target.CancelReason = this.CancelReason;       
             target.IsApproved = this.IsApproved;
-            target.Sum = this.Sum;
             
         }
     }
