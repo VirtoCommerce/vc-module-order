@@ -76,6 +76,10 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     var paymentIn = ToOrderModel(payment);
                     paymentIn.CustomerId = cart.CustomerId;
                     retVal.InPayments.Add(paymentIn);
+                    if(payment.BillingAddress != null)
+                    {
+                        retVal.Addresses.Add(payment.BillingAddress);
+                    }
                 }
             }
 
