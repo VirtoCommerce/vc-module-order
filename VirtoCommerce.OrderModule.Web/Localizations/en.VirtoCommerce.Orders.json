@@ -165,8 +165,7 @@
             },
             "shipment-address": {
                 "blade-title": "Manage delivery address",
-                "title": "Delivery address",
-                "not-applicable": "N/A"
+                "title": "Delivery address"
             },
             "shipment-items": {
                 "title": "Shipment items"
@@ -177,6 +176,10 @@
                 "shipment-price": "Shipping price",
                 "discount-total": "Discount total",
                 "total": "Total"
+            },
+            "payment-address": {
+                "blade-title": "Manage billing address",
+                "title": "Payment address"
             },
             "statistics-templates": {
                 "revenue": "Revenue",

@@ -213,6 +213,8 @@
     <Content Include="Scripts\resources\fulfillmentCenters.js" />
     <Content Include="Scripts\widgets\dashboard\statistics-templates.html" />
     <Content Include="Scripts\widgets\dashboard\statistics-widget.js" />
+    <Content Include="Scripts\widgets\payment-address-widget.js" />
+    <Content Include="Scripts\widgets\payment-address-widget.tpl.html" />
     <Content Include="Scripts\widgets\shipment-items-widget.js" />
     <Content Include="Scripts\widgets\shipment-items-widget.tpl.html" />
     <Content Include="Scripts\widgets\customerOrder-items-widget.tpl.html" />

@@ -117,7 +117,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         name: 'discountAmount',
                         title: "orders.blades.customerOrder-items.labels.discount",
                         templateUrl: 'discountAmount.html'
-                    },                   
+                    },
                     {
                         name: 'storeId',
                         title: "orders.blades.customerOrder-detail.labels.store",
@@ -241,6 +241,12 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-totals-widget.tpl.html'
 	    };
 	    widgetService.registerWidget(shipmentTotalWidget, 'shipmentDetailWidgets');
+
+	    widgetService.registerWidget({
+	        controller: 'virtoCommerce.orderModule.paymentAddressWidgetController',
+	        size: [2, 1],
+	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-address-widget.tpl.html'
+	    }, 'paymentDetailWidgets');
 
 	    var dynamicPropertyWidget = {
 	        controller: 'platformWebApp.dynamicPropertyWidgetController',
