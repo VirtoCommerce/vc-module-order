@@ -41,10 +41,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
 		public DateTime? AuthorizedDate { get; set; }
 		public DateTime? CapturedDate { get; set; }
-		public DateTime? VoidedDate { get; set; }
-
-        [Column(TypeName = "Money")]
-        public decimal Sum { get; set; }
+		public DateTime? VoidedDate { get; set; }    
 
         public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
 

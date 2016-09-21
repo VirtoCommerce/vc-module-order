@@ -19,8 +19,6 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
             AddColumn("dbo.CustomerOrder", "DiscountTotal", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.CustomerOrder", "DiscountTotalWithTax", c => c.Decimal(nullable: false, storeType: "money"));
 
-            AddColumn("dbo.OrderPaymentIn", "Sum", c => c.Decimal(nullable: false, storeType: "money"));
-
             AddColumn("dbo.OrderShipment", "Price", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.OrderShipment", "PriceWithTax", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.OrderShipment", "DiscountAmountWithTax", c => c.Decimal(nullable: false, storeType: "money"));
@@ -41,27 +39,24 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
 
             Sql("UPDATE dbo.OrderShipment SET DiscountAmount = D.DiscountAmount FROM dbo.OrderDiscount as D WHERE D.ShipmentId = dbo.OrderShipment.Id");
             Sql("UPDATE dbo.OrderShipment SET Total = O.Sum, TaxTotal = O.Tax, Price = O.Sum - DiscountAmount FROM dbo.OrderOperation as O WHERE O.Id = dbo.OrderShipment.Id");
-            Sql("UPDATE dbo.OrderShipment SET TaxPercentRate = TaxTotal / Total WHERE Total > 0");            
+            Sql("UPDATE dbo.OrderShipment SET TaxPercentRate = TaxTotal / Total WHERE Total > 0");
 
             Sql("UPDATE dbo.OrderLineItem SET DiscountAmount = D.DiscountAmount FROM dbo.OrderDiscount as D WHERE D.LineItemId = dbo.OrderLineItem.Id");
             Sql("UPDATE dbo.OrderLineItem SET TaxTotal = Tax");
             Sql("UPDATE dbo.OrderLineItem SET TaxPercentRate = TaxTotal / (Price * Quantity - DiscountAmount) WHERE Price > 0 AND Quantity > 0");
+                     
 
-            Sql("UPDATE dbo.OrderPaymentIn SET Sum = O.Sum FROM dbo.OrderOperation as O WHERE O.Id = dbo.OrderPaymentIn.Id");
-
-            DropColumn("dbo.OrderOperation", "TaxIncluded");
-            DropColumn("dbo.OrderOperation", "Sum");
+            DropColumn("dbo.OrderOperation", "TaxIncluded");          
             DropColumn("dbo.OrderOperation", "Tax");
             DropColumn("dbo.OrderLineItem", "BasePrice");
             DropColumn("dbo.OrderLineItem", "Tax");
         }
-        
+
         public override void Down()
         {
             AddColumn("dbo.OrderLineItem", "Tax", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.OrderLineItem", "BasePrice", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.OrderOperation", "Tax", c => c.Decimal(nullable: false, storeType: "money"));
-            AddColumn("dbo.OrderOperation", "Sum", c => c.Decimal(nullable: false, storeType: "money"));
             AddColumn("dbo.OrderOperation", "TaxIncluded", c => c.Boolean(nullable: false));
             DropColumn("dbo.OrderLineItem", "TaxPercentRate");
             DropColumn("dbo.OrderLineItem", "TaxTotal");
@@ -75,7 +70,6 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
             DropColumn("dbo.OrderShipment", "DiscountAmountWithTax");
             DropColumn("dbo.OrderShipment", "PriceWithTax");
             DropColumn("dbo.OrderShipment", "Price");
-            DropColumn("dbo.OrderPaymentIn", "Sum");
             DropColumn("dbo.CustomerOrder", "DiscountTotalWithTax");
             DropColumn("dbo.CustomerOrder", "DiscountTotal");
             DropColumn("dbo.CustomerOrder", "HandlingTotalWithTax");

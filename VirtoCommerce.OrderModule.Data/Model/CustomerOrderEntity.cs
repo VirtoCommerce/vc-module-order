@@ -87,8 +87,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (order == null)
                 throw new NullReferenceException("order");
 
-            base.ToModel(order);
-
+            operation.Sum = order.Total;
             order.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
             order.Addresses = this.Addresses.Select(x => x.ToModel(AbstractTypeFactory<Address>.TryCreateInstance())).ToList();
@@ -102,8 +101,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         }
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
-        {
-         
+        {         
             var order = operation as CustomerOrder;
             if (order == null)
                 throw new NullReferenceException("order");
@@ -132,7 +130,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 this.TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x))); 
             }
-
+            this.Sum = order.Total;
             base.FromModel(order, pkMap);
 
             return this;

@@ -28,6 +28,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Required]
         [StringLength(3)]
         public string Currency { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal Sum { get; set; }
 
         public bool IsCancelled { get; set; }
         public DateTime? CancelledDate { get; set; }
@@ -70,6 +72,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.CancelledDate = this.CancelledDate;
             target.CancelReason = this.CancelReason;       
             target.IsApproved = this.IsApproved;
+            target.Sum = this.Sum;
             
         }
     }

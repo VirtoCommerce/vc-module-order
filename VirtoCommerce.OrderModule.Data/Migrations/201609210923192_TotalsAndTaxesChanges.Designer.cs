@@ -13,7 +13,7 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201609161115449_TotalsAndTaxesChanges"; }
+            get { return "201609210923192_TotalsAndTaxesChanges"; }
         }
         
         string IMigrationMetadata.Source
