@@ -158,7 +158,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 var query = repository.CustomerOrders;
 
-                if (!string.IsNullOrEmpty(criteria.Keyword))
+                if(!criteria.Numbers.IsNullOrEmpty())
+                {
+                    query = query.Where(x => criteria.Numbers.Contains(x.Number));
+                }
+                else if (!string.IsNullOrEmpty(criteria.Keyword))
                 {
                     query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
                 }
