@@ -43,7 +43,7 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
 
             Sql("UPDATE dbo.OrderLineItem SET DiscountAmount = D.DiscountAmount FROM dbo.OrderDiscount as D WHERE D.LineItemId = dbo.OrderLineItem.Id");
             Sql("UPDATE dbo.OrderLineItem SET TaxTotal = Tax");
-            Sql("UPDATE dbo.OrderLineItem SET TaxPercentRate = TaxTotal / (Price * Quantity - DiscountAmount) WHERE Price > 0 AND Quantity > 0");
+            Sql("UPDATE dbo.OrderLineItem SET TaxPercentRate = TaxTotal / (Price * Quantity - DiscountAmount) WHERE (Price * Quantity - DiscountAmount) > 0");
                      
 
             DropColumn("dbo.OrderOperation", "TaxIncluded");          
