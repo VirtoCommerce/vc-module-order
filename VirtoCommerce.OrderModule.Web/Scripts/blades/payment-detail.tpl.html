@@ -8,7 +8,7 @@
             </div>
             <div class="order-brand" ng-if="!blade.isNew">
                 <div class="brand-image">
-                    <img class="brand-logo" ng-src="{{blade.currentEntity.paymentMethod.iconUrl}}" alt="" ng-if="blade.currentEntity.paymentMethod.iconUrl">
+                    <img class="brand-logo" ng-src="{{blade.currentEntity.paymentMethod.logoUrl}}" alt="" ng-if="blade.currentEntity.paymentMethod.logoUrl">
                 </div>
                 <div class="brand-t" title="{{blade.currentEntity.paymentMethod.description}}">{{blade.currentEntity.paymentMethod.name}}</div>
                 <div class="brand-descr" ng-if="blade.currentEntity.paymentMethod.paymentMethodGroupType">{{blade.currentEntity.paymentMethod.paymentMethodGroupType}}</div>
