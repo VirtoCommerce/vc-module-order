@@ -57,15 +57,14 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (payment == null)
                 throw new NullReferenceException("payment");
 
-            payment.InjectFrom(this);
-            payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
-
+         
             if (!this.Addresses.IsNullOrEmpty())
             {
                 payment.BillingAddress =  this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
 
             base.ToModel(payment);
+            payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
 
             return payment;
         }
@@ -76,14 +75,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (payment == null)
                 throw new NullReferenceException("payment");
 
-            this.Status = payment.PaymentStatus.ToString();
-
             if (payment.BillingAddress != null)
             {
                 this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
             }
 
             base.FromModel(payment, pkMap);
+            this.Status = payment.PaymentStatus.ToString();
 
             return this;
         }
