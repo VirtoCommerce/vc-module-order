@@ -199,7 +199,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 payment.OuterId = result.OuterId;
             }
-            payment.Status = result.NewPaymentStatus.ToString();
 
             _customerOrderService.SaveChanges(new[] { order });
 
