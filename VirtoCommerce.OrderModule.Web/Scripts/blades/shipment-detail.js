@@ -20,7 +20,7 @@
 
         blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
         blade.realOperationsCollection = blade.customerOrder.shipments;
-        
+
         blade.statuses = settings.getValues({ id: 'Shipment.Status' });
         blade.openStatusSettingManagement = function () {
             var newBlade = new DictionarySettingDetailBlade('Shipment.Status');

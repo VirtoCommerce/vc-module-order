@@ -47,7 +47,7 @@
                                     <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
                                 </label>
                                 <div class="form-input">
-                                    <ui-select ng-model="blade.currentEntity.status" ng-disabled="blade.isLocked">
+                                    <ui-select ng-model="blade.currentEntity.paymentStatus" ng-change="blade.currentEntity.status = $select.selected" ng-disabled="blade.isLocked">
                                         <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
                                         <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
                                             <span ng-bind-html="x | highlight: $select.search"></span>
