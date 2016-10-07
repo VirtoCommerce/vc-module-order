@@ -90,7 +90,6 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     ];
 
     // simple and advanced filtering
-    var filter = $scope.filter = {};
     var filter = blade.filter = $scope.filter = {};
     $scope.$localStorage = $localStorage;
     if (!$localStorage.orderSearchFilters) {
