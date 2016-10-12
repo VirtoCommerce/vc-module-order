@@ -5,9 +5,11 @@
     $scope.$watchCollection('blade.customerOrder.childrenOperations', function () {
         $scope.currentOperationId = blade.customerOrder.id;
 
-        var treeRoot = {};
-        buildOperationsTree(blade.customerOrder, treeRoot)
-        $scope.node = treeRoot.childrenNodes[0];
+        if (!blade.isLoading) {
+            var treeRoot = {};
+            buildOperationsTree(blade.customerOrder, treeRoot)
+            $scope.node = treeRoot.childrenNodes[0];
+        }
     });
 
     function buildOperationsTree(op, tree) {

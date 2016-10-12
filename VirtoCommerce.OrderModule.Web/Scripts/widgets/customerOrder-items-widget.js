@@ -3,7 +3,7 @@
     function ($scope, $translate, bladeNavigationService) {
     var blade = $scope.widget.blade;
     
-    $scope.$watch('widget.blade.currentEntity', function (operation) {
+    $scope.$watch('widget.blade.customerOrder', function (operation) {
         $scope.operation = operation;
     });
 
@@ -14,7 +14,7 @@
                 title: 'orders.widgets.customerOrder-items.blade-title',
                 titleValues: { title: result },
                 subtitle: 'orders.widgets.customerOrder-items.blade-subtitle',
-                currentEntity: blade.currentEntity,
+                currentEntity: $scope.operation,
                 recalculateFn: blade.recalculate,
                 controller: 'virtoCommerce.orderModule.customerOrderItemsController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
