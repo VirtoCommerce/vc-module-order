@@ -343,7 +343,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
         [ResponseType(typeof(webModel.DashboardStatisticsResult))]
-        [OverrideAuthorization]
         public IHttpActionResult GetDashboardStatistics([FromUri]DateTime? start = null, [FromUri]DateTime? end = null)
         {
             webModel.DashboardStatisticsResult retVal;
