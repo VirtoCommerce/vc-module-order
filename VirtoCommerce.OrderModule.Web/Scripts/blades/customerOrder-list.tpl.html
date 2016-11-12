@@ -59,5 +59,7 @@
     </div>
 </script>
 <script type="text/ng-template" id="total-list-name.cell.html">
-    <span>{{COL_FIELD | number:2}}&nbsp;{{row.entity.currency}}</span>
+    <div class="ui-grid-cell-contents">
+        <span>{{COL_FIELD | number:2}}&nbsp;{{row.entity.currency}}</span>
+    </div>
 </script>
