@@ -33,4 +33,9 @@
         blade.customInitialize = function () {
             blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.isCancelled;
         };
+
+        blade.setEntityStatus = function (status) {
+            blade.currentEntity.status = status;
+            blade.currentEntity.paymentStatus = status;
+        };
     }]);

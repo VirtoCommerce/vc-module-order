@@ -3,20 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web.Http.Results;
 using VirtoCommerce.CoreModule.Data.Migrations;
 using VirtoCommerce.CoreModule.Data.Repositories;
 using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
+using VirtoCommerce.Domain.Payment.Services;
+using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.Controllers.Api;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Data.DynamicProperties;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using VirtoCommerce.Platform.Data.Repositories;
@@ -25,23 +26,25 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
-    [Trait("Category", "CI")]
+    // [Trait("Category", "CI")]
     public class CRUDScenarios : FunctionalTestBase
     {
         [Fact]
         public void create_new_order_with_correct_statuses()
         {
-            var _controller = GetCustomerOrderController();
-            var order = GetTestOrder("order");
+            var order = GetTestOrder("order"); // + Guid.NewGuid().ToString()
+            var customerOrderService = GetCustomerOrderService();
 
             Assert.Equal(Domain.Payment.Model.PaymentStatus.Pending, order.InPayments.First().PaymentStatus);
             Assert.Null(order.InPayments.First().Status);
 
-            var result = _controller.CreateOrder(order) as OkNegotiatedContentResult<CustomerOrder>;
+            customerOrderService.SaveChanges(new[] { order });
+            order = customerOrderService.GetByIds(new[] { order.Id }).First();
 
-            Assert.NotNull(result.Content);
-            Assert.Equal(Domain.Payment.Model.PaymentStatus.Pending, result.Content.InPayments.First().PaymentStatus);
-            Assert.NotNull(result.Content.InPayments.First().Status);
+
+            Assert.NotNull(order);
+            Assert.Equal(Domain.Payment.Model.PaymentStatus.Pending, order.InPayments.First().PaymentStatus);
+            Assert.NotNull(order.InPayments.First().Status);
         }
 
         //[Fact]
@@ -50,12 +53,12 @@ namespace VirtoCommerce.OrderModule.Test
         //    //arrange
         //    var order = GetTestOrder("order");
         //    var _customerOrderService = GetCustomerOrderService();
-            
+
         //    //act
         //    order = _customerOrderService.GetByIds(new[] { "order" }).FirstOrDefault();
 
         //    _customerOrderService.SaveChanges(new[] { order });
-            
+
         //    ////assert
         //    //Assert.Equal("", GetErrors(payResponse.error));
         //}
@@ -189,7 +192,7 @@ namespace VirtoCommerce.OrderModule.Test
             };
 
             shipment.Items = new List<ShipmentItem>();
-            shipment.Items.AddRange(order.Items.Select(x => new ShipmentItem (x)));
+            shipment.Items.AddRange(order.Items.Select(x => new ShipmentItem(x)));
 
             order.Shipments = new List<Shipment>();
             order.Shipments.Add(shipment);
@@ -223,10 +226,11 @@ namespace VirtoCommerce.OrderModule.Test
         {
             Func<IPlatformRepository> platformRepositoryFactory = () => new PlatformRepository("VirtoCommerce", new EntityPrimaryKeyGeneratorInterceptor(), new AuditableInterceptor(null));
 
-            var dynamicPropertyService = new DynamicPropertyService(platformRepositoryFactory);
+            //var dynamicPropertyService = new DynamicPropertyService(platformRepositoryFactory);
+            var dynamicPropertyService = new Mock<IDynamicPropertyService>().Object;
             var orderEventPublisher = new EventPublisher<OrderChangeEvent>(Enumerable.Empty<IObserver<OrderChangeEvent>>().ToArray());
 
-            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, null, null, GetStoreService());
+            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService());
 
             return orderService;
         }
@@ -236,6 +240,16 @@ namespace VirtoCommerce.OrderModule.Test
             var orderService = GetCustomerOrderService();
 
             return new OrderModuleController(orderService, null, null, null, null, null, null, null, null, null, null);
+        }
+
+        private static IShippingMethodsService GetShippingMethodsService()
+        {
+            return new Mock<IShippingMethodsService>().Object;
+        }
+
+        private static IPaymentMethodsService GetPaymentMethodsService()
+        {
+            return new Mock<IPaymentMethodsService>().Object;
         }
 
         private static IStoreService GetStoreService()

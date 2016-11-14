@@ -6,26 +6,30 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     $scope.uiGridConstants = uiGridConstants;
 
     blade.refresh = function () {
-        blade.isLoading = true;
-        var criteria = {
-            keyword: filter.keyword,
-            sort: uiGridHelper.getSortExpression($scope),
-            skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
-            take: $scope.pageSettings.itemsPerPageCount
-        };
-        if (filter.current) {
-            angular.extend(criteria, filter.current);
-        }
+        if (blade.preloadedOrders) {
+            $scope.pageSettings.totalItems = blade.preloadedOrders.length;
+            $scope.objects = blade.preloadedOrders;
 
-        customerOrders.search(criteria, function (data) {
             blade.isLoading = false;
+        } else {
+            blade.isLoading = true;
+            var criteria = {
+                keyword: filter.keyword,
+                sort: uiGridHelper.getSortExpression($scope),
+                skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+                take: $scope.pageSettings.itemsPerPageCount
+            };
+            if (filter.current) {
+                angular.extend(criteria, filter.current);
+            }
 
-            $scope.pageSettings.totalItems = data.totalCount;
-            $scope.objects = data.customerOrders;
-        },
-	   function (error) {
-	       bladeNavigationService.setError('Error ' + error.status, blade);
-	   });
+            customerOrders.search(criteria, function (data) {
+                blade.isLoading = false;
+
+                $scope.pageSettings.totalItems = data.totalCount;
+                $scope.objects = data.customerOrders;
+            });
+        }
     };
 
     $scope.selectNode = function (node) {
@@ -34,6 +38,9 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
         var foundTemplate = knownOperations.getOperation(node.operationType);
         if (foundTemplate) {
             var newBlade = angular.copy(foundTemplate.detailBlade);
+            if (blade.preloadedOrders) {
+                newBlade.id = 'preloadedOrderDetails';
+            }
             newBlade.customerOrder = node;
             bladeNavigationService.showBlade(newBlade, blade);
         }
@@ -90,7 +97,6 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     ];
 
     // simple and advanced filtering
-    var filter = $scope.filter = {};
     var filter = blade.filter = $scope.filter = {};
     $scope.$localStorage = $localStorage;
     if (!$localStorage.orderSearchFilters) {

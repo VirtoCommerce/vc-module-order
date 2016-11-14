@@ -8,6 +8,7 @@
         <dependency id="VirtoCommerce.Catalog" version="2.12.0" />
         <dependency id="VirtoCommerce.Pricing" version="2.11.0" />
         <dependency id="VirtoCommerce.Customer" version="2.11.0" />
+        <dependency id="VirtoCommerce.Store" version="2.11.0" />
     </dependencies>
 
     <title>Order module</title>
@@ -18,7 +19,7 @@
     <owners>
         <owner>Virto Commerce</owner>
     </owners>
-    <projectUrl>http://virtocommerce.com/</projectUrl>
+    <projectUrl>https://github.com/VirtoCommerce/vc-module-order</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/VirtoCommerce/vc-module-order/master/VirtoCommerce.OrderModule.Web/Content/logo.png</iconUrl>
     <releaseNotes>First version.</releaseNotes>
     <copyright>Copyright © 2011-2016 Virto Commerce. All rights reserved</copyright>

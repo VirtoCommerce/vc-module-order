@@ -6,7 +6,6 @@
     </div>
 </div>
 
-
 <script type="text/ng-template" id="orderOperationDefault.tpl.html">
     <div class="tree-block" ng-click="selectOperation(node)" ng-class="{'__selected': currentOperationId == node.operation.id}">
         <div class="inner">
@@ -20,7 +19,7 @@
             </div>
             <div class="tree-el __price">
                 <i class="tree-ico fa fa-money"></i>
-                {{node.operation.sum +' '+node.operation.currency}}
+                {{node.operation.sum | number:2}}&nbsp;{{node.operation.currency}}
             </div>
             <div class="tree-el __canceled" ng-if="node.operation.status">
                 {{node.operation.status}}
@@ -28,6 +27,6 @@
         </div>
     </div>
     <ul class="tree-node" ng-class="{'__empty': node.childrenNodes.length == 1}" ng-if="node.childrenNodes.length > 0">
-        <li class="tree-item"  ng-repeat="node in node.childrenNodes" ng-include="node.treeTemplateUrl ? node.treeTemplateUrl : 'orderOperationDefault.tpl.html'"></li>
+        <li class="tree-item" ng-repeat="node in node.childrenNodes" ng-include="node.treeTemplateUrl ? node.treeTemplateUrl : 'orderOperationDefault.tpl.html'"></li>
     </ul>
 </script>

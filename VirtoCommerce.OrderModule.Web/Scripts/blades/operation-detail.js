@@ -30,8 +30,11 @@
             blade.isLoading = false;
         };
 
-        // base function to override as needed
+        // base functions to override as needed
         blade.customInitialize = function () { };
+        blade.setEntityStatus = function (status) {
+            blade.currentEntity.status = status;
+        };
 
         blade.recalculate = function () {
             blade.isLoading = true;
@@ -68,7 +71,7 @@
                 angular.copy(blade.currentEntity, blade.origEntity);
                 if (blade.isNew) {
                     blade.realOperationsCollection.push(blade.currentEntity);
-                    blade.customerOrder.childrenOperations.push(blade.currentEntity);
+                    blade.customerOrder.childrenOperations.push(angular.copy(blade.currentEntity));
                 } else {
                     var foundOp = _.findWhere(blade.realOperationsCollection, { id: blade.origEntity.id });
                     angular.copy(blade.origEntity, foundOp);
@@ -166,7 +169,7 @@
                         if (reason) {
                             blade.currentEntity.cancelReason = reason;
                             blade.currentEntity.isCancelled = true;
-                            blade.currentEntity.status = 'Cancelled';
+                            blade.setEntityStatus('Cancelled');
                             $scope.saveChanges();
                         }
                     }

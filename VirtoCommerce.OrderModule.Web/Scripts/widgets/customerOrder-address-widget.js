@@ -11,7 +11,7 @@
 		};
 		bladeNavigationService.showBlade(newBlade, $scope.blade);
 	};
-	$scope.$watch('widget.blade.currentEntity', function (operation) {
+	$scope.$watch('widget.blade.customerOrder', function (operation) {
 		$scope.operation = operation;
 	});
 }]);
