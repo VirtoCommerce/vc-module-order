@@ -6,7 +6,7 @@ Key features:
 ![Order UI](https://cloud.githubusercontent.com/assets/5801549/15569048/854c646c-232f-11e6-9819-7230045cad0c.png)
 
 # Documentation
-User guide: <a href="http://docs.virtocommerce.com/x/ygHr" target="_blank">Order Management</a>
+User guide: <a href="https://virtocommerce.com/docs/vc2userguide/order-management" target="_blank">Order Management</a>
 
 Developer guide:
 
