@@ -39,7 +39,18 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.CustomerOrder ConvertCartToOrder(cartModel.ShoppingCart cart)
         {
             var retVal = AbstractTypeFactory<orderModel.CustomerOrder>.TryCreateInstance();
-            retVal.InjectFrom(cart);
+
+            retVal.Comment = cart.Comment;
+            retVal.Currency = cart.Currency;
+            retVal.ChannelId = cart.ChannelId;
+            retVal.CustomerId = cart.CustomerId;
+            retVal.CustomerName = cart.CustomerName;
+            retVal.DiscountAmount = cart.DiscountAmount;
+            retVal.OrganizationId = cart.OrganizationId;
+            retVal.StoreId = cart.StoreId;
+            retVal.TaxPercentRate = cart.TaxPercentRate;
+            retVal.TaxType = cart.TaxType;
+            
             retVal.Status = "New";
 
             if (cart.Items != null)
@@ -95,9 +106,29 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 throw new ArgumentNullException("lineItem");
 
             var retVal = new Domain.Order.Model.LineItem();
-            retVal.InjectFrom(lineItem);
-            retVal.Id = null;
 
+            retVal.CatalogId = lineItem.CatalogId;
+            retVal.CategoryId = lineItem.CategoryId;
+            retVal.Comment = lineItem.Note;
+            retVal.Currency = lineItem.Currency;
+            retVal.Height = lineItem.Height;
+            retVal.ImageUrl = lineItem.ImageUrl;
+            retVal.IsGift = lineItem.IsGift;
+            retVal.Length = lineItem.Length;
+            retVal.MeasureUnit = lineItem.MeasureUnit;
+            retVal.Name = lineItem.Name;
+            retVal.PriceId = lineItem.PriceId;
+            retVal.ProductId = lineItem.ProductId;
+            retVal.ProductType = lineItem.ProductType;
+            retVal.Quantity = lineItem.Quantity;
+            retVal.Sku = lineItem.Sku;
+            retVal.TaxPercentRate = lineItem.TaxPercentRate;
+            retVal.TaxType = lineItem.TaxType;
+            retVal.Weight = lineItem.Weight;
+            retVal.WeightUnit = lineItem.WeightUnit;
+            retVal.Width = lineItem.Width;
+
+            retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
           
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
@@ -116,16 +147,38 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 throw new ArgumentNullException("discount");
 
             var retVal = new Domain.Order.Model.Discount();
-            retVal.InjectFrom(discount);
+            if(!string.IsNullOrEmpty(discount.Coupon))
+            {
+                retVal.Coupon = new orderModel.Coupon
+                {
+                    Code = discount.Coupon,
+                    IsValid = true
+                };
+            }
+            retVal.Currency = discount.Currency;
+            retVal.Description = discount.Description;
+            retVal.DiscountAmount = discount.DiscountAmount;
+            retVal.DiscountAmountWithTax = discount.DiscountAmountWithTax;
+            retVal.PromotionId = discount.PromotionId;
+
             return retVal;
         }
 
         protected virtual orderModel.Shipment ToOrderModel(cartModel.Shipment shipment)
         {
             var retVal = AbstractTypeFactory<orderModel.Shipment>.TryCreateInstance();
-            retVal.InjectFrom(shipment);
-            retVal.Id = null;
-
+            retVal.Currency = shipment.Currency;
+            retVal.DiscountAmount = shipment.DiscountAmount;
+            retVal.Height = shipment.Height;
+            retVal.Length = shipment.Length;
+            retVal.MeasureUnit = shipment.MeasureUnit;
+            retVal.ShipmentMethodCode = shipment.ShipmentMethodCode;
+            retVal.ShipmentMethodOption = shipment.ShipmentMethodOption;
+            retVal.Sum = shipment.Total;
+            retVal.Weight = shipment.Weight;
+            retVal.WeightUnit = shipment.WeightUnit;
+            retVal.Width = shipment.Width;            
+            retVal.TaxPercentRate = shipment.TaxPercentRate;
             retVal.DiscountAmount = shipment.DiscountAmount;
             retVal.Price = shipment.Price;
             retVal.Status = "New";
@@ -161,9 +214,12 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 throw new ArgumentNullException("payment");
 
             var retVal = AbstractTypeFactory<orderModel.PaymentIn>.TryCreateInstance();
-            retVal.InjectFrom(payment);
-            retVal.Id = null;
-
+            retVal.Currency = payment.Currency;
+            retVal.DiscountAmount = payment.DiscountAmount;
+            retVal.Price = payment.Price;
+            retVal.TaxPercentRate = payment.TaxPercentRate;
+            retVal.TaxType = payment.TaxType;
+              
             retVal.GatewayCode = payment.PaymentGatewayCode;
             retVal.Sum = payment.Amount;
             retVal.PaymentStatus = PaymentStatus.New;
@@ -171,6 +227,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 retVal.BillingAddress = payment.BillingAddress;
             }
+            retVal.TaxDetails = payment.TaxDetails;
             return retVal;
         }
 

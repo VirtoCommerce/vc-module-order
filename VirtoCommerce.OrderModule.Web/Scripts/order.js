@@ -145,6 +145,16 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         isReadonly: true,
                         title: "orders.blades.payment-detail.labels.from",
                         valueType: "DateTime"
+                    },
+                    {
+                        name: 'price',
+                        title: "orders.blades.payment-detail.labels.price",
+                        templateUrl: 'price.html'
+                    },
+                    {
+                        name: 'priceWithTax',
+                        title: "orders.blades.payment-detail.labels.price-with-tax",
+                        templateUrl: 'priceWithTax.html'
                     }
 	            ]
 	        }
@@ -247,6 +257,14 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        size: [2, 1],
 	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-address-widget.tpl.html'
 	    }, 'paymentDetailWidgets');
+
+	    var paymentTotalWidget = {
+	        controller: 'virtoCommerce.orderModule.paymentTotalsWidgetController',
+	        size: [2, 1],
+	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-totals-widget.tpl.html'
+	    };
+	    widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');
+
 
 	    var dynamicPropertyWidget = {
 	        controller: 'platformWebApp.dynamicPropertyWidgetController',

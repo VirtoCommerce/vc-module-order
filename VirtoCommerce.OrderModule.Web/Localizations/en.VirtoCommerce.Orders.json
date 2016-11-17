@@ -85,7 +85,9 @@
                     "amount": "Amount",
                     "from": "From",
                     "payment-gateway": "Payment gateway",
-                    "payment-purpose": "Payment purpose"
+                    "payment-purpose": "Payment purpose",
+                    "price": "Payment fees",
+                    "price-with-tax": "Payment fees (inc tax)"
                 },
                 "placeholders": {
                     "status": "Select...",
@@ -153,6 +155,7 @@
                 "sub-total": "Sub total",
                 "shipping-total": "Shipping total",
                 "shipping-sub-total": "Shipping sub total",
+                "payment-sub-total": "Payment fees",
                 "tax-total": "Tax total",
                 "discount": "Discount",
                 "discount-total": "Discount total",
@@ -174,6 +177,13 @@
                 "tax-total": "Tax total",
                 "shipment-total": "Shipment total",
                 "shipment-price": "Shipping price",
+                "discount-total": "Discount total",
+                "total": "Total"
+            },
+            "payment-totals": {
+                "tax-total": "Tax total",
+                "payment-total": "Payment total",
+                "payment-price": "Payment price",
                 "discount-total": "Discount total",
                 "total": "Total"
             },

@@ -38,4 +38,8 @@
             blade.currentEntity.status = status;
             blade.currentEntity.paymentStatus = status;
         };
+
+        blade.updateRecalculationFlag = function () {
+            blade.isTotalsRecalculationNeeded = blade.origEntity.price != blade.currentEntity.price || blade.origEntity.priceWithTax != blade.currentEntity.priceWithTax;
+        }
     }]);

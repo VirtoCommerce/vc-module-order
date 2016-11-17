@@ -79,4 +79,16 @@
     </div>
 </div>
 
+<script type="text/ng-template" id="price.html">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
+        <input money required ng-model="blade.currentEntity.price" ng-change="blade.updateRecalculationFlag()">
+    </div>
+</script>
+<script type="text/ng-template" id="priceWithTax.html">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
+        <input money required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
+    </div>
+</script>
 

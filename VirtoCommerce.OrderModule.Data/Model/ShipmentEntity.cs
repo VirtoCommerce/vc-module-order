@@ -97,7 +97,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipment == null)
                 throw new NullReferenceException("shipment");
 
-           
             if (!this.Addresses.IsNullOrEmpty())
             {
                 shipment.DeliveryAddress = this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
@@ -111,6 +110,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             shipment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
 
             base.ToModel(shipment);
+
             operation.Sum = shipment.TotalWithTax;
 
             return shipment;
@@ -122,7 +122,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipment == null)
                 throw new NullReferenceException("shipment");
 
-            this.InjectFrom(shipment);
+            base.FromModel(shipment, pkMap);
 
             //Allow to empty address
             this.Addresses = new ObservableCollection<AddressEntity>();
@@ -147,7 +147,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 this.Discounts = new ObservableCollection<DiscountEntity>(shipment.Discounts.Select(x=> AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
           
-            base.FromModel(shipment, pkMap);
             this.Sum = shipment.TotalWithTax;
 
             return this;

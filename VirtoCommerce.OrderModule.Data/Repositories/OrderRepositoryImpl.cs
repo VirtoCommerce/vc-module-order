@@ -160,6 +160,10 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                                        .WithMany(x => x.Discounts)
                                        .HasForeignKey(x => x.LineItemId).WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<DiscountEntity>().HasOptional(x => x.PaymentIn)
+                                       .WithMany(x => x.Discounts)
+                                       .HasForeignKey(x => x.PaymentInId).WillCascadeOnDelete(true);
+
 
             modelBuilder.Entity<DiscountEntity>().ToTable("OrderDiscount");
             #endregion
@@ -181,6 +185,9 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                                        .WithMany(x => x.TaxDetails)
                                        .HasForeignKey(x => x.LineItemId).WillCascadeOnDelete(true);
 
+            modelBuilder.Entity<TaxDetailEntity>().HasOptional(x => x.PaymentIn)
+                                   .WithMany(x => x.TaxDetails)
+                                   .HasForeignKey(x => x.PaymentInId).WillCascadeOnDelete(true);
 
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
@@ -226,7 +233,9 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             }
             if ((responseGroup & CustomerOrderResponseGroup.WithInPayments) == CustomerOrderResponseGroup.WithInPayments)
             {
-                var inPayments = InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+                var inPayments = InPayments.Include(x => x.TaxDetails)
+                                           .Include(x => x.Discounts)
+                                           .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var paymentsIds = inPayments.Select(x => x.Id).ToArray();
                 var paymentAddresses = Addresses.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }

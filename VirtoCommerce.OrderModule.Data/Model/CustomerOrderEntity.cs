@@ -64,6 +64,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal ShippingTotalWithTax { get; set; }
         [Column(TypeName = "Money")]
+        public decimal PaymentTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal PaymentTotalWithTax { get; set; }
+        [Column(TypeName = "Money")]
         public decimal HandlingTotal { get; set; }
         [Column(TypeName = "Money")]
         public decimal HandlingTotalWithTax { get; set; }
@@ -86,7 +90,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var order = operation as CustomerOrder;
             if (order == null)
                 throw new NullReferenceException("order");
-
+            
             order.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
             order.Addresses = this.Addresses.Select(x => x.ToModel(AbstractTypeFactory<Address>.TryCreateInstance())).ToList();
@@ -95,6 +99,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             order.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
 
             base.ToModel(order);
+
             this.Sum = order.Total;
 
             return order;
@@ -105,7 +110,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var order = operation as CustomerOrder;
             if (order == null)
                 throw new NullReferenceException("order");
-        
+
+            base.FromModel(order, pkMap);
+
             if (order.Addresses != null)
             {
                 this.Addresses = new ObservableCollection<AddressEntity>(order.Addresses.Select(x => AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(x)));
@@ -130,7 +137,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 this.TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x))); 
             }
-            base.FromModel(order, pkMap);
             this.Sum = order.Total;
 
             return this;
@@ -152,6 +158,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.SubTotalWithTax = this.SubTotalWithTax;
             target.ShippingTotal = this.ShippingTotal;
             target.ShippingTotalWithTax = this.ShippingTotalWithTax;
+            target.PaymentTotal = this.PaymentTotal;
+            target.PaymentTotalWithTax = this.PaymentTotalWithTax;
             target.HandlingTotal = this.HandlingTotal;
             target.HandlingTotalWithTax = this.HandlingTotalWithTax;
             target.DiscountTotal = this.DiscountTotal;

@@ -28,6 +28,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public virtual LineItemEntity LineItem { get; set; }
 		public string LineItemId { get; set; }
 
+        public virtual PaymentInEntity PaymentIn { get; set; }
+        public string PaymentInId { get; set; }
+
         public virtual TaxDetail ToModel(TaxDetail taxDetail)
         {
             if (taxDetail == null)

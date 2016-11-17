@@ -129,7 +129,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.Domain, Version=2.17.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.17.3\lib\net451\VirtoCommerce.Domain.dll</HintPath>
+      <HintPath>..\packages\VirtoCommerce.Domain.2.18.0-rc2\lib\net451\VirtoCommerce.Domain.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.Platform.Core, Version=2.12.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -221,7 +221,9 @@
     <Content Include="Scripts\widgets\customerOrder-items-widget.js" />
     <Content Include="Scripts\widgets\shipment-address-widget.js" />
     <Content Include="Scripts\widgets\shipment-address-widget.tpl.html" />
+    <Content Include="Scripts\widgets\payment-totals-widget.js" />
     <Content Include="Scripts\widgets\shipment-totals-widget.js" />
+    <Content Include="Scripts\widgets\payment-totals-widget.tpl.html" />
     <Content Include="Scripts\widgets\shipment-totals-widget.tpl.html" />
     <Content Include="Scripts\widgets\operation-comment-widget.js" />
     <Content Include="Scripts\widgets\customerOrder-totals-widget.js" />
