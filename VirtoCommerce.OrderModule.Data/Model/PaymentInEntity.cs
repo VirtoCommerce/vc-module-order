@@ -107,6 +107,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.FromModel(payment, pkMap);
 
+            if(payment.PaymentMethod != null)
+            {
+                this.GatewayCode = payment.GatewayCode;
+            }
             if (payment.BillingAddress != null)
             {
                 this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });

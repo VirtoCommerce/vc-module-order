@@ -126,6 +126,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             //Allow to empty address
             this.Addresses = new ObservableCollection<AddressEntity>();
+            if(shipment.ShippingMethod != null)
+            {
+                this.ShipmentMethodCode = shipment.ShippingMethod.Code;
+                this.ShipmentMethodOption = shipment.ShipmentMethodOption;
+            }
             if (shipment.DeliveryAddress != null)
             {
                 this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(shipment.DeliveryAddress) });

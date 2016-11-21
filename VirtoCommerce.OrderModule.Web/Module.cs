@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Web.Http;
+using System.Xml.Serialization;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Commerce.Model;
@@ -9,6 +12,7 @@ using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
+using VirtoCommerce.Domain.Shipping.Model;
 using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.OrderModule.Data.Model;
 using VirtoCommerce.OrderModule.Data.Notifications;
@@ -17,6 +21,7 @@ using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.ExportImport;
 using VirtoCommerce.OrderModule.Web.JsonConverters;
+using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Resources;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Common;
@@ -154,6 +159,12 @@ namespace VirtoCommerce.OrderModule.Web
             var httpConfiguration = _container.Resolve<HttpConfiguration>();
             httpConfiguration.Formatters.JsonFormatter.SerializerSettings.Converters.Add(new PolymorphicOperationJsonConverter(_container.Resolve<IPaymentMethodsService>(), _container.Resolve<IShippingMethodsService>()));
 
+            //Next lines need to correct XML serialization for orders models
+            var allShippingmethodTypes = _container.Resolve<IShippingMethodsService>().GetAllShippingMethods().Select(x => x.GetType()).ToArray();
+            var allPaymentMethodTypes = _container.Resolve<IPaymentMethodsService>().GetAllPaymentMethods().Select(x => x.GetType()).ToArray();
+            var allOrderKnownTypes = new Type[] { typeof(Shipment), typeof(PaymentIn), typeof(CustomerOrder) }.Concat(allPaymentMethodTypes).Concat(allShippingmethodTypes).ToArray();
+            httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrder>(new DataContractSerializer(typeof(CustomerOrder), allOrderKnownTypes));
+            httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrderSearchResult>(new DataContractSerializer(typeof(CustomerOrderSearchResult), allOrderKnownTypes));
         }
 
         #endregion
