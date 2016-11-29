@@ -168,6 +168,7 @@
                     callback: function (reason) {
                         if (reason) {
                             blade.currentEntity.cancelReason = reason;
+                            blade.currentEntity.cancelledDate = new Date();
                             blade.currentEntity.isCancelled = true;
                             blade.setEntityStatus('Cancelled');
                             $scope.saveChanges();
