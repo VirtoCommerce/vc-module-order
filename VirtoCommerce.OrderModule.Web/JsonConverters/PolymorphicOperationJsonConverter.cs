@@ -17,6 +17,8 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 {
     public class PolymorphicOperationJsonConverter : JsonConverter
     {
+        private static Type[] _knowTypes = new[] { typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria), typeof(PaymentMethod), typeof(ShippingMethod) };
+
         private readonly IPaymentMethodsService _paymentMethodsService;
         private readonly IShippingMethodsService _shippingMethodsService;
         public PolymorphicOperationJsonConverter(IPaymentMethodsService paymentMethodsService, IShippingMethodsService shippingMethodsService)
@@ -30,15 +32,45 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(IOperation).IsAssignableFrom(objectType) || objectType == typeof(CustomerOrderSearchCriteria) 
-                || objectType == typeof(PaymentMethod) || objectType == typeof(ShippingMethod);
+            return _knowTypes.Any(x => x.IsAssignableFrom(objectType));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             object retVal = null;
             var obj = JObject.Load(reader);
-            if (typeof(IOperation).IsAssignableFrom(objectType))
+          
+            if (typeof(CustomerOrder).IsAssignableFrom(objectType))
+            {
+                retVal = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
+            }      
+            else if (typeof(LineItem).IsAssignableFrom(objectType))
+            {
+                retVal = AbstractTypeFactory<LineItem>.TryCreateInstance();
+            }
+            else if (typeof(Shipment).IsAssignableFrom(objectType))
+            {
+                retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
+            }
+            else if (typeof(PaymentIn).IsAssignableFrom(objectType))
+            {
+                retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+            }
+            else if (typeof(CustomerOrderSearchCriteria).IsAssignableFrom(objectType))
+            {
+                retVal = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            }
+            else if(objectType == typeof(PaymentMethod))
+            {
+                var paymentGatewayCode = obj["code"].Value<string>();
+                retVal = _paymentMethodsService.GetAllPaymentMethods().FirstOrDefault(x => x.Code.EqualsInvariant(paymentGatewayCode));
+            }
+            else if(objectType == typeof(ShippingMethod))
+            {
+                var shippingGatewayCode = obj["code"].Value<string>();
+                retVal = _shippingMethodsService.GetAllShippingMethods().FirstOrDefault(x => x.Code.EqualsInvariant(shippingGatewayCode));
+            }
+            else if (typeof(IOperation).IsAssignableFrom(objectType))
             {
                 var pt = obj["operationType"];
                 if (pt != null)
@@ -49,25 +81,7 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
                     {
                         throw new NotSupportedException("Unknown operation type: " + operationType);
                     }
-                }
-                else
-                {
-                    retVal = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
-                }
-            }
-            else if (objectType == typeof(CustomerOrderSearchCriteria))
-            {
-                retVal = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            }
-            else if( objectType == typeof(PaymentMethod))
-            {
-                var paymentGatewayCode = obj["code"].Value<string>();
-                retVal = _paymentMethodsService.GetAllPaymentMethods().FirstOrDefault(x => x.Code.EqualsInvariant(paymentGatewayCode));
-            }
-            else if(objectType == typeof(ShippingMethod))
-            {
-                var shippingGatewayCode = obj["code"].Value<string>();
-                retVal = _shippingMethodsService.GetAllShippingMethods().FirstOrDefault(x => x.Code.EqualsInvariant(shippingGatewayCode));
+                }                
             }
             serializer.Populate(obj.CreateReader(), retVal);
             return retVal;
