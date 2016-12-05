@@ -105,7 +105,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (lineItem == null)
                 throw new ArgumentNullException("lineItem");
 
-            var retVal = new Domain.Order.Model.LineItem();
+            var retVal = AbstractTypeFactory<orderModel.LineItem>.TryCreateInstance();
 
             retVal.CatalogId = lineItem.CatalogId;
             retVal.CategoryId = lineItem.CategoryId;
@@ -146,7 +146,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (discount == null)
                 throw new ArgumentNullException("discount");
 
-            var retVal = new Domain.Order.Model.Discount();
+            var retVal = AbstractTypeFactory<Domain.Order.Model.Discount>.TryCreateInstance();
             if(!string.IsNullOrEmpty(discount.Coupon))
             {
                 retVal.Coupon = new orderModel.Coupon
