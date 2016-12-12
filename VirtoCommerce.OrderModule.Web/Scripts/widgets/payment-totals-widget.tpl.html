@@ -1,6 +1,6 @@
 ﻿<ul class="list __prices">
     <li class="list-item">{{'orders.widgets.payment-totals.payment-price' | translate}} <span class="list-price">{{payment.price | number:2}}&nbsp;{{payment.currency}}</span></li>
-    <li class="list-item">{{'orders.widgets.payment-totals.discount-total' | translate}} <span class="list-price">{{payment.discountAmount | number:2}}&nbsp;{{payment.currency}}</span></li>
+    <li class="list-item">{{'orders.widgets.payment-totals.discount-total' | translate}} <span class="list-price"><span ng-if="payment.discountAmount > 0">-</span>{{payment.discountAmount | number:2}}&nbsp;{{payment.currency}}</span></li>
     <li class="list-item">{{'orders.widgets.payment-totals.tax-total' | translate}} <span class="list-price">{{payment.taxTotal | number:2}}&nbsp;{{payment.currency}}</span></li>
     <li class="list-item __total">{{'orders.widgets.payment-totals.total' | translate}} <span class="list-price">{{payment.totalWithTax | number:2}}&nbsp;{{payment.currency}}</span></li>
 </ul>
