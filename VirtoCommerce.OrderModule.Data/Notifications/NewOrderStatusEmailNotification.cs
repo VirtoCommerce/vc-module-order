@@ -11,9 +11,11 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
 {
     public class NewOrderStatusEmailNotification : OrderEmailNotificationBase
     {
-        public NewOrderStatusEmailNotification(IEmailNotificationSendingGateway gateway) : base(gateway) { }
-
-      
+        public NewOrderStatusEmailNotification(IEmailNotificationSendingGateway gateway)
+            : base(gateway)
+        {
+        }
+              
         [NotificationParameter("Old order status")]
         public string OldStatus { get; set; }
 

@@ -60,24 +60,23 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 foreach (var order in orders)
                 {
                     EnsureThatAllOperationsHaveNumber(order);
+                                     
+                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
+                    var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
 
-                    var dataSourceOrder = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance(); 
-                    if (dataSourceOrder != null)
+                    var changeEvent = new OrderChangeEvent(originalEntity == null ? EntryState.Added : EntryState.Modified, originalOrder, order);
+                    CustomerOrderEventventPublisher.Publish(changeEvent);
+
+                    var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
+                                                                                 .FromModel(order, pkMap) as CustomerOrderEntity;
+                    if (originalEntity != null)
+                    {  
+                        changeTracker.Attach(originalEntity);
+                        modifiedEntity.Patch(originalEntity);
+                    }
+                    else
                     {
-                        dataSourceOrder = dataSourceOrder.FromModel(order, pkMap) as CustomerOrderEntity;
-                        var dataTargetOrder = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
-                        if (dataTargetOrder != null)
-                        {
-                            var origOrder = dataTargetOrder.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) as CustomerOrder;
-                            changeTracker.Attach(dataTargetOrder);
-                            dataSourceOrder.Patch(dataTargetOrder);
-                            CustomerOrderEventventPublisher.Publish(new OrderChangeEvent(EntryState.Modified, origOrder, order));
-                        }
-                        else
-                        {
-                            repository.Add(dataSourceOrder);
-                            CustomerOrderEventventPublisher.Publish(new OrderChangeEvent(EntryState.Added, order, order));
-                        }
+                        repository.Add(modifiedEntity);
                     }
                 }
                 CommitChanges(repository);
@@ -158,7 +157,12 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 var query = repository.CustomerOrders;
 
-                if(!criteria.Numbers.IsNullOrEmpty())
+                //by default does not return prototypes
+                if (!criteria.WithPrototypes)
+                {
+                    query = query.Where(x => !x.IsPrototype);
+                }
+                if (!criteria.Numbers.IsNullOrEmpty())
                 {
                     query = query.Where(x => criteria.Numbers.Contains(x.Number));
                 }
@@ -166,6 +170,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
                 }
+                if(criteria.OnlyRecurring)
+                {
+                    query = query.Where(x => x.SubscriptionId != null);
+                }
+                if(!criteria.SubscriptionIds.IsNullOrEmpty())
+                {
+                    query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
+                }               
                 if (criteria.CustomerId != null)
                 {
                     query = query.Where(x => x.CustomerId == criteria.CustomerId);

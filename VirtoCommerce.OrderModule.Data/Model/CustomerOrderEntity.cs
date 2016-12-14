@@ -49,6 +49,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		[StringLength(255)]
 		public string EmployeeName { get; set; }
 
+        [StringLength(64)]
+        public string SubscriptionId { get; set; }
+        [StringLength(64)]
+        public string SubscriptionNumber { get; set; }
+
+        public bool IsPrototype { get; set; }
+
         [Column(TypeName = "Money")]
         public decimal DiscountAmount { get; set; }
         [Column(TypeName = "Money")]
@@ -75,6 +82,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public decimal DiscountTotal { get; set; }
         [Column(TypeName = "Money")]
         public decimal DiscountTotalWithTax { get; set; }
+        [StringLength(16)]
+        public string LanguageCode { get; set; }
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
 		public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
@@ -166,6 +175,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.DiscountTotalWithTax = this.DiscountTotalWithTax;
             target.DiscountAmount = this.DiscountAmount;
             target.TaxTotal = this.TaxTotal;
+            target.IsPrototype = this.IsPrototype;
+            target.SubscriptionNumber = this.SubscriptionNumber;
+            target.SubscriptionId = this.SubscriptionId;
+            target.LanguageCode = this.LanguageCode;
 
             if (!this.Addresses.IsNullCollection())
             {

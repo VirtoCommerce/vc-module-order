@@ -11,16 +11,9 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
 {
     public class OrderSentEmailNotification : OrderEmailNotificationBase
     {
-        public OrderSentEmailNotification(IEmailNotificationSendingGateway gateway) : base(gateway) { }
-
-    
-        [NotificationParameter("Sent date")]
-        public DateTime SentOrderDate { get; set; }
-
-        [NotificationParameter("Number of sent shipments")]
-        public int NumberOfShipments { get; set; }
-
-        [NotificationParameter("Readable shipment numbers")]
-        public string[] ShipmentsNumbers { get; set; }
+        public OrderSentEmailNotification(IEmailNotificationSendingGateway gateway) 
+            : base(gateway)
+        {
+        }
     }
 }

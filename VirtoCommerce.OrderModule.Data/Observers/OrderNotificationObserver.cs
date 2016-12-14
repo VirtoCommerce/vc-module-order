@@ -36,58 +36,49 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             
         }
 
-        public void OnNext(OrderChangeEvent value)
+        public void OnNext(OrderChangeEvent changeEvent)
         {
             //Collection of order notifications
             var notifications = new List<OrderEmailNotificationBase>();
 
-            if(IsOrderCanceled(value))
+            if(IsOrderCanceled(changeEvent))
             {
-                var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
+                var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
-            if(value.ChangeState == EntryState.Added)
+            if(changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
             {
-                var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
+                var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                  notifications.Add(notification);
             }
 
-            if(IsNewStatus(value))
+            if(IsNewStatus(changeEvent))
             {
-                var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
+                var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
       
-                notification.NewStatus = value.ModifiedOrder.Status;
-                notification.OldStatus = value.OrigOrder.Status;
+                notification.NewStatus = changeEvent.ModifiedOrder.Status;
+                notification.OldStatus = changeEvent.OrigOrder.Status;
 
                 notifications.Add(notification);
             }
 
-            if(IsOrderPaid(value))
+            if(IsOrderPaid(changeEvent))
             {
-                var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
-                notification.FullPrice = value.ModifiedOrder.Total;
-                notification.PaidDate = DateTime.UtcNow;
-                notification.Currency = value.ModifiedOrder.Currency.ToString();
-
+                var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
-            if(IsOrderSent(value))
+            if(IsOrderSent(changeEvent))
             {
-                var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store", "en-US");
-      
-                notification.SentOrderDate = DateTime.UtcNow;
-                notification.NumberOfShipments = value.ModifiedOrder.Shipments.Count(i => i.Status == "Send");
-                notification.ShipmentsNumbers = value.ModifiedOrder.Shipments.Select(i => i.Number).ToArray();
-
+                var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
             foreach(var notification in notifications)
             {
-                notification.CustomerOrder = value.ModifiedOrder;
-                SetNotificationParameters(notification, value);
+                notification.CustomerOrder = changeEvent.ModifiedOrder;
+                SetNotificationParameters(notification, changeEvent);
                 _notificationManager.ScheduleSendNotification(notification);
             }
         }
@@ -170,15 +161,23 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// Set base notificaiton parameters (sender, recipient, isActive)
         /// </summary>
         /// <param name="notification"></param>
-        /// <param name="value"></param>
-        private void SetNotificationParameters(EmailNotification notification, OrderChangeEvent value)
+        /// <param name="changeEvent"></param>
+        private void SetNotificationParameters(EmailNotification notification, OrderChangeEvent changeEvent)
         {
+            var order = changeEvent.ModifiedOrder;
 
-            var store = _storeService.GetById(value.ModifiedOrder.StoreId);
+            var store = _storeService.GetById(order.StoreId);
             notification.Sender = store.Email;
             notification.IsActive = true;
 
-            var member = _memberService.GetByIds(new[] { value.ModifiedOrder.CustomerId }).FirstOrDefault();
+            //Log all notification with subscription
+            if(!string.IsNullOrEmpty(order.SubscriptionId))
+            {
+                notification.ObjectTypeId = "Subscription";
+                notification.ObjectId = order.SubscriptionId;
+            }
+
+            var member = _memberService.GetByIds(new[] { order.CustomerId }).FirstOrDefault();
             if (member != null)
             {
                 var email = member.Emails.FirstOrDefault();
@@ -189,9 +188,9 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             }
             if (string.IsNullOrEmpty(notification.Recipient))
             {
-                if (value.ModifiedOrder.Addresses.Count > 0)
+                if (order.Addresses.Count > 0)
                 {
-                    var address = value.ModifiedOrder.Addresses.FirstOrDefault();
+                    var address = order.Addresses.FirstOrDefault();
                     if (address != null)
                     {
                         notification.Recipient = address.Email;

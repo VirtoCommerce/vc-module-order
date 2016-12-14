@@ -13,24 +13,7 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
     {
         public OrderEmailNotificationBase(IEmailNotificationSendingGateway gateway) : base(gateway) { }
 
-        private string _orderNumber;
-        [NotificationParameter("Order number")]
-        public string OrderNumber
-        {
-            get
-            {
-                if(_orderNumber == null && CustomerOrder != null)
-                {
-                    _orderNumber = CustomerOrder.Number;
-                }
-                return _orderNumber;
-            }
-            set
-            {
-                _orderNumber = value;
-            }
-        }
-
+        [NotificationParameter("CustomerOrder")]
         public CustomerOrder CustomerOrder { get; set; }
     }
 }

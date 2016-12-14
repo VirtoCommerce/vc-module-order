@@ -61,7 +61,7 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ ordernumber }}&lt;/strong&gt;.&lt;br&gt; Cancelation order reason - &lt;strong&gt;{{ cancelationreason }}&lt;/strong&gt;..
+        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt;.&lt;br&gt; Cancelation order reason - &lt;strong&gt;{{ customer_order.cancel_reason}}&lt;/strong&gt;..
         /// </summary>
         public static string CancelOrderNotificationBody {
             get {
@@ -79,7 +79,7 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your order number  - &lt;strong&gt;{{ ordernumber }}&lt;/strong&gt;..
+        ///   Looks up a localized string similar to Your order number  - &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt;..
         /// </summary>
         public static string CreateOrderNotificationBody {
             get {
@@ -97,7 +97,7 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ ordernumber }}&lt;/strong&gt; change status from &lt;strong&gt;{{ oldstatus }}&lt;strong&gt; to &lt;strong&gt;{{ newstatus }}&lt;strong&gt;..
+        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt; change status from &lt;strong&gt;{{ old_status }}&lt;strong&gt; to &lt;strong&gt;{{ new_status }}&lt;strong&gt;..
         /// </summary>
         public static string NewOrderStatusNotificationBody {
             get {
@@ -115,7 +115,7 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thank you for paying &lt;strong&gt;{{ ordernumber }}&lt;/strong&gt; order.&lt;br&gt; You had paid &lt;strong&gt;{{ fullprice }} {{ currency }}&lt;/strong&gt;.&lt;br&gt; Paid date - &lt;strong&gt;{{ paiddate }}&lt;/strong&gt;..
+        ///   Looks up a localized string similar to Thank you for paying &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt; order.&lt;br&gt; You had paid &lt;strong&gt;{{ customer_order.total |  round: 2}} {{ customer_order.currency }}&lt;/strong&gt;.&lt;br&gt; Paid date - &lt;strong&gt;{{ customer_order.modified_date }}&lt;/strong&gt;..
         /// </summary>
         public static string OrderPaidNotificationBody {
             get {
@@ -133,7 +133,7 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ ordernumber }}&lt;/strong&gt; was sent.&lt;br&gt; Number of sent parcels - &lt;strong&gt;{{ numberofshipments }}&lt;/strong&gt;.&lt;br&gt; Parcels tracking numbers:&lt;br&gt; {% for shipmentnumber in shipmentsnumbers %} &lt;br&gt;&lt;strong&gt;{{ shipmentnumber }}&lt;/strong&gt; {% endfor %}&lt;br&gt;&lt;br&gt;Sent date - &lt;strong&gt;{{ sentorderdate }}&lt;/strong&gt;..
+        ///   Looks up a localized string similar to Your order &lt;strong&gt;{{ customer_order.number}}&lt;/strong&gt; was sent.&lt;br&gt; Number of sent parcels - &lt;strong&gt;{{ customer_order.shipments | size}}&lt;/strong&gt;.&lt;br&gt; Parcels tracking numbers:&lt;br&gt; {% for shipment in customer_order.shipments %} &lt;br&gt;&lt;strong&gt;{{ shipment.number}}&lt;/strong&gt; {% endfor %}&lt;br&gt;&lt;br&gt;Sent date - &lt;strong&gt;{{ customer_order.modified_date }}&lt;/strong&gt;..
         /// </summary>
         public static string OrderSentNotificationBody {
             get {

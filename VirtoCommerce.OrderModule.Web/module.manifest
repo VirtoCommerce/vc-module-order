@@ -46,8 +46,12 @@
                 <isArray>true</isArray>
                 <arrayValues>
                     <value>New</value>
+                    <value>Not payed</value>
+                    <value>Pending</value>
                     <value>Processing</value>
+                    <value>Ready to send</value>
                     <value>Cancelled</value>
+                    <value>Partially sent</value>                    
                     <value>Completed</value>
                 </arrayValues>
             </setting>
@@ -63,7 +67,7 @@
                     <value>PickPack</value>
                     <value>Cancelled</value>
                     <value>ReadyToSend</value>
-                    <value>Send</value>
+                    <value>Sent</value>
                 </arrayValues>
             </setting>
             <setting>
