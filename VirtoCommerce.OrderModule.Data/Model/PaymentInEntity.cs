@@ -109,7 +109,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             if(payment.PaymentMethod != null)
             {
-                this.GatewayCode = payment.GatewayCode;
+                this.GatewayCode = payment.PaymentMethod.Code;
             }
             if (payment.BillingAddress != null)
             {
