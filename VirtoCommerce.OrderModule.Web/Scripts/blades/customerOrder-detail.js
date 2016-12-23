@@ -46,10 +46,6 @@
                blade.employees = data.results;
            });
 
-        blade.resetEmployeeName = function (newVal) {
-            blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
-        };
-
         blade.customInitialize = function () {
             blade.isLocked = blade.currentEntity.status == 'Completed' || blade.currentEntity.isCancelled;
         };

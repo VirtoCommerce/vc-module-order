@@ -90,7 +90,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     {
                         name: 'employeeId',
                         title: "orders.blades.customerOrder-detail.labels.employee",
-                        templateUrl: 'employeeSelector.html'
+                        templateUrl: 'order-employeeSelector.html'
                     },
                     {
                         name: 'number',
@@ -186,7 +186,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     {
                         name: 'employeeId',
                         title: "orders.blades.shipment-detail.labels.employee",
-                        templateUrl: 'employeeSelector.html'
+                        templateUrl: 'shipment-employeeSelector.html'
                     },
                     {
                         name: 'price',
