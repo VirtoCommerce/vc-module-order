@@ -40,6 +40,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         {
             var retVal = AbstractTypeFactory<orderModel.CustomerOrder>.TryCreateInstance();
 
+            retVal.Id = cart.Id;
             retVal.Comment = cart.Comment;
             retVal.Currency = cart.Currency;
             retVal.ChannelId = cart.ChannelId;
