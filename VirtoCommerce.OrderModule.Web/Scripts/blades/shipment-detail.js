@@ -32,10 +32,7 @@
 
         // load employees
         blade.employees = blade.parentBlade.employees;
-        blade.resetEmployeeName = function (newVal) {
-            blade.currentEntity.employeeName = newVal ? newVal.fullName : undefined;
-        };
-
+        
         blade.fulfillmentCenters = order_res_fulfilmentCenters.query();
         blade.openFulfillmentCentersList = function () {
             var newBlade = {

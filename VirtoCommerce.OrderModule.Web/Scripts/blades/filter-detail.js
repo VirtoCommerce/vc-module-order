@@ -32,7 +32,7 @@
             {
                 name: 'employeeId',
                 title: "orders.blades.shipment-detail.labels.employee",
-                templateUrl: 'employeeSelector.html'
+                templateUrl: 'filter-employeeSelector.html'
             }
         ];
 

@@ -83,9 +83,9 @@
     </div>
 </script>
 
-<script type="text/ng-template" id="employeeSelector.html">
+<script type="text/ng-template" id="shipment-employeeSelector.html">
     <div class="form-input">
-        <ui-select ng-model="blade.currentEntity.employeeId" ng-change="blade.resetEmployeeName($select.selected)" ng-disabled="blade.isLocked">
+        <ui-select ng-model="blade.currentEntity.employeeId" ng-change="blade.currentEntity.employeeName = $select.selected ? $select.selected.fullName : undefined" ng-disabled="blade.isLocked">
             <ui-select-match allow-clear placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.employee' | translate }}">{{$select.selected.fullName}}</ui-select-match>
             <ui-select-choices repeat="x.id as x in blade.employees | filter: { fullName: $select.search }">
                 <span ng-bind-html="x.fullName | highlight: $select.search"></span>
