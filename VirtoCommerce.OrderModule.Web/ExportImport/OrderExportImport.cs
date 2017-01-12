@@ -45,17 +45,11 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
             var take = 20;
             for (int skip = 0; skip < totalCount; skip += take)
             {
-                _customerOrderService.SaveChanges(backupObject.CustomerOrders.ToArray());
+                _customerOrderService.SaveChanges(backupObject.CustomerOrders.Skip(skip).Take(take).ToArray());
 
                 progressInfo.Description = String.Format("{0} of {1} orders imported", Math.Min(skip + take, totalCount), totalCount);
                 progressCallback(progressInfo);
             }
-
-
-            progressInfo.Description = String.Format("{0} orders importing", backupObject.CustomerOrders.Count());
-			progressCallback(progressInfo);
-
-            _customerOrderService.SaveChanges(backupObject.CustomerOrders.ToArray());
         }      
 
 		private BackupObject GetBackupObject(Action<ExportImportProgressInfo> progressCallback)
