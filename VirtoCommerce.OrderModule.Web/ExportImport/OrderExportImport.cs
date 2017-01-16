@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 
             for(int skip = 0; skip < searchResponse.TotalCount; skip += take)
             {
-                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria {Skip = skip, Take = take, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
+                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Skip = skip, Take = take, WithPrototypes = true, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
 
                 progressInfo.Description = String.Format("{0} of {1} orders loading", Math.Min(skip + take, searchResponse.TotalCount), searchResponse.TotalCount);
                 progressCallback(progressInfo);
