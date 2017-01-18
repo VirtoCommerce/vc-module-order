@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +45,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             orderOperation.InjectFrom(this);
 
-            orderOperation.ChildrenOperations = orderOperation.GetFlatObjectsListWithInterface<IOperation>().Except(new[] { orderOperation }).ToList();
+            orderOperation.ChildrenOperations = GetAllChildOperations(orderOperation);
             return orderOperation;
         }
 
@@ -74,6 +76,37 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.IsApproved = this.IsApproved;
             target.Sum = this.Sum;
             
+        }
+
+        private static IEnumerable<IOperation> GetAllChildOperations(IOperation operation)
+        {
+            var retVal = new List<IOperation>();
+            var objectType = operation.GetType();
+
+            var properties = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            var childOperations = properties.Where(x => x.PropertyType.GetInterface(typeof(IOperation).Name) != null)
+                                    .Select(x => (IOperation)x.GetValue(operation)).Where(x=> x != null).ToList();
+
+            foreach (var childOperation in childOperations.OfType<IOperation>())
+            {
+                retVal.Add(childOperation);
+            }
+
+            //Handle collection and arrays
+            var collections = properties.Where(p => p.GetIndexParameters().Length == 0)
+                                        .Select(x => x.GetValue(operation, null))
+                                        .Where(x => x is IEnumerable && !(x is String))
+                                        .Cast<IEnumerable>();
+
+            foreach (var collection in collections)
+            {
+                foreach (var childOperation in collection.OfType<IOperation>())
+                {
+                    retVal.Add(childOperation);                   
+                }
+            }
+            return retVal;
         }
     }
 }
