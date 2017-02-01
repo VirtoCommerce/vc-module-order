@@ -31,37 +31,40 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
 		public void OnNext(OrderChangeEvent value)
 		{
-			var origStockOutOperations = new LineItem[] { };
-			var modifiedStockOutOperations = new LineItem[] { };
-
-            if (value.ChangeState == EntryState.Added)
+            if (!value.ModifiedOrder.IsPrototype)
             {
-                modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
+                var origStockOutOperations = new LineItem[] { };
+                var modifiedStockOutOperations = new LineItem[] { };
+
+                if (value.ChangeState == EntryState.Added)
+                {
+                    modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
+                }
+                else if (value.ChangeState == EntryState.Deleted)
+                {
+                    origStockOutOperations = value.OrigOrder.Items.ToArray();
+                }
+                else
+                {
+                    origStockOutOperations = value.OrigOrder.Items.ToArray();
+                    modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
+                }
+
+                var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+                var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+
+                var changedInventoryInfos = new List<InventoryInfo>();
+
+                var inventoryInfos = _inventoryService.GetProductsInventoryInfos(originalPositions.Select(x => x.Key).Concat(modifiedPositions.Select(x => x.Key)).Distinct().ToArray());
+
+                var comparer = AnonymousComparer.Create((KeyValuePair<string, int> x) => x.Key);
+                modifiedPositions.CompareTo(originalPositions, comparer, (state, source, target) => { AdjustInventory(inventoryInfos, changedInventoryInfos, state, source, target); });
+
+                if (changedInventoryInfos.Any())
+                {
+                    _inventoryService.UpsertInventories(changedInventoryInfos);
+                }
             }
-            else if(value.ChangeState == EntryState.Deleted)
-            {
-                origStockOutOperations = value.OrigOrder.Items.ToArray();
-            }
-            else
-            {
-                origStockOutOperations = value.OrigOrder.Items.ToArray();
-                modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
-            }
-
-            var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
-			var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
-
-			var changedInventoryInfos = new List<InventoryInfo>();
-
-			var inventoryInfos = _inventoryService.GetProductsInventoryInfos(originalPositions.Select(x => x.Key).Concat(modifiedPositions.Select(x => x.Key)).Distinct().ToArray());
-
-			var comparer = AnonymousComparer.Create((KeyValuePair<string, int> x) => x.Key);
-			modifiedPositions.CompareTo(originalPositions, comparer, (state, source, target) => { AdjustInventory(inventoryInfos, changedInventoryInfos, state, source, target); });
-
-			if (changedInventoryInfos.Any())
-			{
-				_inventoryService.UpsertInventories(changedInventoryInfos);
-			}
 		}
 
 
