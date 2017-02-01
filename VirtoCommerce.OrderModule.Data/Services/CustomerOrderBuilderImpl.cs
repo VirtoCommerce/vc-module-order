@@ -39,8 +39,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.CustomerOrder ConvertCartToOrder(cartModel.ShoppingCart cart)
         {
             var retVal = AbstractTypeFactory<orderModel.CustomerOrder>.TryCreateInstance();
-
-            retVal.Id = cart.Id;
+            retVal.ShoppingCartId = cart.Id;
             retVal.Comment = cart.Comment;
             retVal.Currency = cart.Currency;
             retVal.ChannelId = cart.ChannelId;
@@ -55,9 +54,16 @@ namespace VirtoCommerce.OrderModule.Data.Services
             
             retVal.Status = "New";
 
+            var cartLineItemsMap = new Dictionary<string, orderModel.LineItem>();
             if (cart.Items != null)
             {
-                retVal.Items = cart.Items.Select(x => ToOrderModel(x)).ToList();
+                retVal.Items = new List<orderModel.LineItem>();
+                foreach(var cartLineItem in cart.Items)
+                {
+                    var orderLineItem = ToOrderModel(cartLineItem);
+                    retVal.Items.Add(orderLineItem);
+                    cartLineItemsMap.Add(cartLineItem.Id, orderLineItem);
+                }
             }
             if (cart.Discounts != null)
             {
@@ -71,15 +77,28 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             if (cart.Shipments != null)
             {
-                retVal.Shipments = cart.Shipments.Select(x => ToOrderModel(x)).ToList();
+                retVal.Shipments = new List<orderModel.Shipment>();
+                foreach(var cartShipment in cart.Shipments)
+                {
+                    var shipment = ToOrderModel(cartShipment);
+                    if(!cartShipment.Items.IsNullOrEmpty())
+                    {
+                        shipment.Items = new List<orderModel.ShipmentItem>();
+                        foreach (var cartShipmentItem in cartShipment.Items)
+                        {
+                            var shipmentItem = ToOrderModel(cartShipmentItem);
+                            if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
+                            {
+                                shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
+                                shipment.Items.Add(shipmentItem);
+                            }
+                        }
+                    }
+                    retVal.Shipments.Add(shipment);
+                }
                 //Add shipping address to order
                 retVal.Addresses.AddRange(retVal.Shipments.Where(x => x.DeliveryAddress != null).Select(x => x.DeliveryAddress));
-                //Redistribute order line items to shipment if cart shipment items empty 
-                //var shipment = retVal.Shipments.FirstOrDefault();
-                //if (shipment != null && shipment.Items.IsNullOrEmpty())
-                //{
-                //    shipment.Items = retVal.Items.Select(x => new Domain.Order.Model.ShipmentItem { LineItem = x, Quantity = x.Quantity }).ToList();
-                //}
+              
             }
             if (cart.Payments != null)
             {
@@ -169,6 +188,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.Shipment ToOrderModel(cartModel.Shipment shipment)
         {
             var retVal = AbstractTypeFactory<orderModel.Shipment>.TryCreateInstance();
+
             retVal.Currency = shipment.Currency;
             retVal.DiscountAmount = shipment.DiscountAmount;
             retVal.Height = shipment.Height;
@@ -188,10 +208,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 retVal.DeliveryAddress = shipment.DeliveryAddress;
             }
-            //if (shipment.Items != null)
-            //{
-            //    retVal.Items = shipment.Items.Select(x => ToOrderModel(x)).ToList();
-            //}
             if (shipment.Discounts != null)
             {
                 retVal.Discounts = shipment.Discounts.Select(x => ToOrderModel(x)).ToList();
@@ -206,7 +222,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 throw new ArgumentNullException("shipmentItem");
 
             var retVal = AbstractTypeFactory<orderModel.ShipmentItem>.TryCreateInstance();
-            retVal.InjectFrom(shipmentItem);
+            retVal.BarCode = shipmentItem.BarCode;
+            retVal.Quantity = shipmentItem.Quantity;            
             return retVal;
         }
 

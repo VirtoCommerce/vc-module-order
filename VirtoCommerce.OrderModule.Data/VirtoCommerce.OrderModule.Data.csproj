@@ -70,8 +70,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VirtoCommerce.Domain, Version=2.19.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.19.3\lib\net451\VirtoCommerce.Domain.dll</HintPath>
+    <Reference Include="VirtoCommerce.Domain, Version=2.19.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Domain.2.20.0-rc2\lib\net451\VirtoCommerce.Domain.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.Platform.Core, Version=2.12.6.0, Culture=neutral, processorArchitecture=MSIL">
@@ -155,12 +155,17 @@
     <Compile Include="Migrations\201612140700009_LanguageColumn.Designer.cs">
       <DependentUpon>201612140700009_LanguageColumn.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701310900381_PaymentGatewayTransactions.cs" />
+    <Compile Include="Migrations\201701310900381_PaymentGatewayTransactions.Designer.cs">
+      <DependentUpon>201701310900381_PaymentGatewayTransactions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
     <Compile Include="Model\DiscountEntity.cs" />
     <Compile Include="Model\LineItemEntity.cs" />
     <Compile Include="Model\OperationEntity.cs" />
+    <Compile Include="Model\PaymentGatewayTransactionEntity.cs" />
     <Compile Include="Model\PaymentInEntity.cs" />
     <Compile Include="Model\ShipmentEntity.cs" />
     <Compile Include="Model\ShipmentPackageEntity.cs" />
@@ -173,10 +178,16 @@
     <Compile Include="Notifications\OrderPaidEmailNotification.cs" />
     <Compile Include="Notifications\OrderSentEmailNotification.cs" />
     <Compile Include="Observers\CancelPaymentObserver.cs" />
+    <Compile Include="Observers\LogOrderChangesObserver.cs" />
     <Compile Include="Observers\OrderNotificationObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IOrderRepository.cs" />
     <Compile Include="Repositories\OrderRepositoryImpl.cs" />
+    <Compile Include="Resources\OrderResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>OrderResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Services\CustomerOrderBuilderImpl.cs" />
     <Compile Include="Services\CustomerOrderServiceImpl.cs" />
     <Compile Include="Observers\AdjustInventoryObserver.cs" />
@@ -242,6 +253,13 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612140700009_LanguageColumn.resx">
       <DependentUpon>201612140700009_LanguageColumn.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701310900381_PaymentGatewayTransactions.resx">
+      <DependentUpon>201701310900381_PaymentGatewayTransactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\OrderResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OrderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Catalog.Model;
 using VirtoCommerce.Domain.Catalog.Services;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
@@ -15,6 +16,7 @@ using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Model;
 using VirtoCommerce.OrderModule.Data.Repositories;
+using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
@@ -28,7 +30,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
         public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IEventPublisher<OrderChangeEvent> eventPublisher, 
                                        IDynamicPropertyService dynamicPropertyService, IShippingMethodsService shippingMethodsService, IPaymentMethodsService paymentMethodsService,
-                                       IStoreService storeService)
+                                       IStoreService storeService, IChangeLogService changeLogService)
         {
             RepositoryFactory = orderRepositoryFactory;
             UniqueNumberGenerator = uniqueNumberGenerator;
@@ -37,6 +39,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             ShippingMethodsService = shippingMethodsService;
             PaymentMethodsService = paymentMethodsService;
             StoreService = storeService;
+            ChangeLogService = changeLogService;
         }
         protected IUniqueNumberGenerator UniqueNumberGenerator { get; private set; }
         protected Func<IOrderRepository> RepositoryFactory { get; private set; }
@@ -45,7 +48,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected IStoreService StoreService { get; private set; }
         protected IPaymentMethodsService PaymentMethodsService { get; private set; }
         protected IShippingMethodsService ShippingMethodsService { get; private set; }
-        
+        protected IChangeLogService ChangeLogService { get; private set; }
 
         #region ICustomerOrderService Members
 
@@ -126,7 +129,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 }
             }
             DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray());
-
+            foreach(var order in retVal)
+            {
+                ChangeLogService.LoadChangeLogs(order);
+                //Make general change log for order
+                order.OperationsLog = order.GetFlatObjectsListWithInterface<IHasChangesHistory>().Distinct()
+                                            .SelectMany(x => x.OperationsLog)
+                                            .Distinct().ToList();
+            }
             return retVal.ToArray();
         }
 
@@ -225,18 +235,23 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual void EnsureThatAllOperationsHaveNumber(CustomerOrder order)
         {
             var store = StoreService.GetById(order.StoreId);
+          
             foreach (var operation in order.GetFlatObjectsListWithInterface<Domain.Commerce.Model.IOperation>())
             {
                 if (operation.Number == null)
                 {
-                    var objectTypeName = operation.GetType().Name;
+                    var objectTypeName = operation.OperationType;
                     // take uppercase chars to form operation type, or just take 2 first chars. (CustomerOrder => CO, PaymentIn => PI, Shipment => SH)
-                    var objectType = string.Concat(objectTypeName.Select(c => char.IsUpper(c) ? c.ToString() : ""));
-                    if (objectType.Length < 2)
+                    var opType = string.Concat(objectTypeName.Select(c => char.IsUpper(c) ? c.ToString() : ""));
+                    if (opType.Length < 2)
                     {
-                        objectType = objectTypeName.Substring(0, 2).ToUpper();
+                        opType = objectTypeName.Substring(0, 2).ToUpper();
                     }
-                    var numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", objectType + "{0:yyMMdd}-{1:D5}");
+                    var numberTemplate = opType + "{0:yyMMdd}-{1:D5}";
+                    if (store != null)
+                    {
+                        numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", numberTemplate);
+                    }
                     operation.Number = UniqueNumberGenerator.GenerateNumber(numberTemplate);
                 }
             }

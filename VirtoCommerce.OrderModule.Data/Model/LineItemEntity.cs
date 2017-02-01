@@ -87,6 +87,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(2048)]
         public string CancelReason { get; set; }
 
+
+        [NotMapped]
+        public LineItem ModelLineItem { get; set; }
+
         public virtual ObservableCollection<DiscountEntity> Discounts { get; set; }
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
@@ -110,6 +114,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (lineItem == null)
                 throw new ArgumentNullException("lineItem");
 
+            this.ModelLineItem = lineItem;
             pkMap.AddPair(lineItem, this);
 
             this.InjectFrom(lineItem);

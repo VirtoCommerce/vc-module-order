@@ -34,6 +34,7 @@
             }
         };
 
+
         // load employees
         members.search(
            {
@@ -48,5 +49,16 @@
 
         blade.customInitialize = function () {
             blade.isLocked = blade.currentEntity.status == 'Completed' || blade.currentEntity.isCancelled;
+
+            var orderLineItemsBlade = {
+                id: 'customerOrderItems',
+                currentEntity: blade.currentEntity,
+                recalculateFn: blade.recalculate,
+                controller: 'virtoCommerce.orderModule.customerOrderItemsController',
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
+            };
+            bladeNavigationService.showBlade(orderLineItemsBlade, blade);
         };
+
+   
     }]);

@@ -1,5 +1,5 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', function ($scope, bladeNavigationService, dialogService, items, prices) {
+.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', '$translate', function ($scope, bladeNavigationService, dialogService, items, prices, $translate) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
 
@@ -12,6 +12,12 @@
     $scope.pageSettings.itemsPerPageCount = 4;
 
     var selectedProducts = [];
+
+    $translate('orders.blades.customerOrder-detail.title', { customer: blade.currentEntity.customerName }).then(function (result) {
+        blade.title = 'orders.widgets.customerOrder-items.blade-title';
+        blade.titleValues = { title: result };
+        blade.subtitle = 'orders.widgets.customerOrder-items.blade-subtitle';
+    });
 
     blade.refresh = function () {
         blade.isLoading = false;
@@ -139,6 +145,7 @@
             item.selected = selected;
         });
     };
+
 
     blade.refresh();
 }]);

@@ -94,6 +94,14 @@
                     "payment-gateway": "Select..."
                 }
             },
+            "transactions-list": {
+                "title": "Payment gateway transactions",
+                "subtitle": "List of all payment gateway interactions"
+            },
+            "transaction-detail": {
+                "title": "Transaction detail",
+                "subtitle": "Raw transaction data "
+            },
             "shipment-detail": {
                 "title": "Shipment #{{number}}",
                 "title-new": "New Shipment",

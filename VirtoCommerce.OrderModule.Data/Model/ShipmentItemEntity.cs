@@ -27,16 +27,16 @@ namespace VirtoCommerce.OrderModule.Data.Model
 		public virtual ShipmentPackageEntity ShipmentPackage { get; set; }
 		public string ShipmentPackageId { get; set; }
 
+        [NotMapped]
+        public LineItem ModelLineItem { get; set; }
+
         public virtual ShipmentItem ToModel(ShipmentItem shipmentItem)
         {
             if (shipmentItem == null)
                 throw new ArgumentNullException("shipmentItem");
 
             shipmentItem.InjectFrom(this);
-            if (this.LineItem != null)
-            {
-                shipmentItem.LineItem = this.LineItem.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance());
-            }
+    
             return shipmentItem;
         }
 
@@ -45,9 +45,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipmentItem == null)
                 throw new ArgumentNullException("shipmentItem");
 
+
             pkMap.AddPair(shipmentItem, this);
             this.InjectFrom(shipmentItem);
-
+            this.ModelLineItem = shipmentItem.LineItem;
             return this;
         }
 

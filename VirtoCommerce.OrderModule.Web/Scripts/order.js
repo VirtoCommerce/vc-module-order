@@ -210,11 +210,18 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	    };
 	    widgetService.registerWidget(operationItemsWidget, 'customerOrderDetailWidgets');
 
+	    widgetService.registerWidget({
+	        controller: 'platformWebApp.changeLog.operationsWidgetController',
+	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'customerOrderDetailWidgets');
+
 	    var shipmentItemsWidget = {
 	        controller: 'virtoCommerce.orderModule.shipmentItemsWidgetController',
 	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-items-widget.tpl.html'
 	    };
 	    widgetService.registerWidget(shipmentItemsWidget, 'shipmentDetailWidgets');
+	    widgetService.registerWidget({
+	        controller: 'platformWebApp.changeLog.operationsWidgetController',
+	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'shipmentDetailWidgets');
 
 
 	    var customerOrderAddressWidget = {
@@ -265,6 +272,16 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	    };
 	    widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');
 
+	    var paymentTransactionsWidget = {
+	        controller: 'virtoCommerce.orderModule.paymentTransactionsWidgetController',
+	        size: [1, 1],
+	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-transactions-widget.tpl.html'
+	    };
+	    widgetService.registerWidget(paymentTransactionsWidget, 'paymentDetailWidgets');
+	    widgetService.registerWidget({
+	        controller: 'platformWebApp.changeLog.operationsWidgetController',
+	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
+	    }, 'paymentDetailWidgets');
 
 	    var dynamicPropertyWidget = {
 	        controller: 'platformWebApp.dynamicPropertyWidgetController',

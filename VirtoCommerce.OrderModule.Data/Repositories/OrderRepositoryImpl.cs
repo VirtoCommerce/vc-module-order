@@ -192,6 +192,16 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
 
+            #region TaxDetail
+            modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasKey(x => x.Id)
+                        .Property(x => x.Id);
+
+            modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasRequired(x => x.PaymentIn)
+                                    .WithMany(x => x.Transactions)
+                                    .HasForeignKey(x => x.PaymentInId).WillCascadeOnDelete(true);
+            modelBuilder.Entity<PaymentGatewayTransactionEntity>().ToTable("OrderPaymentGatewayTransaction");
+            #endregion
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -220,6 +230,10 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
         {
             get { return GetAsQueryable<LineItemEntity>(); }
         }
+        public IQueryable<PaymentGatewayTransactionEntity> Transactions
+        {
+            get { return GetAsQueryable<PaymentGatewayTransactionEntity>(); }
+        }
 
         public virtual CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup)
         {
@@ -238,6 +252,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                                            .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var paymentsIds = inPayments.Select(x => x.Id).ToArray();
                 var paymentAddresses = Addresses.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
+                var transactions = Transactions.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }
             if ((responseGroup & CustomerOrderResponseGroup.WithItems) == CustomerOrderResponseGroup.WithItems)
             {

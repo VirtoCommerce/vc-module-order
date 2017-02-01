@@ -85,6 +85,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(16)]
         public string LanguageCode { get; set; }
 
+        [StringLength(128)]
+        public string ShoppingCartId { get; set; }
+
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
 		public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
 		public virtual ObservableCollection<PaymentInEntity> InPayments { get; set; }
@@ -133,6 +136,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (order.Shipments != null)
             {
                 this.Shipments = new ObservableCollection<ShipmentEntity>(order.Shipments.Select(x => AbstractTypeFactory<ShipmentEntity>.TryCreateInstance().FromModel(x, pkMap)).OfType<ShipmentEntity>());
+                //Link shipment item with order lineItem 
+                foreach (var shipmentItemEntity in this.Shipments.SelectMany(x => x.Items))
+                {
+                    shipmentItemEntity.LineItem = this.Items.FirstOrDefault(x => x.ModelLineItem == shipmentItemEntity.ModelLineItem);
+                }
             }
             if (order.InPayments != null)
             {
@@ -147,7 +155,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 this.TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x))); 
             }
             this.Sum = order.Total;
-
             return this;
         }
 

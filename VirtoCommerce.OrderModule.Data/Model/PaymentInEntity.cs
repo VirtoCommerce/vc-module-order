@@ -21,6 +21,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 			Addresses = new NullCollection<AddressEntity>();
             TaxDetails = new NullCollection<TaxDetailEntity>();
             Discounts = new NullCollection<DiscountEntity>();
+            Transactions = new NullCollection<PaymentGatewayTransactionEntity>();
         }
 		[StringLength(64)]
 		public string OrganizationId { get; set; }
@@ -68,8 +69,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public decimal TaxPercentRate { get; set; }
 
         public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
+        public virtual ObservableCollection<PaymentGatewayTransactionEntity> Transactions { get; set; }
 
-		public string CustomerOrderId { get; set; }
+        public string CustomerOrderId { get; set; }
 		public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
 		public string ShipmentId { get; set; }
@@ -87,11 +89,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             if (!this.Addresses.IsNullOrEmpty())
             {
-                payment.BillingAddress =  this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                payment.BillingAddress = this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
+
+            payment.Transactions = this.Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
             payment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             payment.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
-
+            
             base.ToModel(payment);
 
             payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
@@ -122,6 +126,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (payment.Discounts != null)
             {
                 this.Discounts = new ObservableCollection<DiscountEntity>(payment.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
+            }
+            if(payment.Transactions != null)
+            {
+                this.Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
             this.Status = payment.PaymentStatus.ToString();
 
@@ -173,6 +181,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
                 this.Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
+            }
+            if (!this.Transactions.IsNullCollection())
+            {            
+                this.Transactions.Patch(target.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
             }
         }
     }
