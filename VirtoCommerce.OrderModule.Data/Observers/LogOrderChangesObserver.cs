@@ -148,7 +148,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             var result = new OperationLog
             {
                 ObjectId = operation.Id,
-                ObjectType = operation.OperationType,
+                ObjectType = operation.GetType().Name,
                 OperationType = Platform.Core.Common.EntryState.Modified,
                 Detail = string.Format(template, parameters)
             };
