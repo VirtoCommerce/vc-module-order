@@ -88,15 +88,6 @@ namespace VirtoCommerce.OrderModule.Data.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The comment changed for {0} {1}.
-        /// </summary>
-        internal static string OperationCommentChanged {
-            get {
-                return ResourceManager.GetString("OperationCommentChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The {0} {1} deleted.
         /// </summary>
         internal static string OperationDeleted {
@@ -106,20 +97,11 @@ namespace VirtoCommerce.OrderModule.Data.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The {0} {1} status changed from &apos;{2}&apos; to &apos;{3}&apos; .
+        ///   Looks up a localized string similar to The {0} {1} property &apos;{2}&apos; changed from &apos;{3}&apos; to  &apos;{4}&apos;.
         /// </summary>
-        internal static string OperationStatusChanged {
+        internal static string OperationPropertyChanged {
             get {
-                return ResourceManager.GetString("OperationStatusChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The {0} {1} total changed from {2} to {3}.
-        /// </summary>
-        internal static string OperationTotalChanged {
-            get {
-                return ResourceManager.GetString("OperationTotalChanged", resourceCulture);
+                return ResourceManager.GetString("OperationPropertyChanged", resourceCulture);
             }
         }
         

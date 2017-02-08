@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoCompare, Version=0.3.0.53, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoCompare.0.3.0.53\lib\net452\AutoCompare.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CacheManager.Core, Version=0.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CacheManager.Core.0.8.0\lib\net45\CacheManager.Core.dll</HintPath>
       <Private>True</Private>

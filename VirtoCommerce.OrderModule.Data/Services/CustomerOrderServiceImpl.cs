@@ -135,6 +135,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 //Make general change log for order
                 order.OperationsLog = order.GetFlatObjectsListWithInterface<IHasChangesHistory>().Distinct()
                                             .SelectMany(x => x.OperationsLog)
+                                            .OrderBy(x => x.CreatedDate)
                                             .Distinct().ToList();
             }
             return retVal.ToArray();

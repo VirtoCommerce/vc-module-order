@@ -126,17 +126,11 @@
   <data name="OperationAdded" xml:space="preserve">
     <value>The new {0} {1} added</value>
   </data>
-  <data name="OperationCommentChanged" xml:space="preserve">
-    <value>The comment changed for {0} {1}</value>
-  </data>
   <data name="OperationDeleted" xml:space="preserve">
     <value>The {0} {1} deleted</value>
   </data>
-  <data name="OperationStatusChanged" xml:space="preserve">
-    <value>The {0} {1} status changed from '{2}' to '{3}' </value>
-  </data>
-  <data name="OperationTotalChanged" xml:space="preserve">
-    <value>The {0} {1} total changed from {2} to {3}</value>
+  <data name="OperationPropertyChanged" xml:space="preserve">
+    <value>The {0} {1} property '{2}' changed from '{3}' to  '{4}'</value>
   </data>
   <data name="OrderEmployeeChanged" xml:space="preserve">
     <value>Order employee was changed  to '{0}'</value>

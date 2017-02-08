@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoCompare;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Customer.Model;
 using VirtoCommerce.Domain.Customer.Services;
@@ -19,7 +20,17 @@ namespace VirtoCommerce.OrderModule.Data.Observers
     {
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
-        public LogOrderChangesObserver(IChangeLogService changeLogService, IMemberService memberService)
+        private static string[] _observedProperties;
+        static LogOrderChangesObserver()
+        {
+            var operationPropNames = ReflectionUtility.GetPropertyNames<IOperation>(x => x.Status, x => x.Comment, x => x.Currency, x => x.Number, x => x.IsApproved);
+            var orderPropNames = ReflectionUtility.GetPropertyNames<CustomerOrder>(x => x.DiscountAmount, x => x.Total, x => x.Fee, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType);
+            var shipmentPropNames = ReflectionUtility.GetPropertyNames<Shipment>(x => x.DiscountAmount, x => x.Total, x => x.Fee, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType, x => x.Height, x => x.Length, x => x.MeasureUnit, x => x.Price, x => x.ShipmentMethodCode, x => x.ShipmentMethodOption, x => x.Weight, x => x.WeightUnit, x => x.Width);
+            var paymentPropNames = ReflectionUtility.GetPropertyNames<PaymentIn>(x => x.DiscountAmount, x => x.Total, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType, x => x.OuterId, x => x.AuthorizedDate, x => x.CapturedDate, x => x.Price, x => x.GatewayCode, x => x.IncomingDate, x => x.Purpose, x => x.VoidedDate);
+
+            _observedProperties = operationPropNames.Concat(orderPropNames).Concat(shipmentPropNames).Concat(paymentPropNames).Distinct().ToArray();
+        }
+        public LogOrderChangesObserver(IChangeLogService changeLogService, IMemberService memberService, string[] observedProperties)
         {
             _changeLogService = changeLogService;
             _memberService = memberService;
@@ -46,7 +57,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 var modifiedOperations = changeEvent.ModifiedOrder.GetFlatObjectsListWithInterface<IOperation>().Distinct();             
                              
                 modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
-                                                      (state, source, target) => operationLogs.AddRange(GetOperationLogs(state, source, target)));                                    
+                                                      (state, modified, original) => operationLogs.AddRange(GetOperationLogs(state, original, modified)));                                    
 
                 _changeLogService.SaveChanges(operationLogs.ToArray());
             }
@@ -54,37 +65,42 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         #endregion
 
 
-        private IEnumerable<OperationLog> GetOperationLogs(EntryState changeState, IOperation source, IOperation target)
+        private IEnumerable<OperationLog> GetOperationLogs(EntryState changeState, IOperation original, IOperation modified)
         {
             var retVal = new List<string>();
             if (changeState == EntryState.Modified)
             {
-                if (source.Status != target.Status)
+                var diff = Comparer.Compare(original, modified);
+               
+                if (original is Shipment)
                 {
-                    retVal.Add(string.Format(OrderResources.OperationStatusChanged, source.OperationType, source.Number, target.Status, source.Status));
+                    retVal.AddRange(GetShipmentChanges(original as Shipment, modified as Shipment));
+                    diff.AddRange(Comparer.Compare<Shipment>(original as Shipment, modified as Shipment));
                 }
-                if (source.Comment != target.Comment)
+                if (original is PaymentIn)
                 {
-                    retVal.Add(string.Format(OrderResources.OperationCommentChanged, source.OperationType, source.Number));
+                    retVal.AddRange(GetPaymentChanges(original as PaymentIn, modified as PaymentIn));
+                    diff.AddRange(Comparer.Compare<PaymentIn>(original as PaymentIn, modified as PaymentIn));
                 }
-                if (source is CustomerOrder)
+                if (original is CustomerOrder)
                 {
-                    retVal.AddRange(GetCustomerOrderChanges(target as CustomerOrder, source as CustomerOrder));
+                    retVal.AddRange(GetCustomerOrderChanges(original as CustomerOrder, modified as CustomerOrder));
+                    diff.AddRange(Comparer.Compare<CustomerOrder>(original as CustomerOrder, modified as CustomerOrder));
                 }
-                if (source is Shipment)
+                foreach (var change in diff.Join(_observedProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).Distinct())
                 {
-                    retVal.AddRange(GetShipmentChanges(target as Shipment, source as Shipment));
+                    retVal.Add(string.Format(OrderResources.OperationPropertyChanged, original.OperationType, modified.Number, change.Name, change.OldValue, change.NewValue));
                 }
             }
             else if (changeState == EntryState.Deleted)
             {
-                retVal.Add(string.Format(OrderResources.OperationDeleted, target.OperationType, target.Number));
+                retVal.Add(string.Format(OrderResources.OperationDeleted, modified.OperationType, modified.Number));
             }
             else if (changeState == EntryState.Added)
             {
-                retVal.Add(string.Format(OrderResources.OperationAdded, target.OperationType, target.Number));
+                retVal.Add(string.Format(OrderResources.OperationAdded, modified.OperationType, modified.Number));
             }
-            return retVal.Select(x=> GetLogRecord(target, x));
+            return retVal.Select(x=> GetLogRecord(modified, x));
         }
 
         private string[] GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
@@ -93,32 +109,31 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             if (originalOrder.EmployeeId != modifiedOrder.EmployeeId)
             {
                 var employeeName = "none";
-                if (string.IsNullOrEmpty(modifiedOrder.EmployeeId))
+                if (!string.IsNullOrEmpty(modifiedOrder.EmployeeId))
                 {
                     var employee = _memberService.GetByIds(new[] { modifiedOrder.EmployeeId }).OfType<Employee>().FirstOrDefault();
                     employeeName = employee != null ? employee.FullName : employeeName;
                 }
                 retVal.Add(string.Format(OrderResources.OrderEmployeeChanged, employeeName));
-            }
-            if(originalOrder.Total != modifiedOrder.Total)
-            {
-                retVal.Add(string.Format(OrderResources.OperationTotalChanged, originalOrder.OperationType, originalOrder.Number, originalOrder.Total.ToString("0.00"), modifiedOrder.Total.ToString("0.00")));
-            }
-            retVal.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));
+            }          
+            retVal.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));       
             return retVal.ToArray();
         }
 
         private string[] GetShipmentChanges(Shipment originalShipment, Shipment modifiedShipment)
         {
             var retVal = new List<string>();
-            if (originalShipment.Total != modifiedShipment.Total)
-            {
-                retVal.Add(string.Format(OrderResources.OperationTotalChanged, modifiedShipment.OperationType, modifiedShipment.Number, originalShipment.Total.ToString("0.00"), modifiedShipment.Total.ToString("0.00")));
-            }
             retVal.AddRange(GetAddressChanges(originalShipment, new Address[] { originalShipment.DeliveryAddress }, new Address[] { modifiedShipment.DeliveryAddress }));
             return retVal.ToArray();
         }
 
+        private string[] GetPaymentChanges(PaymentIn payment, PaymentIn modifiedPayment)
+        {
+            var retVal = new List<string>();      
+            retVal.AddRange(GetAddressChanges(payment, new Address[] { payment.BillingAddress }, new Address[] { modifiedPayment.BillingAddress }));
+            return retVal.ToArray();
+        }
+      
         private string[] GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
         {        
             var retVal = new List<string>();
