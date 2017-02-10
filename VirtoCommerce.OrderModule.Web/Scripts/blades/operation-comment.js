@@ -1,32 +1,21 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.orderOperationCommentDetail', ['$scope', 'platformWebApp.dialogService', function ($scope, dialogService) {
-	
-	function initializeBlade() {
-	
-		$scope.blade.origEntity = $scope.blade.currentEntity.comment;
-		$scope.blade.isLoading = false;
-	};
+.controller('virtoCommerce.orderModule.orderOperationCommentDetail', ['$scope', function ($scope) {
+    var blade = $scope.blade;
 
-	function isDirty() {
-		return  $scope.blade.currentEntity.comment !== $scope.blade.origEntity;
-	};
+    function initializeBlade() {
+        blade.origEntity = blade.currentEntity;
+        blade.currentEntity = angular.copy(blade.origEntity.comment);
+        blade.isLoading = false;
+    }
 
-	$scope.setForm = function (form) {
-		$scope.formScope = form;
-	}
+    $scope.cancelChanges = function () { $scope.bladeClose(); };
 
-	$scope.cancelChanges = function () {
-		$scope.bladeClose();
-	}
+    $scope.isValid = function () { return true; };
 
-	$scope.isValid = function () {
-		return $scope.formScope && $scope.formScope.$valid;
-	}
+    $scope.saveChanges = function () {
+        blade.origEntity.comment = blade.currentEntity;
+        $scope.bladeClose();
+    };
 
-	$scope.saveChanges = function () {
-		$scope.blade.origEntity = $scope.blade.currentEntity.comment;
-		$scope.bladeClose();
-	};
-    
-	initializeBlade();
+    initializeBlade();
 }]);

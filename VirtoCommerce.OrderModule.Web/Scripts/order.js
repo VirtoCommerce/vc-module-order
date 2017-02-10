@@ -243,6 +243,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-comment-widget.tpl.html'
 	    };
 	    widgetService.registerWidget(operationCommentWidget, 'customerOrderDetailWidgets');
+	    widgetService.registerWidget(operationCommentWidget, 'shipmentDetailWidgets');
+	    widgetService.registerWidget(operationCommentWidget, 'paymentDetailWidgets');
 
 	    var shipmentAddressWidget = {
 	        controller: 'virtoCommerce.orderModule.shipmentAddressWidgetController',
