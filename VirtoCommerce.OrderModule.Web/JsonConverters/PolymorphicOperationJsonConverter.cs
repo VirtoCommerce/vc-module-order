@@ -39,28 +39,8 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
         {
             object retVal = null;
             var obj = JObject.Load(reader);
-          
-            if (typeof(CustomerOrder).IsAssignableFrom(objectType))
-            {
-                retVal = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
-            }      
-            else if (typeof(LineItem).IsAssignableFrom(objectType))
-            {
-                retVal = AbstractTypeFactory<LineItem>.TryCreateInstance();
-            }
-            else if (typeof(Shipment).IsAssignableFrom(objectType))
-            {
-                retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
-            }
-            else if (typeof(PaymentIn).IsAssignableFrom(objectType))
-            {
-                retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
-            }
-            else if (typeof(CustomerOrderSearchCriteria).IsAssignableFrom(objectType))
-            {
-                retVal = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            }
-            else if(objectType == typeof(PaymentMethod))
+     
+            if(objectType == typeof(PaymentMethod))
             {
                 var paymentGatewayCode = obj["code"].Value<string>();
                 retVal = _paymentMethodsService.GetAllPaymentMethods().FirstOrDefault(x => x.Code.EqualsInvariant(paymentGatewayCode));
@@ -70,18 +50,11 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
                 var shippingGatewayCode = obj["code"].Value<string>();
                 retVal = _shippingMethodsService.GetAllShippingMethods().FirstOrDefault(x => x.Code.EqualsInvariant(shippingGatewayCode));
             }
-            else if (typeof(IOperation).IsAssignableFrom(objectType))
+            else
             {
-                var pt = obj["operationType"];
-                if (pt != null)
-                {
-                    var operationType = pt.Value<string>();
-                    retVal = AbstractTypeFactory<IOperation>.TryCreateInstance(operationType);
-                    if (retVal == null)
-                    {
-                        throw new NotSupportedException("Unknown operation type: " + operationType);
-                    }
-                }                
+                var tryCreateInstance = typeof(AbstractTypeFactory<>).MakeGenericType(objectType).GetMethods().FirstOrDefault(x => x.Name.EqualsInvariant("TryCreateInstance") && x.GetParameters().Count() == 0);
+                retVal = tryCreateInstance.Invoke(null, null);
+
             }
             serializer.Populate(obj.CreateReader(), retVal);
             return retVal;
