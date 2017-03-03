@@ -154,7 +154,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.TaxType = this.TaxType;
             target.IsCancelled = this.IsCancelled;
             target.CancelledDate = this.CancelledDate;
-            target.CancelReason = this.CancelReason;  
+            target.CancelReason = this.CancelReason;
+            target.Comment = this.Comment;
 
             if (!this.Discounts.IsNullCollection())
             {
