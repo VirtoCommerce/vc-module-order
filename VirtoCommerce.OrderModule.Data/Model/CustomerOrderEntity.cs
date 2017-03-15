@@ -84,6 +84,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public decimal DiscountTotalWithTax { get; set; }
         [StringLength(16)]
         public string LanguageCode { get; set; }
+        public decimal TaxPercentRate { get; set; }
 
         [StringLength(128)]
         public string ShoppingCartId { get; set; }
@@ -186,6 +187,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.SubscriptionNumber = this.SubscriptionNumber;
             target.SubscriptionId = this.SubscriptionId;
             target.LanguageCode = this.LanguageCode;
+            target.TaxPercentRate = this.TaxPercentRate;
 
             if (!this.Addresses.IsNullCollection())
             {

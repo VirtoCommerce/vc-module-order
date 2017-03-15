@@ -163,6 +163,10 @@
     <Compile Include="Migrations\201701310900381_PaymentGatewayTransactions.Designer.cs">
       <DependentUpon>201701310900381_PaymentGatewayTransactions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703151348151_TaxPercentRateConversion.cs" />
+    <Compile Include="Migrations\201703151348151_TaxPercentRateConversion.Designer.cs">
+      <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -260,6 +264,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701310900381_PaymentGatewayTransactions.resx">
       <DependentUpon>201701310900381_PaymentGatewayTransactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703151348151_TaxPercentRateConversion.resx">
+      <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
