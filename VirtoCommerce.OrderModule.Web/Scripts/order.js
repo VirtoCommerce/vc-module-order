@@ -19,6 +19,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                           title: 'orders.blades.customerOrder-list.title',
                           //subtitle: 'Manage Orders',
                           controller: 'virtoCommerce.orderModule.customerOrderListController',
+                          isExpanded: true,
                           template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-list.tpl.html',
                           isClosingDisabled: true
                       };
@@ -58,27 +59,27 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
 }])
 .run(
   ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations',
-	function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations) {
-	    //Register module in main menu
-	    var menuItem = {
-	        path: 'browse/orders',
-	        icon: 'fa fa-file-text',
-	        title: 'orders.main-menu-title',
-	        priority: 90,
-	        action: function () { $state.go('workspace.orderModule'); },
-	        permission: 'order:access'
-	    };
-	    mainMenuService.addMenuItem(menuItem);
+    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations) {
+        //Register module in main menu
+        var menuItem = {
+            path: 'browse/orders',
+            icon: 'fa fa-file-text',
+            title: 'orders.main-menu-title',
+            priority: 90,
+            action: function () { $state.go('workspace.orderModule'); },
+            permission: 'order:access'
+        };
+        mainMenuService.addMenuItem(menuItem);
 
-	    // register CustomerOrder, PaymentIn and Shipment types as known operations
-	    knownOperations.registerOperation({
-	        type: 'CustomerOrder',
-	        treeTemplateUrl: 'orderOperationDefault.tpl.html',
-	        detailBlade: {
-	            id: 'orderDetail',
-	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html',
-	            knownChildrenOperations: ['Shipment', 'PaymentIn'],
-	            metaFields: [
+        // register CustomerOrder, PaymentIn and Shipment types as known operations
+        knownOperations.registerOperation({
+            type: 'CustomerOrder',
+            treeTemplateUrl: 'orderOperationDefault.tpl.html',
+            detailBlade: {
+                id: 'orderDetail',
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html',
+                knownChildrenOperations: ['Shipment', 'PaymentIn'],
+                metaFields: [
                     {
                         name: 'isApproved',
                         title: "orders.blades.customerOrder-detail.labels.approved",
@@ -123,17 +124,17 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         title: "orders.blades.customerOrder-detail.labels.store",
                         templateUrl: 'storeSelector.html'
                     }
-	            ]
-	        }
-	    });
+                ]
+            }
+        });
 
-	    var paymentInOperation = {
-	        type: 'PaymentIn',
-	        description: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
-	        // treeTemplateUrl: 'orderOperationDefault.tpl.html',
-	        detailBlade: {
-	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html',
-	            metaFields: [
+        var paymentInOperation = {
+            type: 'PaymentIn',
+            description: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
+            // treeTemplateUrl: 'orderOperationDefault.tpl.html',
+            detailBlade: {
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html',
+                metaFields: [
                     {
                         name: 'number',
                         isRequired: true,
@@ -156,17 +157,17 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         title: "orders.blades.payment-detail.labels.price-with-tax",
                         templateUrl: 'priceWithTax.html'
                     }
-	            ]
-	        }
-	    };
-	    knownOperations.registerOperation(paymentInOperation);
+                ]
+            }
+        };
+        knownOperations.registerOperation(paymentInOperation);
 
-	    var shipmentOperation = {
-	        type: 'Shipment',
-	        description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
-	        detailBlade: {
-	            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
-	            metaFields: [
+        var shipmentOperation = {
+            type: 'Shipment',
+            description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
+            detailBlade: {
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
+                metaFields: [
                     {
                         name: 'number',
                         isRequired: true,
@@ -198,288 +199,288 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                         title: "orders.blades.shipment-detail.labels.price-with-tax",
                         templateUrl: 'priceWithTax.html'
                     }
-	            ]
-	        }
-	    };
-	    knownOperations.registerOperation(shipmentOperation);
+                ]
+            }
+        };
+        knownOperations.registerOperation(shipmentOperation);
 
-	    //Register widgets
-	    var operationItemsWidget = {
-	        controller: 'virtoCommerce.orderModule.customerOrderItemsWidgetController',
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-items-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(operationItemsWidget, 'customerOrderDetailWidgets');
+        //Register widgets
+        var operationItemsWidget = {
+            controller: 'virtoCommerce.orderModule.customerOrderItemsWidgetController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-items-widget.tpl.html'
+        };
+        widgetService.registerWidget(operationItemsWidget, 'customerOrderDetailWidgets');
 
-	    widgetService.registerWidget({
-	        controller: 'platformWebApp.changeLog.operationsWidgetController',
-	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'customerOrderDetailWidgets');
+        widgetService.registerWidget({
+            controller: 'platformWebApp.changeLog.operationsWidgetController',
+            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'customerOrderDetailWidgets');
 
-	    var shipmentItemsWidget = {
-	        controller: 'virtoCommerce.orderModule.shipmentItemsWidgetController',
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-items-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(shipmentItemsWidget, 'shipmentDetailWidgets');
-	    widgetService.registerWidget({
-	        controller: 'platformWebApp.changeLog.operationsWidgetController',
-	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'shipmentDetailWidgets');
-
-
-	    var customerOrderAddressWidget = {
-	        controller: 'virtoCommerce.orderModule.customerOrderAddressWidgetController',
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-address-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
-
-	    var customerOrderTotalsWidget = {
-	        controller: 'virtoCommerce.orderModule.customerOrderTotalsWidgetController',
-	        size: [2, 2],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-totals-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(customerOrderTotalsWidget, 'customerOrderDetailWidgets');
+        var shipmentItemsWidget = {
+            controller: 'virtoCommerce.orderModule.shipmentItemsWidgetController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-items-widget.tpl.html'
+        };
+        widgetService.registerWidget(shipmentItemsWidget, 'shipmentDetailWidgets');
+        widgetService.registerWidget({
+            controller: 'platformWebApp.changeLog.operationsWidgetController',
+            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'shipmentDetailWidgets');
 
 
-	    var operationCommentWidget = {
-	        controller: 'virtoCommerce.orderModule.operationCommentWidgetController',
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-comment-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(operationCommentWidget, 'customerOrderDetailWidgets');
-	    widgetService.registerWidget(operationCommentWidget, 'shipmentDetailWidgets');
-	    widgetService.registerWidget(operationCommentWidget, 'paymentDetailWidgets');
+        var customerOrderAddressWidget = {
+            controller: 'virtoCommerce.orderModule.customerOrderAddressWidgetController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-address-widget.tpl.html'
+        };
+        widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
 
-	    var shipmentAddressWidget = {
-	        controller: 'virtoCommerce.orderModule.shipmentAddressWidgetController',
-	        size: [2, 1],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-address-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(shipmentAddressWidget, 'shipmentDetailWidgets');
+        var customerOrderTotalsWidget = {
+            controller: 'virtoCommerce.orderModule.customerOrderTotalsWidgetController',
+            size: [2, 2],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-totals-widget.tpl.html'
+        };
+        widgetService.registerWidget(customerOrderTotalsWidget, 'customerOrderDetailWidgets');
 
 
-	    var shipmentTotalWidget = {
-	        controller: 'virtoCommerce.orderModule.shipmentTotalsWidgetController',
-	        size: [2, 1],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-totals-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(shipmentTotalWidget, 'shipmentDetailWidgets');
+        var operationCommentWidget = {
+            controller: 'virtoCommerce.orderModule.operationCommentWidgetController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-comment-widget.tpl.html'
+        };
+        widgetService.registerWidget(operationCommentWidget, 'customerOrderDetailWidgets');
+        widgetService.registerWidget(operationCommentWidget, 'shipmentDetailWidgets');
+        widgetService.registerWidget(operationCommentWidget, 'paymentDetailWidgets');
 
-	    widgetService.registerWidget({
-	        controller: 'virtoCommerce.orderModule.paymentAddressWidgetController',
-	        size: [2, 1],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-address-widget.tpl.html'
-	    }, 'paymentDetailWidgets');
-
-	    var paymentTotalWidget = {
-	        controller: 'virtoCommerce.orderModule.paymentTotalsWidgetController',
-	        size: [2, 1],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-totals-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');
-
-	    var paymentTransactionsWidget = {
-	        controller: 'virtoCommerce.orderModule.paymentTransactionsWidgetController',
-	        size: [1, 1],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-transactions-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(paymentTransactionsWidget, 'paymentDetailWidgets');
-	    widgetService.registerWidget({
-	        controller: 'platformWebApp.changeLog.operationsWidgetController',
-	        template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
-	    }, 'paymentDetailWidgets');
-
-	    var dynamicPropertyWidget = {
-	        controller: 'platformWebApp.dynamicPropertyWidgetController',
-	        template: '$(Platform)/Scripts/app/dynamicProperties/widgets/dynamicPropertyWidget.tpl.html'
-	    };
-	    widgetService.registerWidget(dynamicPropertyWidget, 'shipmentDetailWidgets');
-	    widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderDetailWidgets');
-	    widgetService.registerWidget(dynamicPropertyWidget, 'paymentDetailWidgets');
+        var shipmentAddressWidget = {
+            controller: 'virtoCommerce.orderModule.shipmentAddressWidgetController',
+            size: [2, 1],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-address-widget.tpl.html'
+        };
+        widgetService.registerWidget(shipmentAddressWidget, 'shipmentDetailWidgets');
 
 
-	    var operationsTreeWidget = {
-	        controller: 'virtoCommerce.orderModule.operationTreeWidgetController',
-	        size: [4, 3],
-	        template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-tree-widget.tpl.html'
-	    };
-	    widgetService.registerWidget(operationsTreeWidget, 'customerOrderDetailWidgets');
+        var shipmentTotalWidget = {
+            controller: 'virtoCommerce.orderModule.shipmentTotalsWidgetController',
+            size: [2, 1],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-totals-widget.tpl.html'
+        };
+        widgetService.registerWidget(shipmentTotalWidget, 'shipmentDetailWidgets');
 
-	    // register dashboard widgets
-	    var statisticsController = 'virtoCommerce.orderModule.dashboard.statisticsWidgetController';
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-revenue.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-customersCount.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-revenuePerCustomer.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-orderValue.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-itemsPurchased.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [2, 1],
-	        template: 'order-statistics-lineitemsPerOrder.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [3, 2],
-	        template: 'order-statistics-revenueByQuarter.html'
-	    }, 'mainDashboard');
-	    widgetService.registerWidget({
-	        controller: statisticsController,
-	        size: [3, 2],
-	        template: 'order-statistics-orderValueByQuarter.html'
-	    }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: 'virtoCommerce.orderModule.paymentAddressWidgetController',
+            size: [2, 1],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-address-widget.tpl.html'
+        }, 'paymentDetailWidgets');
 
-	    $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
-	        // compile the response, which will put stuff into the cache
-	        $compile(response.data);
-	    });
+        var paymentTotalWidget = {
+            controller: 'virtoCommerce.orderModule.paymentTotalsWidgetController',
+            size: [2, 1],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-totals-widget.tpl.html'
+        };
+        widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');
+
+        var paymentTransactionsWidget = {
+            controller: 'virtoCommerce.orderModule.paymentTransactionsWidgetController',
+            size: [1, 1],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-transactions-widget.tpl.html'
+        };
+        widgetService.registerWidget(paymentTransactionsWidget, 'paymentDetailWidgets');
+        widgetService.registerWidget({
+            controller: 'platformWebApp.changeLog.operationsWidgetController',
+            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
+        }, 'paymentDetailWidgets');
+
+        var dynamicPropertyWidget = {
+            controller: 'platformWebApp.dynamicPropertyWidgetController',
+            template: '$(Platform)/Scripts/app/dynamicProperties/widgets/dynamicPropertyWidget.tpl.html'
+        };
+        widgetService.registerWidget(dynamicPropertyWidget, 'shipmentDetailWidgets');
+        widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderDetailWidgets');
+        widgetService.registerWidget(dynamicPropertyWidget, 'paymentDetailWidgets');
 
 
-	    //Register permission scopes templates used for scope bounded definition in role management ui
-	    var orderStoreScope = {
-	        type: 'OrderStoreScope',
-	        title: 'Only for orders in selected stores',
-	        selectFn: function (blade, callback) {
-	            var newBlade = {
-	                id: 'store-pick',
-	                title: this.title,
-	                subtitle: 'Select stores',
-	                currentEntity: this,
-	                onChangesConfirmedFn: callback,
-	                dataPromise: stores.query().$promise,
-	                controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
-	                template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
-	            };
-	            bladeNavigationService.showBlade(newBlade, blade);
-	        }
-	    };
-	    scopeResolver.register(orderStoreScope);
-	    var responsibleOrderScope = {
-	        type: 'OrderResponsibleScope',
-	        title: 'Only for order responsible',
-	    };
-	    scopeResolver.register(responsibleOrderScope);
+        var operationsTreeWidget = {
+            controller: 'virtoCommerce.orderModule.operationTreeWidgetController',
+            size: [4, 3],
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-tree-widget.tpl.html'
+        };
+        widgetService.registerWidget(operationsTreeWidget, 'customerOrderDetailWidgets');
 
-	    $rootScope.$on('loginStatusChanged', function (event, authContext) {
-	        if (authContext.isAuthenticated) {
-	            var now = new Date();
-	            var startDate = new Date();
-	            startDate.setFullYear(now.getFullYear() - 1);
+        // register dashboard widgets
+        var statisticsController = 'virtoCommerce.orderModule.dashboard.statisticsWidgetController';
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-revenue.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-customersCount.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-revenuePerCustomer.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-orderValue.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-itemsPurchased.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [2, 1],
+            template: 'order-statistics-lineitemsPerOrder.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [3, 2],
+            template: 'order-statistics-revenueByQuarter.html'
+        }, 'mainDashboard');
+        widgetService.registerWidget({
+            controller: statisticsController,
+            size: [3, 2],
+            template: 'order-statistics-orderValueByQuarter.html'
+        }, 'mainDashboard');
 
-	            customerOrders.getDashboardStatistics({ start: startDate, end: now }, function (data) {
-	                // prepare statistics
-	                var statisticsToChartRows = function (statsList, allCurrencies) {
-	                    var groupedQuarters = _.groupBy(statsList, function (stats) {
-	                        return stats.year + ' Q' + stats.quarter;
-	                    });
-	                    return _.map(groupedQuarters, function (stats, key) {
-	                        var values = [{
-	                            v: key
-	                        }];
-	                        _.each(allCurrencies, function (x) {
-	                            var stat = _.findWhere(stats, {
-	                                currency: x
-	                            });
-	                            values.push({
-	                                v: stat ? stat.amount : 0
-	                            });
-	                        });
-	                        return {
-	                            c: values
-	                        };
-	                    });
-	                }
+        $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
+            // compile the response, which will put stuff into the cache
+            $compile(response.data);
+        });
 
-	                var allCurrencies = _.unique(_.pluck(data.avgOrderValuePeriodDetails, 'currency').sort());
 
-	                var cols = [{
-	                    id: "quarter", label: "Quarter", type: "string"
-	                }];
-	                _.each(allCurrencies, function (x) {
-	                    cols.push({
-	                        id: "revenue" + x, label: x, type: "number"
-	                    });
-	                });
+        //Register permission scopes templates used for scope bounded definition in role management ui
+        var orderStoreScope = {
+            type: 'OrderStoreScope',
+            title: 'Only for orders in selected stores',
+            selectFn: function (blade, callback) {
+                var newBlade = {
+                    id: 'store-pick',
+                    title: this.title,
+                    subtitle: 'Select stores',
+                    currentEntity: this,
+                    onChangesConfirmedFn: callback,
+                    dataPromise: stores.query().$promise,
+                    controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
+                    template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
+                };
+                bladeNavigationService.showBlade(newBlade, blade);
+            }
+        };
+        scopeResolver.register(orderStoreScope);
+        var responsibleOrderScope = {
+            type: 'OrderResponsibleScope',
+            title: 'Only for order responsible',
+        };
+        scopeResolver.register(responsibleOrderScope);
 
-	                data.chartRevenueByQuarter = {
-	                    "type": "LineChart",
-	                    "data": {
-	                        cols: cols,
-	                        rows: statisticsToChartRows(data.revenuePeriodDetails, allCurrencies)
-	                    },
-	                    "options": {
-	                        "title": "Revenue by quarter",
-	                        "legend": {
-	                            position: 'top'
-	                        },
-	                        "vAxis": {
-	                            // "title": "Sales unit",
-	                            gridlines: {
-	                                count: 8
-	                            }
-	                        },
-	                        "hAxis": {
-	                            // "title": "Date"
-	                            slantedText: true,
-	                            slantedTextAngle: 20
-	                        }
-	                    },
-	                    "formatters": {}
-	                };
+        $rootScope.$on('loginStatusChanged', function (event, authContext) {
+            if (authContext.isAuthenticated) {
+                var now = new Date();
+                var startDate = new Date();
+                startDate.setFullYear(now.getFullYear() - 1);
 
-	                cols = [{
-	                    id: "quarter", label: "Quarter", type: "string"
-	                }];
-	                _.each(allCurrencies, function (x) {
-	                    cols.push({
-	                        id: "avg-orderValue" + x, label: x, type: "number"
-	                    });
-	                });
+                customerOrders.getDashboardStatistics({ start: startDate, end: now }, function (data) {
+                    // prepare statistics
+                    var statisticsToChartRows = function (statsList, allCurrencies) {
+                        var groupedQuarters = _.groupBy(statsList, function (stats) {
+                            return stats.year + ' Q' + stats.quarter;
+                        });
+                        return _.map(groupedQuarters, function (stats, key) {
+                            var values = [{
+                                v: key
+                            }];
+                            _.each(allCurrencies, function (x) {
+                                var stat = _.findWhere(stats, {
+                                    currency: x
+                                });
+                                values.push({
+                                    v: stat ? stat.amount : 0
+                                });
+                            });
+                            return {
+                                c: values
+                            };
+                        });
+                    }
 
-	                data.chartOrderValueByQuarter = {
-	                    "type": "ColumnChart",
-	                    "data": {
-	                        cols: cols,
-	                        rows: statisticsToChartRows(data.avgOrderValuePeriodDetails, allCurrencies)
-	                    },
-	                    "options": {
-	                        "title": "Average Order value by quarter",
-	                        "legend": {
-	                            position: 'top'
-	                        },
-	                        "vAxis": {
-	                            gridlines: {
-	                                count: 8
-	                            }
-	                        },
-	                        "hAxis": {
-	                            slantedText: true,
-	                            slantedTextAngle: 20
-	                        }
-	                    },
-	                    "formatters": {}
-	                };
+                    var allCurrencies = _.unique(_.pluck(data.avgOrderValuePeriodDetails, 'currency').sort());
 
-	                $localStorage.ordersDashboardStatistics = data;
-	            },
+                    var cols = [{
+                        id: "quarter", label: "Quarter", type: "string"
+                    }];
+                    _.each(allCurrencies, function (x) {
+                        cols.push({
+                            id: "revenue" + x, label: x, type: "number"
+                        });
+                    });
+
+                    data.chartRevenueByQuarter = {
+                        "type": "LineChart",
+                        "data": {
+                            cols: cols,
+                            rows: statisticsToChartRows(data.revenuePeriodDetails, allCurrencies)
+                        },
+                        "options": {
+                            "title": "Revenue by quarter",
+                            "legend": {
+                                position: 'top'
+                            },
+                            "vAxis": {
+                                // "title": "Sales unit",
+                                gridlines: {
+                                    count: 8
+                                }
+                            },
+                            "hAxis": {
+                                // "title": "Date"
+                                slantedText: true,
+                                slantedTextAngle: 20
+                            }
+                        },
+                        "formatters": {}
+                    };
+
+                    cols = [{
+                        id: "quarter", label: "Quarter", type: "string"
+                    }];
+                    _.each(allCurrencies, function (x) {
+                        cols.push({
+                            id: "avg-orderValue" + x, label: x, type: "number"
+                        });
+                    });
+
+                    data.chartOrderValueByQuarter = {
+                        "type": "ColumnChart",
+                        "data": {
+                            cols: cols,
+                            rows: statisticsToChartRows(data.avgOrderValuePeriodDetails, allCurrencies)
+                        },
+                        "options": {
+                            "title": "Average Order value by quarter",
+                            "legend": {
+                                position: 'top'
+                            },
+                            "vAxis": {
+                                gridlines: {
+                                    count: 8
+                                }
+                            },
+                            "hAxis": {
+                                slantedText: true,
+                                slantedTextAngle: 20
+                            }
+                        },
+                        "formatters": {}
+                    };
+
+                    $localStorage.ordersDashboardStatistics = data;
+                },
                 function (error) {
                     console.log(error);
                 });
-	        }
-	    });
-	}]);
+            }
+        });
+    }]);

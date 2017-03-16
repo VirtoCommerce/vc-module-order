@@ -44,11 +44,14 @@
                 "labels": {
                     "new-filter": "Add new filter",
                     "unnamed-filter": "Unnamed filter",
-                    "description": "Description",
+                    "number": "Order number",
+                    "customer":  "Customer", 
                     "confirmed": "Confirmed",
+                    "status": "Status",
                     "total": "Total",
-                    "created": "Created",
-                    "store": "Store"
+                    "currency":  "Currency",
+                    "store": "Store",
+                    "created": "Created"
                 },
                 "placeholders": {
                     "select-filter": "Select filter"
