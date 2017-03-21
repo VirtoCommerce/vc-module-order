@@ -19,7 +19,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                           title: 'orders.blades.customerOrder-list.title',
                           //subtitle: 'Manage Orders',
                           controller: 'virtoCommerce.orderModule.customerOrderListController',
-                          isExpanded: true,
+                          isExpandable: true,
                           template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-list.tpl.html',
                           isClosingDisabled: true
                       };
