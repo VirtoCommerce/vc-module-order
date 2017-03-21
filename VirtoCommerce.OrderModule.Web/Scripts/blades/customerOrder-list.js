@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'dateFilter', 'virtoCommerce.orderModule.knownOperations',
-function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, dateFilter, knownOperations) {
+.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations',
+function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -142,20 +142,35 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     };
 
     // ui-grid
-    $scope.setGridOptions = function (gridOptions) {
-        var createdDateColumn = _.findWhere(gridOptions.columnDefs, { name: 'createdDate' });
-        if (createdDateColumn) { // custom tooltip
-            createdDateColumn.cellTooltip = function (row, col) { return dateFilter(row.entity.createdDate, 'medium'); }
+    $scope.setGridOptions = function (gridId, gridOptions) {
+
+        $scope.gridOptions = gridOptions;
+        gridOptions.onRegisterApi = function() {
+            gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);
         }
+        blade.onExpand = blade.onCollapse = function() {
+            gridOptionExtension.tryExtendGridOptions(gridId, angular.extend({ }, $scope.gridOptions, { collapsed: !blade.isExpanded }));
+        }
+
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
             uiGridHelper.bindRefreshOnSortChanged($scope);
         });
 
         bladeUtils.initializePagination($scope);
+
+        return gridOptions;
     };
 
 
     // actions on load
     //No need to call this because page 'pageSettings.currentPage' is watched!!! It would trigger subsequent duplicated req...
     //blade.refresh();
+}])
+.run(['platformWebApp.ui-grid.extension', 'dateFilter', function (gridOptionsExtension, dateFilter) {
+    gridOptionsExtension.registerExtension('customerOrder-list-grid', function (gridOptions) {
+        var createdDateColumn = _.findWhere(gridOptions.columnDefs, { name: 'createdDate' });
+        if (createdDateColumn) { // custom tooltip
+            createdDateColumn.cellTooltip = function (row, col) { return dateFilter(row.entity.createdDate, 'medium'); }
+        }
+    });
 }]);
