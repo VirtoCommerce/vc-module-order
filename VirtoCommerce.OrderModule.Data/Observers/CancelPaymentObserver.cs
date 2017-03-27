@@ -10,7 +10,7 @@ using VirtoCommerce.Domain.Store.Services;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
 {
-	public class CancelPaymentObserver : IObserver<OrderChangeEvent>
+	public class CancelPaymentObserver : IObserver<OrderChangedEvent>
 	{
 		private readonly IStoreService _storeService;
 
@@ -29,12 +29,12 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 			
 		}
 
-		public void OnNext(OrderChangeEvent value)
+		public void OnNext(OrderChangedEvent value)
 		{
 			CancelationPayment(value);
 		}
 
-		private void CancelationPayment(OrderChangeEvent value)
+		private void CancelationPayment(OrderChangedEvent value)
 		{
 			if(value.OrigOrder != null && !value.OrigOrder.IsCancelled && value.ModifiedOrder.IsCancelled)
 			{

@@ -112,11 +112,8 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "testPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
+                    Coupon = "ssss"
                     }
-                }
                 }
             };
             var item1 = new LineItem
@@ -137,10 +134,7 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "itemPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
-                    }
+                    Coupon =  "ssss"
                 }}
             };
             var item2 = new LineItem
@@ -183,10 +177,7 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "testPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
-                    }
+                    Coupon = ""
                 }},
 
             };
@@ -230,7 +221,7 @@ namespace VirtoCommerce.OrderModule.Test
             var dynamicPropertyService = new Mock<IDynamicPropertyService>().Object;
             var orderEventPublisher = new EventPublisher<OrderChangeEvent>(Enumerable.Empty<IObserver<OrderChangeEvent>>().ToArray());
 
-            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null);
+            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, null);
 
             return orderService;
         }
