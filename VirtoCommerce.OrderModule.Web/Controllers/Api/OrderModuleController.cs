@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CacheManager.Core;
-using Omu.ValueInjecter;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Store.Services;
+using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.BackgroundJobs;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Core.Web.Security;
@@ -41,11 +46,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly ISettingsManager _settingManager;
         private readonly ICustomerOrderBuilder _customerOrderBuilder;
         private readonly IShoppingCartService _cartService;
+        private readonly INotificationManager _notificationManager;
+        private readonly INotificationTemplateResolver _notificationTemplateResolver;
         private static readonly object _lockObject = new object();
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
                                      ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
-                                     ISettingsManager settingManager, ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService)
+                                     ISettingsManager settingManager, ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
+                                     INotificationTemplateResolver notificationTemplateResolver)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -58,6 +66,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _settingManager = settingManager;
             _customerOrderBuilder = customerOrderBuilder;
             _cartService = cartService;
+            _notificationManager = notificationManager;
+            _notificationTemplateResolver = notificationTemplateResolver;
         }
 
         /// <summary>
@@ -91,19 +101,19 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetByNumber(string number)
         {
-            var result =  _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = number, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
+            var result = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = number, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
 
             var retVal = result.Results.FirstOrDefault();
-            if(retVal != null)
+            if (retVal != null)
             {
-            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
-            if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
-            {
-                throw new HttpResponseException(HttpStatusCode.Unauthorized);
-            }
-            //Set scopes for UI scope bounded ACL checking
+                var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
+                if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
+                {
+                    throw new HttpResponseException(HttpStatusCode.Unauthorized);
+                }
+                //Set scopes for UI scope bounded ACL checking
                 retVal.Scopes = scopes;
-        }
+            }
             return Ok(retVal);
         }
 
@@ -165,10 +175,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
             var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
-            if(order == null)
+            if (order == null)
             {
                 order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
-            }         
+            }
 
             if (order == null)
             {
@@ -220,7 +230,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 var cart = _cartService.GetByIds(new[] { cartId }).FirstOrDefault();
                 retVal = _customerOrderBuilder.PlaceCustomerOrderFromCart(cart);
-            }           
+            }
             return Ok(retVal);
         }
 
@@ -384,7 +394,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 if (order == null)
                     order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
-                if(order == null)
+                if (order == null)
                     throw new NullReferenceException("order not found");
 
                 var store = _storeService.GetById(order.StoreId);
@@ -427,6 +437,36 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(new PostProcessPaymentResult { ErrorMessage = "cancel payment" });
         }
 
+        [HttpGet]
+        [Route("invoice/{orderNumber}")]
+        [SwaggerFileResponse]
+        public HttpResponseMessage GetInvoicePdf(string orderNumber)
+        {
+            var oderSearchResult = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria
+            {
+                Number = orderNumber,
+                Take = 1
+            });
+            var order = oderSearchResult.Results.FirstOrDefault();
+
+            var invoice = _notificationManager.GetNewNotification("Invoice", null, null, "en-US") as Invoice;
+            if (invoice != null)
+            {
+                invoice.Order = order;
+                _notificationTemplateResolver.ResolveTemplate(invoice);
+            }
+
+            var pdf = PdfGenerator.GeneratePdf(invoice.Body, PdfSharp.PageSize.A4);
+            var stream = new MemoryStream();
+
+            pdf.Save(stream, false);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
+
+            return result;
+        }
 
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {

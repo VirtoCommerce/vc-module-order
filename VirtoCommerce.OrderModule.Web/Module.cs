@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web.Http;
-using System.Xml.Serialization;
 using Microsoft.Practices.Unity;
 using VirtoCommerce.CoreModule.Data.Services;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
-using VirtoCommerce.Domain.Shipping.Model;
 using VirtoCommerce.Domain.Shipping.Services;
-using VirtoCommerce.OrderModule.Data.Model;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Observers;
 using VirtoCommerce.OrderModule.Data.Repositories;
@@ -24,7 +19,6 @@ using VirtoCommerce.OrderModule.Web.JsonConverters;
 using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Resources;
 using VirtoCommerce.OrderModule.Web.Security;
-using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -75,7 +69,21 @@ namespace VirtoCommerce.OrderModule.Web
 
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
-            _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();         
+            _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
+
+            var emailNotificationSendingGateway = _container.Resolve<IEmailNotificationSendingGateway>();
+            var notificationManager = _container.Resolve<INotificationManager>();
+            notificationManager.RegisterNotificationType(() => new Invoice(emailNotificationSendingGateway)
+            {
+                Description = "The invoice for order",
+                DisplayName = "The invoice for order",
+                Type = "Invoice",
+                NotificationTemplate = new NotificationTemplate
+                {
+                    Body = InvoiceResource.Body,
+                    Language = "en-US"
+                }
+            });
         }
 
         public override void PostInitialize()
@@ -84,7 +92,7 @@ namespace VirtoCommerce.OrderModule.Web
 
             //Add order numbers formats settings  to store module allows to use individual number formats in each store
             var settingManager = _container.Resolve<ISettingsManager>();
-            var numberFormatSettings = settingManager.GetModuleSettings("VirtoCommerce.Orders").Where(x=> x.Name.EndsWith("NewNumberTemplate")).ToArray();
+            var numberFormatSettings = settingManager.GetModuleSettings("VirtoCommerce.Orders").Where(x => x.Name.EndsWith("NewNumberTemplate")).ToArray();
             settingManager.RegisterModuleSettings("VirtoCommerce.Store", numberFormatSettings);
 
             var notificationManager = _container.Resolve<INotificationManager>();
