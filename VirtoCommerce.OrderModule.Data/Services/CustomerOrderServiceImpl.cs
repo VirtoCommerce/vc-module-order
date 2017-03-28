@@ -69,22 +69,20 @@ namespace VirtoCommerce.OrderModule.Data.Services
                                      
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
-              
+
+                    var changingEvent = new OrderChangeEvent(originalEntity == null ? EntryState.Added : EntryState.Modified, originalOrder, order);
+                    OrderChangingPublisher.Publish(changingEvent);
+                    changedEvents.Add(new OrderChangedEvent(changingEvent.ChangeState, changingEvent.OrigOrder, changingEvent.ModifiedOrder));
+
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                                                  .FromModel(order, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
-                    {
-                        OrderChangingPublisher.Publish(new OrderChangeEvent(EntryState.Modified, originalOrder, order));
-                        changedEvents.Add(new OrderChangedEvent(EntryState.Modified, originalOrder, order));
-
+                    {                     
                         changeTracker.Attach(originalEntity);
                         modifiedEntity.Patch(originalEntity);
                     }
                     else
-                    {
-                        OrderChangingPublisher.Publish(new OrderChangeEvent(EntryState.Added, originalOrder, order));
-                        changedEvents.Add(new OrderChangedEvent(EntryState.Added, originalOrder, order));
-
+                    {                       
                         repository.Add(modifiedEntity);
                     }
                 }
