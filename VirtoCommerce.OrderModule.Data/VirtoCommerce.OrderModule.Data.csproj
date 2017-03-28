@@ -180,6 +180,7 @@
     <Compile Include="Model\ShipmentItemEntity.cs" />
     <Compile Include="Model\TaxDetailEntity.cs" />
     <Compile Include="Notifications\CancelOrderEmailNotification.cs" />
+    <Compile Include="Notifications\Invoice.cs" />
     <Compile Include="Notifications\NewOrderStatusEmailNotification.cs" />
     <Compile Include="Notifications\OrderCreateEmailNotification.cs" />
     <Compile Include="Notifications\OrderEmailNotificationBase.cs" />

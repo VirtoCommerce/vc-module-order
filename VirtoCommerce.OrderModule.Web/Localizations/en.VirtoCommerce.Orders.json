@@ -13,7 +13,8 @@
                     "store": "Store",
                     "from": "From",
                     "channel": "Channel",
-                    "customer": "Customer"
+                    "customer": "Customer",
+                    "invoice": "Get invoice PDF"
                 },
                 "placeholders": {
                     "employee": "Select assignee",
