@@ -1,12 +1,24 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
-    function ($scope, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService) {
+.controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
+    function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService) {
         var blade = $scope.blade;
 
         angular.extend(blade, {
             title: 'orders.blades.customerOrder-detail.title',
             titleValues: { customer: blade.customerOrder.customerName },
             subtitle: 'orders.blades.customerOrder-detail.subtitle'
+        });
+
+        blade.toolbarCommands.push({
+            name: 'orders.blades.customerOrder-detail.labels.invoice',
+            icon: 'fa fa-download',
+            index: 5,
+            executeMethod: function (blade) {
+                $window.open('api/order/customerOrders/invoice/' + blade.currentEntity.number, '_blank');
+            },
+            canExecuteMethod: function () {
+                return true;
+            }
         });
 
         blade.stores = order_res_stores.query();

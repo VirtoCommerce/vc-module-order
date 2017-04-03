@@ -12,7 +12,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
 {
-	public class AdjustInventoryObserver : IObserver<OrderChangeEvent>
+	public class AdjustInventoryObserver : IObserver<OrderChangedEvent>
 	{
 		private readonly IInventoryService _inventoryService;
 		public AdjustInventoryObserver(IInventoryService inventoryService)
@@ -29,7 +29,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 		{
 		}
 
-		public void OnNext(OrderChangeEvent value)
+		public void OnNext(OrderChangedEvent value)
 		{
             if (!value.ModifiedOrder.IsPrototype)
             {

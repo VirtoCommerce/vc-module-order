@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Omu.ValueInjecter;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -47,19 +48,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException("discount");
 
             discount.InjectFrom(this);
-
-            if (this.Currency != null)
-            {
-                discount.Currency = this.Currency;
-            }
-
-            if (this.CouponCode != null)
-            {
-                discount.Coupon = new Coupon
-                {
-                    Code = this.CouponCode                  
-                };
-            }            
+            discount.Coupon = this.CouponCode; 
+      
             return discount;
         }
 
@@ -69,12 +59,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException("discount");
 
         
-            this.InjectFrom(discount);
-            this.Currency = discount.Currency;
-            if(discount.Coupon != null)
-            {
-                this.CouponCode = discount.Coupon.Code;
-            }
+            this.InjectFrom(discount);         
+            this.CouponCode = discount.Coupon;
+
             return this;
         }
 

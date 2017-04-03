@@ -13,7 +13,7 @@ using VirtoCommerce.Domain.Payment.Model;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
 {
-    public class OrderNotificationObserver : IObserver<OrderChangeEvent>
+    public class OrderNotificationObserver : IObserver<OrderChangedEvent>
     {
         private readonly INotificationManager _notificationManager;
         private readonly IStoreService _storeService;
@@ -36,7 +36,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             
         }
 
-        public void OnNext(OrderChangeEvent changeEvent)
+        public void OnNext(OrderChangedEvent changeEvent)
         {
             //Collection of order notifications
             var notifications = new List<OrderEmailNotificationBase>();
@@ -88,7 +88,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderCanceled(OrderChangeEvent value)
+        private bool IsOrderCanceled(OrderChangedEvent value)
         {
             var retVal = false;
 
@@ -104,7 +104,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsNewStatus(OrderChangeEvent value)
+        private bool IsNewStatus(OrderChangedEvent value)
         {
             var retVal = false;
 
@@ -119,7 +119,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderPaid(OrderChangeEvent value)
+        private bool IsOrderPaid(OrderChangedEvent value)
         {
             var retVal = false;
             foreach(var origPayment in value.OrigOrder.InPayments)
@@ -142,7 +142,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderSent(OrderChangeEvent value)
+        private bool IsOrderSent(OrderChangedEvent value)
         {
             var retVal = false;
             foreach(var origShipment in value.OrigOrder.Shipments)
@@ -162,7 +162,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="changeEvent"></param>
-        private void SetNotificationParameters(EmailNotification notification, OrderChangeEvent changeEvent)
+        private void SetNotificationParameters(EmailNotification notification, OrderChangedEvent changeEvent)
         {
             var order = changeEvent.ModifiedOrder;
 

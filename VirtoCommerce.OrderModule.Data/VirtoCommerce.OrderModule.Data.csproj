@@ -74,8 +74,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VirtoCommerce.Domain, Version=2.20.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.20.0\lib\net451\VirtoCommerce.Domain.dll</HintPath>
+    <Reference Include="VirtoCommerce.Domain, Version=2.22.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Domain.2.22.0\lib\net461\VirtoCommerce.Domain.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="VirtoCommerce.Platform.Core, Version=2.12.6.0, Culture=neutral, processorArchitecture=MSIL">
@@ -180,6 +180,7 @@
     <Compile Include="Model\ShipmentItemEntity.cs" />
     <Compile Include="Model\TaxDetailEntity.cs" />
     <Compile Include="Notifications\CancelOrderEmailNotification.cs" />
+    <Compile Include="Notifications\Invoice.cs" />
     <Compile Include="Notifications\NewOrderStatusEmailNotification.cs" />
     <Compile Include="Notifications\OrderCreateEmailNotification.cs" />
     <Compile Include="Notifications\OrderEmailNotificationBase.cs" />

@@ -1,8 +1,8 @@
-﻿using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using Moq;
 using VirtoCommerce.CoreModule.Data.Migrations;
 using VirtoCommerce.CoreModule.Data.Repositories;
 using VirtoCommerce.CoreModule.Data.Services;
@@ -112,11 +112,8 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "testPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
+                    Coupon = "ssss"
                     }
-                }
                 }
             };
             var item1 = new LineItem
@@ -137,10 +134,7 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "itemPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
-                    }
+                    Coupon =  "ssss"
                 }}
             };
             var item2 = new LineItem
@@ -183,10 +177,7 @@ namespace VirtoCommerce.OrderModule.Test
                     PromotionId = "testPromotion",
                     Currency = "USD",
                     DiscountAmount = 12,
-                    Coupon = new Coupon
-                    {
-                        Code = "ssss"
-                    }
+                    Coupon = ""
                 }},
 
             };
@@ -230,7 +221,7 @@ namespace VirtoCommerce.OrderModule.Test
             var dynamicPropertyService = new Mock<IDynamicPropertyService>().Object;
             var orderEventPublisher = new EventPublisher<OrderChangeEvent>(Enumerable.Empty<IObserver<OrderChangeEvent>>().ToArray());
 
-            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null);
+            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, null);
 
             return orderService;
         }
@@ -239,7 +230,7 @@ namespace VirtoCommerce.OrderModule.Test
         {
             var orderService = GetCustomerOrderService();
 
-            return new OrderModuleController(orderService, null, null, null, null, null, null, null, null, null, null);
+            return new OrderModuleController(orderService, null, null, null, null, null, null, null, null, null, null, null, null);
         }
 
         private static IShippingMethodsService GetShippingMethodsService()

@@ -10,6 +10,7 @@ using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Domain.Payment.Model;
+using VirtoCommerce.Domain.Commerce.Model;
 
 namespace VirtoCommerce.OrderModule.Data.Services
 {
@@ -51,14 +52,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.TaxPercentRate = cart.TaxPercentRate;
             retVal.TaxType = cart.TaxType;
             retVal.LanguageCode = cart.LanguageCode;
-            
+
             retVal.Status = "New";
 
             var cartLineItemsMap = new Dictionary<string, orderModel.LineItem>();
             if (cart.Items != null)
             {
                 retVal.Items = new List<orderModel.LineItem>();
-                foreach(var cartLineItem in cart.Items)
+                foreach (var cartLineItem in cart.Items)
                 {
                     var orderLineItem = ToOrderModel(cartLineItem);
                     retVal.Items.Add(orderLineItem);
@@ -78,10 +79,10 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (cart.Shipments != null)
             {
                 retVal.Shipments = new List<orderModel.Shipment>();
-                foreach(var cartShipment in cart.Shipments)
+                foreach (var cartShipment in cart.Shipments)
                 {
                     var shipment = ToOrderModel(cartShipment);
-                    if(!cartShipment.Items.IsNullOrEmpty())
+                    if (!cartShipment.Items.IsNullOrEmpty())
                     {
                         shipment.Items = new List<orderModel.ShipmentItem>();
                         foreach (var cartShipmentItem in cartShipment.Items)
@@ -98,7 +99,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 }
                 //Add shipping address to order
                 retVal.Addresses.AddRange(retVal.Shipments.Where(x => x.DeliveryAddress != null).Select(x => x.DeliveryAddress));
-              
+
             }
             if (cart.Payments != null)
             {
@@ -108,7 +109,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     var paymentIn = ToOrderModel(payment);
                     paymentIn.CustomerId = cart.CustomerId;
                     retVal.InPayments.Add(paymentIn);
-                    if(payment.BillingAddress != null)
+                    if (payment.BillingAddress != null)
                     {
                         retVal.Addresses.Add(payment.BillingAddress);
                     }
@@ -151,7 +152,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
-          
+
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
             retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
             if (lineItem.Discounts != null)
@@ -162,20 +163,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
             return retVal;
         }
 
-        protected virtual orderModel.Discount ToOrderModel(cartModel.Discount discount)
+        protected virtual Discount ToOrderModel(Discount discount)
         {
             if (discount == null)
                 throw new ArgumentNullException("discount");
 
-            var retVal = AbstractTypeFactory<Domain.Order.Model.Discount>.TryCreateInstance();
-            if(!string.IsNullOrEmpty(discount.Coupon))
-            {
-                retVal.Coupon = new orderModel.Coupon
-                {
-                    Code = discount.Coupon,
-                    IsValid = true
-                };
-            }
+            var retVal = AbstractTypeFactory<Discount>.TryCreateInstance();
+
+            retVal.Coupon = discount.Coupon;
             retVal.Currency = discount.Currency;
             retVal.Description = discount.Description;
             retVal.DiscountAmount = discount.DiscountAmount;
@@ -199,7 +194,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Sum = shipment.Total;
             retVal.Weight = shipment.Weight;
             retVal.WeightUnit = shipment.WeightUnit;
-            retVal.Width = shipment.Width;            
+            retVal.Width = shipment.Width;
             retVal.TaxPercentRate = shipment.TaxPercentRate;
             retVal.DiscountAmount = shipment.DiscountAmount;
             retVal.Price = shipment.Price;
@@ -223,7 +218,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             var retVal = AbstractTypeFactory<orderModel.ShipmentItem>.TryCreateInstance();
             retVal.BarCode = shipmentItem.BarCode;
-            retVal.Quantity = shipmentItem.Quantity;            
+            retVal.Quantity = shipmentItem.Quantity;
             return retVal;
         }
 
@@ -238,7 +233,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Price = payment.Price;
             retVal.TaxPercentRate = payment.TaxPercentRate;
             retVal.TaxType = payment.TaxType;
-              
+
             retVal.GatewayCode = payment.PaymentGatewayCode;
             retVal.Sum = payment.Amount;
             retVal.PaymentStatus = PaymentStatus.New;
