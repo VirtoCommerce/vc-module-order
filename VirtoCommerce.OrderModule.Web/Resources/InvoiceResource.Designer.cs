@@ -67,15 +67,24 @@ namespace VirtoCommerce.OrderModule.Web.Resources {
         ///&lt;body style=&quot;font-family: Arial, Helvetica, sans-serif;&quot;&gt;
         ///    &lt;div style=&quot;border: 1px solid #E0DCDA;&quot;&gt;
         ///        &lt;div style=&quot;background-color: #E0DCDA; margin: 2px; padding: 10px;&quot;&gt;
-        ///            &lt;span style=&quot;width: 400px;&quot;&gt;Invoice Details {{ order.number }}&lt;/span&gt;
-        ///            &lt;span style=&quot;width: 400px;&quot;&gt;Status: {{ order.status }}&lt;/span&gt;
+        ///            &lt;span style=&quot;width: 400px;&quot;&gt;Invoice Details {{ customer_order.number }}&lt;/span&gt;
+        ///            &lt;span style=&quot;width: 400px;&quot;&gt;Status: {{ customer_order.status }}&lt;/span&gt;
         ///        &lt;/div&gt;
         ///      	&lt;img src=&quot;http://www.startupguys.net/wp-content/uploads/2016/03/virto-commerce-logo.png&quot; width=&quot;150&quot; /&gt;
-        ///        &lt;div style [rest of string was truncated]&quot;;.
+        ///        &lt;d [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Body {
             get {
                 return ResourceManager.GetString("Body", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invoice for order - &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt;.
+        /// </summary>
+        public static string Subject {
+            get {
+                return ResourceManager.GetString("Subject", resourceCulture);
             }
         }
     }

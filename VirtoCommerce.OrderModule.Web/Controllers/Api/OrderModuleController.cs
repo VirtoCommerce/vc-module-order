@@ -453,7 +453,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             if (order == null)
                 throw new NullReferenceException("order not found");
 
-            var invoice = _notificationManager.GetNewNotification(nameof(InvoiceEmailNotification), null, null, "en-US");
+            var invoice = _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store", order.LanguageCode);
 
             ((InvoiceEmailNotification)invoice).CustomerOrder = order;
             _notificationTemplateResolver.ResolveTemplate(invoice);

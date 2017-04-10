@@ -9,5 +9,18 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
             : base(gateway)
         {
         }
+
+        /// <summary>
+        /// For templates back compatibility
+        /// </summary>
+        [NotificationParameter("Order")]
+        public CustomerOrder Order
+        {
+            get
+            {
+                return base.CustomerOrder;
+            }
+        }
+
     }
 }
