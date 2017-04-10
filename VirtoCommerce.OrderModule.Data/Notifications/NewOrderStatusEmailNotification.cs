@@ -21,5 +21,23 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
 
         [NotificationParameter("New order status")]
         public string NewStatus { get; set; }
+
+        public override void Initialize(IServiceProvider serviceProvider, NotificationParameter[] notificationParameters)
+        {
+            foreach (var notificationParameter in notificationParameters)
+            {
+                switch (notificationParameter.ParameterName)
+                {
+                    case "OldStatus":
+                        OldStatus = (string)notificationParameter.Value;
+                        break;
+
+                    case "NewStatus":
+                        NewStatus = (string)notificationParameter.Value;
+                        break;
+                }
+            }
+            base.Initialize(serviceProvider, notificationParameters);
+        }
     }
 }

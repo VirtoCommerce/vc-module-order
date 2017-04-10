@@ -453,9 +453,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             if (order == null)
                 throw new NullReferenceException("order not found");
 
-            var invoice = _notificationManager.GetNewNotification(nameof(Invoice), null, null, "en-US");
+            var invoice = _notificationManager.GetNewNotification(nameof(InvoiceEmailNotification), null, null, "en-US");
 
-            ((Invoice)invoice).Order = order;
+            ((InvoiceEmailNotification)invoice).CustomerOrder = order;
             _notificationTemplateResolver.ResolveTemplate(invoice);
 
             var stream = new MemoryStream();
@@ -476,16 +476,16 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 //Get defined user 'read' permission scopes
                 var readPermissionScopes = _securityService.GetUserPermissions(userName)
-                                                      .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
-                                                      .SelectMany(x => x.AssignedScopes)
-                                                      .ToList();
+                    .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
+                    .SelectMany(x => x.AssignedScopes)
+                    .ToList();
 
                 //Check user has a scopes
                 //Stores
                 criteria.StoreIds = readPermissionScopes.OfType<OrderStoreScope>()
-                                                         .Select(x => x.Scope)
-                                                         .Where(x => !String.IsNullOrEmpty(x))
-                                                         .ToArray();
+                    .Select(x => x.Scope)
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToArray();
 
                 var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 //employee id

@@ -41,19 +41,19 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             //Collection of order notifications
             var notifications = new List<OrderEmailNotificationBase>();
 
-            if(IsOrderCanceled(changeEvent))
+            if (IsOrderCanceled(changeEvent))
             {
                 var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
-            if(changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
+            if (changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
             {
                 var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                  notifications.Add(notification);
             }
 
-            if(IsNewStatus(changeEvent))
+            if (IsNewStatus(changeEvent))
             {
                 var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
       
@@ -63,19 +63,19 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 notifications.Add(notification);
             }
 
-            if(IsOrderPaid(changeEvent))
+            if (IsOrderPaid(changeEvent))
             {
                 var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
-            if(IsOrderSent(changeEvent))
+            if (IsOrderSent(changeEvent))
             {
                 var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
                 notifications.Add(notification);
             }
 
-            foreach(var notification in notifications)
+            foreach (var notification in notifications)
             {
                 notification.CustomerOrder = changeEvent.ModifiedOrder;
                 SetNotificationParameters(notification, changeEvent);
