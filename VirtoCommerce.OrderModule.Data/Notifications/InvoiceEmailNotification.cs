@@ -3,14 +3,11 @@ using VirtoCommerce.Platform.Core.Notifications;
 
 namespace VirtoCommerce.OrderModule.Data.Notifications
 {
-    public class Invoice : Notification
+    public class InvoiceEmailNotification : OrderEmailNotificationBase
     {
-        public Invoice(IEmailNotificationSendingGateway gateway)
+        public InvoiceEmailNotification(IEmailNotificationSendingGateway gateway)
             : base(gateway)
         {
         }
-
-        [NotificationParameter("Order")]
-        public CustomerOrder Order { get; set; }
     }
 }

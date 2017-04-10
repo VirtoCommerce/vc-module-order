@@ -15,6 +15,5 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
             : base(gateway)
         {
         }
-
     }
 }
