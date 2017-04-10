@@ -440,32 +440,33 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("invoice/{orderNumber}")]
         [SwaggerFileResponse]
-        public HttpResponseMessage GetInvoicePdf(string orderNumber)
+        public IHttpActionResult GetInvoicePdf(string orderNumber)
         {
             var oderSearchResult = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria
             {
                 Number = orderNumber,
                 Take = 1
             });
+
             var order = oderSearchResult.Results.FirstOrDefault();
 
-            var invoice = _notificationManager.GetNewNotification("Invoice", null, null, "en-US") as Invoice;
-            if (invoice != null)
-            {
-                invoice.Order = order;
-                _notificationTemplateResolver.ResolveTemplate(invoice);
-            }
+            if (order == null)
+                throw new NullReferenceException("order not found");
 
-            var pdf = PdfGenerator.GeneratePdf(invoice.Body, PdfSharp.PageSize.A4);
+            var invoice = _notificationManager.GetNewNotification(nameof(Invoice), null, null, "en-US");
+
+            ((Invoice)invoice).CustomerOrder = order;
+            _notificationTemplateResolver.ResolveTemplate(invoice);
+
             var stream = new MemoryStream();
-
+            var pdf = PdfGenerator.GeneratePdf(invoice.Body, PdfSharp.PageSize.A4);
             pdf.Save(stream, false);
             stream.Seek(0, SeekOrigin.Begin);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
 
-            return result;
+            return ResponseMessage(result);
         }
 
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
