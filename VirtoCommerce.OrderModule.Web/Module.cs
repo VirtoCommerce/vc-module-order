@@ -71,20 +71,7 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
-
-            var emailNotificationSendingGateway = _container.Resolve<IEmailNotificationSendingGateway>();
-            var notificationManager = _container.Resolve<INotificationManager>();
-            notificationManager.RegisterNotificationType(() => new Invoice(emailNotificationSendingGateway)
-            {
-                Description = "The invoice for order",
-                DisplayName = "The invoice for order",
-                Type = "Invoice",
-                NotificationTemplate = new NotificationTemplate
-                {
-                    Body = InvoiceResource.Body,
-                    Language = "en-US"
-                }
-            });
+        
         }
 
         public override void PostInitialize()
@@ -153,6 +140,18 @@ namespace VirtoCommerce.OrderModule.Web
                 {
                     Body = OrderNotificationResource.CancelOrderNotificationBody,
                     Subject = OrderNotificationResource.CancelOrderNotificationSubject,
+                    Language = "en-US"
+                }
+            });
+
+            notificationManager.RegisterNotificationType(() => new InvoiceEmailNotification(_container.Resolve<IEmailNotificationSendingGateway>())
+            {
+                Description = "The template for for customer order invoice (used for PDF generation)",
+                DisplayName = "The invoice for customer order",
+                NotificationTemplate = new NotificationTemplate
+                {
+                    Body = InvoiceResource.Body,
+                    Subject = InvoiceResource.Subject,
                     Language = "en-US"
                 }
             });

@@ -440,32 +440,33 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("invoice/{orderNumber}")]
         [SwaggerFileResponse]
-        public HttpResponseMessage GetInvoicePdf(string orderNumber)
+        public IHttpActionResult GetInvoicePdf(string orderNumber)
         {
             var oderSearchResult = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria
             {
                 Number = orderNumber,
                 Take = 1
             });
+
             var order = oderSearchResult.Results.FirstOrDefault();
 
-            var invoice = _notificationManager.GetNewNotification("Invoice", null, null, "en-US") as Invoice;
-            if (invoice != null)
-            {
-                invoice.Order = order;
-                _notificationTemplateResolver.ResolveTemplate(invoice);
-            }
+            if (order == null)
+                throw new NullReferenceException("order not found");
 
-            var pdf = PdfGenerator.GeneratePdf(invoice.Body, PdfSharp.PageSize.A4);
+            var invoice = _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store", order.LanguageCode);
+
+            ((InvoiceEmailNotification)invoice).CustomerOrder = order;
+            _notificationTemplateResolver.ResolveTemplate(invoice);
+
             var stream = new MemoryStream();
-
+            var pdf = PdfGenerator.GeneratePdf(invoice.Body, PdfSharp.PageSize.A4);
             pdf.Save(stream, false);
             stream.Seek(0, SeekOrigin.Begin);
 
             var result = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
             result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/pdf");
 
-            return result;
+            return ResponseMessage(result);
         }
 
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
@@ -475,16 +476,16 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 //Get defined user 'read' permission scopes
                 var readPermissionScopes = _securityService.GetUserPermissions(userName)
-                                                      .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
-                                                      .SelectMany(x => x.AssignedScopes)
-                                                      .ToList();
+                    .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
+                    .SelectMany(x => x.AssignedScopes)
+                    .ToList();
 
                 //Check user has a scopes
                 //Stores
                 criteria.StoreIds = readPermissionScopes.OfType<OrderStoreScope>()
-                                                         .Select(x => x.Scope)
-                                                         .Where(x => !String.IsNullOrEmpty(x))
-                                                         .ToArray();
+                    .Select(x => x.Scope)
+                    .Where(x => !String.IsNullOrEmpty(x))
+                    .ToArray();
 
                 var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 //employee id

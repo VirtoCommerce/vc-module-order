@@ -124,8 +124,8 @@
 &lt;body style="font-family: Arial, Helvetica, sans-serif;"&gt;
     &lt;div style="border: 1px solid #E0DCDA;"&gt;
         &lt;div style="background-color: #E0DCDA; margin: 2px; padding: 10px;"&gt;
-            &lt;span style="width: 400px;"&gt;Invoice Details {{ order.number }}&lt;/span&gt;
-            &lt;span style="width: 400px;"&gt;Status: {{ order.status }}&lt;/span&gt;
+            &lt;span style="width: 400px;"&gt;Invoice Details {{ customer_order.number }}&lt;/span&gt;
+            &lt;span style="width: 400px;"&gt;Status: {{ customer_order.status }}&lt;/span&gt;
         &lt;/div&gt;
       	&lt;img src="http://www.startupguys.net/wp-content/uploads/2016/03/virto-commerce-logo.png" width="150" /&gt;
         &lt;div style="font-size: 12px; padding: 10px;"&gt;
@@ -134,8 +134,8 @@
                 &lt;span style="width: 150px;"&gt;&lt;strong&gt;Order Number&lt;/strong&gt;&lt;/span&gt;
             &lt;/div&gt;
             &lt;div&gt;
-                &lt;span style="width: 150px;"&gt;{{ order.created_date }}&lt;/span&gt;
-                &lt;span style="width: 150px;"&gt;{{ order.number }}&lt;/span&gt;
+                &lt;span style="width: 150px;"&gt;{{ customer_order.created_date }}&lt;/span&gt;
+                &lt;span style="width: 150px;"&gt;{{ customer_order.number }}&lt;/span&gt;
             &lt;/div&gt;
         &lt;/div&gt;
         &lt;div style="padding: 10px;"&gt;
@@ -149,7 +149,7 @@
             &lt;span style="width: 100px;"&gt;&lt;strong&gt;Line Price&lt;/strong&gt;&lt;/span&gt;
         &lt;/div&gt;
       	&lt;table style="font-size: 12px;"&gt;
-        	{% for line_item in order.items %}
+        	{% for line_item in customer_order.items %}
               	&lt;tr&gt;
                   	&lt;td style="text-align: center; vertical-align: top; width: 30px;"&gt;&lt;p&gt;{{ forloop.index }}&lt;/p&gt;&lt;/td&gt;
                   	&lt;td style="vertical-align: top; width: 200px;"&gt;&lt;p&gt;{{ line_item.name }}&lt;/p&gt;&lt;p style="color: #999; font-size: 11px;"&gt;SKU: {{ line_item.sku }}&lt;/p&gt;&lt;/td&gt;
@@ -163,38 +163,41 @@
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="width: 100px;"&gt;Shipping:&lt;/span&gt;
-                &lt;span style="width: 100px;"&gt;${{ order.shipping_total | round: 2 }}&lt;/span&gt;
+                &lt;span style="width: 100px;"&gt;${{ customer_order.shipping_total | round: 2 }}&lt;/span&gt;
             &lt;/div&gt;
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="width: 100px;"&gt;Total Fees:&lt;/span&gt;
-                &lt;span style="width: 100px;"&gt;${{ order.fee_total | round: 2 }}&lt;/span&gt;
+                &lt;span style="width: 100px;"&gt;${{ customer_order.fee_total | round: 2 }}&lt;/span&gt;
             &lt;/div&gt;
             &lt;br /&gt;
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="width: 100px;"&gt;Order Subtotal:&lt;/span&gt;
-                &lt;span style="width: 100px;"&gt;${{ order.sub_total | round: 2 }}&lt;/span&gt;
+                &lt;span style="width: 100px;"&gt;${{ customer_order.sub_total | round: 2 }}&lt;/span&gt;
             &lt;/div&gt;
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="width: 100px;"&gt;GST:&lt;/span&gt;
-                &lt;span style="width: 100px;"&gt;${{ order.tax_total | round: 2 }}&lt;/span&gt;
+                &lt;span style="width: 100px;"&gt;${{ customer_order.tax_total | round: 2 }}&lt;/span&gt;
             &lt;/div&gt;
             &lt;br /&gt;
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="font-size: 14px; width: 100px;"&gt;&lt;strong&gt;Total:&lt;/strong&gt;&lt;/span&gt;
-                &lt;span style="font-size: 14px; width: 100px;"&gt;&lt;strong&gt;${{ order.total | round: 2 }}&lt;/strong&gt;&lt;/span&gt;
+                &lt;span style="font-size: 14px; width: 100px;"&gt;&lt;strong&gt;${{ customer_order.total | round: 2 }}&lt;/strong&gt;&lt;/span&gt;
             &lt;/div&gt;
             &lt;div&gt;
                 &lt;span style="width: 300px;"&gt;&lt;/span&gt;
                 &lt;span style="width: 100px;"&gt;Currency:&lt;/span&gt;
-                &lt;span style="width: 100px;"&gt;{{ order.currency }}&lt;/span&gt;
+                &lt;span style="width: 100px;"&gt;{{ customer_order.currency }}&lt;/span&gt;
             &lt;/div&gt;
         &lt;/div&gt;
     &lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</value>
+  </data>
+  <data name="Subject" xml:space="preserve">
+    <value>Invoice for order - &lt;strong&gt;{{ customer_order.number }}&lt;/strong&gt;</value>
   </data>
 </root>

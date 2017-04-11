@@ -9,11 +9,11 @@ using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.OrderModule.Data.Notifications
 {
-    public class OrderEmailNotificationBase : EmailNotification
+    public abstract class OrderEmailNotificationBase : EmailNotification
     {
         public OrderEmailNotificationBase(IEmailNotificationSendingGateway gateway) : base(gateway) { }
 
-        [NotificationParameter("CustomerOrder")]
-        public CustomerOrder CustomerOrder { get; set; }
+        [NotificationParameter("Customer Order")]
+        public CustomerOrder CustomerOrder { get; set; }        
     }
 }
