@@ -111,6 +111,20 @@
                 <description>The template (pattern) that will be used to generate the number for new incoming Payment. Parameters: 0 - date (the UTC time of number generation); 1 - the sequence number.</description>
             </setting>
             <setting>
+                <name>Order.SendOrderNotifications</name>
+                <valueType>boolean</valueType>
+                <defaultValue>true</defaultValue>
+                <title>Enable notifications for orders</title>
+                <description>Send notification when order state changed.</description>
+            </setting>
+            <setting>
+              <name>Order.AdjustInventory</name>
+              <valueType>boolean</valueType>
+              <defaultValue>true</defaultValue>
+              <title>Adjust inventory for orders</title>
+              <description>Adjust inventory when order state changed.</description>
+            </setting>
+            <setting>
                 <name>Order.ExportImport.Description</name>
                 <valueType>string</valueType>
                 <defaultValue>Export/Import customer orders with all related objects (line items, shipments, payments etc)</defaultValue>

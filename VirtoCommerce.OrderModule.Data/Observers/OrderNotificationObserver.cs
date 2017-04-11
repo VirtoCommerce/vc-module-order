@@ -10,6 +10,7 @@ using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.Domain.Payment.Model;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
 {
@@ -18,12 +19,14 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         private readonly INotificationManager _notificationManager;
         private readonly IStoreService _storeService;
         private readonly IMemberService _memberService;
+        private readonly ISettingsManager _settingsManager;
 
-        public OrderNotificationObserver(INotificationManager notificationManager, IStoreService storeService, IMemberService memberService)
+        public OrderNotificationObserver(INotificationManager notificationManager, IStoreService storeService, IMemberService memberService, ISettingsManager settingsManager)
         {
             _notificationManager = notificationManager;
             _storeService = storeService;
             _memberService = memberService;
+            _settingsManager = settingsManager;
         }
 
         public void OnCompleted()
@@ -38,48 +41,51 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public void OnNext(OrderChangedEvent changeEvent)
         {
-            //Collection of order notifications
-            var notifications = new List<OrderEmailNotificationBase>();
-
-            if(IsOrderCanceled(changeEvent))
+            if (_settingsManager.GetValue("Order.SendOrderNotifications", true))
             {
-                var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
-                notifications.Add(notification);
-            }
+                //Collection of order notifications
+                var notifications = new List<OrderEmailNotificationBase>();
 
-            if(changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
-            {
-                var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
-                 notifications.Add(notification);
-            }
+                if(IsOrderCanceled(changeEvent))
+                {
+                    var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    notifications.Add(notification);
+                }
 
-            if(IsNewStatus(changeEvent))
-            {
-                var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
-      
-                notification.NewStatus = changeEvent.ModifiedOrder.Status;
-                notification.OldStatus = changeEvent.OrigOrder.Status;
+                if(changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
+                {
+                    var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    notifications.Add(notification);
+                }
 
-                notifications.Add(notification);
-            }
+                if(IsNewStatus(changeEvent))
+                {
+                    var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
 
-            if(IsOrderPaid(changeEvent))
-            {
-                var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
-                notifications.Add(notification);
-            }
+                    notification.NewStatus = changeEvent.ModifiedOrder.Status;
+                    notification.OldStatus = changeEvent.OrigOrder.Status;
 
-            if(IsOrderSent(changeEvent))
-            {
-                var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
-                notifications.Add(notification);
-            }
+                    notifications.Add(notification);
+                }
 
-            foreach(var notification in notifications)
-            {
-                notification.CustomerOrder = changeEvent.ModifiedOrder;
-                SetNotificationParameters(notification, changeEvent);
-                _notificationManager.ScheduleSendNotification(notification);
+                if(IsOrderPaid(changeEvent))
+                {
+                    var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    notifications.Add(notification);
+                }
+
+                if(IsOrderSent(changeEvent))
+                {
+                    var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    notifications.Add(notification);
+                }
+
+                foreach(var notification in notifications)
+                {
+                    notification.CustomerOrder = changeEvent.ModifiedOrder;
+                    SetNotificationParameters(notification, changeEvent);
+                    _notificationManager.ScheduleSendNotification(notification);
+                }
             }
         }
 
