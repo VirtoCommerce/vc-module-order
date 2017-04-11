@@ -21,5 +21,6 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
 
         [NotificationParameter("New order status")]
         public string NewStatus { get; set; }
+      
     }
 }
