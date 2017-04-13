@@ -157,9 +157,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
         }
 
         $scope.gridOptions = gridOptions;
-        gridOptions.onRegisterApi = function() {
-            gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);
-        }
+        gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);
 
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
             uiGridHelper.bindRefreshOnSortChanged($scope);
