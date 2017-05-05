@@ -139,6 +139,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipment.Items != null)
             {
                 this.Items = new ObservableCollection<ShipmentItemEntity>(shipment.Items.Select(x => AbstractTypeFactory<ShipmentItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
+                foreach(var shipmentItem in this.Items)
+                {
+                    shipmentItem.ShipmentId = this.Id;                    
+                }
             }
             if (shipment.Packages != null)
             {
