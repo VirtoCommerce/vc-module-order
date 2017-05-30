@@ -51,12 +51,14 @@
 </script>
 
 <script type="text/ng-template" id="discountAmount.html">
-    <div class="form-input">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
         <input money required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
     </div>
 </script>
 <script type="text/ng-template" id="discountAmountWithTax.html">
-    <div class="form-input">
+    <div class="form-input __currency">
+        <span class="currency">{{blade.currentEntity.currency}}</span>
         <input money required ng-model="blade.currentEntity.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmountWithTax" focus-on="discountAmountWithTax">
     </div>
 </script>

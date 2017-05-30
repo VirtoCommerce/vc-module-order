@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'dateFilter', 'virtoCommerce.orderModule.knownOperations',
-function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, dateFilter, knownOperations) {
+.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations',
+function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -150,11 +150,15 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
 
     // ui-grid
     $scope.setGridOptions = function (gridId, gridOptions) {
-        // TODO: refactor this
-        var createdDateColumn = _.findWhere(gridOptions.columnDefs, { name: 'createdDate' });
-        if (createdDateColumn) { // custom tooltip
-            createdDateColumn.cellTooltip = function (row, col) { return dateFilter(row.entity.createdDate, 'medium'); }
-        }
+        // add currency filter for properties that need it
+        Array.prototype.push.apply(gridOptions.columnDefs, _.map([
+            "discountAmount", "subTotal", "subTotalWithTax", "subTotalDiscount", "subTotalDiscountWithTax", "subTotalTaxTotal",
+            "shippingTotal", "shippingTotalWithTax", "shippingSubTotal", "shippingSubTotalWithTax", "shippingDiscountTotal", "shippingDiscountTotalWithTax", "shippingTaxTotal",
+            "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
+            "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
+        ], function(name) {
+            return { name: name, cellFilter: "currency", visible: false };
+        }));
 
         $scope.gridOptions = gridOptions;
         gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);

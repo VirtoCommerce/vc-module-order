@@ -1,6 +1,6 @@
 ﻿<div class="blade-static">
     <div class="form-group">
-        <p class="form-count">{{'platform.list.count' | translate}}: <span class="count">{{pageSettings.totalItems}}</span></p>
+        <p class="form-count">{{'platform.list.count' | translate}}: <span class="count">{{pageSettings.totalItems | number:0}}</span></p>
     </div>
 </div>
 <div class="blade-content __xlarge-wide">
@@ -52,7 +52,7 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span ng-class="{'error': data.avail <= 0}">{{data.avail || 0}}</span>
+                                <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini">
@@ -60,7 +60,7 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.priceWithTax | number:2}}</span>
+                                <span class="list-price">{{data.priceWithTax | currency:''}}</span>
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
@@ -68,13 +68,13 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.discountAmountWithTax | number:2}}</span>
+                                <span class="list-price">{{data.discountAmountWithTax | currency:''}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.taxTotal | number:2}}</span>
+                                <span class="list-price">{{data.taxTotal | currency:''}}</span>
                             </td>
                             <td class="table-col __total">
-                                <span class="list-price">{{data.extendedPriceWithTax | number:2 }}</span>
+                                <span class="list-price">{{data.extendedPriceWithTax | currency:'' }}</span>
                             </td>
                            
                         </tr>
@@ -91,19 +91,19 @@
                 <table class="table __collapsed __order-info">
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.sub-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.subTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotal | currency:blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.subTotalDiscount | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotalDiscount | currency:blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax-total' | translate }}</td>
-                        <td class="table-col __price">{{ blade.currentEntity.subTotalTaxTotal | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{ blade.currentEntity.subTotalTaxTotal | currency:blade.currentEntity.currency}}</td>
                     </tr>
                     <tr class="table-item __total">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</td>
-                        <td class="table-col __price">{{ (blade.currentEntity.subTotalWithTax - blade.currentEntity.subTotalDiscountWithTax) | number:2}}&nbsp;{{blade.currentEntity.currency}}</td>
+                        <td class="table-col __price">{{ (blade.currentEntity.subTotalWithTax - blade.currentEntity.subTotalDiscountWithTax) | currency:blade.currentEntity.currency}}</td>
                     </tr>
                 </table>
             </div>
