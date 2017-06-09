@@ -226,6 +226,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Localizations\en.VirtoCommerce.Orders.json" />
+    <Content Include="Localizations\de.VirtoCommerce.Orders.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
