@@ -155,7 +155,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.TotalWithTax = this.TotalWithTax;
 
             target.CustomerId = this.CustomerId;
+            target.CustomerName = this.CustomerName;
             target.OrganizationId = this.OrganizationId;
+            target.OrganizationName = this.OrganizationName;
             target.GatewayCode = this.GatewayCode;
             target.Purpose = this.Purpose;
             target.OuterId = this.OuterId;
