@@ -166,9 +166,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new NullReferenceException("target");
 
             target.CustomerId = this.CustomerId;
+            target.CustomerName = this.CustomerName;
             target.StoreId = this.StoreId;
+            target.StoreName = this.StoreName;
             target.OrganizationId = this.OrganizationId;
+            target.OrganizationName = this.OrganizationName;
             target.EmployeeId = this.EmployeeId;
+            target.EmployeeName = this.EmployeeName;
             target.DiscountAmount = this.DiscountAmount;
             target.Total = this.Total;
             target.SubTotal = this.SubTotal;

@@ -175,8 +175,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.DiscountAmount = this.DiscountAmount;
             target.DiscountAmountWithTax = this.DiscountAmountWithTax;
             target.FulfillmentCenterId = this.FulfillmentCenterId;
+            target.FulfillmentCenterName = this.FulfillmentCenterName;
             target.OrganizationId = this.OrganizationId;
+            target.OrganizationName = this.OrganizationName;
             target.EmployeeId = this.EmployeeId;
+            target.EmployeeName = target.EmployeeName;
             target.ShipmentMethodCode = this.ShipmentMethodCode;
             target.ShipmentMethodOption = this.ShipmentMethodOption;
             target.Height = this.Height;
