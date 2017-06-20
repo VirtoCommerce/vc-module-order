@@ -2,7 +2,7 @@
     <div class="gridster-cnt">
         <div class="cnt-inner">
             <div class="list-count">
-                <div ng-repeat="data in $storage.ordersDashboardStatistics.revenuePerCustomer track by $index">{{data.amount | number : 2}} {{data.currency}}</div>
+                <div ng-repeat="data in $storage.ordersDashboardStatistics.revenuePerCustomer track by $index">{{data.amount | currency:data.currency}}</div>
             </div>
             <div class="list-t">{{'orders.widgets.statistics-templates.revenue' | translate}}</div>
         </div>
@@ -11,7 +11,7 @@
 <script type="text/ng-template" id="order-statistics-customersCount.html">
     <div class="gridster-cnt">
         <div class="cnt-inner">
-            <div class="list-count">{{$storage.ordersDashboardStatistics.customersCount}}</div>
+            <div class="list-count">{{$storage.ordersDashboardStatistics.customersCount | number:0}}</div>
             <div class="list-t">{{'orders.widgets.statistics-templates.customers-with-orders' | translate}}</div>
         </div>
     </div>
@@ -20,7 +20,7 @@
     <div class="gridster-cnt">
         <div class="cnt-inner">
             <div class="list-count">
-                <div ng-repeat="data in $storage.ordersDashboardStatistics.revenuePerCustomer track by $index">{{data.amount | number : 2}} {{data.currency}}</div>
+                <div ng-repeat="data in $storage.ordersDashboardStatistics.revenuePerCustomer track by $index">{{data.amount | currency:data.currency}}</div>
             </div>
             <div class="list-t">{{'orders.widgets.statistics-templates.revenue-per-customer' | translate}}</div>
         </div>
@@ -30,7 +30,7 @@
     <div class="gridster-cnt" ng-click="openBlade()">
         <div class="cnt-inner">
             <div class="list-count">
-                <div ng-repeat="data in $storage.ordersDashboardStatistics.avgOrderValue track by $index">{{data.amount | number : 2}} {{data.currency}}</div>
+                <div ng-repeat="data in $storage.ordersDashboardStatistics.avgOrderValue track by $index">{{data.amount | currency:data.currency}}</div>
             </div>
             <div class="list-t">{{'orders.widgets.statistics-templates.average-order-value' | translate}}</div>
         </div>
@@ -39,7 +39,7 @@
 <script type="text/ng-template" id="order-statistics-itemsPurchased.html">
     <div class="gridster-cnt">
         <div class="cnt-inner">
-            <div class="list-count">{{$storage.ordersDashboardStatistics.itemsPurchased}}</div>
+            <div class="list-count">{{$storage.ordersDashboardStatistics.itemsPurchased | number:0}}</div>
             <div class="list-t">{{'orders.widgets.statistics-templates.items-purchased' | translate}}</div>
         </div>
     </div>

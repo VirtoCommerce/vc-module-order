@@ -101,9 +101,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     },
                     {
                         name: 'createdDate',
-                        isReadonly: true,
                         title: "orders.blades.customerOrder-detail.labels.from",
-                        valueType: "DateTime"
+                        templateUrl: 'createdDate.html'
                     },
                     {
                         name: 'status',
@@ -143,9 +142,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     },
                     {
                         name: 'createdDate',
-                        isReadonly: true,
                         title: "orders.blades.payment-detail.labels.from",
-                        valueType: "DateTime"
+                        templateUrl: 'createdDate.html'
                     },
                     {
                         name: 'price',
@@ -176,9 +174,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                     },
                     {
                         name: 'createdDate',
-                        isReadonly: true,
                         title: "orders.blades.shipment-detail.labels.from",
-                        valueType: "DateTime"
+                        templateUrl: 'createdDate.html'
                     },
                     {
                         name: 'status',

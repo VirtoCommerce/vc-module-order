@@ -8,6 +8,11 @@
     blade.subtitle = 'orders.blades.transactions-list.subtitle',
     // ui-grid
 	$scope.setGridOptions = function (gridOptions) {
+	    // add currency filter for properties that need it
+	    Array.prototype.push.apply(gridOptions.columnDefs, _.map(["amount"], function (name) {
+	        return { name: name, cellFilter: "currency", visible: false };
+	    }));
+
 	    $scope.gridOptions = gridOptions;
 	};
 
