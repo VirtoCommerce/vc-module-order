@@ -13,7 +13,7 @@
             </ui-select>
         </div>
         <a href="" ng-click="filter.edit()" style="left: 416px; top:25px; position:absolute;" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
-        <p class="form-count">{{'platform.list.count' | translate}}: <span class="count">{{pageSettings.totalItems}}</span></p>
+        <p class="form-count">{{'platform.list.count' | translate}}: <span class="count">{{pageSettings.totalItems | number:0}}</span></p>
     </div>
 </div>
 <div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
@@ -29,11 +29,11 @@
                             { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
                             { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
                             { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
-                            { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', width: '**' },
+                            { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency', width: '**' },
                             { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
                             { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
                             { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', width: '*' },
-                            { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', cellClass: 'table-date', cellFilter: 'date', sort: { direction: uiGridConstants.DESC } }
+                            { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', sort: { direction: uiGridConstants.DESC } }
                 ]})">
                 <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>
                 <ul class="menu __context" role="menu" id="cor_menu">

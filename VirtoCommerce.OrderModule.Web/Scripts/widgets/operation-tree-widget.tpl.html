@@ -15,11 +15,11 @@
             </div>
             <div class="tree-el __date">
                 <i class="tree-ico fa fa-calendar"></i>
-                {{node.operation.createdDate | date}}
+                {{node.operation.createdDate | amParse | date}}
             </div>
             <div class="tree-el __price">
                 <i class="tree-ico fa fa-money"></i>
-                {{node.operation.sum | number:2}}&nbsp;{{node.operation.currency}}
+                {{node.operation.sum  | currency:node.operation.currency}}
             </div>
             <div class="tree-el __canceled" ng-if="node.operation.status">
                 {{node.operation.status}}
