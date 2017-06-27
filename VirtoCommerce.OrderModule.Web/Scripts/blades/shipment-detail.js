@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters) {
+.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.statusTranslationService',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters, statusTranslationService) {
         var blade = $scope.blade;
 
         if (blade.isNew) {
@@ -21,18 +21,20 @@
         blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
         blade.realOperationsCollection = blade.customerOrder.shipments;
 
-        blade.statuses = settings.getValues({ id: 'Shipment.Status' });
+        settings.getValues({ id: 'Shipment.Status' }, translateBladeStatuses);
         blade.openStatusSettingManagement = function () {
             var newBlade = new DictionarySettingDetailBlade('Shipment.Status');
-            newBlade.parentRefresh = function (data) {
-                blade.statuses = data;
-            };
+            newBlade.parentRefresh = translateBladeStatuses;
             bladeNavigationService.showBlade(newBlade, blade);
         };
 
+        function translateBladeStatuses(data) {
+            blade.statuses = statusTranslationService.translateStatuses(data, 'shipment');
+        }
+
         // load employees
         blade.employees = blade.parentBlade.employees;
-        
+
         blade.fulfillmentCenters = order_res_fulfilmentCenters.query();
         blade.openFulfillmentCentersList = function () {
             var newBlade = {

@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings','virtoCommerce.orderModule.order_res_customerOrders',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders) {
+.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings','virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.statusTranslationService',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService) {
         var blade = $scope.blade;
 
         if (blade.isNew) {
@@ -21,14 +21,16 @@
         blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
         blade.realOperationsCollection = blade.customerOrder.inPayments;
 
-        blade.statuses = settings.getValues({ id: 'PaymentIn.Status' });
+        settings.getValues({ id: 'PaymentIn.Status' }, translateBladeStatuses);
         blade.openStatusSettingManagement = function () {
             var newBlade = new DictionarySettingDetailBlade('PaymentIn.Status');
-            newBlade.parentRefresh = function (data) {
-                blade.statuses = data;
-            };
+            newBlade.parentRefresh = translateBladeStatuses;
             bladeNavigationService.showBlade(newBlade, blade);
         };
+
+        function translateBladeStatuses(data) {
+            blade.statuses = statusTranslationService.translateStatuses(data, 'PaymentIn');
+        }
 
         blade.customInitialize = function () {
             blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.isCancelled;

@@ -22,7 +22,7 @@
                 {{node.operation.sum  | currency:node.operation.currency}}
             </div>
             <div class="tree-el __canceled" ng-if="node.operation.status">
-                {{node.operation.status}}
+                {{node.operation | statusTranslate}}
             </div>
         </div>
     </div>

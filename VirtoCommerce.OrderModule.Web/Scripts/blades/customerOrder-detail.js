@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
-    function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService) {
+.controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService',
+    function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService, statusTranslationService) {
         var blade = $scope.blade;
 
         angular.extend(blade, {
@@ -22,12 +22,16 @@
         });
 
         blade.stores = order_res_stores.query();
-        blade.statuses = settings.getValues({ id: 'Order.Status' });
+        settings.getValues({ id: 'Order.Status' }, translateBladeStatuses);
         blade.openStatusSettingManagement = function () {
             var newBlade = new DictionarySettingDetailBlade('Order.Status');
-            newBlade.parentRefresh = function (data) { blade.statuses = data; };
+            newBlade.parentRefresh = translateBladeStatuses;
             bladeNavigationService.showBlade(newBlade, blade);
         };
+        
+        function translateBladeStatuses(data) {
+            blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
+        }
 
         blade.openCustomerDetails = function () {
             var customerMemberType = 'Contact';
@@ -72,5 +76,5 @@
             bladeNavigationService.showBlade(orderLineItemsBlade, blade);
         };
 
-   
+
     }]);

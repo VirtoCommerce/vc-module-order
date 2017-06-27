@@ -2,7 +2,7 @@
     <div class="blade-inner">
         <div class="inner-block">
             <div class="order-status" ng-if="blade.currentEntity.status">
-                <div class="status" ng-bind="blade.currentEntity.status"></div>
+                <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
             <form name="formScope" ng-controller="virtoCommerce.orderModule.customerOrderDetailController">
@@ -45,9 +45,9 @@
     </label>
     <div class="form-input">
         <ui-select ng-model="blade.currentEntity.status" ng-disabled="blade.isLocked">
-            <ui-select-match placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.status' | translate }}">{{$select.selected}}</ui-select-match>
-            <ui-select-choices repeat="x as x in blade.statuses | filter: $select.search ">
-                <span ng-bind-html="x | highlight: $select.search"></span>
+            <ui-select-match placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.status' | translate }}">{{$select.selected.value}}</ui-select-match>
+            <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
+                <span ng-bind-html="x.value | highlight: $select.search"></span>
             </ui-select-choices>
         </ui-select>
     </div>

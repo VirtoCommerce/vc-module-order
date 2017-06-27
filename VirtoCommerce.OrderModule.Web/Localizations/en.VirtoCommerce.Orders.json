@@ -233,6 +233,36 @@
                 }
             }
         },
+        "settings": {
+            "customerorder-status": {
+                "new": "New",
+                "not payed": "Not payed",
+                "pending": "Pending",
+                "processing": "Processing",
+                "ready to send": "Ready to send",
+                "cancelled": "Cancelled",
+                "partially sent": "Partially sent",
+                "completed": "Completed"
+            },
+            "shipment-status": {
+                "new": "New",
+                "pickpack": "Pick Pack",
+                "cancelled": "Cancelled",
+                "readytosend": "Ready to send",
+                "sent": "Sent"
+            },
+            "paymentin-status": {
+                "new": "New",
+                "pending": "Pending",
+                "authorized": "Authorized",
+                "paid": "Paid",
+                "partiallyrefunded": "Partially Refunded",
+                "refunded": "Refunded",
+                "voided": "Voided",
+                "custom": "Custom",
+                "cancelled": "Cancelled"
+            }
+        },
         "commands": {
             "new-document": "New document",
             "cancel-document": "Cancel document",

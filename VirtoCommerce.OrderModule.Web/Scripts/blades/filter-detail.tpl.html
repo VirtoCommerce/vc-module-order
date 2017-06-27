@@ -20,9 +20,9 @@
 <script type="text/ng-template" id="statusesSelector.html">
     <div class="form-input">
         <ui-select multiple ng-model="blade.currentEntity.statuses">
-            <ui-select-match placeholder="{{ 'orders.blades.filter-detail.placeholders.all' | translate }}">{{$item}}</ui-select-match>
-            <ui-select-choices repeat="x in blade.statuses | filter: $select.search ">
-                <span ng-bind-html="x | highlight: $select.search"></span>
+            <ui-select-match placeholder="{{ 'orders.blades.filter-detail.placeholders.all' | translate }}">{{$item.value}}</ui-select-match>
+            <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
+                <span ng-bind-html="x.value | highlight: $select.search"></span>
             </ui-select-choices>
         </ui-select>
     </div>
