@@ -43,7 +43,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly Func<IOrderRepository> _repositoryFactory;
         private readonly ISecurityService _securityService;
         private readonly IPermissionScopeService _permissionScopeService;
-        private readonly ISettingsManager _settingManager;
         private readonly ICustomerOrderBuilder _customerOrderBuilder;
         private readonly IShoppingCartService _cartService;
         private readonly INotificationManager _notificationManager;
@@ -52,7 +51,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
                                      ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
-                                     ISettingsManager settingManager, ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
+                                     ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
                                      INotificationTemplateResolver notificationTemplateResolver)
         {
             _customerOrderService = customerOrderService;
@@ -63,7 +62,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _repositoryFactory = repositoryFactory;
             _securityService = securityService;
             _permissionScopeService = permissionScopeService;
-            _settingManager = settingManager;
             _customerOrderBuilder = customerOrderBuilder;
             _cartService = cartService;
             _notificationManager = notificationManager;
@@ -285,8 +283,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
                 retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
+                retVal.Status = "New";
 
-                var numberTemplate = _settingManager.GetValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
+                var store = _storeService.GetById(order.StoreId);
+                var numberTemplate = store.Settings.GetSettingValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
 
                 return Ok(retVal);
@@ -321,8 +321,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.CustomerId = order.CustomerId;
+                retVal.Status = retVal.PaymentStatus.ToString();
 
-                var numberTemplate = _settingManager.GetValue("Order.PaymentInNewNumberTemplate", "PI{0:yyMMdd}-{1:D5}");
+                var store = _storeService.GetById(order.StoreId);
+                var numberTemplate = store.Settings.GetSettingValue("Order.PaymentInNewNumberTemplate", "PI{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
                 return Ok(retVal);
             }
