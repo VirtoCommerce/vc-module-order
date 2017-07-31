@@ -2,6 +2,6 @@
     <div class="cnt-inner">
         <div class="list-count">{{operation.items.length | number:0}}</div>
         <div class="list-t">{{'orders.widgets.customerOrder-items.title' | translate}}</div>
-        <div class="list-price">{{operation.subTotal | currency:operation.currency}}</div>
+        <div class="list-price">{{(operation.subTotalWithTax - operation.subTotalDiscountWithTax) | currency:operation.currency}}</div>
     </div>
 </div>

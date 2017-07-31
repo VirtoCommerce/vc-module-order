@@ -33,7 +33,7 @@
                     "priceWithTax": "Unit price (incl. tax)",
                     "discount": "Discount (excl. tax)",
                     "discountWithTax": "Discount (incl. tax)",
-                    "total": "Total",
+                    "total": "Line items total",
                     "dynamic-properties": "Dynamic properties",
                     "sub-total": "Subtotal",
                     "discount-total": "Discount total",
