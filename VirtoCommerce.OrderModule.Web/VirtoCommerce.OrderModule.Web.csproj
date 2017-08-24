@@ -241,6 +241,7 @@
     <Content Include="Scripts\widgets\operation-tree-widget.tpl.html" />
     <Content Include="Scripts\widgets\operation-tree-widget.js" />
     <Content Include="Scripts\wizards\newOperation\newOperation-wizard.js" />
+    <None Include="module.ignore" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
