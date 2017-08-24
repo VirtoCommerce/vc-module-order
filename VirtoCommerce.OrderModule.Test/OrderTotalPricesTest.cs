@@ -13,7 +13,9 @@ namespace VirtoCommerce.OrderModule.Test
         private const decimal discount = 10;
 
         [Theory]
+#pragma warning disable CS3016 // Arrays as attribute arguments is not CLS-compliant
         [MemberData(nameof(TestProductDataGenerator.GetProducts), MemberType = typeof(TestProductDataGenerator))]
+#pragma warning restore CS3016 // Arrays as attribute arguments is not CLS-compliant
         public void ShoppingCart_CheckTotalPrices(IEnumerable<ProductInfo> productsInfo, decimal subtotalRaw, decimal discountTotalRaw, decimal taxesRaw)
         {
             CustomerOrder order = GetOrder();
@@ -23,7 +25,7 @@ namespace VirtoCommerce.OrderModule.Test
                 LineItem lineItem = GetLineItem(productInfo);
                 order.Items.Add(lineItem);
             }
-            
+
             decimal totalPriceRaw = subtotalRaw - discountTotalRaw + taxesRaw;
 
             Assert.Equal(order.SubTotal, subtotalRaw);
@@ -32,7 +34,8 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(order.Total, totalPriceRaw);
         }
 
-        private CustomerOrder GetOrder() {
+        private CustomerOrder GetOrder()
+        {
             var order = new CustomerOrder
             {
                 Items = new List<LineItem>(),
