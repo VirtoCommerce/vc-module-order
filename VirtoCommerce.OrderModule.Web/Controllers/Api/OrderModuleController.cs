@@ -284,7 +284,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.Status = "New";
-
+                retVal.CreatedDate = DateTime.Now;
+		
                 var store = _storeService.GetById(order.StoreId);
                 var numberTemplate = store.Settings.GetSettingValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
