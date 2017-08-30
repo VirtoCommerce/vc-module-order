@@ -2,13 +2,10 @@
 .factory('virtoCommerce.orderModule.statusTranslationService', ['$translate', function ($translate) {
     return {
         translateStatuses: function (rawStatuses, operationType) {
-            var translatePrefix = 'orders.settings.' + operationType.toLowerCase() + '-status.';
             return _.map(rawStatuses, function (x) {
-                var translateKey = translatePrefix + x.toLowerCase();
-                var result = $translate.instant(translateKey);
                 return {
                     key: x,
-                    value: result === translateKey ? x : result
+                    value: translateOrderStatus(x, operationType, $translate)
                 };
             });
         }
@@ -18,10 +15,13 @@
 .filter('statusTranslate', ['$translate', function ($translate) {
     return function (statusOrOperation, operation) {
         operation = operation || statusOrOperation;
-        var translateKey = 'orders.settings.' + operation.operationType.toLowerCase() + '-status.' + operation.status.toLowerCase();
-        var result = $translate.instant(translateKey);
-
-        return result === translateKey ? operation.status : result;
+        return translateOrderStatus(operation.status, operation.operationType, $translate);
     };
 }])
 ;
+
+function translateOrderStatus(rawStatus, operationType, $translate) {
+    var translateKey = 'orders.settings.' + operationType.toLowerCase() + '-status.' + rawStatus.toLowerCase();
+    var result = $translate.instant(translateKey);
+    return result === translateKey ? rawStatus : result;
+}
