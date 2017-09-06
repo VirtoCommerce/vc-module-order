@@ -15,7 +15,7 @@
 .filter('statusTranslate', ['$translate', function ($translate) {
     return function (statusOrOperation, operation) {
         operation = operation || statusOrOperation;
-        return translateOrderStatus(operation.status, operation.operationType, $translate);
+        return operation.status ? translateOrderStatus(operation.status, operation.operationType, $translate) : '';
     };
 }])
 ;
