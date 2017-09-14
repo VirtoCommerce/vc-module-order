@@ -172,11 +172,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(ProcessPaymentResult))]
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
-            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
-            if (order == null)
-            {
-                order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
-            }
+            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault()
+                ?? _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
 
             if (order == null)
             {
@@ -223,12 +220,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
         public async Task<IHttpActionResult> CreateOrderFromCart(string cartId)
         {
-            CustomerOrder retVal = null;
+            CustomerOrder retVal;
+
             using (await AsyncLock.GetLockByKey(cartId).LockAsync())
             {
                 var cart = _cartService.GetByIds(new[] { cartId }).FirstOrDefault();
                 retVal = _customerOrderBuilder.PlaceCustomerOrderFromCart(cart);
             }
+
             return Ok(retVal);
         }
 
@@ -363,7 +362,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             // Hack: to compinsate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);
-            var cacheKey = String.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd"));
+            var cacheKey = string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd"));
             lock (_lockObject)
             {
                 retVal = _cacheManager.Get(cacheKey, "OrderModuleRegion", () =>
@@ -386,15 +385,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(PostProcessPaymentResult))]
         public IHttpActionResult PostProcessPayment(webModel.PaymentCallbackParameters callback)
         {
-            if (callback != null && callback.Parameters != null && callback.Parameters.Any(param => param.Key.EqualsInvariant("orderid")))
+            if (callback?.Parameters != null && callback.Parameters.Any(param => param.Key.EqualsInvariant("orderid")))
             {
                 var orderId = callback.Parameters.First(param => param.Key.EqualsInvariant("orderid")).Value;
                 //some payment method require customer number to be passed and returned. First search customer order by number
-                var order = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
+                var searchCriteria = new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() };
+                var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
                 //if order not found by order number search by order id
-                if (order == null)
-                    order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
                 if (order == null)
                     throw new NullReferenceException("order not found");
@@ -458,7 +456,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             var invoice = _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store", order.LanguageCode);
 
-            ((InvoiceEmailNotification)invoice).CustomerOrder = order;
+            invoice.CustomerOrder = order;
             _notificationTemplateResolver.ResolveTemplate(invoice);
 
             var stream = new MemoryStream();
@@ -487,7 +485,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 //Stores
                 criteria.StoreIds = readPermissionScopes.OfType<OrderStoreScope>()
                     .Select(x => x.Scope)
-                    .Where(x => !String.IsNullOrEmpty(x))
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
                 var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
