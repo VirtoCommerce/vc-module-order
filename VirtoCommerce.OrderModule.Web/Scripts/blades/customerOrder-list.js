@@ -69,9 +69,9 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
                     });
                 }
             }
-        }
+        };
         dialogService.showConfirmationDialog(dialog);
-    }
+    };
 
     function closeChildrenBlades() {
         angular.forEach(blade.childrenBlades.slice(), function (child) {
@@ -105,7 +105,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     var filter = blade.filter = $scope.filter = {};
     $scope.$localStorage = $localStorage;
     if (!$localStorage.orderSearchFilters) {
-        $localStorage.orderSearchFilters = [{ name: 'orders.blades.customerOrder-list.labels.new-filter' }]
+        $localStorage.orderSearchFilters = [{ name: 'orders.blades.customerOrder-list.labels.new-filter' }];
     }
     if ($localStorage.orderSearchFilterId) {
         filter.current = _.findWhere($localStorage.orderSearchFilters, { id: $localStorage.orderSearchFilterId });
@@ -132,7 +132,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
         var newBlade = {
             id: 'filterDetail',
             controller: 'virtoCommerce.orderModule.filterDetailController',
-            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/filter-detail.tpl.html',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/filter-detail.tpl.html'
         };
         angular.extend(newBlade, bladeData);
         bladeNavigationService.showBlade(newBlade, blade);
@@ -148,10 +148,10 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
 
     blade.onExpand = function () {
         $scope.gridOptions.onExpand();
-    }
+    };
     blade.onCollapse = function () {
         $scope.gridOptions.onCollapse();
-    }
+    };
 
     // ui-grid
     $scope.setGridOptions = function (gridId, gridOptions) {

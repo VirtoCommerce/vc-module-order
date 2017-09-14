@@ -1,7 +1,7 @@
 ﻿//Call this to register our module to main application
 var moduleName = "virtoCommerce.orderModule";
 
-if (AppDependencies != undefined) {
+if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
 }
 
@@ -369,7 +369,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         scopeResolver.register(orderStoreScope);
         var responsibleOrderScope = {
             type: 'OrderResponsibleScope',
-            title: 'Only for order responsible',
+            title: 'Only for order responsible'
         };
         scopeResolver.register(responsibleOrderScope);
 
@@ -401,7 +401,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                                 c: values
                             };
                         });
-                    }
+                    };
 
                     var allCurrencies = _.unique(_.pluck(data.avgOrderValuePeriodDetails, 'currency').sort());
 
