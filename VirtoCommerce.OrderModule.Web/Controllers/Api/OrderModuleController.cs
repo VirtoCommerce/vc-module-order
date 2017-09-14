@@ -429,10 +429,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     if (retVal != null)
                     {
                         _customerOrderService.SaveChanges(new[] { order });
+
+                        // order Number is required
+                        retVal.OrderId = order.Number;
                     }
 
-                    // order Number is required
-                    retVal.OrderId = order.Number;
                     return Ok(retVal);
                 }
             }
