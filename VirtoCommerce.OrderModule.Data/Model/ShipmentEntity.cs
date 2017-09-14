@@ -179,7 +179,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.OrganizationId = this.OrganizationId;
             target.OrganizationName = this.OrganizationName;
             target.EmployeeId = this.EmployeeId;
-            target.EmployeeName = target.EmployeeName;
+            target.EmployeeName = this.EmployeeName;
             target.ShipmentMethodCode = this.ShipmentMethodCode;
             target.ShipmentMethodOption = this.ShipmentMethodOption;
             target.Height = this.Height;
