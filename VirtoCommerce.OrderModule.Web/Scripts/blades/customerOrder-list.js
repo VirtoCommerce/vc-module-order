@@ -19,6 +19,11 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
                 skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
                 take: $scope.pageSettings.itemsPerPageCount
             };
+
+            if (blade.searchCriteria) {
+                angular.extend(criteria, blade.searchCriteria);
+            }
+
             if (filter.current) {
                 angular.extend(criteria, filter.current);
             }
