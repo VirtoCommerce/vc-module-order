@@ -98,7 +98,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 OrderChangedPublisher.Publish(changedEvent);
             }
-
         }
 
         public virtual CustomerOrder[] GetByIds(string[] orderIds, string responseGroup = null)
@@ -197,38 +196,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     query = query.Where(x => !x.IsPrototype);
                 }
 
-                if (!criteria.Numbers.IsNullOrEmpty())
-                {
-                    query = query.Where(x => criteria.Numbers.Contains(x.Number));
-                }
-                else if (!string.IsNullOrEmpty(criteria.Keyword))
-                {
-                    query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
-                }
-
                 if (criteria.OnlyRecurring)
                 {
                     query = query.Where(x => x.SubscriptionId != null);
                 }
 
-                if (!criteria.SubscriptionIds.IsNullOrEmpty())
-                {
-                    query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
-                }
-
                 if (criteria.CustomerId != null)
                 {
                     query = query.Where(x => x.CustomerId == criteria.CustomerId);
-                }
-
-                if (criteria.Statuses != null && criteria.Statuses.Any())
-                {
-                    query = query.Where(x => criteria.Statuses.Contains(x.Status));
-                }
-
-                if (criteria.StoreIds != null && criteria.StoreIds.Any())
-                {
-                    query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
                 }
 
                 if (criteria.EmployeeId != null)
@@ -244,6 +219,30 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 if (criteria.EndDate != null)
                 {
                     query = query.Where(x => x.CreatedDate <= criteria.EndDate);
+                }
+
+                if (!criteria.SubscriptionIds.IsNullOrEmpty())
+                {
+                    query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
+                }
+
+                if (criteria.Statuses != null && criteria.Statuses.Any())
+                {
+                    query = query.Where(x => criteria.Statuses.Contains(x.Status));
+                }
+
+                if (criteria.StoreIds != null && criteria.StoreIds.Any())
+                {
+                    query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
+                }
+
+                if (!criteria.Numbers.IsNullOrEmpty())
+                {
+                    query = query.Where(x => criteria.Numbers.Contains(x.Number));
+                }
+                else if (!string.IsNullOrEmpty(criteria.Keyword))
+                {
+                    query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
                 }
 
                 var sortInfos = criteria.SortInfos;
