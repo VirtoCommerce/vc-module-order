@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
@@ -18,7 +14,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
 {
     public abstract class OperationEntity : AuditableEntity
     {
-
         [Required]
         [StringLength(64)]
         public string Number { get; set; }
@@ -38,44 +33,43 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(2048)]
         public string CancelReason { get; set; }
 
-        public virtual OrderOperation ToModel(OrderOperation orderOperation)
+        public virtual OrderOperation ToModel(OrderOperation operation)
         {
-            if (orderOperation == null)
-                throw new ArgumentNullException("orderOperation");
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
 
-            orderOperation.InjectFrom(this);
+            operation.InjectFrom(this);
 
-            orderOperation.ChildrenOperations = GetAllChildOperations(orderOperation);
-            return orderOperation;
+            operation.ChildrenOperations = GetAllChildOperations(operation);
+            return operation;
         }
 
-        public virtual OperationEntity FromModel(OrderOperation orderOperation, PrimaryKeyResolvingMap pkMap)
+        public virtual OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            if (orderOperation == null)
-                throw new ArgumentNullException("orderOperation");
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
 
-            pkMap.AddPair(orderOperation, this);
+            pkMap.AddPair(operation, this);
 
-            this.InjectFrom(orderOperation);
+            this.InjectFrom(operation);
 
             return this;
         }
 
-        public virtual void Patch(OperationEntity target)
+        public virtual void Patch(OperationEntity operation)
         {
-            if (target == null)
-                throw new ArgumentNullException("target");
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
 
-            target.Comment = this.Comment;
-            target.Currency = this.Currency;
-            target.Number = this.Number;
-            target.Status = this.Status;
-            target.IsCancelled = this.IsCancelled;
-            target.CancelledDate = this.CancelledDate;
-            target.CancelReason = this.CancelReason;       
-            target.IsApproved = this.IsApproved;
-            target.Sum = this.Sum;
-            
+            operation.Comment = Comment;
+            operation.Currency = Currency;
+            operation.Number = Number;
+            operation.Status = Status;
+            operation.IsCancelled = IsCancelled;
+            operation.CancelledDate = CancelledDate;
+            operation.CancelReason = CancelReason;
+            operation.IsApproved = IsApproved;
+            operation.Sum = Sum;
         }
 
         private static IEnumerable<IOperation> GetAllChildOperations(IOperation operation)
@@ -86,9 +80,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var properties = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             var childOperations = properties.Where(x => x.PropertyType.GetInterface(typeof(IOperation).Name) != null)
-                                    .Select(x => (IOperation)x.GetValue(operation)).Where(x=> x != null).ToList();
+                                    .Select(x => (IOperation)x.GetValue(operation)).Where(x => x != null).ToList();
 
-            foreach (var childOperation in childOperations.OfType<IOperation>())
+            foreach (var childOperation in childOperations)
             {
                 retVal.Add(childOperation);
             }
@@ -96,16 +90,17 @@ namespace VirtoCommerce.OrderModule.Data.Model
             //Handle collection and arrays
             var collections = properties.Where(p => p.GetIndexParameters().Length == 0)
                                         .Select(x => x.GetValue(operation, null))
-                                        .Where(x => x is IEnumerable && !(x is String))
+                                        .Where(x => x is IEnumerable && !(x is string))
                                         .Cast<IEnumerable>();
 
             foreach (var collection in collections)
             {
                 foreach (var childOperation in collection.OfType<IOperation>())
                 {
-                    retVal.Add(childOperation);                   
+                    retVal.Add(childOperation);
                 }
             }
+
             return retVal;
         }
     }
