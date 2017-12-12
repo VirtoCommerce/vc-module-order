@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Services;
+using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Store.Services;
-using Omu.ValueInjecter;
+using VirtoCommerce.Platform.Core.Common;
 using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Domain.Payment.Model;
-using VirtoCommerce.Domain.Commerce.Model;
 
 namespace VirtoCommerce.OrderModule.Data.Services
 {
     public class CustomerOrderBuilderImpl : ICustomerOrderBuilder
     {
-        private ICustomerOrderService _customerOrderService;
-        private IStoreService _storeService;
+        private readonly ICustomerOrderService _customerOrderService;
+
+        [Obsolete("Don't pass IStoreService")]
         public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService, IStoreService storeService)
+            : this(customerOrderService)
         {
-            _storeService = storeService;
+        }
+
+        public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService)
+        {
             _customerOrderService = customerOrderService;
         }
 
@@ -68,7 +70,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             }
             if (cart.Discounts != null)
             {
-                retVal.Discounts = cart.Discounts.Select(x => ToOrderModel(x)).ToList();
+                retVal.Discounts = cart.Discounts.Select(ToOrderModel).ToList();
             }
 
             if (cart.Addresses != null)
@@ -125,7 +127,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.LineItem ToOrderModel(cartModel.LineItem lineItem)
         {
             if (lineItem == null)
-                throw new ArgumentNullException("lineItem");
+                throw new ArgumentNullException(nameof(lineItem));
 
             var retVal = AbstractTypeFactory<orderModel.LineItem>.TryCreateInstance();
 
@@ -157,7 +159,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
             if (lineItem.Discounts != null)
             {
-                retVal.Discounts = lineItem.Discounts.Select(x => ToOrderModel(x)).ToList();
+                retVal.Discounts = lineItem.Discounts.Select(ToOrderModel).ToList();
             }
             retVal.TaxDetails = lineItem.TaxDetails;
             return retVal;
@@ -166,7 +168,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual Discount ToOrderModel(Discount discount)
         {
             if (discount == null)
-                throw new ArgumentNullException("discount");
+                throw new ArgumentNullException(nameof(discount));
 
             var retVal = AbstractTypeFactory<Discount>.TryCreateInstance();
 
@@ -205,7 +207,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             }
             if (shipment.Discounts != null)
             {
-                retVal.Discounts = shipment.Discounts.Select(x => ToOrderModel(x)).ToList();
+                retVal.Discounts = shipment.Discounts.Select(ToOrderModel).ToList();
             }
             retVal.TaxDetails = shipment.TaxDetails;
             return retVal;
@@ -214,7 +216,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.ShipmentItem ToOrderModel(cartModel.ShipmentItem shipmentItem)
         {
             if (shipmentItem == null)
-                throw new ArgumentNullException("shipmentItem");
+                throw new ArgumentNullException(nameof(shipmentItem));
 
             var retVal = AbstractTypeFactory<orderModel.ShipmentItem>.TryCreateInstance();
             retVal.BarCode = shipmentItem.BarCode;
@@ -225,7 +227,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected virtual orderModel.PaymentIn ToOrderModel(cartModel.Payment payment)
         {
             if (payment == null)
-                throw new ArgumentNullException("payment");
+                throw new ArgumentNullException(nameof(payment));
 
             var retVal = AbstractTypeFactory<orderModel.PaymentIn>.TryCreateInstance();
             retVal.Currency = payment.Currency;
@@ -244,6 +246,5 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.TaxDetails = payment.TaxDetails;
             return retVal;
         }
-
     }
 }

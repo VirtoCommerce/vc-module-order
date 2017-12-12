@@ -8,9 +8,5 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
         {
             AutomaticMigrationsEnabled = false;
         }
-
-        protected override void Seed(Repositories.OrderRepositoryImpl context)
-        {
-        }
     }
 }

@@ -20,7 +20,8 @@ namespace VirtoCommerce.OrderModule.Data.Observers
     {
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
-        private static string[] _observedProperties;
+        private static readonly string[] _observedProperties;
+
         static LogOrderChangesObserver()
         {
             var operationPropNames = ReflectionUtility.GetPropertyNames<IOperation>(x => x.Status, x => x.Comment, x => x.Currency, x => x.Number, x => x.IsApproved);
@@ -30,6 +31,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
             _observedProperties = operationPropNames.Concat(orderPropNames).Concat(shipmentPropNames).Concat(paymentPropNames).Distinct().ToArray();
         }
+
         public LogOrderChangesObserver(IChangeLogService changeLogService, IMemberService memberService, string[] observedProperties)
         {
             _changeLogService = changeLogService;
@@ -37,56 +39,62 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         }
 
         #region IObserver<SubscriptionChangeEvent> Members
+
         public void OnCompleted()
         {
-
         }
 
         public void OnError(Exception error)
         {
         }
 
-        public void OnNext(OrderChangeEvent changeEvent)
+        public void OnNext(OrderChangeEvent value)
         {
-            var order = changeEvent.OrigOrder;
-
-            if (changeEvent.ChangeState == Platform.Core.Common.EntryState.Modified)
+            if (value.ChangeState == EntryState.Modified)
             {
                 var operationLogs = new List<OperationLog>();
-                var originalOperations = changeEvent.OrigOrder.GetFlatObjectsListWithInterface<IOperation>().Distinct();
-                var modifiedOperations = changeEvent.ModifiedOrder.GetFlatObjectsListWithInterface<IOperation>().Distinct();             
-                             
+                var originalOperations = value.OrigOrder.GetFlatObjectsListWithInterface<IOperation>().Distinct();
+                var modifiedOperations = value.ModifiedOrder.GetFlatObjectsListWithInterface<IOperation>().Distinct();
+
                 modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
-                                                      (state, modified, original) => operationLogs.AddRange(GetOperationLogs(state, original, modified)));                                    
+                                                      (state, modified, original) => operationLogs.AddRange(GetOperationLogs(state, original, modified)));
 
                 _changeLogService.SaveChanges(operationLogs.ToArray());
             }
         }
+
         #endregion
 
 
         private IEnumerable<OperationLog> GetOperationLogs(EntryState changeState, IOperation original, IOperation modified)
         {
             var retVal = new List<string>();
+
             if (changeState == EntryState.Modified)
             {
                 var diff = Comparer.Compare(original, modified);
-               
-                if (original is Shipment)
+
+                var shipment = original as Shipment;
+                if (shipment != null)
                 {
-                    retVal.AddRange(GetShipmentChanges(original as Shipment, modified as Shipment));
-                    diff.AddRange(Comparer.Compare<Shipment>(original as Shipment, modified as Shipment));
+                    retVal.AddRange(GetShipmentChanges(shipment, modified as Shipment));
+                    diff.AddRange(Comparer.Compare(shipment, modified as Shipment));
                 }
-                if (original is PaymentIn)
+
+                var payment = original as PaymentIn;
+                if (payment != null)
                 {
-                    retVal.AddRange(GetPaymentChanges(original as PaymentIn, modified as PaymentIn));
-                    diff.AddRange(Comparer.Compare<PaymentIn>(original as PaymentIn, modified as PaymentIn));
+                    retVal.AddRange(GetPaymentChanges(payment, modified as PaymentIn));
+                    diff.AddRange(Comparer.Compare(payment, modified as PaymentIn));
                 }
-                if (original is CustomerOrder)
+
+                var order = original as CustomerOrder;
+                if (order != null)
                 {
-                    retVal.AddRange(GetCustomerOrderChanges(original as CustomerOrder, modified as CustomerOrder));
-                    diff.AddRange(Comparer.Compare<CustomerOrder>(original as CustomerOrder, modified as CustomerOrder));
+                    retVal.AddRange(GetCustomerOrderChanges(order, modified as CustomerOrder));
+                    diff.AddRange(Comparer.Compare(order, modified as CustomerOrder));
                 }
+
                 foreach (var change in diff.Join(_observedProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).Distinct())
                 {
                     retVal.Add(string.Format(OrderResources.OperationPropertyChanged, original.OperationType, modified.Number, change.Name, change.OldValue, change.NewValue));
@@ -100,7 +108,8 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             {
                 retVal.Add(string.Format(OrderResources.OperationAdded, modified.OperationType, modified.Number));
             }
-            return retVal.Select(x=> GetLogRecord(modified, x));
+
+            return retVal.Select(x => GetLogRecord(modified, x));
         }
 
         private string[] GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
@@ -115,29 +124,29 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                     employeeName = employee != null ? employee.FullName : employeeName;
                 }
                 retVal.Add(string.Format(OrderResources.OrderEmployeeChanged, employeeName));
-            }          
-            retVal.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));       
+            }
+            retVal.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));
             return retVal.ToArray();
         }
 
-        private string[] GetShipmentChanges(Shipment originalShipment, Shipment modifiedShipment)
+        private static string[] GetShipmentChanges(Shipment originalShipment, Shipment modifiedShipment)
         {
             var retVal = new List<string>();
-            retVal.AddRange(GetAddressChanges(originalShipment, new Address[] { originalShipment.DeliveryAddress }, new Address[] { modifiedShipment.DeliveryAddress }));
+            retVal.AddRange(GetAddressChanges(originalShipment, new[] { originalShipment.DeliveryAddress }, new[] { modifiedShipment.DeliveryAddress }));
             return retVal.ToArray();
         }
 
-        private string[] GetPaymentChanges(PaymentIn payment, PaymentIn modifiedPayment)
+        private static string[] GetPaymentChanges(PaymentIn payment, PaymentIn modifiedPayment)
         {
-            var retVal = new List<string>();      
-            retVal.AddRange(GetAddressChanges(payment, new Address[] { payment.BillingAddress }, new Address[] { modifiedPayment.BillingAddress }));
+            var retVal = new List<string>();
+            retVal.AddRange(GetAddressChanges(payment, new[] { payment.BillingAddress }, new[] { modifiedPayment.BillingAddress }));
             return retVal.ToArray();
         }
-      
-        private string[] GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
-        {        
+
+        private static string[] GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
+        {
             var retVal = new List<string>();
-            modifiedAddress.Where(x=>x != null).ToList().CompareTo(originalAddress.Where(x=> x != null).ToList(), new AddressComparer(),
+            modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), new AddressComparer(),
                                       (state, source, target) =>
                                       {
                                           if (state == EntryState.Added)
@@ -152,19 +161,19 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
             return retVal.ToArray();
         }
-        
+
         private static string GetAddressString(Address address)
         {
             return string.Join(" ", address.FirstName, address.LastName, address.Line1, address.City, address.RegionName, address.PostalCode, address.CountryName);
-        } 
+        }
 
         private static OperationLog GetLogRecord(IOperation operation, string template, params object[] parameters)
-        {           
+        {
             var result = new OperationLog
             {
                 ObjectId = operation.Id,
                 ObjectType = operation.GetType().Name,
-                OperationType = Platform.Core.Common.EntryState.Modified,
+                OperationType = EntryState.Modified,
                 Detail = string.Format(template, parameters)
             };
             return result;
@@ -183,11 +192,10 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public int GetHashCode(Address obj)
         {
-            var result = String.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
+            var result = string.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
                                           obj.Email, obj.FirstName, obj.LastName, obj.Line1, obj.Line2, obj.Phone, obj.PostalCode, obj.RegionId, obj.RegionName);
             return result.GetHashCode();
         }
-
 
         #endregion
     }

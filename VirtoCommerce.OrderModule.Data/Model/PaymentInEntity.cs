@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Payment.Model;
@@ -14,37 +10,30 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
-	public class PaymentInEntity : OperationEntity
-	{
-		public PaymentInEntity()
-		{
-			Addresses = new NullCollection<AddressEntity>();
-            TaxDetails = new NullCollection<TaxDetailEntity>();
-            Discounts = new NullCollection<DiscountEntity>();
-            Transactions = new NullCollection<PaymentGatewayTransactionEntity>();
-        }
-		[StringLength(64)]
-		public string OrganizationId { get; set; }
-		[StringLength(255)]
-		public string OrganizationName { get; set; }
+    public class PaymentInEntity : OperationEntity
+    {
+        [StringLength(64)]
+        public string OrganizationId { get; set; }
+        [StringLength(255)]
+        public string OrganizationName { get; set; }
 
-		[Required]
-		[StringLength(64)]
-		public string CustomerId { get; set; }
-		[StringLength(255)]
-		public string CustomerName { get; set; }
+        [Required]
+        [StringLength(64)]
+        public string CustomerId { get; set; }
+        [StringLength(255)]
+        public string CustomerName { get; set; }
 
-		public DateTime? IncomingDate { get; set; }
-		[StringLength(128)]
-		public string OuterId { get; set; }
-		[StringLength(1024)]
-		public string Purpose { get; set; }
-		[StringLength(64)]
-		public string GatewayCode { get; set; }
+        public DateTime? IncomingDate { get; set; }
+        [StringLength(128)]
+        public string OuterId { get; set; }
+        [StringLength(1024)]
+        public string Purpose { get; set; }
+        [StringLength(64)]
+        public string GatewayCode { get; set; }
 
-		public DateTime? AuthorizedDate { get; set; }
-		public DateTime? CapturedDate { get; set; }
-		public DateTime? VoidedDate { get; set; }
+        public DateTime? AuthorizedDate { get; set; }
+        public DateTime? CapturedDate { get; set; }
+        public DateTime? VoidedDate { get; set; }
 
         [StringLength(64)]
         public string TaxType { get; set; }
@@ -68,37 +57,37 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
 
-        public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
-        public virtual ObservableCollection<PaymentGatewayTransactionEntity> Transactions { get; set; }
+        public virtual ObservableCollection<AddressEntity> Addresses { get; set; } = new NullCollection<AddressEntity>();
+        public virtual ObservableCollection<PaymentGatewayTransactionEntity> Transactions { get; set; } = new NullCollection<PaymentGatewayTransactionEntity>();
 
         public string CustomerOrderId { get; set; }
-		public virtual CustomerOrderEntity CustomerOrder { get; set; }
+        public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
-		public string ShipmentId { get; set; }
-		public virtual ShipmentEntity Shipment { get; set; }
+        public string ShipmentId { get; set; }
+        public virtual ShipmentEntity Shipment { get; set; }
 
-        public virtual ObservableCollection<DiscountEntity> Discounts { get; set; }
-        public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
+        public virtual ObservableCollection<DiscountEntity> Discounts { get; set; } = new NullCollection<DiscountEntity>();
+        public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
 
 
         public override OrderOperation ToModel(OrderOperation operation)
-        {        
+        {
             var payment = operation as PaymentIn;
             if (payment == null)
                 throw new NullReferenceException("payment");
 
-            if (!this.Addresses.IsNullOrEmpty())
+            if (!Addresses.IsNullOrEmpty())
             {
-                payment.BillingAddress = this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                payment.BillingAddress = Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
 
-            payment.Transactions = this.Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
-            payment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
-            payment.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
-            
+            payment.Transactions = Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
+            payment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            payment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
+
             base.ToModel(payment);
 
-            payment.PaymentStatus = EnumUtility.SafeParse<PaymentStatus>(this.Status, PaymentStatus.Custom);
+            payment.PaymentStatus = EnumUtility.SafeParse(Status, PaymentStatus.Custom);
 
             return payment;
         }
@@ -111,27 +100,32 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.FromModel(payment, pkMap);
 
-            if(payment.PaymentMethod != null)
+            Status = payment.PaymentStatus.ToString();
+
+            if (payment.PaymentMethod != null)
             {
-                this.GatewayCode = payment.PaymentMethod != null ? payment.PaymentMethod.Code : payment.GatewayCode;
+                GatewayCode = payment.PaymentMethod != null ? payment.PaymentMethod.Code : payment.GatewayCode;
             }
+
             if (payment.BillingAddress != null)
             {
-                this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
+                Addresses = new ObservableCollection<AddressEntity>(new[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
             }
+
             if (payment.TaxDetails != null)
             {
-                this.TaxDetails = new ObservableCollection<TaxDetailEntity>(payment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
+                TaxDetails = new ObservableCollection<TaxDetailEntity>(payment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
+
             if (payment.Discounts != null)
             {
-                this.Discounts = new ObservableCollection<DiscountEntity>(payment.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
+                Discounts = new ObservableCollection<DiscountEntity>(payment.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
-            if(payment.Transactions != null)
+
+            if (payment.Transactions != null)
             {
-                this.Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
+                Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
-            this.Status = payment.PaymentStatus.ToString();
 
             return this;
         }
@@ -142,51 +136,54 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             var target = operation as PaymentInEntity;
             if (target == null)
-                throw new ArgumentNullException("target");
+                throw new ArgumentNullException(nameof(operation));
 
-            target.Price = this.Price;
-            target.PriceWithTax = this.PriceWithTax;
-            target.DiscountAmount = this.DiscountAmount;
-            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
-            target.TaxType = this.TaxType;
-            target.TaxPercentRate = this.TaxPercentRate;
-            target.TaxTotal = this.TaxTotal;
-            target.Total = this.Total;
-            target.TotalWithTax = this.TotalWithTax;
+            target.Price = Price;
+            target.PriceWithTax = PriceWithTax;
+            target.DiscountAmount = DiscountAmount;
+            target.DiscountAmountWithTax = DiscountAmountWithTax;
+            target.TaxType = TaxType;
+            target.TaxPercentRate = TaxPercentRate;
+            target.TaxTotal = TaxTotal;
+            target.Total = Total;
+            target.TotalWithTax = TotalWithTax;
 
-            target.CustomerId = this.CustomerId;
-            target.CustomerName = this.CustomerName;
-            target.OrganizationId = this.OrganizationId;
-            target.OrganizationName = this.OrganizationName;
-            target.GatewayCode = this.GatewayCode;
-            target.Purpose = this.Purpose;
-            target.OuterId = this.OuterId;
-            target.Status = this.Status;
-            target.AuthorizedDate = this.AuthorizedDate;
-            target.CapturedDate = this.CapturedDate;
-            target.VoidedDate = this.VoidedDate;
-            target.IsCancelled = this.IsCancelled;
-            target.CancelledDate = this.CancelledDate;
-            target.CancelReason = this.CancelReason;
-            target.Sum = this.Sum;
-     
-            if (!this.Addresses.IsNullCollection())
+            target.CustomerId = CustomerId;
+            target.CustomerName = CustomerName;
+            target.OrganizationId = OrganizationId;
+            target.OrganizationName = OrganizationName;
+            target.GatewayCode = GatewayCode;
+            target.Purpose = Purpose;
+            target.OuterId = OuterId;
+            target.Status = Status;
+            target.AuthorizedDate = AuthorizedDate;
+            target.CapturedDate = CapturedDate;
+            target.VoidedDate = VoidedDate;
+            target.IsCancelled = IsCancelled;
+            target.CancelledDate = CancelledDate;
+            target.CancelReason = CancelReason;
+            target.Sum = Sum;
+
+            if (!Addresses.IsNullCollection())
             {
-                this.Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+                Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
             }
-            if (!this.TaxDetails.IsNullCollection())
+
+            if (!TaxDetails.IsNullCollection())
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
-                this.TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+                TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
-            if (!this.Discounts.IsNullCollection())
+
+            if (!Discounts.IsNullCollection())
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
-                this.Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
+                Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }
-            if (!this.Transactions.IsNullCollection())
-            {            
-                this.Transactions.Patch(target.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
+
+            if (!Transactions.IsNullCollection())
+            {
+                Transactions.Patch(target.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
             }
         }
     }

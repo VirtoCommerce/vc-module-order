@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VirtoCommerce.Domain.Customer.Services;
 using VirtoCommerce.Domain.Order.Events;
-using VirtoCommerce.Domain.Store.Services;
-using VirtoCommerce.Platform.Core.Notifications;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.Domain.Payment.Model;
+using VirtoCommerce.Domain.Store.Services;
+using VirtoCommerce.OrderModule.Data.Notifications;
+using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
@@ -31,59 +29,59 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public void OnCompleted()
         {
-            
+
         }
 
         public void OnError(Exception error)
         {
-            
+
         }
 
-        public void OnNext(OrderChangedEvent changeEvent)
+        public void OnNext(OrderChangedEvent value)
         {
             if (_settingsManager.GetValue("Order.SendOrderNotifications", true))
             {
                 //Collection of order notifications
                 var notifications = new List<OrderEmailNotificationBase>();
 
-                if (IsOrderCanceled(changeEvent))
+                if (IsOrderCanceled(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
                     notifications.Add(notification);
                 }
 
-                if (changeEvent.ChangeState == EntryState.Added && !changeEvent.ModifiedOrder.IsPrototype)
+                if (value.ChangeState == EntryState.Added && !value.ModifiedOrder.IsPrototype)
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
                     notifications.Add(notification);
                 }
 
-                if (IsNewStatus(changeEvent))
+                if (IsNewStatus(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
 
-                    notification.NewStatus = changeEvent.ModifiedOrder.Status;
-                    notification.OldStatus = changeEvent.OrigOrder.Status;
+                    notification.NewStatus = value.ModifiedOrder.Status;
+                    notification.OldStatus = value.OrigOrder.Status;
 
                     notifications.Add(notification);
                 }
 
-                if (IsOrderPaid(changeEvent))
+                if (IsOrderPaid(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
                     notifications.Add(notification);
                 }
 
-                if (IsOrderSent(changeEvent))
+                if (IsOrderSent(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(changeEvent.ModifiedOrder.StoreId, "Store", changeEvent.ModifiedOrder.LanguageCode);
+                    var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
                     notifications.Add(notification);
                 }
 
                 foreach (var notification in notifications)
                 {
-                    notification.CustomerOrder = changeEvent.ModifiedOrder;
-                    SetNotificationParameters(notification, changeEvent);
+                    notification.CustomerOrder = value.ModifiedOrder;
+                    SetNotificationParameters(notification, value);
                     _notificationManager.ScheduleSendNotification(notification);
                 }
             }
@@ -94,13 +92,11 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderCanceled(OrderChangedEvent value)
+        private static bool IsOrderCanceled(OrderChangedEvent value)
         {
-            var retVal = false;
-
-            retVal = value.OrigOrder != null &&
-                     value.OrigOrder.IsCancelled != value.ModifiedOrder.IsCancelled &&
-                     value.ModifiedOrder.IsCancelled;
+            var retVal = value.OrigOrder != null &&
+                          value.OrigOrder.IsCancelled != value.ModifiedOrder.IsCancelled &&
+                          value.ModifiedOrder.IsCancelled;
 
             return retVal;
         }
@@ -110,12 +106,10 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsNewStatus(OrderChangedEvent value)
+        private static bool IsNewStatus(OrderChangedEvent value)
         {
-            var retVal = false;
-
-            retVal = value.OrigOrder != null &&
-                     value.OrigOrder.Status != value.ModifiedOrder.Status;
+            var retVal = value.OrigOrder != null &&
+                          value.OrigOrder.Status != value.ModifiedOrder.Status;
 
             return retVal;
         }
@@ -125,10 +119,10 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderPaid(OrderChangedEvent value)
+        private static bool IsOrderPaid(OrderChangedEvent value)
         {
             var retVal = false;
-            foreach(var origPayment in value.OrigOrder.InPayments)
+            foreach (var origPayment in value.OrigOrder.InPayments)
             {
                 var modifiedPayment = value.ModifiedOrder.InPayments.FirstOrDefault(i => i.Id == origPayment.Id);
                 var paidSum = value.ModifiedOrder.InPayments.Where(i => i.PaymentStatus == PaymentStatus.Paid).Sum(i => i.Sum);
@@ -148,13 +142,13 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private bool IsOrderSent(OrderChangedEvent value)
+        private static bool IsOrderSent(OrderChangedEvent value)
         {
             var retVal = false;
-            foreach(var origShipment in value.OrigOrder.Shipments)
+            foreach (var origShipment in value.OrigOrder.Shipments)
             {
                 var modifiedShipment = value.ModifiedOrder.Shipments.FirstOrDefault(i => i.Id == origShipment.Id);
-                if(modifiedShipment != null)
+                if (modifiedShipment != null)
                 {
                     retVal = (modifiedShipment.Status != origShipment.Status && modifiedShipment.Status == "Send") || (retVal && modifiedShipment.Status == "Send");
                 }
@@ -177,7 +171,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             notification.IsActive = true;
 
             //Log all notification with subscription
-            if(!string.IsNullOrEmpty(order.SubscriptionId))
+            if (!string.IsNullOrEmpty(order.SubscriptionId))
             {
                 notification.ObjectTypeId = "Subscription";
                 notification.ObjectId = order.SubscriptionId;
