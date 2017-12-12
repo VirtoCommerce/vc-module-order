@@ -367,10 +367,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 retVal = _cacheManager.Get(cacheKey, "OrderModuleRegion", () =>
                 {
-
-                    var collectStaticJob = new CollectOrderStatisticJob(_repositoryFactory, _cacheManager);
+                    var collectStaticJob = new CollectOrderStatisticJob(_repositoryFactory);
                     return collectStaticJob.CollectStatistics(start.Value, end.Value);
-
                 });
             }
             return Ok(retVal);

@@ -65,13 +65,12 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<IObserver<OrderChangeEvent>, LogOrderChangesObserver>("LogOrderChangesObserver");
 
             _container.RegisterType<IOrderRepository>(new InjectionFactory(c => new OrderRepositoryImpl(_connectionStringName, _container.Resolve<AuditableInterceptor>(), new EntityPrimaryKeyGeneratorInterceptor())));
-            //_container.RegisterInstance<IInventoryService>(new Mock<IInventoryService>().Object);
             _container.RegisterType<IUniqueNumberGenerator, SequenceUniqueNumberGeneratorServiceImpl>();
 
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
-        
+
         }
 
         public override void PostInitialize()
@@ -167,7 +166,7 @@ namespace VirtoCommerce.OrderModule.Web
             //Next lines need to correct XML serialization for orders models
             var allShippingmethodTypes = _container.Resolve<IShippingMethodsService>().GetAllShippingMethods().Select(x => x.GetType()).ToArray();
             var allPaymentMethodTypes = _container.Resolve<IPaymentMethodsService>().GetAllPaymentMethods().Select(x => x.GetType()).ToArray();
-            var allOrderKnownTypes = new Type[] { typeof(Shipment), typeof(PaymentIn), typeof(CustomerOrder) }.Concat(allPaymentMethodTypes).Concat(allShippingmethodTypes).ToArray();
+            var allOrderKnownTypes = new[] { typeof(Shipment), typeof(PaymentIn), typeof(CustomerOrder) }.Concat(allPaymentMethodTypes).Concat(allShippingmethodTypes).ToArray();
             httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrder>(new DataContractSerializer(typeof(CustomerOrder), allOrderKnownTypes));
             httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrderSearchResult>(new DataContractSerializer(typeof(CustomerOrderSearchResult), allOrderKnownTypes));
         }
@@ -193,10 +192,10 @@ namespace VirtoCommerce.OrderModule.Web
             get
             {
                 var settingManager = _container.Resolve<ISettingsManager>();
-                return settingManager.GetValue("Order.ExportImport.Description", String.Empty);
+                return settingManager.GetValue("Order.ExportImport.Description", string.Empty);
             }
         }
-        #endregion
 
+        #endregion
     }
 }

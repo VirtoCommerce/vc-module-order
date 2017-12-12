@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using VirtoCommerce.Domain.Cart.Services;
-using VirtoCommerce.Domain.Catalog.Model;
-using VirtoCommerce.Domain.Catalog.Services;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
@@ -28,7 +23,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
     public class CustomerOrderServiceImpl : ServiceBase, ICustomerOrderService, ICustomerOrderSearchService
     {
 
-        public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IEventPublisher<OrderChangeEvent> orderChangingPublisher, 
+        public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IEventPublisher<OrderChangeEvent> orderChangingPublisher,
                                        IDynamicPropertyService dynamicPropertyService, IShippingMethodsService shippingMethodsService, IPaymentMethodsService paymentMethodsService,
                                        IStoreService storeService, IChangeLogService changeLogService, IEventPublisher<OrderChangedEvent> orderChangedPublisher)
         {
@@ -42,15 +37,16 @@ namespace VirtoCommerce.OrderModule.Data.Services
             StoreService = storeService;
             ChangeLogService = changeLogService;
         }
-        protected IUniqueNumberGenerator UniqueNumberGenerator { get; private set; }
-        protected Func<IOrderRepository> RepositoryFactory { get; private set; }
-        protected IEventPublisher<OrderChangeEvent> OrderChangingPublisher { get; private set; }
-        protected IEventPublisher<OrderChangedEvent> OrderChangedPublisher { get; private set; }
-        protected IDynamicPropertyService DynamicPropertyService { get; private set; }
-        protected IStoreService StoreService { get; private set; }
-        protected IPaymentMethodsService PaymentMethodsService { get; private set; }
-        protected IShippingMethodsService ShippingMethodsService { get; private set; }
-        protected IChangeLogService ChangeLogService { get; private set; }
+
+        protected IUniqueNumberGenerator UniqueNumberGenerator { get; }
+        protected Func<IOrderRepository> RepositoryFactory { get; }
+        protected IEventPublisher<OrderChangeEvent> OrderChangingPublisher { get; }
+        protected IEventPublisher<OrderChangedEvent> OrderChangedPublisher { get; }
+        protected IDynamicPropertyService DynamicPropertyService { get; }
+        protected IStoreService StoreService { get; }
+        protected IPaymentMethodsService PaymentMethodsService { get; }
+        protected IShippingMethodsService ShippingMethodsService { get; }
+        protected IChangeLogService ChangeLogService { get; }
 
         #region ICustomerOrderService Members
 
@@ -66,7 +62,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 foreach (var order in orders)
                 {
                     EnsureThatAllOperationsHaveNumber(order);
-                                     
+
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
 
@@ -77,76 +73,87 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                                                  .FromModel(order, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
-                    {                     
+                    {
                         changeTracker.Attach(originalEntity);
-                        modifiedEntity.Patch(originalEntity);
+                        modifiedEntity?.Patch(originalEntity);
                     }
                     else
-                    {                       
+                    {
                         repository.Add(modifiedEntity);
                     }
                 }
+
                 CommitChanges(repository);
-                pkMap.ResolvePrimaryKeys();            
+                pkMap.ResolvePrimaryKeys();
             }
+
             //Save dynamic properties
             foreach (var order in orders)
-            {               
+            {
                 DynamicPropertyService.SaveDynamicPropertyValues(order);
             }
+
             //Raise changed events
-            foreach(var changedEvent in changedEvents)
+            foreach (var changedEvent in changedEvents)
             {
                 OrderChangedPublisher.Publish(changedEvent);
             }
-            
+
         }
 
         public virtual CustomerOrder[] GetByIds(string[] orderIds, string responseGroup = null)
         {
             var retVal = new List<CustomerOrder>();
             var orderResponseGroup = EnumUtility.SafeParse(responseGroup, CustomerOrderResponseGroup.Full);
- 
+
             using (var repository = RepositoryFactory())
             {
                 var orderEntities = repository.GetCustomerOrdersByIds(orderIds, orderResponseGroup);
-                foreach(var orderEntity  in orderEntities)
+                foreach (var orderEntity in orderEntities)
                 {
                     var customerOrder = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
-                    if(customerOrder != null)
+                    if (customerOrder != null)
                     {
-                        var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
-                        var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
-
                         customerOrder = orderEntity.ToModel(customerOrder) as CustomerOrder;
-                        if(!shippingMethods.IsNullOrEmpty())
+                        if (customerOrder != null)
                         {
-                            foreach(var shipment in customerOrder.Shipments)
+                            var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
+                            if (!shippingMethods.IsNullOrEmpty())
                             {
-                                shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
-                            }                            
-                        }
-                        if(!paymentMethods.IsNullOrEmpty())
-                        {
-                            foreach (var payment in customerOrder.InPayments)
+                                foreach (var shipment in customerOrder.Shipments)
+                                {
+                                    shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                                }
+                            }
+
+                            var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
+                            if (!paymentMethods.IsNullOrEmpty())
                             {
-                                payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                                foreach (var payment in customerOrder.InPayments)
+                                {
+                                    payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                                }
                             }
                         }
+
                         retVal.Add(customerOrder);
                     }
                 }
             }
-            DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray());
-            foreach(var order in retVal)
+
+            DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
+
+            foreach (var order in retVal)
             {
                 ChangeLogService.LoadChangeLogs(order);
                 //Make general change log for order
-                order.OperationsLog = order.GetFlatObjectsListWithInterface<IHasChangesHistory>().Distinct()
-                                            .SelectMany(x => x.OperationsLog)
-                                            .OrderBy(x => x.CreatedDate)
-                                            .Distinct().ToList();
+                order.OperationsLog = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
+                                           .Distinct()
+                                           .SelectMany(x => x.OperationsLog)
+                                           .OrderBy(x => x.CreatedDate)
+                                           .Distinct().ToList();
             }
+
             return retVal.ToArray();
         }
 
@@ -155,21 +162,23 @@ namespace VirtoCommerce.OrderModule.Data.Services
             var orders = GetByIds(ids, CustomerOrderResponseGroup.Full.ToString());
             using (var repository = RepositoryFactory())
             {
-                var dbOrders = repository.GetCustomerOrdersByIds(ids, CustomerOrderResponseGroup.Full);
                 foreach (var order in orders)
                 {
-                    OrderChangingPublisher.Publish(new OrderChangeEvent(Platform.Core.Common.EntryState.Deleted, order, order));
+                    OrderChangingPublisher.Publish(new OrderChangeEvent(EntryState.Deleted, order, order));
                 }
+
                 repository.RemoveOrdersByIds(ids);
+
                 foreach (var order in orders)
                 {
-                    DynamicPropertyService.DeleteDynamicPropertyValues(order);               
-                }           
+                    DynamicPropertyService.DeleteDynamicPropertyValues(order);
+                }
+
                 repository.UnitOfWork.Commit();
 
                 foreach (var order in orders)
                 {
-                    OrderChangedPublisher.Publish(new OrderChangedEvent(Platform.Core.Common.EntryState.Deleted, order, order));
+                    OrderChangedPublisher.Publish(new OrderChangedEvent(EntryState.Deleted, order, order));
                 }
             }
         }
@@ -177,7 +186,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         public GenericSearchResult<CustomerOrder> SearchCustomerOrders(CustomerOrderSearchCriteria criteria)
         {
             var retVal = new GenericSearchResult<CustomerOrder>();
-            var orderResponseGroup = EnumUtility.SafeParse(criteria.ResponseGroup, CustomerOrderResponseGroup.Default);
+
             using (var repository = RepositoryFactory())
             {
                 var query = repository.CustomerOrders;
@@ -187,6 +196,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     query = query.Where(x => !x.IsPrototype);
                 }
+
                 if (!criteria.Numbers.IsNullOrEmpty())
                 {
                     query = query.Where(x => criteria.Numbers.Contains(x.Number));
@@ -195,30 +205,37 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
                 }
-                if(criteria.OnlyRecurring)
+
+                if (criteria.OnlyRecurring)
                 {
                     query = query.Where(x => x.SubscriptionId != null);
                 }
-                if(!criteria.SubscriptionIds.IsNullOrEmpty())
+
+                if (!criteria.SubscriptionIds.IsNullOrEmpty())
                 {
                     query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
-                }               
+                }
+
                 if (criteria.CustomerId != null)
                 {
                     query = query.Where(x => x.CustomerId == criteria.CustomerId);
                 }
+
                 if (criteria.Statuses != null && criteria.Statuses.Any())
                 {
                     query = query.Where(x => criteria.Statuses.Contains(x.Status));
                 }
+
                 if (criteria.StoreIds != null && criteria.StoreIds.Any())
                 {
                     query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
                 }
+
                 if (criteria.EmployeeId != null)
                 {
                     query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
                 }
+
                 if (criteria.StartDate != null)
                 {
                     query = query.Where(x => x.CreatedDate >= criteria.StartDate);
@@ -240,17 +257,19 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
                 var orderIds = query.Select(x => x.Id).Skip(criteria.Skip).Take(criteria.Take).ToArray();
                 var orders = GetByIds(orderIds, criteria.ResponseGroup);
-                retVal.Results = orders.AsQueryable<CustomerOrder>().OrderBySortInfos(sortInfos).ToList();
+
+                retVal.Results = orders.AsQueryable().OrderBySortInfos(sortInfos).ToList();
                 return retVal;
             }
         }
+
         #endregion
 
-       
+
         protected virtual void EnsureThatAllOperationsHaveNumber(CustomerOrder order)
         {
             var store = StoreService.GetById(order.StoreId);
-          
+
             foreach (var operation in order.GetFlatObjectsListWithInterface<Domain.Commerce.Model.IOperation>())
             {
                 if (operation.Number == null)
@@ -270,7 +289,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     operation.Number = UniqueNumberGenerator.GenerateNumber(numberTemplate);
                 }
             }
-
         }
     }
 }
