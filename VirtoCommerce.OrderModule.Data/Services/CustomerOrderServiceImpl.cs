@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
@@ -182,68 +183,12 @@ namespace VirtoCommerce.OrderModule.Data.Services
             }
         }
 
-        public GenericSearchResult<CustomerOrder> SearchCustomerOrders(CustomerOrderSearchCriteria criteria)
+        public virtual GenericSearchResult<CustomerOrder> SearchCustomerOrders(CustomerOrderSearchCriteria criteria)
         {
-            var retVal = new GenericSearchResult<CustomerOrder>();
-
             using (var repository = RepositoryFactory())
             {
-                var query = repository.CustomerOrders;
-
-                //by default does not return prototypes
-                if (!criteria.WithPrototypes)
-                {
-                    query = query.Where(x => !x.IsPrototype);
-                }
-
-                if (criteria.OnlyRecurring)
-                {
-                    query = query.Where(x => x.SubscriptionId != null);
-                }
-
-                if (criteria.CustomerId != null)
-                {
-                    query = query.Where(x => x.CustomerId == criteria.CustomerId);
-                }
-
-                if (criteria.EmployeeId != null)
-                {
-                    query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
-                }
-
-                if (criteria.StartDate != null)
-                {
-                    query = query.Where(x => x.CreatedDate >= criteria.StartDate);
-                }
-
-                if (criteria.EndDate != null)
-                {
-                    query = query.Where(x => x.CreatedDate <= criteria.EndDate);
-                }
-
-                if (!criteria.SubscriptionIds.IsNullOrEmpty())
-                {
-                    query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
-                }
-
-                if (criteria.Statuses != null && criteria.Statuses.Any())
-                {
-                    query = query.Where(x => criteria.Statuses.Contains(x.Status));
-                }
-
-                if (criteria.StoreIds != null && criteria.StoreIds.Any())
-                {
-                    query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
-                }
-
-                if (!criteria.Numbers.IsNullOrEmpty())
-                {
-                    query = query.Where(x => criteria.Numbers.Contains(x.Number));
-                }
-                else if (!string.IsNullOrEmpty(criteria.Keyword))
-                {
-                    query = query.Where(x => x.Number.Contains(criteria.Keyword) || x.CustomerName.Contains(criteria.Keyword));
-                }
+                var query = GetOrdersQuery(repository, criteria);
+                var totalCount = query.Count();
 
                 var sortInfos = criteria.SortInfos;
                 if (sortInfos.IsNullOrEmpty())
@@ -252,18 +197,88 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 }
                 query = query.OrderBySortInfos(sortInfos);
 
-                retVal.TotalCount = query.Count();
-
                 var orderIds = query.Select(x => x.Id).Skip(criteria.Skip).Take(criteria.Take).ToArray();
                 var orders = GetByIds(orderIds, criteria.ResponseGroup);
 
-                retVal.Results = orders.AsQueryable().OrderBySortInfos(sortInfos).ToList();
+                var retVal = new GenericSearchResult<CustomerOrder>
+                {
+                    TotalCount = totalCount,
+                    Results = orders.AsQueryable().OrderBySortInfos(sortInfos).ToList()
+                };
+
                 return retVal;
             }
         }
 
         #endregion
 
+
+        protected virtual IQueryable<CustomerOrderEntity> GetOrdersQuery(IOrderRepository repository, CustomerOrderSearchCriteria criteria)
+        {
+            var query = repository.CustomerOrders;
+
+            // Don't return prototypes by default
+            if (!criteria.WithPrototypes)
+            {
+                query = query.Where(x => !x.IsPrototype);
+            }
+
+            if (criteria.OnlyRecurring)
+            {
+                query = query.Where(x => x.SubscriptionId != null);
+            }
+
+            if (criteria.CustomerId != null)
+            {
+                query = query.Where(x => x.CustomerId == criteria.CustomerId);
+            }
+
+            if (criteria.EmployeeId != null)
+            {
+                query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
+            }
+
+            if (criteria.StartDate != null)
+            {
+                query = query.Where(x => x.CreatedDate >= criteria.StartDate);
+            }
+
+            if (criteria.EndDate != null)
+            {
+                query = query.Where(x => x.CreatedDate <= criteria.EndDate);
+            }
+
+            if (!criteria.SubscriptionIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
+            }
+
+            if (criteria.Statuses != null && criteria.Statuses.Any())
+            {
+                query = query.Where(x => criteria.Statuses.Contains(x.Status));
+            }
+
+            if (criteria.StoreIds != null && criteria.StoreIds.Any())
+            {
+                query = query.Where(x => criteria.StoreIds.Contains(x.StoreId));
+            }
+
+            if (!criteria.Numbers.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.Numbers.Contains(x.Number));
+            }
+            else if (!string.IsNullOrEmpty(criteria.Keyword))
+            {
+                query = query.Where(GetKeywordPredicate(criteria));
+            }
+
+            return query;
+        }
+
+        protected virtual Expression<Func<CustomerOrderEntity, bool>> GetKeywordPredicate(CustomerOrderSearchCriteria criteria)
+        {
+            return order => order.Number.Contains(criteria.Keyword) || order.CustomerName.Contains(criteria.Keyword);
+        }
 
         protected virtual void EnsureThatAllOperationsHaveNumber(CustomerOrder order)
         {
