@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VirtoCommerce.Domain.Order.Model;
-using VirtoCommerce.Platform.Core.Notifications;
-using VirtoCommerce.Platform.Data.Infrastructure;
+﻿using VirtoCommerce.Platform.Core.Notifications;
 
 namespace VirtoCommerce.OrderModule.Data.Notifications
 {
@@ -15,12 +8,11 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
             : base(gateway)
         {
         }
-              
+
         [NotificationParameter("Old order status")]
         public string OldStatus { get; set; }
 
         [NotificationParameter("New order status")]
         public string NewStatus { get; set; }
-      
     }
 }

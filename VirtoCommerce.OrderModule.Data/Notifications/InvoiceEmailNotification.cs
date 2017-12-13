@@ -14,13 +14,6 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
         /// For templates back compatibility
         /// </summary>
         [NotificationParameter("Order")]
-        public CustomerOrder Order
-        {
-            get
-            {
-                return base.CustomerOrder;
-            }
-        }
-
+        public CustomerOrder Order => CustomerOrder;
     }
 }

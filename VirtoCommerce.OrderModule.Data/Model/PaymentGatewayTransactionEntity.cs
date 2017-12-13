@@ -12,8 +12,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public decimal Amount { get; set; }
         [StringLength(3)]
         public string Currency { get; set; }
-          
-        public bool IsProcessed { get; set; }      
+
+        public bool IsProcessed { get; set; }
         public DateTime? ProcessedDate { get; set; }
         [StringLength(2048)]
         public string ProcessError { get; set; }
@@ -44,29 +44,30 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual PaymentInEntity PaymentIn { get; set; }
         public string PaymentInId { get; set; }
 
+
         public virtual PaymentGatewayTransaction ToModel(PaymentGatewayTransaction transaction)
         {
             if (transaction == null)
-                throw new ArgumentNullException("transaction");
+                throw new ArgumentNullException(nameof(transaction));
 
-            transaction.Id = this.Id;
-            transaction.Amount = this.Amount;
-            transaction.CreatedBy = this.CreatedBy;
-            transaction.CreatedDate = this.CreatedDate;
-            transaction.CurrencyCode = this.Currency;
-            transaction.GatewayIpAddress = this.GatewayIpAddress;
-            transaction.IsProcessed = this.IsProcessed;
-            transaction.ModifiedBy = this.ModifiedBy;
-            transaction.ModifiedDate = this.ModifiedDate;
-            transaction.Note = this.Note;
-            transaction.ProcessAttemptCount = this.ProcessAttemptCount;
-            transaction.ProcessedDate = this.ProcessedDate;
-            transaction.ProcessError = this.ProcessError;
-            transaction.RequestData = this.RequestData;
-            transaction.ResponseCode = this.ResponseCode;
-            transaction.ResponseData = this.ResponseData;
-            transaction.Status = this.Status;
-            transaction.Type = this.Type;
+            transaction.Id = Id;
+            transaction.Amount = Amount;
+            transaction.CreatedBy = CreatedBy;
+            transaction.CreatedDate = CreatedDate;
+            transaction.CurrencyCode = Currency;
+            transaction.GatewayIpAddress = GatewayIpAddress;
+            transaction.IsProcessed = IsProcessed;
+            transaction.ModifiedBy = ModifiedBy;
+            transaction.ModifiedDate = ModifiedDate;
+            transaction.Note = Note;
+            transaction.ProcessAttemptCount = ProcessAttemptCount;
+            transaction.ProcessedDate = ProcessedDate;
+            transaction.ProcessError = ProcessError;
+            transaction.RequestData = RequestData;
+            transaction.ResponseCode = ResponseCode;
+            transaction.ResponseData = ResponseData;
+            transaction.Status = Status;
+            transaction.Type = Type;
 
             return transaction;
         }
@@ -74,28 +75,28 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual PaymentGatewayTransactionEntity FromModel(PaymentGatewayTransaction transaction, PrimaryKeyResolvingMap pkMap)
         {
             if (transaction == null)
-                throw new ArgumentNullException("transaction");
+                throw new ArgumentNullException(nameof(transaction));
 
             pkMap.AddPair(transaction, this);
 
-            this.Id = transaction.Id;
-            this.Amount = transaction.Amount;
-            this.CreatedBy = transaction.CreatedBy;
-            this.CreatedDate = transaction.CreatedDate;
-            this.Currency = transaction.CurrencyCode;
-            this.GatewayIpAddress = transaction.GatewayIpAddress;
-            this.IsProcessed = transaction.IsProcessed;
-            this.ModifiedBy = transaction.ModifiedBy;
-            this.ModifiedDate = transaction.ModifiedDate;
-            this.Note = transaction.Note;
-            this.ProcessAttemptCount = transaction.ProcessAttemptCount;
-            this.ProcessedDate = transaction.ProcessedDate;
-            this.ProcessError = transaction.ProcessError;
-            this.RequestData = transaction.RequestData;
-            this.ResponseCode = transaction.ResponseCode;
-            this.ResponseData = transaction.ResponseData;
-            this.Status = transaction.Status;
-            this.Type = transaction.Type;
+            Id = transaction.Id;
+            Amount = transaction.Amount;
+            CreatedBy = transaction.CreatedBy;
+            CreatedDate = transaction.CreatedDate;
+            Currency = transaction.CurrencyCode;
+            GatewayIpAddress = transaction.GatewayIpAddress;
+            IsProcessed = transaction.IsProcessed;
+            ModifiedBy = transaction.ModifiedBy;
+            ModifiedDate = transaction.ModifiedDate;
+            Note = transaction.Note;
+            ProcessAttemptCount = transaction.ProcessAttemptCount;
+            ProcessedDate = transaction.ProcessedDate;
+            ProcessError = transaction.ProcessError;
+            RequestData = transaction.RequestData;
+            ResponseCode = transaction.ResponseCode;
+            ResponseData = transaction.ResponseData;
+            Status = transaction.Status;
+            Type = transaction.Type;
 
             return this;
         }
@@ -103,23 +104,23 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual void Patch(PaymentGatewayTransactionEntity target)
         {
             if (target == null)
-                throw new ArgumentNullException("target");
-     
-            target.Amount = this.Amount;
-        
-            target.Currency = this.Currency;
-            target.GatewayIpAddress = this.GatewayIpAddress;
-            target.IsProcessed = this.IsProcessed;
-          
-            target.Note = this.Note;
-            target.ProcessAttemptCount = this.ProcessAttemptCount;
-            target.ProcessedDate = this.ProcessedDate;
-            target.ProcessError = this.ProcessError;
-            target.RequestData = this.RequestData;
-            target.ResponseCode = this.ResponseCode;
-            target.ResponseData = this.ResponseData;
-            target.Status = this.Status;
-            target.Type = this.Type;
+                throw new ArgumentNullException(nameof(target));
+
+            target.Amount = Amount;
+
+            target.Currency = Currency;
+            target.GatewayIpAddress = GatewayIpAddress;
+            target.IsProcessed = IsProcessed;
+
+            target.Note = Note;
+            target.ProcessAttemptCount = ProcessAttemptCount;
+            target.ProcessedDate = ProcessedDate;
+            target.ProcessError = ProcessError;
+            target.RequestData = RequestData;
+            target.ResponseCode = ResponseCode;
+            target.ResponseData = ResponseData;
+            target.Status = Status;
+            target.Type = Type;
         }
     }
 }

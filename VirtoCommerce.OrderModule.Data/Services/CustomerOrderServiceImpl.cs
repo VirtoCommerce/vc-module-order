@@ -274,17 +274,20 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 if (operation.Number == null)
                 {
                     var objectTypeName = operation.OperationType;
+
                     // take uppercase chars to form operation type, or just take 2 first chars. (CustomerOrder => CO, PaymentIn => PI, Shipment => SH)
                     var opType = string.Concat(objectTypeName.Select(c => char.IsUpper(c) ? c.ToString() : ""));
                     if (opType.Length < 2)
                     {
                         opType = objectTypeName.Substring(0, 2).ToUpper();
                     }
+
                     var numberTemplate = opType + "{0:yyMMdd}-{1:D5}";
                     if (store != null)
                     {
                         numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", numberTemplate);
                     }
+
                     operation.Number = UniqueNumberGenerator.GenerateNumber(numberTemplate);
                 }
             }

@@ -32,13 +32,17 @@ namespace VirtoCommerce.OrderModule.Data.Observers
             _observedProperties = operationPropNames.Concat(orderPropNames).Concat(shipmentPropNames).Concat(paymentPropNames).Distinct().ToArray();
         }
 
+        [Obsolete("Don't pass observedProperties")]
         public LogOrderChangesObserver(IChangeLogService changeLogService, IMemberService memberService, string[] observedProperties)
+            : this(changeLogService, memberService)
+        {
+        }
+
+        public LogOrderChangesObserver(IChangeLogService changeLogService, IMemberService memberService)
         {
             _changeLogService = changeLogService;
             _memberService = memberService;
         }
-
-        #region IObserver<SubscriptionChangeEvent> Members
 
         public void OnCompleted()
         {
@@ -62,8 +66,6 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 _changeLogService.SaveChanges(operationLogs.ToArray());
             }
         }
-
-        #endregion
 
 
         private IEnumerable<OperationLog> GetOperationLogs(EntryState changeState, IOperation original, IOperation modified)

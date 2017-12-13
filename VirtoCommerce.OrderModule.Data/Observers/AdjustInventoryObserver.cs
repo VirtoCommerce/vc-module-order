@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VirtoCommerce.Domain.Inventory.Model;
 using VirtoCommerce.Domain.Inventory.Services;
 using VirtoCommerce.Domain.Order.Events;
@@ -13,94 +11,97 @@ using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrderModule.Data.Observers
 {
-	public class AdjustInventoryObserver : IObserver<OrderChangedEvent>
-	{
-		private readonly IInventoryService _inventoryService;
-	    private readonly ISettingsManager _settingsManager;
+    public class AdjustInventoryObserver : IObserver<OrderChangedEvent>
+    {
+        private readonly IInventoryService _inventoryService;
+        private readonly ISettingsManager _settingsManager;
 
-	    public AdjustInventoryObserver(IInventoryService inventoryService, ISettingsManager settingsManager)
-	    {
-	        _inventoryService = inventoryService;
-	        _settingsManager = settingsManager;
-	    }
-		#region IObserver<CustomerOrder> Members
+        public AdjustInventoryObserver(IInventoryService inventoryService, ISettingsManager settingsManager)
+        {
+            _inventoryService = inventoryService;
+            _settingsManager = settingsManager;
+        }
 
-		public void OnCompleted()
-		{
-		}
+        #region IObserver<CustomerOrder> Members
 
-		public void OnError(Exception error)
-		{
-		}
+        public void OnCompleted()
+        {
+        }
 
-		public void OnNext(OrderChangedEvent value)
-		{
-		    if (_settingsManager.GetValue("Order.AdjustInventory", true) && !value.ModifiedOrder.IsPrototype)
-		    {
-		        var origStockOutOperations = new LineItem[] { };
-		        var modifiedStockOutOperations = new LineItem[] { };
+        public void OnError(Exception error)
+        {
+        }
 
-		        if (value.ChangeState == EntryState.Added)
-		        {
-		            modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
-		        }
-		        else if (value.ChangeState == EntryState.Deleted)
-		        {
-		            origStockOutOperations = value.OrigOrder.Items.ToArray();
-		        }
-		        else
-		        {
-		            origStockOutOperations = value.OrigOrder.Items.ToArray();
-		            modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
-		        }
+        public void OnNext(OrderChangedEvent value)
+        {
+            if (_settingsManager.GetValue("Order.AdjustInventory", true) && !value.ModifiedOrder.IsPrototype)
+            {
+                var origStockOutOperations = new LineItem[] { };
+                var modifiedStockOutOperations = new LineItem[] { };
 
-		        var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
-		        var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+                if (value.ChangeState == EntryState.Added)
+                {
+                    modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
+                }
+                else if (value.ChangeState == EntryState.Deleted)
+                {
+                    origStockOutOperations = value.OrigOrder.Items.ToArray();
+                }
+                else
+                {
+                    origStockOutOperations = value.OrigOrder.Items.ToArray();
+                    modifiedStockOutOperations = value.ModifiedOrder.Items.ToArray();
+                }
 
-		        var changedInventoryInfos = new List<InventoryInfo>();
+                var originalPositions = new ObservableCollection<KeyValuePair<string, int>>(origStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
+                var modifiedPositions = new ObservableCollection<KeyValuePair<string, int>>(modifiedStockOutOperations.GroupBy(x => x.ProductId).Select(x => new KeyValuePair<string, int>(x.Key, x.Sum(y => y.Quantity))));
 
-		        var inventoryInfos = _inventoryService.GetProductsInventoryInfos(originalPositions.Select(x => x.Key).Concat(modifiedPositions.Select(x => x.Key)).Distinct().ToArray());
+                var changedInventoryInfos = new List<InventoryInfo>();
 
-		        var comparer = AnonymousComparer.Create((KeyValuePair<string, int> x) => x.Key);
-		        modifiedPositions.CompareTo(originalPositions, comparer, (state, source, target) => { AdjustInventory(inventoryInfos, changedInventoryInfos, state, source, target); });
+                var inventoryInfos = _inventoryService.GetProductsInventoryInfos(originalPositions.Select(x => x.Key).Concat(modifiedPositions.Select(x => x.Key)).Distinct().ToArray());
 
-		        if (changedInventoryInfos.Any())
-		        {
-		            _inventoryService.UpsertInventories(changedInventoryInfos);
-		        }
-		    }
-		}
+                var comparer = AnonymousComparer.Create((KeyValuePair<string, int> x) => x.Key);
+                modifiedPositions.CompareTo(originalPositions, comparer, (state, source, target) => { AdjustInventory(inventoryInfos, changedInventoryInfos, state, source, target); });
+
+                if (changedInventoryInfos.Any())
+                {
+                    _inventoryService.UpsertInventories(changedInventoryInfos);
+                }
+            }
+        }
 
 
-		#endregion
+        #endregion
 
-		private void AdjustInventory(IEnumerable<InventoryInfo> inventories, List<InventoryInfo> changedInventories, EntryState action, KeyValuePair<string, int> pairSource, KeyValuePair<string, int>? pairTarget = null)
-		{
-			var inventoryInfo = inventories.FirstOrDefault(x => x.ProductId == pairSource.Key);
-			if (inventoryInfo != null)
-			{
-				var delta = 0;
-				if (action == EntryState.Added)
-				{
-					delta = -pairSource.Value;
-				}
-				else if (action == EntryState.Deleted)
-				{
-					delta = pairSource.Value;
-				}
-				else
-				{
-					delta = pairTarget.Value.Value - pairSource.Value;
-				}
-				if (delta != 0)
-				{
-					inventoryInfo.InStockQuantity += delta;
-					changedInventories.Add(inventoryInfo);
-				}
-			}
+        private static void AdjustInventory(IEnumerable<InventoryInfo> inventories, List<InventoryInfo> changedInventories, EntryState action, KeyValuePair<string, int> pairSource, KeyValuePair<string, int>? pairTarget = null)
+        {
+            var inventoryInfo = inventories.FirstOrDefault(x => x.ProductId == pairSource.Key);
+            if (inventoryInfo != null)
+            {
+                int delta;
 
-		}
-	}
+                if (action == EntryState.Added)
+                {
+                    delta = -pairSource.Value;
+                }
+                else if (action == EntryState.Deleted)
+                {
+                    delta = pairSource.Value;
+                }
+                else
+                {
+                    delta = pairTarget.Value.Value - pairSource.Value;
+                }
+
+                if (delta != 0)
+                {
+                    inventoryInfo.InStockQuantity += delta;
+                    changedInventories.Add(inventoryInfo);
+                }
+            }
+
+        }
+    }
 
 
 }

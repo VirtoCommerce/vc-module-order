@@ -29,12 +29,10 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public void OnCompleted()
         {
-
         }
 
         public void OnError(Exception error)
         {
-
         }
 
         public void OnNext(OrderChangedEvent value)
@@ -86,6 +84,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 }
             }
         }
+
 
         /// <summary>
         /// Is order was canceled

@@ -1,31 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
-using VirtoCommerce.Domain.Shipping.Model;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
     public class ShipmentEntity : OperationEntity
     {
-        public ShipmentEntity()
-        {
-            Items = new NullCollection<ShipmentItemEntity>();
-            InPayments = new NullCollection<PaymentInEntity>();
-            Discounts = new NullCollection<DiscountEntity>();
-            Addresses = new NullCollection<AddressEntity>();
-            TaxDetails = new NullCollection<TaxDetailEntity>();
-            Packages = new NullCollection<ShipmentPackageEntity>();
-        }
-
         [StringLength(64)]
         public string OrganizationId { get; set; }
         [StringLength(255)]
@@ -82,13 +67,12 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string CustomerOrderId { get; set; }
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
-        public virtual ObservableCollection<ShipmentItemEntity> Items { get; set; }
-        public virtual ObservableCollection<ShipmentPackageEntity> Packages { get; set; }
-        public virtual ObservableCollection<PaymentInEntity> InPayments { get; set; }
-        public virtual ObservableCollection<AddressEntity> Addresses { get; set; }
-
-        public virtual ObservableCollection<DiscountEntity> Discounts { get; set; }
-        public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; }
+        public virtual ObservableCollection<ShipmentItemEntity> Items { get; set; } = new NullCollection<ShipmentItemEntity>();
+        public virtual ObservableCollection<ShipmentPackageEntity> Packages { get; set; } = new NullCollection<ShipmentPackageEntity>();
+        public virtual ObservableCollection<PaymentInEntity> InPayments { get; set; } = new NullCollection<PaymentInEntity>();
+        public virtual ObservableCollection<AddressEntity> Addresses { get; set; } = new NullCollection<AddressEntity>();
+        public virtual ObservableCollection<DiscountEntity> Discounts { get; set; } = new NullCollection<DiscountEntity>();
+        public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
 
 
         public override OrderOperation ToModel(OrderOperation operation)
@@ -97,18 +81,16 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (shipment == null)
                 throw new NullReferenceException("shipment");
 
-            if (!this.Addresses.IsNullOrEmpty())
+            if (!Addresses.IsNullOrEmpty())
             {
-                shipment.DeliveryAddress = this.Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                shipment.DeliveryAddress = Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
-            shipment.Discounts = this.Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
 
-            shipment.Items = this.Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
-
-            shipment.InPayments = this.InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
-            shipment.Packages = this.Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
-
-            shipment.TaxDetails = this.TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            shipment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
+            shipment.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
+            shipment.InPayments = InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
+            shipment.Packages = Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
+            shipment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
 
             base.ToModel(shipment);
 
@@ -126,38 +108,44 @@ namespace VirtoCommerce.OrderModule.Data.Model
             base.FromModel(shipment, pkMap);
 
             //Allow to empty address
-            this.Addresses = new ObservableCollection<AddressEntity>();
-            if(shipment.ShippingMethod != null)
+            Addresses = new ObservableCollection<AddressEntity>();
+
+            if (shipment.ShippingMethod != null)
             {
-                this.ShipmentMethodCode = shipment.ShippingMethod.Code;
-                this.ShipmentMethodOption = shipment.ShipmentMethodOption;
+                ShipmentMethodCode = shipment.ShippingMethod.Code;
+                ShipmentMethodOption = shipment.ShipmentMethodOption;
             }
+
             if (shipment.DeliveryAddress != null)
             {
-                this.Addresses = new ObservableCollection<AddressEntity>(new AddressEntity[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(shipment.DeliveryAddress) });
+                Addresses = new ObservableCollection<AddressEntity>(new[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(shipment.DeliveryAddress) });
             }
+
             if (shipment.Items != null)
             {
-                this.Items = new ObservableCollection<ShipmentItemEntity>(shipment.Items.Select(x => AbstractTypeFactory<ShipmentItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
-                foreach(var shipmentItem in this.Items)
+                Items = new ObservableCollection<ShipmentItemEntity>(shipment.Items.Select(x => AbstractTypeFactory<ShipmentItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
+                foreach (var shipmentItem in Items)
                 {
-                    shipmentItem.ShipmentId = this.Id;                    
+                    shipmentItem.ShipmentId = Id;
                 }
             }
+
             if (shipment.Packages != null)
             {
-                this.Packages = new ObservableCollection<ShipmentPackageEntity>(shipment.Packages.Select(x => AbstractTypeFactory<ShipmentPackageEntity>.TryCreateInstance().FromModel(x, pkMap)));
+                Packages = new ObservableCollection<ShipmentPackageEntity>(shipment.Packages.Select(x => AbstractTypeFactory<ShipmentPackageEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
+
             if (shipment.TaxDetails != null)
             {
-                this.TaxDetails = new ObservableCollection<TaxDetailEntity>(shipment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
+                TaxDetails = new ObservableCollection<TaxDetailEntity>(shipment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
+
             if (shipment.Discounts != null)
             {
-                this.Discounts = new ObservableCollection<DiscountEntity>(shipment.Discounts.Select(x=> AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
+                Discounts = new ObservableCollection<DiscountEntity>(shipment.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
-          
-            this.Sum = shipment.TotalWithTax;
+
+            Sum = shipment.TotalWithTax;
 
             return this;
         }
@@ -169,59 +157,63 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var target = operation as ShipmentEntity;
             if (target == null)
                 throw new NullReferenceException("target");
-          
-            target.Price = this.Price;
-            target.PriceWithTax = this.PriceWithTax;
-            target.DiscountAmount = this.DiscountAmount;
-            target.DiscountAmountWithTax = this.DiscountAmountWithTax;
-            target.FulfillmentCenterId = this.FulfillmentCenterId;
-            target.FulfillmentCenterName = this.FulfillmentCenterName;
-            target.OrganizationId = this.OrganizationId;
-            target.OrganizationName = this.OrganizationName;
-            target.EmployeeId = this.EmployeeId;
-            target.EmployeeName = this.EmployeeName;
-            target.ShipmentMethodCode = this.ShipmentMethodCode;
-            target.ShipmentMethodOption = this.ShipmentMethodOption;
-            target.Height = this.Height;
-            target.Length = this.Length;
-            target.Weight = this.Weight;
-            target.Height = this.Height;
-            target.Width = this.Width;
-            target.MeasureUnit = this.MeasureUnit;
-            target.WeightUnit = this.WeightUnit;
-            target.Length = this.Length;
-            target.TaxType = this.TaxType;
-            target.TaxPercentRate = this.TaxPercentRate;
-            target.TaxTotal = this.TaxTotal;
-            target.Total = this.Total;
-            target.TotalWithTax = this.TotalWithTax;
 
+            target.Price = Price;
+            target.PriceWithTax = PriceWithTax;
+            target.DiscountAmount = DiscountAmount;
+            target.DiscountAmountWithTax = DiscountAmountWithTax;
+            target.FulfillmentCenterId = FulfillmentCenterId;
+            target.FulfillmentCenterName = FulfillmentCenterName;
+            target.OrganizationId = OrganizationId;
+            target.OrganizationName = OrganizationName;
+            target.EmployeeId = EmployeeId;
+            target.EmployeeName = EmployeeName;
+            target.ShipmentMethodCode = ShipmentMethodCode;
+            target.ShipmentMethodOption = ShipmentMethodOption;
+            target.Height = Height;
+            target.Length = Length;
+            target.Weight = Weight;
+            target.Height = Height;
+            target.Width = Width;
+            target.MeasureUnit = MeasureUnit;
+            target.WeightUnit = WeightUnit;
+            target.Length = Length;
+            target.TaxType = TaxType;
+            target.TaxPercentRate = TaxPercentRate;
+            target.TaxTotal = TaxTotal;
+            target.Total = Total;
+            target.TotalWithTax = TotalWithTax;
 
-            if (!this.InPayments.IsNullCollection())
+            if (!InPayments.IsNullCollection())
             {
-                this.InPayments.Patch(target.InPayments, (sourcePayment, targetPayment) => sourcePayment.Patch(targetPayment));
+                InPayments.Patch(target.InPayments, (sourcePayment, targetPayment) => sourcePayment.Patch(targetPayment));
             }
-            if (!this.Items.IsNullCollection())
+
+            if (!Items.IsNullCollection())
             {
-                this.Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
-            if (!this.Discounts.IsNullCollection())
+
+            if (!Discounts.IsNullCollection())
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
-                this.Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
+                Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }
-            if (!this.Addresses.IsNullCollection())
+
+            if (!Addresses.IsNullCollection())
             {
-                this.Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+                Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
             }
-            if (!this.Packages.IsNullCollection())
+
+            if (!Packages.IsNullCollection())
             {
-                this.Packages.Patch(target.Packages, (sourcePackage, targetPackage) => sourcePackage.Patch(targetPackage));
+                Packages.Patch(target.Packages, (sourcePackage, targetPackage) => sourcePackage.Patch(targetPackage));
             }
-            if (!this.TaxDetails.IsNullCollection())
+
+            if (!TaxDetails.IsNullCollection())
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
-                this.TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+                TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
         }
     }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Model;
-using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
@@ -23,7 +21,6 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
         }
 
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
@@ -33,8 +30,6 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 .Property(x => x.Id);
             modelBuilder.Entity<OperationEntity>().ToTable("OrderOperation");
             #endregion
-
-
 
             #region CustomerOrder
             modelBuilder.Entity<CustomerOrderEntity>().HasKey(x => x.Id)
@@ -205,46 +200,25 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             base.OnModelCreating(modelBuilder);
         }
 
-        #region IOrderRepository Members
 
-        public IQueryable<CustomerOrderEntity> CustomerOrders
-        {
-            get { return GetAsQueryable<CustomerOrderEntity>(); }
-        }
-
-        public IQueryable<ShipmentEntity> Shipments
-        {
-            get { return GetAsQueryable<ShipmentEntity>(); }
-        }
-
-        public IQueryable<PaymentInEntity> InPayments
-        {
-            get { return GetAsQueryable<PaymentInEntity>(); }
-        }
-
-        public IQueryable<AddressEntity> Addresses
-        {
-            get { return GetAsQueryable<AddressEntity>(); }
-        }
-        public IQueryable<LineItemEntity> LineItems
-        {
-            get { return GetAsQueryable<LineItemEntity>(); }
-        }
-        public IQueryable<PaymentGatewayTransactionEntity> Transactions
-        {
-            get { return GetAsQueryable<PaymentGatewayTransactionEntity>(); }
-        }
+        public IQueryable<CustomerOrderEntity> CustomerOrders => GetAsQueryable<CustomerOrderEntity>();
+        public IQueryable<ShipmentEntity> Shipments => GetAsQueryable<ShipmentEntity>();
+        public IQueryable<PaymentInEntity> InPayments => GetAsQueryable<PaymentInEntity>();
+        public IQueryable<AddressEntity> Addresses => GetAsQueryable<AddressEntity>();
+        public IQueryable<LineItemEntity> LineItems => GetAsQueryable<LineItemEntity>();
+        public IQueryable<PaymentGatewayTransactionEntity> Transactions => GetAsQueryable<PaymentGatewayTransactionEntity>();
 
         public virtual CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup)
         {
             var query = CustomerOrders.Where(x => ids.Contains(x.Id))
                                       .Include(x => x.Discounts)
-                                      .Include(x => x.TaxDetails);            
+                                      .Include(x => x.TaxDetails);
 
             if ((responseGroup & CustomerOrderResponseGroup.WithAddresses) == CustomerOrderResponseGroup.WithAddresses)
             {
                 var addresses = Addresses.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             }
+
             if ((responseGroup & CustomerOrderResponseGroup.WithInPayments) == CustomerOrderResponseGroup.WithInPayments)
             {
                 var inPayments = InPayments.Include(x => x.TaxDetails)
@@ -254,12 +228,14 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 var paymentAddresses = Addresses.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
                 var transactions = Transactions.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }
+
             if ((responseGroup & CustomerOrderResponseGroup.WithItems) == CustomerOrderResponseGroup.WithItems)
             {
                 var lineItems = LineItems.Include(x => x.TaxDetails)
                                          .Include(x => x.Discounts)
                                          .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             }
+
             if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
             {
                 var shipments = Shipments.Include(x => x.TaxDetails)
@@ -270,18 +246,17 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 var shipmentIds = shipments.Select(x => x.Id).ToArray();
                 var addresses = Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
             }
+
             return query.ToArray();
         }
 
         public virtual void RemoveOrdersByIds(string[] ids)
         {
             var orders = GetCustomerOrdersByIds(ids, CustomerOrderResponseGroup.Full);
-            foreach(var order in orders)
+            foreach (var order in orders)
             {
                 Remove(order);
             }
         }
-
-        #endregion
     }
 }

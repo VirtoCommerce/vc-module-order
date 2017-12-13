@@ -15,7 +15,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
     {
         private readonly ICustomerOrderService _customerOrderService;
 
-        [Obsolete("Don't pass IStoreService")]
+        [Obsolete("Don't pass storeService")]
         public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService, IStoreService storeService)
             : this(customerOrderService)
         {

@@ -55,12 +55,16 @@ namespace VirtoCommerce.OrderModule.Web
         {
             _container.RegisterType<IEventPublisher<OrderChangeEvent>, EventPublisher<OrderChangeEvent>>();
             _container.RegisterType<IEventPublisher<OrderChangedEvent>, EventPublisher<OrderChangedEvent>>();
+
             //Adjust inventory activity
             _container.RegisterType<IObserver<OrderChangedEvent>, AdjustInventoryObserver>("AdjustInventoryObserver");
+
             //Create order observer. Send notification
             _container.RegisterType<IObserver<OrderChangedEvent>, OrderNotificationObserver>("OrderNotificationObserver");
+
             //Cancel payment observer. Payment method cancel operations
             _container.RegisterType<IObserver<OrderChangedEvent>, CancelPaymentObserver>("CancelPaymentObserver");
+
             //Log all order changes
             _container.RegisterType<IObserver<OrderChangeEvent>, LogOrderChangesObserver>("LogOrderChangesObserver");
 
@@ -70,7 +74,6 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderSearchService, CustomerOrderServiceImpl>();
             _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
-
         }
 
         public override void PostInitialize()

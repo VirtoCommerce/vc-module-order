@@ -17,12 +17,10 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public void OnCompleted()
         {
-
         }
 
         public void OnError(Exception error)
         {
-
         }
 
         public void OnNext(OrderChangedEvent value)

@@ -42,7 +42,8 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
 
             var progressInfo = new ExportImportProgressInfo();
             var totalCount = backupObject.CustomerOrders.Count;
-            var take = 20;
+
+            const int take = 20;
             for (var skip = 0; skip < totalCount; skip += take)
             {
                 _customerOrderService.SaveChanges(backupObject.CustomerOrders.Skip(skip).Take(take).ToArray());
@@ -57,10 +58,10 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
             var retVal = new BackupObject();
             var progressInfo = new ExportImportProgressInfo();
 
-            var take = 20;
 
             var searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Take = 0, ResponseGroup = CustomerOrderResponseGroup.Default.ToString() });
 
+            const int take = 20;
             for (var skip = 0; skip < searchResponse.TotalCount; skip += take)
             {
                 searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Skip = skip, Take = take, WithPrototypes = true, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
