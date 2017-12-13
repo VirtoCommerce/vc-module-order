@@ -177,18 +177,20 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             if (order == null)
             {
-                throw new NullReferenceException("order");
+                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
             }
+
             var payment = order.InPayments.FirstOrDefault(x => x.Id == paymentId);
             if (payment == null)
             {
-                throw new NullReferenceException("payment");
+                throw new InvalidOperationException($"Cannot find payment with ID {paymentId}");
             }
+
             var store = _storeService.GetById(order.StoreId);
             var paymentMethod = store.PaymentMethods.FirstOrDefault(x => x.Code == payment.GatewayCode);
             if (paymentMethod == null)
             {
-                throw new NullReferenceException("appropriate paymentMethod not found");
+                throw new InvalidOperationException($"Cannot find payment method with code {payment.GatewayCode}");
             }
 
             var context = new ProcessPaymentEvaluationContext
@@ -393,7 +395,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 //if order not found by order number search by order id
 
                 if (order == null)
-                    throw new NullReferenceException("order not found");
+                {
+                    throw new InvalidOperationException($"Cannot find order with ID {orderId}");
+                }
 
                 var store = _storeService.GetById(order.StoreId);
                 var parameters = new NameValueCollection();
@@ -409,7 +413,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     var payment = order.InPayments.FirstOrDefault(x => string.IsNullOrEmpty(x.OuterId) || x.OuterId == paymentOuterId);
                     if (payment == null)
                     {
-                        throw new NullReferenceException("appropriate paymentMethod not found");
+                        throw new InvalidOperationException(@"Cannot find payment");
                     }
 
                     var context = new PostProcessPaymentEvaluationContext
@@ -450,7 +454,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var order = oderSearchResult.Results.FirstOrDefault();
 
             if (order == null)
-                throw new NullReferenceException("order not found");
+            {
+                throw new InvalidOperationException($"Cannot find order with number {orderNumber}");
+            }
 
             var invoice = _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store", order.LanguageCode);
 

@@ -79,7 +79,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var shipment = operation as Shipment;
             if (shipment == null)
-                throw new NullReferenceException("shipment");
+                throw new ArgumentException(@"operation argument must be of type Shipment", nameof(operation));
 
             if (!Addresses.IsNullOrEmpty())
             {
@@ -103,7 +103,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var shipment = operation as Shipment;
             if (shipment == null)
-                throw new NullReferenceException("shipment");
+                throw new ArgumentException(@"operation argument must be of type Shipment", nameof(operation));
 
             base.FromModel(shipment, pkMap);
 
@@ -156,7 +156,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             var target = operation as ShipmentEntity;
             if (target == null)
-                throw new NullReferenceException("target");
+                throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
 
             target.Price = Price;
             target.PriceWithTax = PriceWithTax;

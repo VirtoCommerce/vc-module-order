@@ -89,7 +89,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
-                throw new NullReferenceException("order");
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
 
             order.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
@@ -109,7 +109,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
-                throw new NullReferenceException("order");
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
 
             base.FromModel(order, pkMap);
 
@@ -117,10 +117,12 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 Addresses = new ObservableCollection<AddressEntity>(order.Addresses.Select(x => AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(x)));
             }
+
             if (order.Items != null)
             {
                 Items = new ObservableCollection<LineItemEntity>(order.Items.Select(x => AbstractTypeFactory<LineItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
+
             if (order.Shipments != null)
             {
                 Shipments = new ObservableCollection<ShipmentEntity>(order.Shipments.Select(x => AbstractTypeFactory<ShipmentEntity>.TryCreateInstance().FromModel(x, pkMap)).OfType<ShipmentEntity>());
@@ -130,19 +132,24 @@ namespace VirtoCommerce.OrderModule.Data.Model
                     shipmentItemEntity.LineItem = Items.FirstOrDefault(x => x.ModelLineItem == shipmentItemEntity.ModelLineItem);
                 }
             }
+
             if (order.InPayments != null)
             {
                 InPayments = new ObservableCollection<PaymentInEntity>(order.InPayments.Select(x => AbstractTypeFactory<PaymentInEntity>.TryCreateInstance().FromModel(x, pkMap)).OfType<PaymentInEntity>());
             }
+
             if (order.Discounts != null)
             {
                 Discounts = new ObservableCollection<DiscountEntity>(order.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
+
             if (order.TaxDetails != null)
             {
                 TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
+
             Sum = order.Total;
+
             return this;
         }
 
@@ -150,7 +157,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var target = operation as CustomerOrderEntity;
             if (target == null)
-                throw new NullReferenceException("target");
+                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity", nameof(operation));
 
             target.CustomerId = CustomerId;
             target.CustomerName = CustomerName;

@@ -74,7 +74,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var payment = operation as PaymentIn;
             if (payment == null)
-                throw new NullReferenceException("payment");
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
 
             if (!Addresses.IsNullOrEmpty())
             {
@@ -96,7 +96,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var payment = operation as PaymentIn;
             if (payment == null)
-                throw new NullReferenceException("payment");
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
 
             base.FromModel(payment, pkMap);
 
@@ -136,7 +136,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             var target = operation as PaymentInEntity;
             if (target == null)
-                throw new ArgumentNullException(nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(operation));
 
             target.Price = Price;
             target.PriceWithTax = PriceWithTax;
