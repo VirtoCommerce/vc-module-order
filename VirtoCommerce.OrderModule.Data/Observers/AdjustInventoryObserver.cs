@@ -73,7 +73,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         #endregion
 
-        private static void AdjustInventory(IEnumerable<InventoryInfo> inventories, List<InventoryInfo> changedInventories, EntryState action, KeyValuePair<string, int> pairSource, KeyValuePair<string, int>? pairTarget = null)
+        private static void AdjustInventory(IEnumerable<InventoryInfo> inventories, ICollection<InventoryInfo> changedInventories, EntryState action, KeyValuePair<string, int> pairSource, KeyValuePair<string, int>? pairTarget = null)
         {
             var inventoryInfo = inventories.FirstOrDefault(x => x.ProductId == pairSource.Key);
             if (inventoryInfo != null)

@@ -121,16 +121,20 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         private static bool IsOrderPaid(OrderChangedEvent value)
         {
             var retVal = false;
+
             foreach (var origPayment in value.OrigOrder.InPayments)
             {
                 var modifiedPayment = value.ModifiedOrder.InPayments.FirstOrDefault(i => i.Id == origPayment.Id);
-                var paidSum = value.ModifiedOrder.InPayments.Where(i => i.PaymentStatus == PaymentStatus.Paid).Sum(i => i.Sum);
                 if (modifiedPayment != null)
                 {
+                    var paidSum = value.ModifiedOrder.InPayments.Where(i => i.PaymentStatus == PaymentStatus.Paid).Sum(i => i.Sum);
                     retVal = modifiedPayment.PaymentStatus == PaymentStatus.Paid && origPayment.PaymentStatus != PaymentStatus.Paid && paidSum == value.ModifiedOrder.Total;
                 }
+
                 if (retVal)
+                {
                     break;
+                }
             }
 
             return retVal;
@@ -144,6 +148,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         private static bool IsOrderSent(OrderChangedEvent value)
         {
             var retVal = false;
+
             foreach (var origShipment in value.OrigOrder.Shipments)
             {
                 var modifiedShipment = value.ModifiedOrder.Shipments.FirstOrDefault(i => i.Id == origShipment.Id);
@@ -161,7 +166,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="changeEvent"></param>
-        private void SetNotificationParameters(EmailNotification notification, OrderChangedEvent changeEvent)
+        private void SetNotificationParameters(Notification notification, OrderChangedEvent changeEvent)
         {
             var order = changeEvent.ModifiedOrder;
 
@@ -185,15 +190,13 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                     notification.Recipient = email;
                 }
             }
-            if (string.IsNullOrEmpty(notification.Recipient))
+
+            if (string.IsNullOrEmpty(notification.Recipient) && order.Addresses.Any())
             {
-                if (order.Addresses.Count > 0)
+                var address = order.Addresses.FirstOrDefault();
+                if (address != null)
                 {
-                    var address = order.Addresses.FirstOrDefault();
-                    if (address != null)
-                    {
-                        notification.Recipient = address.Email;
-                    }
+                    notification.Recipient = address.Email;
                 }
             }
         }
