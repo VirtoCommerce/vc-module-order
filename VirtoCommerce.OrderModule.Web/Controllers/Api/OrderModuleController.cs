@@ -99,7 +99,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetByNumber(string number)
         {
-            var result = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = number, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.Number = number;
+            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+
+            var result = _searchService.SearchCustomerOrders(searchCriteria);
 
             var retVal = result.Results.FirstOrDefault();
             if (retVal != null)
@@ -172,8 +176,16 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(ProcessPaymentResult))]
         public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
         {
-            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault()
-                ?? _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() }).Results.FirstOrDefault();
+            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+
+            if (order == null)
+            {
+                var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+                searchCriteria.Number = orderId;
+                searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+
+                order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
+            }
 
             if (order == null)
             {
@@ -388,11 +400,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             if (callback?.Parameters != null && callback.Parameters.Any(param => param.Key.EqualsInvariant("orderid")))
             {
                 var orderId = callback.Parameters.First(param => param.Key.EqualsInvariant("orderid")).Value;
+
                 //some payment method require customer number to be passed and returned. First search customer order by number
-                var searchCriteria = new CustomerOrderSearchCriteria { Number = orderId, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() };
-                var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+                var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+                searchCriteria.Number = orderId;
+                searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
 
                 //if order not found by order number search by order id
+                var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
                 if (order == null)
                 {
@@ -445,13 +460,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [SwaggerFileResponse]
         public IHttpActionResult GetInvoicePdf(string orderNumber)
         {
-            var oderSearchResult = _searchService.SearchCustomerOrders(new CustomerOrderSearchCriteria
-            {
-                Number = orderNumber,
-                Take = 1
-            });
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.Number = orderNumber;
+            searchCriteria.Take = 1;
 
-            var order = oderSearchResult.Results.FirstOrDefault();
+            var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
             if (order == null)
             {

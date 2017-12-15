@@ -58,13 +58,22 @@ namespace VirtoCommerce.OrderModule.Web.ExportImport
             var retVal = new BackupObject();
             var progressInfo = new ExportImportProgressInfo();
 
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Default.ToString();
+            searchCriteria.Take = 0;
 
-            var searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Take = 0, ResponseGroup = CustomerOrderResponseGroup.Default.ToString() });
+            var searchResponse = _customerOrderSearchService.SearchCustomerOrders(searchCriteria);
 
             const int take = 20;
             for (var skip = 0; skip < searchResponse.TotalCount; skip += take)
             {
-                searchResponse = _customerOrderSearchService.SearchCustomerOrders(new CustomerOrderSearchCriteria { Skip = skip, Take = take, WithPrototypes = true, ResponseGroup = CustomerOrderResponseGroup.Full.ToString() });
+                searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+                searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+                searchCriteria.WithPrototypes = true;
+                searchCriteria.Skip = skip;
+                searchCriteria.Take = take;
+
+                searchResponse = _customerOrderSearchService.SearchCustomerOrders(searchCriteria);
 
                 progressInfo.Description = string.Format(CultureInfo.InvariantCulture, "{0} of {1} orders loading", Math.Min(skip + take, searchResponse.TotalCount), searchResponse.TotalCount);
                 progressCallback(progressInfo);
