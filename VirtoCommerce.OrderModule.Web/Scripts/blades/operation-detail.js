@@ -166,13 +166,11 @@
                 var dialog = {
                     id: "confirmCancelOperation",
                     callback: function (reason) {
-                        if (reason) {
-                            blade.currentEntity.cancelReason = reason;
-                            blade.currentEntity.cancelledDate = new Date();
-                            blade.currentEntity.isCancelled = true;
-                            blade.setEntityStatus('Cancelled');
-                            $scope.saveChanges();
-                        }
+                        blade.currentEntity.cancelReason = reason == null || reason.replace(/\s/g, '').length < 1 ? null : reason;
+                        blade.currentEntity.cancelledDate = new Date();
+                        blade.currentEntity.isCancelled = true;
+                        blade.setEntityStatus('Cancelled');
+                        $scope.saveChanges();
                     }
                 };
                 dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
