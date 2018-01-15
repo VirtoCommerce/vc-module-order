@@ -58,6 +58,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
             message: "orders.dialogs.orders-delete.message",
             callback: function (remove) {
                 if (remove) {
+                    $scope.isLoading = true;
                     closeChildrenBlades();
 
                     var itemIds = _.pluck(list, 'id');
@@ -67,6 +68,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
                     function (error) {
                         bladeNavigationService.setError('Error ' + error.status, blade);
                     });
+                    $scope.isLoading = false;
                 }
             }
         };
