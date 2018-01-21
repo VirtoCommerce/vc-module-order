@@ -97,7 +97,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                     diff.AddRange(Comparer.Compare(order, modified as CustomerOrder));
                 }
 
-                foreach (var change in diff.Join(_observedProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).Distinct())
+                foreach (var change in diff.Join(_observedProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).Distinct(DifferenceComparer.Default))
                 {
                     retVal.Add(string.Format(OrderResources.OperationPropertyChanged, original.OperationType, modified.Number, change.Name, change.OldValue, change.NewValue));
                 }
@@ -148,7 +148,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         private static string[] GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
         {
             var retVal = new List<string>();
-            modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), new AddressComparer(),
+            modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), AddressComparer.Default,
                                       (state, source, target) =>
                                       {
                                           if (state == EntryState.Added)
@@ -183,22 +183,32 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         }
     }
 
-    internal class AddressComparer : IEqualityComparer<Address>
+    internal class AddressComparer : EqualityComparer<Address>
     {
-        #region IEqualityComparer<Discount> Members
-
-        public bool Equals(Address x, Address y)
+        public override bool Equals(Address x, Address y)
         {
             return GetHashCode(x) == GetHashCode(y);
         }
 
-        public int GetHashCode(Address obj)
+        public override int GetHashCode(Address obj)
         {
-            var result = string.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
+            var result = String.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
                                           obj.Email, obj.FirstName, obj.LastName, obj.Line1, obj.Line2, obj.Phone, obj.PostalCode, obj.RegionId, obj.RegionName);
             return result.GetHashCode();
         }
+    }
 
-        #endregion
+    internal class DifferenceComparer : EqualityComparer<Difference>
+    {
+        public override bool Equals(Difference x, Difference y)
+        {
+            return GetHashCode(x) == GetHashCode(y);
+        }
+
+        public override int GetHashCode(Difference obj)
+        {
+            var result = String.Join(":", obj.Name, obj.NewValue, obj.OldValue);
+            return result.GetHashCode();
+        }
     }
 }
