@@ -68,7 +68,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
                     function (error) {
                         bladeNavigationService.setError('Error ' + error.status, blade);
                     });
-                    $scope.isLoading = false;
+                 
                 }
             }
         };
