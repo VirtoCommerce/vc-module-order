@@ -100,8 +100,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.FromModel(payment, pkMap);
 
-            Status = payment.PaymentStatus.ToString();
-
             if (payment.PaymentMethod != null)
             {
                 GatewayCode = payment.PaymentMethod != null ? payment.PaymentMethod.Code : payment.GatewayCode;
