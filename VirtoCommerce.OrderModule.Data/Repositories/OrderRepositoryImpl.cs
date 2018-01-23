@@ -1,8 +1,10 @@
-﻿using System.Data.Entity;
+﻿using System.Data.Common;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Model;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 
@@ -20,6 +22,10 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             Configuration.LazyLoadingEnabled = false;
         }
 
+        public OrderRepositoryImpl(DbConnection existingConnection, IUnitOfWork unitOfWork = null,
+            IInterceptor[] interceptors = null) : base(existingConnection, unitOfWork, interceptors)
+        {
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
