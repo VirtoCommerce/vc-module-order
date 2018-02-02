@@ -26,7 +26,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
         public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IEventPublisher<OrderChangeEvent> orderChangingPublisher,
                                        IDynamicPropertyService dynamicPropertyService, IShippingMethodsService shippingMethodsService, IPaymentMethodsService paymentMethodsService,
-                                       IStoreService storeService, IChangeLogService changeLogService, IEventPublisher<OrderChangedEvent> orderChangedPublisher)
+                                       IStoreService storeService, IChangeLogService changeLogService, IEventPublisher<OrderChangedEvent> orderChangedPublisher, ICustomerOrderTotalsCalculator totalsCalculator)
         {
             RepositoryFactory = orderRepositoryFactory;
             UniqueNumberGenerator = uniqueNumberGenerator;
@@ -37,6 +37,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             PaymentMethodsService = paymentMethodsService;
             StoreService = storeService;
             ChangeLogService = changeLogService;
+            TotalsCalculator = totalsCalculator;
         }
 
         protected IUniqueNumberGenerator UniqueNumberGenerator { get; }
@@ -48,6 +49,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         protected IPaymentMethodsService PaymentMethodsService { get; }
         protected IShippingMethodsService ShippingMethodsService { get; }
         protected IChangeLogService ChangeLogService { get; }
+        protected ICustomerOrderTotalsCalculator TotalsCalculator;
 
         #region ICustomerOrderService Members
 
@@ -67,9 +69,15 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
 
+                    //Calculate order totals before event raising
+                    TotalsCalculator.CalculateTotals(order);
+
                     var changingEvent = new OrderChangeEvent(originalEntity == null ? EntryState.Added : EntryState.Modified, originalOrder, order);
                     OrderChangingPublisher.Publish(changingEvent);
                     changedEvents.Add(new OrderChangedEvent(changingEvent.ChangeState, changingEvent.OrigOrder, changingEvent.ModifiedOrder));
+                    
+                    //Calculate order totals after event raising but before save
+                    TotalsCalculator.CalculateTotals(order);
 
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                                                  .FromModel(order, pkMap) as CustomerOrderEntity;
@@ -135,7 +143,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
                                 }
                             }
                         }
-
                         retVal.Add(customerOrder);
                     }
                 }
