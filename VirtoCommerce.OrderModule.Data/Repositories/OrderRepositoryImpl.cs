@@ -22,8 +22,8 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             Configuration.LazyLoadingEnabled = false;
         }
 
-        public OrderRepositoryImpl(DbConnection existingConnection, IUnitOfWork unitOfWork = null,
-            IInterceptor[] interceptors = null) : base(existingConnection, unitOfWork, interceptors)
+        public OrderRepositoryImpl(DbConnection existingConnection, IUnitOfWork unitOfWork = null, IInterceptor[] interceptors = null)
+            : base(existingConnection, unitOfWork, interceptors)
         {
         }
 
