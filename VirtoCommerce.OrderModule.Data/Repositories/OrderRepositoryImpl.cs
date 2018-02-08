@@ -239,7 +239,8 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             {
                 var lineItems = LineItems.Include(x => x.TaxDetails)
                                          .Include(x => x.Discounts)
-                                         .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+                                         .Where(x => ids.Contains(x.CustomerOrderId))
+                                         .OrderByDescending(x => x.CreatedDate).ToArray();
             }
 
             if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
