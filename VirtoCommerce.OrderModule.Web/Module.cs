@@ -20,6 +20,7 @@ using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Resources;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Notifications;
@@ -32,8 +33,8 @@ namespace VirtoCommerce.OrderModule.Web
 {
     public class Module : ModuleBase, ISupportExportImportModule
     {
-        private const string _connectionStringName = "VirtoCommerce";
-        private readonly IUnityContainer _container;
+        private readonly string _connectionString = ConfigurationHelper.GetConnectionStringValue("VirtoCommerce.Orders") ?? ConfigurationHelper.GetConnectionStringValue("VirtoCommerce");
+        private readonly IUnityContainer _container; 
 
         public Module(IUnityContainer container)
         {
@@ -44,7 +45,7 @@ namespace VirtoCommerce.OrderModule.Web
 
         public override void SetupDatabase()
         {
-            using (var context = new OrderRepositoryImpl(_connectionStringName, _container.Resolve<AuditableInterceptor>()))
+            using (var context = new OrderRepositoryImpl(_connectionString, _container.Resolve<AuditableInterceptor>()))
             {
                 var initializer = new SetupDatabaseInitializer<OrderRepositoryImpl, Data.Migrations.Configuration>();
                 initializer.InitializeDatabase(context);
@@ -68,7 +69,7 @@ namespace VirtoCommerce.OrderModule.Web
             //Log all order changes
             _container.RegisterType<IObserver<OrderChangeEvent>, LogOrderChangesObserver>("LogOrderChangesObserver");
 
-            _container.RegisterType<IOrderRepository>(new InjectionFactory(c => new OrderRepositoryImpl(_connectionStringName, _container.Resolve<AuditableInterceptor>(), new EntityPrimaryKeyGeneratorInterceptor())));
+            _container.RegisterType<IOrderRepository>(new InjectionFactory(c => new OrderRepositoryImpl(_connectionString, _container.Resolve<AuditableInterceptor>(), new EntityPrimaryKeyGeneratorInterceptor())));
             _container.RegisterType<IUniqueNumberGenerator, SequenceUniqueNumberGeneratorServiceImpl>();
 
             _container.RegisterType<ICustomerOrderService, CustomerOrderServiceImpl>();

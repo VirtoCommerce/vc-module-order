@@ -125,6 +125,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
 
+            if (payment.Status.IsNullOrEmpty())
+            {
+                Status = payment.PaymentStatus.ToString();
+            }
+
             return this;
         }
 
