@@ -143,6 +143,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
                                 }
                             }
                         }
+                        //Calculate totals only for full responseGroup
+                        if (orderResponseGroup == CustomerOrderResponseGroup.Full)
+                        {
+                            TotalsCalculator.CalculateTotals(customerOrder);
+                        }
                         retVal.Add(customerOrder);
                     }
                 }
