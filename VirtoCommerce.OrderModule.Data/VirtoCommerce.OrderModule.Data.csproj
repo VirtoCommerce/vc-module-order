@@ -158,6 +158,10 @@
     <Compile Include="Migrations\201703151348151_TaxPercentRateConversion.Designer.cs">
       <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.cs" />
+    <Compile Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.Designer.cs">
+      <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -260,6 +264,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703151348151_TaxPercentRateConversion.resx">
       <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.resx">
+      <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
