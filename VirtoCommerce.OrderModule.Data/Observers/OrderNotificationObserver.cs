@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Logging;
 using VirtoCommerce.Domain.Customer.Services;
 using VirtoCommerce.Domain.Order.Events;
-using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.Platform.Core.Common;
@@ -15,17 +13,18 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 {
     public class OrderNotificationObserver : IObserver<OrderChangedEvent>
     {
-        private readonly INotificationManager _notificationManager;
-        private readonly IStoreService _storeService;
-        private readonly IMemberService _memberService;
-        private readonly ISettingsManager _settingsManager;
+        protected readonly INotificationManager NotificationManager;
+        protected readonly IStoreService StoreService;
+        protected readonly IMemberService MemberService;
+        protected readonly ISettingsManager SettingsManager;
 
-        public OrderNotificationObserver(INotificationManager notificationManager, IStoreService storeService, IMemberService memberService, ISettingsManager settingsManager)
+        public OrderNotificationObserver(INotificationManager notificationManager, IStoreService storeService, IMemberService memberService,
+            ISettingsManager settingsManager)
         {
-            _notificationManager = notificationManager;
-            _storeService = storeService;
-            _memberService = memberService;
-            _settingsManager = settingsManager;
+            NotificationManager = notificationManager;
+            StoreService = storeService;
+            MemberService = memberService;
+            SettingsManager = settingsManager;
         }
 
         public void OnCompleted()
@@ -38,54 +37,34 @@ namespace VirtoCommerce.OrderModule.Data.Observers
 
         public void OnNext(OrderChangedEvent value)
         {
-            if (_settingsManager.GetValue("Order.SendOrderNotifications", true))
+            if (SettingsManager.GetValue("Order.SendOrderNotifications", true))
             {
                 //Collection of order notifications
                 var notifications = new List<OrderEmailNotificationBase>();
 
                 if (IsOrderCanceled(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    if (notification != null)
-                    {
-                        notifications.Add(notification);
-                    }
+                    OnOrderIsCancelled(value, notifications);
                 }
 
                 if (value.ChangeState == EntryState.Added && !value.ModifiedOrder.IsPrototype)
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    if (notification != null)
-                    {
-                        notifications.Add(notification);
-                    }
+                    OnOrderCreated(value, notifications);
                 }
 
                 if (IsNewStatus(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-
-                    if (notification != null)
-                    {
-                        notification.NewStatus = value.ModifiedOrder.Status;
-                        notification.OldStatus = value.OrigOrder.Status;
-
-                        notifications.Add(notification);
-                    }
+                    OnOrderStatusChanged(value, notifications);
                 }
 
                 if (IsOrderPaid(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    if (notification != null)
-                    {
-                        notifications.Add(notification);
-                    }
+                    OnOrderPaid(value, notifications);
                 }
 
                 if (IsOrderSent(value))
                 {
-                    var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
+                    var notification = NotificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
                     if (notification != null)
                     {
                         notifications.Add(notification);
@@ -96,18 +75,71 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 {
                     notification.CustomerOrder = value.ModifiedOrder;
                     SetNotificationParameters(notification, value);
-                    _notificationManager.ScheduleSendNotification(notification);
+                    NotificationManager.ScheduleSendNotification(notification);
                 }
             }
         }
 
+        protected virtual void OnOrderIsCancelled(OrderChangedEvent value, List<OrderEmailNotificationBase> notifications)
+        {
+            var notification = NotificationManager.GetNewNotification<CancelOrderEmailNotification>(value.ModifiedOrder.StoreId, "Store",
+                value.ModifiedOrder.LanguageCode);
+            if (notification != null)
+            {
+                notifications.Add(notification);
+            }
+        }
+
+        protected virtual void OnOrderCreated(OrderChangedEvent value, List<OrderEmailNotificationBase> notifications)
+        {
+            var notification = NotificationManager.GetNewNotification<OrderCreateEmailNotification>(value.ModifiedOrder.StoreId, "Store",
+                value.ModifiedOrder.LanguageCode);
+            if (notification != null)
+            {
+                notifications.Add(notification);
+            }
+        }
+
+        protected virtual void OnOrderStatusChanged(OrderChangedEvent value, List<OrderEmailNotificationBase> notifications)
+        {
+            var notification = NotificationManager.GetNewNotification<NewOrderStatusEmailNotification>(value.ModifiedOrder.StoreId, "Store",
+                value.ModifiedOrder.LanguageCode);
+
+            if (notification != null)
+            {
+                notification.NewStatus = value.ModifiedOrder.Status;
+                notification.OldStatus = value.OrigOrder.Status;
+
+                notifications.Add(notification);
+            }
+        }
+
+        protected virtual void OnOrderSent(OrderChangedEvent value, List<OrderEmailNotificationBase> notifications)
+        {
+            var notification = NotificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store",
+                value.ModifiedOrder.LanguageCode);
+            if (notification != null)
+            {
+                notifications.Add(notification);
+            }
+        }
+
+        protected virtual void OnOrderPaid(OrderChangedEvent value, List<OrderEmailNotificationBase> notifications)
+        {
+            var notification = NotificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store",
+                value.ModifiedOrder.LanguageCode);
+            if (notification != null)
+            {
+                notifications.Add(notification);
+            }
+        }
 
         /// <summary>
         /// Is order was canceled
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static bool IsOrderCanceled(OrderChangedEvent value)
+        protected virtual bool IsOrderCanceled(OrderChangedEvent value)
         {
             var retVal = value.OrigOrder != null &&
                           value.OrigOrder.IsCancelled != value.ModifiedOrder.IsCancelled &&
@@ -121,7 +153,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static bool IsNewStatus(OrderChangedEvent value)
+        protected virtual bool IsNewStatus(OrderChangedEvent value)
         {
             var retVal = value.OrigOrder != null &&
                           value.OrigOrder.Status != value.ModifiedOrder.Status;
@@ -134,26 +166,9 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static bool IsOrderPaid(OrderChangedEvent value)
+        protected virtual bool IsOrderPaid(OrderChangedEvent value)
         {
-            var retVal = false;
-
-            foreach (var origPayment in value.OrigOrder.InPayments)
-            {
-                var modifiedPayment = value.ModifiedOrder.InPayments.FirstOrDefault(i => i.Id == origPayment.Id);
-                if (modifiedPayment != null)
-                {
-                    var paidSum = value.ModifiedOrder.InPayments.Where(i => i.PaymentStatus == PaymentStatus.Paid).Sum(i => i.Sum);
-                    retVal = modifiedPayment.PaymentStatus == PaymentStatus.Paid && origPayment.PaymentStatus != PaymentStatus.Paid && paidSum == value.ModifiedOrder.Total;
-                }
-
-                if (retVal)
-                {
-                    break;
-                }
-            }
-
-            return retVal;
+            return value.IsOrderNowPaid();
         }
 
         /// <summary>
@@ -161,7 +176,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static bool IsOrderSent(OrderChangedEvent value)
+        protected virtual bool IsOrderSent(OrderChangedEvent value)
         {
             var retVal = false;
 
@@ -182,11 +197,11 @@ namespace VirtoCommerce.OrderModule.Data.Observers
         /// </summary>
         /// <param name="notification"></param>
         /// <param name="changeEvent"></param>
-        private void SetNotificationParameters(Notification notification, OrderChangedEvent changeEvent)
+        protected virtual void SetNotificationParameters(Notification notification, OrderChangedEvent changeEvent)
         {
             var order = changeEvent.ModifiedOrder;
 
-            var store = _storeService.GetById(order.StoreId);
+            var store = StoreService.GetById(order.StoreId);
             notification.Sender = store.Email;
             notification.IsActive = true;
 
@@ -197,7 +212,7 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 notification.ObjectId = order.SubscriptionId;
             }
 
-            var member = _memberService.GetByIds(new[] { order.CustomerId }).FirstOrDefault();
+            var member = MemberService.GetByIds(new[] { order.CustomerId }).FirstOrDefault();
             if (member != null)
             {
                 var email = member.Emails.FirstOrDefault();
