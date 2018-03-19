@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Common.Logging;
 using VirtoCommerce.Domain.Customer.Services;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Payment.Model;
@@ -45,35 +46,50 @@ namespace VirtoCommerce.OrderModule.Data.Observers
                 if (IsOrderCanceled(value))
                 {
                     var notification = _notificationManager.GetNewNotification<CancelOrderEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    notifications.Add(notification);
+                    if (notification != null)
+                    {
+                        notifications.Add(notification);
+                    }
                 }
 
                 if (value.ChangeState == EntryState.Added && !value.ModifiedOrder.IsPrototype)
                 {
                     var notification = _notificationManager.GetNewNotification<OrderCreateEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    notifications.Add(notification);
+                    if (notification != null)
+                    {
+                        notifications.Add(notification);
+                    }
                 }
 
                 if (IsNewStatus(value))
                 {
                     var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
 
-                    notification.NewStatus = value.ModifiedOrder.Status;
-                    notification.OldStatus = value.OrigOrder.Status;
+                    if (notification != null)
+                    {
+                        notification.NewStatus = value.ModifiedOrder.Status;
+                        notification.OldStatus = value.OrigOrder.Status;
 
-                    notifications.Add(notification);
+                        notifications.Add(notification);
+                    }
                 }
 
                 if (IsOrderPaid(value))
                 {
                     var notification = _notificationManager.GetNewNotification<OrderPaidEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    notifications.Add(notification);
+                    if (notification != null)
+                    {
+                        notifications.Add(notification);
+                    }
                 }
 
                 if (IsOrderSent(value))
                 {
                     var notification = _notificationManager.GetNewNotification<OrderSentEmailNotification>(value.ModifiedOrder.StoreId, "Store", value.ModifiedOrder.LanguageCode);
-                    notifications.Add(notification);
+                    if (notification != null)
+                    {
+                        notifications.Add(notification);
+                    }
                 }
 
                 foreach (var notification in notifications)
