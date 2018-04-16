@@ -39,7 +39,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string LastName { get; set; }
         [StringLength(64)]
         public string Phone { get; set; }
-        [StringLength(64)]
+        [StringLength(254)]
         public string Email { get; set; }
 
         public virtual CustomerOrderEntity CustomerOrder { get; set; }

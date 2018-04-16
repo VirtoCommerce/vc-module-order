@@ -162,6 +162,10 @@
     <Compile Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.Designer.cs">
       <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804161328017_LongerEmailAddress.cs" />
+    <Compile Include="Migrations\201804161328017_LongerEmailAddress.Designer.cs">
+      <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -267,6 +271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.resx">
       <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804161328017_LongerEmailAddress.resx">
+      <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
