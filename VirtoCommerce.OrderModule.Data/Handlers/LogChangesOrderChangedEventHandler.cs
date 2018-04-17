@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Common.Events;
@@ -141,16 +142,28 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                                       {
                                           if (state == EntryState.Added)
                                           {
-                                              result.Add(string.Format(OrderResources.AddressAdded, operation.OperationType, operation.Number, target.ToString()));
+                                              result.Add(string.Format(OrderResources.AddressAdded, operation.OperationType, operation.Number, StringifyAddress(target)));
                                           }
                                           else if (state == EntryState.Deleted)
                                           {
-                                              result.Add(string.Format(OrderResources.AddressRemoved, operation.OperationType, operation.Number, target.ToString()));
+                                              result.Add(string.Format(OrderResources.AddressRemoved, operation.OperationType, operation.Number, StringifyAddress(target)));
                                           }
                                       });
             return result;
         }
 
+        protected virtual string StringifyAddress(Address address)
+        {
+            var result = "";
+            if(address != null)
+            {
+                return string.Join(", ", typeof(Address).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                                   .OrderBy(p => p.Name)
+                                   .Select(p=> p.GetValue(address))
+                                   .Where(x=> x != null));
+            }
+            return result;
+        }
 
         protected virtual OperationLog GetLogRecord(IOperation operation, string template)
         {
