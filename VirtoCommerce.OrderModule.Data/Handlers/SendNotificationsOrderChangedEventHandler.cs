@@ -95,18 +95,18 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         /// <summary>
         /// Is order canceled
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="changedEntry"></param>
         /// <returns></returns>
         protected virtual bool IsOrderCanceled(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var result =  !changedEntry.OldEntry.IsCancelled && changedEntry.NewEntry.IsCancelled;
+            var result = !changedEntry.OldEntry.IsCancelled && changedEntry.NewEntry.IsCancelled;
             return result;
         }
 
         /// <summary>
         /// The order has a new status
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="changedEntry"></param>
         /// <returns></returns>
         protected virtual bool HasNewStatus(GenericChangedEntry<CustomerOrder> changedEntry)
         {
@@ -117,24 +117,24 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         /// <summary>
         /// Is order fully paid
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="changedEntry"></param>
         /// <returns></returns>
         protected virtual bool IsOrderPaid(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var oldPaidTotal = changedEntry.OldEntry.InPayments.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum);
-            var newPaidTotal = changedEntry.NewEntry.InPayments.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum);            
+            var newPaidTotal = changedEntry.NewEntry.InPayments.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum);
             return oldPaidTotal != newPaidTotal && changedEntry.NewEntry.Total <= newPaidTotal;
         }
 
         /// <summary>
         /// Is order fully send
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="changedEntry"></param>
         /// <returns></returns>
         protected virtual bool IsOrderSent(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var oldSentShipmentsCount = changedEntry.OldEntry.Shipments.Where(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent")).Count();
-            var newSentShipmentsCount = changedEntry.NewEntry.Shipments.Where(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent")).Count();
+            var oldSentShipmentsCount = changedEntry.OldEntry.Shipments.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent"));
+            var newSentShipmentsCount = changedEntry.NewEntry.Shipments.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent"));
             return oldSentShipmentsCount == 0 && newSentShipmentsCount > 0;
         }
 
@@ -142,7 +142,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         /// Set base notification parameters (sender, recipient, isActive)
         /// </summary>
         /// <param name="notification"></param>
-        /// <param name="changeEvent"></param>
+        /// <param name="changedEntry"></param>
         protected virtual async Task SetNotificationParametersAsync(Notification notification, GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var order = changedEntry.NewEntry;
@@ -153,14 +153,14 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             notification.Recipient = await GetOrderRecipientEmailAsync(order);
 
             notification.ObjectTypeId = "CustomerOrder";
-            notification.ObjectId = order.Id;        
+            notification.ObjectId = order.Id;
             //Log all notification with subscription
             if (!string.IsNullOrEmpty(order.SubscriptionId))
             {
                 notification.ObjectTypeId = "Subscription";
                 notification.ObjectId = order.SubscriptionId;
             }
-           
+
             var member = _memberService.GetByIds(new[] { order.CustomerId }).FirstOrDefault();
             if (member != null)
             {
@@ -191,7 +191,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             var contact = _memberService.GetByIds(new[] { order.CustomerId }).OfType<Contact>().FirstOrDefault();
             if (contact == null && user != null)
             {
-                contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();                
+                contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();
             }
             email = contact?.Emails?.FirstOrDefault() ?? email ?? user?.Email;
             return email;
