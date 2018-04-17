@@ -4,7 +4,6 @@ using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
-using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Common;
 using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
@@ -14,12 +13,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
     public class CustomerOrderBuilderImpl : ICustomerOrderBuilder
     {
         private readonly ICustomerOrderService _customerOrderService;
-
-        [Obsolete("Don't pass storeService")]
-        public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService, IStoreService storeService)
-            : this(customerOrderService)
-        {
-        }
 
         public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService)
         {
