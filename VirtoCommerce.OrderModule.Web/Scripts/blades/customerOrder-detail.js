@@ -1,6 +1,6 @@
 ﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService',
-    function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService, statusTranslationService) {
+    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts',
+    function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService, statusTranslationService, securityAccounts) {
         var blade = $scope.blade;
 
         angular.extend(blade, {
@@ -33,12 +33,12 @@
             blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
         }
 
-        blade.openCustomerDetails = function () {
+        function showCustomerDetailBlade(memberId) {
             var customerMemberType = 'Contact';
             var foundTemplate = memberTypesResolverService.resolve(customerMemberType);
             if (foundTemplate) {
                 var newBlade = angular.copy(foundTemplate.detailBlade);
-                newBlade.currentEntity = { id: blade.customerOrder.customerId, memberType: customerMemberType };
+                newBlade.currentEntity = { id: memberId, memberType: customerMemberType };
                 bladeNavigationService.showBlade(newBlade, blade);
             } else {
                 dialogService.showNotificationDialog({
@@ -48,6 +48,22 @@
                     messageValues: { memberType: customerMemberType },
                 });
             }
+        }
+
+        blade.openCustomerDetails = function () {
+            members.get({ id: blade.customerOrder.customerId }, function (member) {
+                if (!member.id) {
+                    securityAccounts.get({ id: blade.customerOrder.customerId }, function (account) {
+                        if (account && account.memberId) {
+                            showCustomerDetailBlade(account.memberId);
+                        }
+                    });
+                }
+                else {
+                    showCustomerDetailBlade(member.id);
+                }
+            });
+         
         };
 
 

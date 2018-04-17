@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Domain.Common;
+using VirtoCommerce.Domain.Common.Events;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
@@ -24,14 +25,12 @@ namespace VirtoCommerce.OrderModule.Data.Services
     public class CustomerOrderServiceImpl : ServiceBase, ICustomerOrderService, ICustomerOrderSearchService
     {
 
-        public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IEventPublisher<OrderChangeEvent> orderChangingPublisher,
-                                       IDynamicPropertyService dynamicPropertyService, IShippingMethodsService shippingMethodsService, IPaymentMethodsService paymentMethodsService,
-                                       IStoreService storeService, IChangeLogService changeLogService, IEventPublisher<OrderChangedEvent> orderChangedPublisher, ICustomerOrderTotalsCalculator totalsCalculator)
+        public CustomerOrderServiceImpl(Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator, IDynamicPropertyService dynamicPropertyService, IShippingMethodsService shippingMethodsService, IPaymentMethodsService paymentMethodsService,
+                                       IStoreService storeService, IChangeLogService changeLogService, IEventPublisher eventPublisher, ICustomerOrderTotalsCalculator totalsCalculator)
         {
             RepositoryFactory = orderRepositoryFactory;
             UniqueNumberGenerator = uniqueNumberGenerator;
-            OrderChangingPublisher = orderChangingPublisher;
-            OrderChangedPublisher = orderChangedPublisher;
+            EventPublisher = eventPublisher;
             DynamicPropertyService = dynamicPropertyService;
             ShippingMethodsService = shippingMethodsService;
             PaymentMethodsService = paymentMethodsService;
@@ -42,8 +41,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
         protected IUniqueNumberGenerator UniqueNumberGenerator { get; }
         protected Func<IOrderRepository> RepositoryFactory { get; }
-        protected IEventPublisher<OrderChangeEvent> OrderChangingPublisher { get; }
-        protected IEventPublisher<OrderChangedEvent> OrderChangedPublisher { get; }
+        protected IEventPublisher EventPublisher { get; }
         protected IDynamicPropertyService DynamicPropertyService { get; }
         protected IStoreService StoreService { get; }
         protected IPaymentMethodsService PaymentMethodsService { get; }
@@ -56,7 +54,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         public virtual void SaveChanges(CustomerOrder[] orders)
         {
             var pkMap = new PrimaryKeyResolvingMap();
-            var changedEvents = new List<OrderChangedEvent>();
+            var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
 
             using (var repository = RepositoryFactory())
             using (var changeTracker = GetChangeTracker(repository))
@@ -69,43 +67,35 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
 
-                    //Calculate order totals before event raising
-                    TotalsCalculator.CalculateTotals(order);
-
-                    var changingEvent = new OrderChangeEvent(originalEntity == null ? EntryState.Added : EntryState.Modified, originalOrder, order);
-                    OrderChangingPublisher.Publish(changingEvent);
-                    changedEvents.Add(new OrderChangedEvent(changingEvent.ChangeState, changingEvent.OrigOrder, changingEvent.ModifiedOrder));
-                    
-                    //Calculate order totals after event raising but before save
-                    TotalsCalculator.CalculateTotals(order);
-
+                    //Calculate order totals
+                    TotalsCalculator.CalculateTotals(order);                 
+                   
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                                                  .FromModel(order, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
                     {
                         changeTracker.Attach(originalEntity);
-                        modifiedEntity?.Patch(originalEntity);
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
+                        modifiedEntity?.Patch(originalEntity);                       
                     }
                     else
                     {
                         repository.Add(modifiedEntity);
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, EntryState.Added));
                     }
                 }
 
+                //Raise domain events
+                EventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 CommitChanges(repository);
                 pkMap.ResolvePrimaryKeys();
+                EventPublisher.Publish(new OrderChangedEvent(changedEntries));
             }
 
             //Save dynamic properties
             foreach (var order in orders)
             {
                 DynamicPropertyService.SaveDynamicPropertyValues(order);
-            }
-
-            //Raise changed events
-            foreach (var changedEvent in changedEvents)
-            {
-                OrderChangedPublisher.Publish(changedEvent);
             }
         }
 
@@ -174,10 +164,9 @@ namespace VirtoCommerce.OrderModule.Data.Services
             var orders = GetByIds(ids, CustomerOrderResponseGroup.Full.ToString());
             using (var repository = RepositoryFactory())
             {
-                foreach (var order in orders)
-                {
-                    OrderChangingPublisher.Publish(new OrderChangeEvent(EntryState.Deleted, order, order));
-                }
+                //Raise domain events before deletion
+                var changedEntries = orders.Select(x => new GenericChangedEntry<CustomerOrder>(x, EntryState.Deleted));
+                EventPublisher.Publish(new OrderChangeEvent(changedEntries));
 
                 repository.RemoveOrdersByIds(ids);
 
@@ -187,11 +176,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 }
 
                 repository.UnitOfWork.Commit();
-
-                foreach (var order in orders)
-                {
-                    OrderChangedPublisher.Publish(new OrderChangedEvent(EntryState.Deleted, order, order));
-                }
+                //Raise domain events after deletion
+                EventPublisher.Publish(new OrderChangedEvent(changedEntries));
             }
         }
 

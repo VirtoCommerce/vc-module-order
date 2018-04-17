@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Practices.Unity;
+using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web.Http;
-using Microsoft.Practices.Unity;
 using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Order.Events;
@@ -10,8 +10,8 @@ using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
+using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Notifications;
-using VirtoCommerce.OrderModule.Data.Observers;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.ExportImport;
@@ -19,7 +19,7 @@ using VirtoCommerce.OrderModule.Web.JsonConverters;
 using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Resources;
 using VirtoCommerce.OrderModule.Web.Security;
-using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -54,20 +54,13 @@ namespace VirtoCommerce.OrderModule.Web
 
         public override void Initialize()
         {
-            _container.RegisterType<IEventPublisher<OrderChangeEvent>, EventPublisher<OrderChangeEvent>>();
-            _container.RegisterType<IEventPublisher<OrderChangedEvent>, EventPublisher<OrderChangedEvent>>();
+            var eventHandlerRegistrar = _container.Resolve<IHandlerRegistrar>();
 
-            //Adjust inventory activity
-            _container.RegisterType<IObserver<OrderChangedEvent>, AdjustInventoryObserver>("AdjustInventoryObserver");
-
-            //Create order observer. Send notification
-            _container.RegisterType<IObserver<OrderChangedEvent>, OrderNotificationObserver>("OrderNotificationObserver");
-
-            //Cancel payment observer. Payment method cancel operations
-            _container.RegisterType<IObserver<OrderChangedEvent>, CancelPaymentObserver>("CancelPaymentObserver");
-
-            //Log all order changes
-            _container.RegisterType<IObserver<OrderChangeEvent>, LogOrderChangesObserver>("LogOrderChangesObserver");
+            //Registration welcome email notification.
+            eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<AdjustInventoryOrderChangedEventHandler>().Handle(message));
+            eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<CancelPaymentOrderChangedEventHandler>().Handle(message));
+            eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<LogChangesOrderChangedEventHandler>().Handle(message));
+            eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<SendNotificationsOrderChangedEventHandler>().Handle(message));
 
             _container.RegisterType<IOrderRepository>(new InjectionFactory(c => new OrderRepositoryImpl(_connectionString, _container.Resolve<AuditableInterceptor>(), new EntityPrimaryKeyGeneratorInterceptor())));
             _container.RegisterType<IUniqueNumberGenerator, SequenceUniqueNumberGeneratorServiceImpl>();

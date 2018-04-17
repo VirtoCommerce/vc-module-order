@@ -27,46 +27,46 @@ namespace VirtoCommerce.OrderModule.Test
             var totalsCalculator = new DefaultCustomerOrderTotalsCalculator();
             totalsCalculator.CalculateTotals(order);
 
-            Assert.Equal(item1.PriceWithTax, 12.3088m);
-            Assert.Equal(item1.PlacedPrice, 9.66m);
-            Assert.Equal(item1.ExtendedPrice, 19.32m);
-            Assert.Equal(item1.DiscountAmountWithTax, 1.4896m);
-            Assert.Equal(item1.DiscountTotal, 2.66m);
-            Assert.Equal(item1.FeeWithTax, 0.3696m);
-            Assert.Equal(item1.PlacedPriceWithTax, 10.8192m);
-            Assert.Equal(item1.ExtendedPriceWithTax, 21.6384m);
-            Assert.Equal(item1.DiscountTotalWithTax, 2.9792m);
-            Assert.Equal(item1.TaxTotal, 2.358m);
+            Assert.Equal(12.3088m, item1.PriceWithTax);
+            Assert.Equal(9.66m, item1.PlacedPrice);
+            Assert.Equal(19.32m, item1.ExtendedPrice);
+            Assert.Equal(1.4896m, item1.DiscountAmountWithTax);
+            Assert.Equal(2.66m, item1.DiscountTotal);
+            Assert.Equal(0.3696m, item1.FeeWithTax);
+            Assert.Equal(10.8192m, item1.PlacedPriceWithTax);
+            Assert.Equal(21.6384m, item1.ExtendedPriceWithTax);
+            Assert.Equal(2.9792m, item1.DiscountTotalWithTax);
+            Assert.Equal(2.358m, item1.TaxTotal);
 
-            Assert.Equal(shipment.DiscountAmountWithTax, 5.6m);
-            Assert.Equal(shipment.PriceWithTax, 24.64m);
-            Assert.Equal(shipment.FeeWithTax, 0.0m);
-            Assert.Equal(shipment.Total, 17.0m);
-            Assert.Equal(shipment.TotalWithTax, 19.04m);
-            Assert.Equal(shipment.TaxTotal, 2.04m);
+            Assert.Equal(5.6m, shipment.DiscountAmountWithTax);
+            Assert.Equal(24.64m, shipment.PriceWithTax);
+            Assert.Equal(0.0m, shipment.FeeWithTax);
+            Assert.Equal(17.0m, shipment.Total);
+            Assert.Equal(19.04m, shipment.TotalWithTax);
+            Assert.Equal(2.04m, shipment.TaxTotal);
 
-            Assert.Equal(payment.Total, 34.52m);
-            Assert.Equal(payment.PriceWithTax, 49.8624m);
-            Assert.Equal(payment.TotalWithTax, 38.6624m);
-            Assert.Equal(payment.DiscountAmountWithTax, 11.2m);
-            Assert.Equal(payment.TaxTotal, 4.1424m);
+            Assert.Equal(34.52m, payment.Total);
+            Assert.Equal(49.8624m, payment.PriceWithTax);
+            Assert.Equal(38.6624m, payment.TotalWithTax);
+            Assert.Equal(11.2m, payment.DiscountAmountWithTax);
+            Assert.Equal(4.1424m, payment.TaxTotal);
 
-            Assert.Equal(order.SubTotal, 1359.48m);
-            Assert.Equal(order.SubTotalDiscount, 161.47m);
-            Assert.Equal(order.SubTotalDiscountWithTax, 180.8464m);
-            Assert.Equal(order.SubTotalTaxTotal, 143.8248m);
-            Assert.Equal(order.SubTotalWithTax, 1522.6176m);
-            Assert.Equal(order.ShippingSubTotal, 22.00m);
-            Assert.Equal(order.ShippingSubTotalWithTax, 24.64m);
-            Assert.Equal(order.PaymentSubTotal, 44.52m);
-            Assert.Equal(order.PaymentSubTotalWithTax, 49.8624m);
-            Assert.Equal(order.TaxTotal, 150.0072m);
-            Assert.Equal(order.DiscountTotal, 176.47m);
-            Assert.Equal(order.DiscountTotalWithTax, 197.6464m);
-            Assert.Equal(order.FeeTotal, 13.64m);
-            Assert.Equal(order.FeeTotalWithTax, 15.2768m);
-            Assert.Equal(order.FeeWithTax, 14.6832m);
-            Assert.Equal(order.Total, 1413.1772m);
+            Assert.Equal(1359.48m, order.SubTotal);
+            Assert.Equal(161.47m, order.SubTotalDiscount);
+            Assert.Equal(180.8464m, order.SubTotalDiscountWithTax);
+            Assert.Equal(143.8248m, order.SubTotalTaxTotal);
+            Assert.Equal(1522.6176m, order.SubTotalWithTax);
+            Assert.Equal(22.00m, order.ShippingSubTotal);
+            Assert.Equal(24.64m, order.ShippingSubTotalWithTax);
+            Assert.Equal(44.52m, order.PaymentSubTotal);
+            Assert.Equal(49.8624m, order.PaymentSubTotalWithTax);
+            Assert.Equal(150.0072m, order.TaxTotal);
+            Assert.Equal(176.47m, order.DiscountTotal);
+            Assert.Equal(197.6464m, order.DiscountTotalWithTax);
+            Assert.Equal(13.64m, order.FeeTotal);
+            Assert.Equal(15.2768m, order.FeeTotalWithTax);
+            Assert.Equal(14.6832m, order.FeeWithTax);
+            Assert.Equal(1413.1772m, order.Total);
         }
     }
 }
