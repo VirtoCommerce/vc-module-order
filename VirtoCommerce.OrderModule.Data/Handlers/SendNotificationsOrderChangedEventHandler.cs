@@ -68,7 +68,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 var notification = _notificationManager.GetNewNotification<NewOrderStatusEmailNotification>(changedEntry.NewEntry.StoreId, "Store", changedEntry.NewEntry.LanguageCode);
 
                 notification.NewStatus = changedEntry.NewEntry.Status;
-                notification.OldStatus = changedEntry.NewEntry.Status;
+                notification.OldStatus = changedEntry.OldEntry.Status;
                 notifications.Add(notification);
             }
 

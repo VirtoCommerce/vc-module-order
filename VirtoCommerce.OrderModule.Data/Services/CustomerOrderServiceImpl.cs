@@ -89,7 +89,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 EventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 CommitChanges(repository);
                 pkMap.ResolvePrimaryKeys();
-                EventPublisher.Publish(new OrderChangedEvent(changedEntries));
             }
 
             //Save dynamic properties
@@ -97,6 +96,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 DynamicPropertyService.SaveDynamicPropertyValues(order);
             }
+            //Raise domain events
+            EventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
         public virtual CustomerOrder[] GetByIds(string[] orderIds, string responseGroup = null)
