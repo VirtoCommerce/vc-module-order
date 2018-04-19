@@ -160,25 +160,6 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 notification.ObjectTypeId = "Subscription";
                 notification.ObjectId = order.SubscriptionId;
             }
-
-            var member = _memberService.GetByIds(new[] { order.CustomerId }).FirstOrDefault();
-            if (member != null)
-            {
-                var email = member.Emails.FirstOrDefault();
-                if (!string.IsNullOrEmpty(email))
-                {
-                    notification.Recipient = email;
-                }
-            }
-
-            if (string.IsNullOrEmpty(notification.Recipient) && order.Addresses.Any())
-            {
-                var address = order.Addresses.FirstOrDefault();
-                if (address != null)
-                {
-                    notification.Recipient = address.Email;
-                }
-            }
         }
 
         protected virtual async Task<string> GetOrderRecipientEmailAsync(CustomerOrder order)
