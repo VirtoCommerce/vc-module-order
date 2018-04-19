@@ -34,7 +34,6 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             _securityService = securityService;
         }
 
-
         public virtual async Task Handle(OrderChangedEvent message)
         {
             if (_settingsManager.GetValue("Order.SendOrderNotifications", true))
@@ -48,7 +47,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
         protected virtual async Task TryToSendOrderNotificationsAsync(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            //Collection of order notifications
+            // Collection of order notifications
             var notifications = new List<OrderEmailNotificationBase>();
 
             if (IsOrderCanceled(changedEntry))
@@ -146,16 +145,20 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         protected virtual async Task SetNotificationParametersAsync(Notification notification, GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var order = changedEntry.NewEntry;
-
             var store = _storeService.GetById(order.StoreId);
-            notification.Sender = store.Email;
+
             notification.IsActive = true;
+
+            notification.Sender = store.Email;
             notification.Recipient = await GetOrderRecipientEmailAsync(order);
 
-            notification.ObjectTypeId = "CustomerOrder";
-            notification.ObjectId = order.Id;
-            //Log all notification with subscription
-            if (!string.IsNullOrEmpty(order.SubscriptionId))
+            // Allow to filter notification log either by customer order or by subscription
+            if (string.IsNullOrEmpty(order.SubscriptionId))
+            {
+                notification.ObjectTypeId = "CustomerOrder";
+                notification.ObjectId = order.Id;
+            }
+            else
             {
                 notification.ObjectTypeId = "Subscription";
                 notification.ObjectId = order.SubscriptionId;
@@ -164,16 +167,19 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
         protected virtual async Task<string> GetOrderRecipientEmailAsync(CustomerOrder order)
         {
-            //get recipient email from order address as default
+            // Get recipient email from order address as default
             var email = order.Addresses?.Select(x => x.Email).FirstOrDefault();
-            //try to find user
+
+            // Try to find user
             var user = await _securityService.FindByIdAsync(order.CustomerId, UserDetails.Reduced);
-            //Try to find contact 
+
+            // Try to find contact 
             var contact = _memberService.GetByIds(new[] { order.CustomerId }).OfType<Contact>().FirstOrDefault();
             if (contact == null && user != null)
             {
                 contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();
             }
+
             email = contact?.Emails?.FirstOrDefault() ?? email ?? user?.Email;
             return email;
         }
