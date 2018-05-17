@@ -180,7 +180,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();
             }
 
-            email = contact?.Emails?.FirstOrDefault() ?? email ?? user?.Email;
+            email = email ?? contact?.Emails?.FirstOrDefault() ?? user?.Email;
             return email;
         }
     }
