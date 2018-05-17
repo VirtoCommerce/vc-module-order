@@ -64,9 +64,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     EnsureThatAllOperationsHaveNumber(order);
 
-                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
-                    var originalOrder = originalEntity != null ? (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()) : order;
-
+                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);                
                     //Calculate order totals
                     TotalsCalculator.CalculateTotals(order);                 
                    
