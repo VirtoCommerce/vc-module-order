@@ -89,7 +89,8 @@
                 controller: 'virtoCommerce.orderModule.customerOrderItemsController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
             };
-            bladeNavigationService.showBlade(orderLineItemsBlade, blade);
+           //Display order items disabled by default
+           // bladeNavigationService.showBlade(orderLineItemsBlade, blade);
         };
 
 

@@ -145,6 +145,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Weight = lineItem.Weight;
             retVal.WeightUnit = lineItem.WeightUnit;
             retVal.Width = lineItem.Width;
+            retVal.FulfillmentCenterId = lineItem.FulfillmentCenterId;
+            retVal.FulfillmentCenterName = lineItem.FulfillmentCenterName;
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
@@ -185,6 +187,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Height = shipment.Height;
             retVal.Length = shipment.Length;
             retVal.MeasureUnit = shipment.MeasureUnit;
+            retVal.FulfillmentCenterId = shipment.FulfillmentCenterId;
+            retVal.FulfillmentCenterName = shipment.FulfillmentCenterName;
             retVal.ShipmentMethodCode = shipment.ShipmentMethodCode;
             retVal.ShipmentMethodOption = shipment.ShipmentMethodOption;
             retVal.Sum = shipment.Total;
