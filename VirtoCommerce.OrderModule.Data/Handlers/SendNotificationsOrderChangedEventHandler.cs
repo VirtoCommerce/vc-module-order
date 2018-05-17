@@ -168,7 +168,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         protected virtual async Task<string> GetOrderRecipientEmailAsync(CustomerOrder order)
         {
             // Get recipient email from order address as default
-            var email = order.Addresses?.Select(x => x.Email).FirstOrDefault();
+            var email = order.Addresses?.Where(x => !string.IsNullOrEmpty(x.Email)).Select(x => x.Email).FirstOrDefault();
 
             // Try to find user
             var user = await _securityService.FindByIdAsync(order.CustomerId, UserDetails.Reduced);
@@ -180,7 +180,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();
             }
 
-            email = email ?? contact?.Emails?.FirstOrDefault() ?? user?.Email;
+            email = email ?? contact?.Emails?.Where(x => !string.IsNullOrEmpty(x)).FirstOrDefault() ?? user?.Email;
             return email;
         }
     }
