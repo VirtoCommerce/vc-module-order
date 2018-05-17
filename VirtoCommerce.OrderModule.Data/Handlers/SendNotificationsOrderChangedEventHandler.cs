@@ -167,20 +167,25 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
         protected virtual async Task<string> GetOrderRecipientEmailAsync(CustomerOrder order)
         {
-            // Get recipient email from order address as default
-            var email = order.Addresses?.Where(x => !string.IsNullOrEmpty(x.Email)).Select(x => x.Email).FirstOrDefault();
+            var email = GetOrderAddressEmail(order) ?? await GetCustomerEmailAsync(order.CustomerId);
+            return email;
+        }
 
-            // Try to find user
-            var user = await _securityService.FindByIdAsync(order.CustomerId, UserDetails.Reduced);
+        protected virtual string GetOrderAddressEmail(CustomerOrder order)
+        {
+            var email = order.Addresses?.Select(x => x.Email).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+            return email;
+        }
 
-            // Try to find contact 
-            var contact = _memberService.GetByIds(new[] { order.CustomerId }).OfType<Contact>().FirstOrDefault();
-            if (contact == null && user != null)
-            {
-                contact = _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault();
-            }
+        protected virtual async Task<string> GetCustomerEmailAsync(string customerId)
+        {
+            var user = await _securityService.FindByIdAsync(customerId, UserDetails.Reduced);
 
-            email = email ?? contact?.Emails?.Where(x => !string.IsNullOrEmpty(x)).FirstOrDefault() ?? user?.Email;
+            var contact = user != null
+                ? _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault()
+                : _memberService.GetByIds(new[] { customerId }).OfType<Contact>().FirstOrDefault();
+
+            var email = contact?.Emails?.FirstOrDefault(x => !string.IsNullOrEmpty(x)) ?? user?.Email;
             return email;
         }
     }
