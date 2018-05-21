@@ -22,8 +22,8 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             Configuration.LazyLoadingEnabled = false;
         }
 
-        public OrderRepositoryImpl(DbConnection existingConnection, IUnitOfWork unitOfWork = null,
-            IInterceptor[] interceptors = null) : base(existingConnection, unitOfWork, interceptors)
+        public OrderRepositoryImpl(DbConnection existingConnection, IUnitOfWork unitOfWork = null, IInterceptor[] interceptors = null)
+            : base(existingConnection, unitOfWork, interceptors)
         {
         }
 
@@ -40,7 +40,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             #region CustomerOrder
             modelBuilder.Entity<CustomerOrderEntity>().HasKey(x => x.Id)
                     .Property(x => x.Id);
-
+            modelBuilder.Entity<CustomerOrderEntity>().Property(x => x.TaxPercentRate).HasPrecision(18, 4);
             modelBuilder.Entity<CustomerOrderEntity>().ToTable("CustomerOrder");
             #endregion
 
@@ -48,7 +48,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<LineItemEntity>().HasKey(x => x.Id)
                     .Property(x => x.Id);
 
-
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.TaxPercentRate).HasPrecision(18, 4);
             modelBuilder.Entity<LineItemEntity>().HasOptional(x => x.CustomerOrder)
                                        .WithMany(x => x.Items)
                                        .HasForeignKey(x => x.CustomerOrderId).WillCascadeOnDelete(true);
@@ -95,7 +95,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<ShipmentEntity>().HasKey(x => x.Id)
                 .Property(x => x.Id);
 
-
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.TaxPercentRate).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentEntity>().HasRequired(x => x.CustomerOrder)
                                            .WithMany(x => x.Shipments)
                                            .HasForeignKey(x => x.CustomerOrderId).WillCascadeOnDelete(true);
@@ -131,6 +131,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<PaymentInEntity>().HasKey(x => x.Id)
                 .Property(x => x.Id);
 
+            modelBuilder.Entity<PaymentInEntity>().Property(x => x.TaxPercentRate).HasPrecision(18, 4);
             modelBuilder.Entity<PaymentInEntity>().HasOptional(x => x.CustomerOrder)
                                        .WithMany(x => x.InPayments)
                                        .HasForeignKey(x => x.CustomerOrderId).WillCascadeOnDelete(true);
@@ -193,7 +194,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
 
-            #region TaxDetail
+            #region PaymentGatewayTransactionEntity
             modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasKey(x => x.Id)
                         .Property(x => x.Id);
 
@@ -239,7 +240,8 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             {
                 var lineItems = LineItems.Include(x => x.TaxDetails)
                                          .Include(x => x.Discounts)
-                                         .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+                                         .Where(x => ids.Contains(x.CustomerOrderId))
+                                         .OrderByDescending(x => x.CreatedDate).ToArray();
             }
 
             if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
