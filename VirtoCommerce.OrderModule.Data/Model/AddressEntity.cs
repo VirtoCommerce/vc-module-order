@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.ComponentModel.DataAnnotations;
 using Omu.ValueInjecter;
 using VirtoCommerce.Domain.Commerce.Model;
@@ -58,6 +57,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException(nameof(address));
 
             address.InjectFrom(this);
+            address.Key = Id;
             address.AddressType = EnumUtility.SafeParse(AddressType, Domain.Commerce.Model.AddressType.BillingAndShipping);
             return address;
         }
@@ -68,6 +68,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException(nameof(address));
 
             this.InjectFrom(address);
+            Id = address.Key;
             AddressType = address.AddressType.ToString();
             return this;
         }
@@ -89,20 +90,30 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.Line1 = Line1;
             target.Line2 = Line2;
         }
-    }
 
-    public class AddressComparer : IEqualityComparer<AddressEntity>
-    {
-        public bool Equals(AddressEntity x, AddressEntity y)
+        public override bool Equals(object obj)
         {
-            return GetHashCode(x) == GetHashCode(y);
+            var result = base.Equals(obj);
+            //For transient addresses need to compare two objects as value object (by content)
+            if (!result && IsTransient() && obj is AddressEntity otherAddressEntity)
+            {
+                var domainAddress = ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                var otherAddress = otherAddressEntity.ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                result = domainAddress.Equals(otherAddress);
+            }
+            return result;
         }
 
-        public int GetHashCode(AddressEntity obj)
+        public override int GetHashCode()
         {
-            var result = string.Join(":", obj.AddressType, obj.Organization, obj.City, obj.CountryCode, obj.CountryName,
-                                          obj.Email, obj.FirstName, obj.LastName, obj.Line1, obj.Line2, obj.Phone, obj.PostalCode, obj.RegionId, obj.RegionName);
-            return result.GetHashCode();
+            if (IsTransient())
+            {
+                //need to convert to domain address model to allow use ValueObject.GetHashCode
+                var domainAddress = ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
+                return domainAddress.GetHashCode();
+            }
+            return base.GetHashCode();
         }
     }
+
 }

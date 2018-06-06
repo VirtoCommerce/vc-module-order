@@ -113,6 +113,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             //Save only disctinct addresses for order
             retVal.Addresses = retVal.Addresses.Distinct().ToList();
+            foreach (var address in retVal.Addresses)
+            {
+                //Reset primary key for addresses
+                address.Key = null;
+            }
             retVal.TaxDetails = cart.TaxDetails;
             return retVal;
         }
@@ -202,6 +207,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = shipment.DeliveryAddress;
+                retVal.DeliveryAddress.Key = null;
             }
             if (shipment.Discounts != null)
             {
@@ -240,6 +246,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (payment.BillingAddress != null)
             {
                 retVal.BillingAddress = payment.BillingAddress;
+                retVal.BillingAddress.Key = null;
             }
             retVal.TaxDetails = payment.TaxDetails;
             return retVal;
