@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations',
 function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations) {
     var blade = $scope.blade;
@@ -171,7 +171,13 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
         gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);
 
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
-            uiGridHelper.bindRefreshOnSortChanged($scope);
+            if (blade.preloadedOrders) {
+                $scope.gridOptions.enableSorting = true;
+                $scope.gridOptions.useExternalSorting = false;              
+            }
+            else {
+                uiGridHelper.bindRefreshOnSortChanged($scope);
+            }
         });
 
         bladeUtils.initializePagination($scope);
