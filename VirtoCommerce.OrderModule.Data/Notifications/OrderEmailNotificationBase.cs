@@ -1,4 +1,4 @@
-﻿using VirtoCommerce.Domain.Order.Model;
+using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Platform.Core.Notifications;
 
 namespace VirtoCommerce.OrderModule.Data.Notifications
@@ -8,6 +8,6 @@ namespace VirtoCommerce.OrderModule.Data.Notifications
         protected OrderEmailNotificationBase(IEmailNotificationSendingGateway gateway) : base(gateway) { }
 
         [NotificationParameter("Customer Order")]
-        public CustomerOrder CustomerOrder { get; set; }
+        public virtual CustomerOrder CustomerOrder { get; set; }
     }
 }
