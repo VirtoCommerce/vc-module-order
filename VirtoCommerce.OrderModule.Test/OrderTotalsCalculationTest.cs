@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Services;
 using Xunit;
@@ -53,20 +53,20 @@ namespace VirtoCommerce.OrderModule.Test
 
             Assert.Equal(1359.48m, order.SubTotal);
             Assert.Equal(161.47m, order.SubTotalDiscount);
-            Assert.Equal(180.8464m, order.SubTotalDiscountWithTax);
-            Assert.Equal(143.8248m, order.SubTotalTaxTotal);
-            Assert.Equal(1522.6176m, order.SubTotalWithTax);
+            Assert.Equal(180.85m, order.SubTotalDiscountWithTax);
+            Assert.Equal(1522.62m, order.SubTotalWithTax);
             Assert.Equal(22.00m, order.ShippingSubTotal);
             Assert.Equal(24.64m, order.ShippingSubTotalWithTax);
             Assert.Equal(44.52m, order.PaymentSubTotal);
-            Assert.Equal(49.8624m, order.PaymentSubTotalWithTax);
-            Assert.Equal(150.0072m, order.TaxTotal);
+            Assert.Equal(49.86m, order.PaymentSubTotalWithTax);
+            Assert.Equal(150.01m, order.TaxTotal);
             Assert.Equal(176.47m, order.DiscountTotal);
-            Assert.Equal(197.6464m, order.DiscountTotalWithTax);
+            Assert.Equal(197.65m, order.DiscountTotalWithTax);
             Assert.Equal(13.64m, order.FeeTotal);
-            Assert.Equal(15.2768m, order.FeeTotalWithTax);
-            Assert.Equal(14.6832m, order.FeeWithTax);
-            Assert.Equal(1413.1772m, order.Total);
+            Assert.Equal(15.28m, order.FeeTotalWithTax);
+            Assert.Equal(14.68m, order.FeeWithTax);
+            Assert.Equal(1413.18m, order.Total);
         }
     }
 }
+
