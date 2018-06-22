@@ -1,4 +1,4 @@
-﻿//Call this to register our module to main application
+//Call this to register our module to main application
 var moduleName = "virtoCommerce.orderModule";
 
 if (AppDependencies !== undefined) {
@@ -214,8 +214,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         widgetService.registerWidget(operationItemsWidget, 'customerOrderDetailWidgets');
 
         widgetService.registerWidget({
-            controller: 'platformWebApp.changeLog.operationsWidgetController',
-            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'customerOrderDetailWidgets');
+            controller: 'virtoCommerce.orderModule.customerOrderChangeLogWidgetController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-change-log-widget.tpl.html' }, 'customerOrderDetailWidgets');
 
         var shipmentItemsWidget = {
             controller: 'virtoCommerce.orderModule.shipmentItemsWidgetController',

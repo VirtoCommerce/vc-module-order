@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -64,17 +64,17 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 {
                     EnsureThatAllOperationsHaveNumber(order);
 
-                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);                
+                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     //Calculate order totals
-                    TotalsCalculator.CalculateTotals(order);                 
-                   
+                    TotalsCalculator.CalculateTotals(order);
+
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                                                  .FromModel(order, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
                     {
                         changeTracker.Attach(originalEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
-                        modifiedEntity?.Patch(originalEntity);                       
+                        modifiedEntity?.Patch(originalEntity);
                     }
                     else
                     {
@@ -105,6 +105,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             using (var repository = RepositoryFactory())
             {
+                repository.DisableChangesTracking();
+
                 var orderEntities = repository.GetCustomerOrdersByIds(orderIds, orderResponseGroup);
                 foreach (var orderEntity in orderEntities)
                 {
@@ -143,18 +145,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
             }
 
             DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
-
-            foreach (var order in retVal)
-            {
-                ChangeLogService.LoadChangeLogs(order);
-                //Make general change log for order
-                order.OperationsLog = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
-                                           .Distinct()
-                                           .SelectMany(x => x.OperationsLog)
-                                           .OrderBy(x => x.CreatedDate)
-                                           .Distinct().ToList();
-            }
-
             return retVal.ToArray();
         }
 
@@ -184,6 +174,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
         {
             using (var repository = RepositoryFactory())
             {
+                repository.DisableChangesTracking();
+
                 var query = GetOrdersQuery(repository, criteria);
                 var totalCount = query.Count();
 

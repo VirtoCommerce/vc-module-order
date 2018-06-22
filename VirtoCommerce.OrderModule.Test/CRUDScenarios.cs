@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -230,7 +230,7 @@ namespace VirtoCommerce.OrderModule.Test
         {
             var orderService = GetCustomerOrderService();
 
-            return new OrderModuleController(orderService, null, null, null, null, null, null, null, null, null, null, null);
+            return new OrderModuleController(orderService, null, null, null, null, null, null, null, null, null, null, null, null);
         }
 
         private static IShippingMethodsService GetShippingMethodsService()

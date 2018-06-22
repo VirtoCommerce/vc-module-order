@@ -1,4 +1,4 @@
-﻿using CacheManager.Core;
+using CacheManager.Core;
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -23,6 +23,7 @@ using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.BackgroundJobs;
 using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Security;
+using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Security;
@@ -48,12 +49,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly IShoppingCartService _cartService;
         private readonly INotificationManager _notificationManager;
         private readonly INotificationTemplateResolver _notificationTemplateResolver;
+        private readonly IChangeLogService _changeLogService;
         private static readonly object _lockObject = new object();
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
                                      ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
                                      ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
-                                     INotificationTemplateResolver notificationTemplateResolver)
+                                     INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -67,6 +69,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _cartService = cartService;
             _notificationManager = notificationManager;
             _notificationTemplateResolver = notificationTemplateResolver;
+            _changeLogService = changeLogService;
         }
 
         /// <summary>
@@ -498,6 +501,26 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return ResponseMessage(result);
         }
 
+
+        [HttpGet]
+        [Route("{id}/changes")]
+        [ResponseType(typeof(OperationLog[]))]
+        public IHttpActionResult GetOrderChanges(string id)
+        {
+            var result = new OperationLog[] { };
+            var order = _customerOrderService.GetByIds(new[] { id }).FirstOrDefault();
+            if (order != null)
+            {
+                _changeLogService.LoadChangeLogs(order);
+                //Load general change log for order
+                result = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
+                                          .Distinct()
+                                          .SelectMany(x => x.OperationsLog)
+                                          .OrderBy(x => x.CreatedDate)
+                                          .Distinct().ToArray();
+            }
+            return Ok(result);
+        }
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {
 

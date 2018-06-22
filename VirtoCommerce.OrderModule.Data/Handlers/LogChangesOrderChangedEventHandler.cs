@@ -1,4 +1,4 @@
-﻿using AutoCompare;
+using AutoCompare;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         public virtual Task Handle(OrderChangedEvent message)
         {
             var operationLogs = new List<OperationLog>();
-            foreach (var changedEntry in message.ChangedEntries.Where(x=>x.EntryState == EntryState.Modified))
+            foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
                 var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
                 var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
@@ -99,7 +99,6 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             {
                 result.Add(string.Format(OrderResources.OperationAdded, changedEntry.NewEntry.OperationType, changedEntry.NewEntry.Number));
             }
-
             return result.Select(x => GetLogRecord(changedEntry.NewEntry, x));
         }
 
@@ -135,7 +134,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         }
 
         protected virtual IEnumerable<string> GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
-        {           
+        {
             var result = new List<string>();
             modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), EqualityComparer<Address>.Default,
                                       (state, source, target) =>
@@ -155,12 +154,12 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         protected virtual string StringifyAddress(Address address)
         {
             var result = "";
-            if(address != null)
+            if (address != null)
             {
                 return string.Join(", ", typeof(Address).GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                    .OrderBy(p => p.Name)
-                                   .Select(p=> p.GetValue(address))
-                                   .Where(x=> x != null));
+                                   .Select(p => p.GetValue(address))
+                                   .Where(x => x != null));
             }
             return result;
         }
