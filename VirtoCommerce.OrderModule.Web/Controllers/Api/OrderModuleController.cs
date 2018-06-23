@@ -98,14 +98,15 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="number">customer order number</param>
+        /// <param name="respGroup"></param>
         [HttpGet]
         [Route("number/{number}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetByNumber(string number)
+        public IHttpActionResult GetByNumber(string number, [FromUri] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+            searchCriteria.ResponseGroup = respGroup;
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -129,13 +130,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="id">customer order id</param>
-        /// <param name="responseGroup"></param>
+        /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetById(string id, string responseGroup = null)
+        public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, responseGroup ?? CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var retVal = _customerOrderService.GetByIds(new[] { id }, respGroup).FirstOrDefault();
             if (retVal == null)
             {
                 return NotFound();
