@@ -129,12 +129,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="id">customer order id</param>
+        /// <param name="responseGroup"></param>
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetById(string id)
+        public IHttpActionResult GetById(string id, string responseGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var retVal = _customerOrderService.GetByIds(new[] { id }, responseGroup ?? CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
             if (retVal == null)
             {
                 return NotFound();
