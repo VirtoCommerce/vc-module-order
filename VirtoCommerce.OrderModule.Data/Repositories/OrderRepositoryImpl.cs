@@ -1,4 +1,4 @@
-﻿using System.Data.Common;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
@@ -210,6 +210,10 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
         public IQueryable<CustomerOrderEntity> CustomerOrders => GetAsQueryable<CustomerOrderEntity>();
         public IQueryable<ShipmentEntity> Shipments => GetAsQueryable<ShipmentEntity>();
+        public IQueryable<ShipmentPackageEntity> ShipmentPackagesPackages => GetAsQueryable<ShipmentPackageEntity>();
+        public IQueryable<ShipmentItemEntity> ShipmentItems => GetAsQueryable<ShipmentItemEntity>();
+        public IQueryable<DiscountEntity> Discounts => GetAsQueryable<DiscountEntity>();
+        public IQueryable<TaxDetailEntity> TaxDetails => GetAsQueryable<TaxDetailEntity>();
         public IQueryable<PaymentInEntity> InPayments => GetAsQueryable<PaymentInEntity>();
         public IQueryable<AddressEntity> Addresses => GetAsQueryable<AddressEntity>();
         public IQueryable<LineItemEntity> LineItems => GetAsQueryable<LineItemEntity>();
@@ -217,9 +221,9 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
         public virtual CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup)
         {
-            var query = CustomerOrders.Where(x => ids.Contains(x.Id))
-                                      .Include(x => x.Discounts)
-                                      .Include(x => x.TaxDetails);
+            var result = CustomerOrders.Where(x => ids.Contains(x.Id)).ToArray();
+            var orderDiscounts = Discounts.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+            var orderTaxDetails = TaxDetails.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
 
             if ((responseGroup & CustomerOrderResponseGroup.WithAddresses) == CustomerOrderResponseGroup.WithAddresses)
             {
@@ -228,34 +232,34 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
             if ((responseGroup & CustomerOrderResponseGroup.WithInPayments) == CustomerOrderResponseGroup.WithInPayments)
             {
-                var inPayments = InPayments.Include(x => x.TaxDetails)
-                                           .Include(x => x.Discounts)
-                                           .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+                var inPayments = InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var paymentsIds = inPayments.Select(x => x.Id).ToArray();
+                var paymentDiscounts = Discounts.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
+                var paymentTaxDetails = TaxDetails.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
                 var paymentAddresses = Addresses.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
                 var transactions = Transactions.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }
 
             if ((responseGroup & CustomerOrderResponseGroup.WithItems) == CustomerOrderResponseGroup.WithItems)
             {
-                var lineItems = LineItems.Include(x => x.TaxDetails)
-                                         .Include(x => x.Discounts)
-                                         .Where(x => ids.Contains(x.CustomerOrderId))
+                var lineItems = LineItems.Where(x => ids.Contains(x.CustomerOrderId))
                                          .OrderByDescending(x => x.CreatedDate).ToArray();
+                var lineItemIds = lineItems.Select(x => x.Id).ToArray();
+                var lineItemDiscounts = Discounts.Where(x => lineItemIds.Contains(x.LineItemId)).ToArray();
+                var lineItemTaxDetails = TaxDetails.Where(x => lineItemIds.Contains(x.LineItemId)).ToArray();
             }
 
             if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
             {
-                var shipments = Shipments.Include(x => x.TaxDetails)
-                                         .Include(x => x.Discounts)
-                                         .Include(x => x.Items)
-                                         .Include(x => x.Packages.Select(y => y.Items))
-                                         .Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
+                var shipments = Shipments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var shipmentIds = shipments.Select(x => x.Id).ToArray();
+                var shipmentDiscounts = Discounts.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
+                var shipmentTaxDetails = TaxDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
                 var addresses = Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
+                var shipmentItems = ShipmentItems.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
+                var packages = ShipmentPackagesPackages.Include(x => x.Items).Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
             }
-
-            return query.ToArray();
+            return result;
         }
 
         public virtual void RemoveOrdersByIds(string[] ids)

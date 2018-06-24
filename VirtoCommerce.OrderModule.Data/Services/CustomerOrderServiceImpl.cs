@@ -63,6 +63,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 foreach (var order in orders)
                 {
                     EnsureThatAllOperationsHaveNumber(order);
+                    LoadOrderDependencies(order);
 
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
                     //Calculate order totals
@@ -82,7 +83,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, EntryState.Added));
                     }
                 }
-
                 //Raise domain events
                 EventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 CommitChanges(repository);
@@ -114,31 +114,13 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     if (customerOrder != null)
                     {
                         customerOrder = orderEntity.ToModel(customerOrder) as CustomerOrder;
-                        if (customerOrder != null)
-                        {
-                            var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
-                            if (!shippingMethods.IsNullOrEmpty())
-                            {
-                                foreach (var shipment in customerOrder.Shipments)
-                                {
-                                    shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
-                                }
-                            }
 
-                            var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
-                            if (!paymentMethods.IsNullOrEmpty())
-                            {
-                                foreach (var payment in customerOrder.InPayments)
-                                {
-                                    payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
-                                }
-                            }
-                        }
                         //Calculate totals only for full responseGroup
                         if (orderResponseGroup == CustomerOrderResponseGroup.Full)
                         {
                             TotalsCalculator.CalculateTotals(customerOrder);
                         }
+                        LoadOrderDependencies(customerOrder);
                         retVal.Add(customerOrder);
                     }
                 }
@@ -269,6 +251,29 @@ namespace VirtoCommerce.OrderModule.Data.Services
             return order => order.Number.Contains(criteria.Keyword) || order.CustomerName.Contains(criteria.Keyword);
         }
 
+        protected virtual void LoadOrderDependencies(CustomerOrder order)
+        {
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+            var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
+            if (!shippingMethods.IsNullOrEmpty())
+            {
+                foreach (var shipment in order.Shipments)
+                {
+                    shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                }
+            }
+            var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
+            if (!paymentMethods.IsNullOrEmpty())
+            {
+                foreach (var payment in order.InPayments)
+                {
+                    payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                }
+            }
+        }
         protected virtual void EnsureThatAllOperationsHaveNumber(CustomerOrder order)
         {
             var store = StoreService.GetById(order.StoreId);

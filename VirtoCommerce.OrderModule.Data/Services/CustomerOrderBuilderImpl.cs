@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
@@ -25,9 +25,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
         {
             var customerOrder = ConvertCartToOrder(cart);
             _customerOrderService.SaveChanges(new[] { customerOrder });
-
-            customerOrder = _customerOrderService.GetByIds(new[] { customerOrder.Id }).FirstOrDefault();
-
             return customerOrder;
         }
 
