@@ -127,6 +127,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             order.PaymentDiscountTotalWithTax = Math.Round(order.PaymentDiscountTotalWithTax, 2, MidpointRounding.AwayFromZero);
 
             order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
+            order.Sum = order.Total;
         }
 
         protected virtual void CalculatePaymentTotals(PaymentIn payment)
@@ -141,6 +142,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             payment.PriceWithTax = payment.Price * taxFactor;
             payment.DiscountAmountWithTax = payment.DiscountAmount * taxFactor;
             payment.TaxTotal = payment.Total * payment.TaxPercentRate;
+            payment.Sum = payment.Total;
         }
 
         protected virtual void CalculateShipmentTotals(Shipment shipment)
@@ -156,6 +158,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             shipment.Total = shipment.Price + shipment.Fee - shipment.DiscountAmount;
             shipment.TotalWithTax = shipment.PriceWithTax + shipment.FeeWithTax - shipment.DiscountAmountWithTax;
             shipment.TaxTotal = shipment.Total * shipment.TaxPercentRate;
+            shipment.Sum = shipment.Total;
         }
 
         protected virtual void CalculateLineItemTotals(LineItem lineItem)
