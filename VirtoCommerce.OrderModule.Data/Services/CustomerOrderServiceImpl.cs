@@ -260,7 +260,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 throw new ArgumentNullException(nameof(order));
             }
             var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
-            if (!shippingMethods.IsNullOrEmpty())
+            if (!shippingMethods.IsNullOrEmpty() && !order.Shipments.IsNullOrEmpty())
             {
                 foreach (var shipment in order.Shipments)
                 {
@@ -268,7 +268,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 }
             }
             var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
-            if (!paymentMethods.IsNullOrEmpty())
+            if (!paymentMethods.IsNullOrEmpty() && !order.InPayments.IsNullOrEmpty())
             {
                 foreach (var payment in order.InPayments)
                 {
