@@ -127,8 +127,10 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     }
                 }
             }
-
-            DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
+            if (DynamicPropertyService != null)
+            {
+                DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
+            }
             return retVal.ToArray();
         }
 
@@ -244,6 +246,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 query = query.Where(GetKeywordPredicate(criteria));
             }
+            if (criteria.OrganizationId != null)
+            {
+                query = query.Where(x => x.OrganizationId == criteria.OrganizationId);
+            }
+
 
             return query;
         }
@@ -259,20 +266,26 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 throw new ArgumentNullException(nameof(order));
             }
-            var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
-            if (!shippingMethods.IsNullOrEmpty() && !order.Shipments.IsNullOrEmpty())
+            if (ShippingMethodsService != null)
             {
-                foreach (var shipment in order.Shipments)
+                var shippingMethods = ShippingMethodsService.GetAllShippingMethods();
+                if (!shippingMethods.IsNullOrEmpty() && !order.Shipments.IsNullOrEmpty())
                 {
-                    shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                    foreach (var shipment in order.Shipments)
+                    {
+                        shipment.ShippingMethod = shippingMethods.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                    }
                 }
             }
-            var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
-            if (!paymentMethods.IsNullOrEmpty() && !order.InPayments.IsNullOrEmpty())
+            if (PaymentMethodsService != null)
             {
-                foreach (var payment in order.InPayments)
+                var paymentMethods = PaymentMethodsService.GetAllPaymentMethods();
+                if (!paymentMethods.IsNullOrEmpty() && !order.InPayments.IsNullOrEmpty())
                 {
-                    payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                    foreach (var payment in order.InPayments)
+                    {
+                        payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                    }
                 }
             }
         }
