@@ -162,6 +162,8 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="Scripts\blades\customerOrder-change-log.js" />
+    <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\resources\securityAccounts.js" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
     <Compile Include="ExportImport\OrderExportImport.cs" />
@@ -223,6 +225,8 @@
     <Content Include="Scripts\resources\customerOrders.js" />
     <Content Include="Scripts\resources\stores.js" />
     <Content Include="Scripts\resources\fulfillmentCenters.js" />
+    <Content Include="Scripts\widgets\customerOrder-change-log-widget.js" />
+    <Content Include="Scripts\widgets\customerOrder-change-log-widget.tpl.html" />
     <Content Include="Scripts\widgets\dashboard\statistics-templates.html" />
     <Content Include="Scripts\widgets\dashboard\statistics-widget.js" />
     <Content Include="Scripts\widgets\notificationsLogWidget.js" />
