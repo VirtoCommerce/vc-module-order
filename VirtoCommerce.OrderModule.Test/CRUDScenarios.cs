@@ -9,6 +9,7 @@ using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
+using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.Domain.Store.Services;
@@ -62,6 +63,32 @@ namespace VirtoCommerce.OrderModule.Test
         //    ////assert
         //    //Assert.Equal("", GetErrors(payResponse.error));
         //}
+
+        [Fact]
+        public void Can_search_by_OrganizationId()
+        {
+            //arrange
+            var order1 = GetTestOrder("order1");
+            order1.OrganizationId = "25";
+            var customerOrderService = GetCustomerOrderService();
+            var searchCriteria = new CustomerOrderSearchCriteria
+            {
+                OrganizationId = "25"
+            };
+
+            var orderInTestDb = customerOrderService.GetByIds(new[] { order1.Id }).FirstOrDefault();
+            if (orderInTestDb == null)
+            {
+                customerOrderService.SaveChanges(new[] { order1 });
+            }
+            
+            //act
+            var foundItem = customerOrderService.SearchCustomerOrders(searchCriteria);
+            //assert
+            Assert.NotNull(foundItem);
+            Assert.Equal(1, foundItem.TotalCount);
+        }
+
 
         protected CommerceRepositoryImpl GetRepository()
         {
@@ -202,6 +229,8 @@ namespace VirtoCommerce.OrderModule.Test
             return order;
         }
 
+
+
         private static Func<IOrderRepository> GetOrderRepositoryFactory()
         {
             Func<IOrderRepository> orderRepositoryFactory = () =>
@@ -220,8 +249,9 @@ namespace VirtoCommerce.OrderModule.Test
             //var dynamicPropertyService = new DynamicPropertyService(platformRepositoryFactory);
             var dynamicPropertyService = new Mock<IDynamicPropertyService>().Object;
             var eventPublisher = new Mock<IEventPublisher>().Object;
+            var totalsCalculator = new Mock<ICustomerOrderTotalsCalculator>().Object;
 
-            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, eventPublisher, null);
+            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, eventPublisher, totalsCalculator);
 
             return orderService;
         }

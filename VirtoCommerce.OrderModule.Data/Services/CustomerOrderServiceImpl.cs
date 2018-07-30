@@ -244,6 +244,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
             {
                 query = query.Where(GetKeywordPredicate(criteria));
             }
+            if (criteria.OrganizationId != null )
+            {
+                query = query.Where(x => x.OrganizationId == criteria.OrganizationId);
+            }
+
 
             return query;
         }
