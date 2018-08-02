@@ -3,11 +3,11 @@ namespace VirtoCommerce.OrderModule.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddRefundAmount : DbMigration
+    public partial class AddRefundAmountEntity : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.OrderPaymentGatewayTransaction", "RefundAmount", c => c.Decimal(precision: 18, scale: 2));
+            AddColumn("dbo.OrderPaymentGatewayTransaction", "RefundAmount", c => c.Decimal(nullable: false, storeType: "money"));
         }
         
         public override void Down()

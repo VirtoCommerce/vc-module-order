@@ -43,7 +43,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public virtual PaymentInEntity PaymentIn { get; set; }
         public string PaymentInId { get; set; }
-        public decimal? RefundAmount { get; set; }
+
+        [Column(TypeName = "Money")]
+        public decimal RefundAmount { get; set; }
 
 
         public virtual PaymentGatewayTransaction ToModel(PaymentGatewayTransaction transaction)
@@ -98,7 +100,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             ResponseData = transaction.ResponseData;
             Status = transaction.Status;
             Type = transaction.Type;
-            RefundAmount = transaction.RefundAmount;
+            RefundAmount = transaction.RefundAmount ?? 0;
             return this;
         }
 
