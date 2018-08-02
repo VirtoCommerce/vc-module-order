@@ -8,6 +8,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
 {
     public class AddressEntity : Entity
     {
+        [StringLength(2048)]
+        public string Name { get; set; }
         [StringLength(32)]
         public string AddressType { get; set; }
         [StringLength(64)]
