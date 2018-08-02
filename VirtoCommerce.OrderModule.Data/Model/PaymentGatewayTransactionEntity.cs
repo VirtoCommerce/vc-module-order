@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.Domain.Order.Model;
@@ -43,6 +43,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public virtual PaymentInEntity PaymentIn { get; set; }
         public string PaymentInId { get; set; }
+        public decimal? RefundAmount { get; set; }
 
 
         public virtual PaymentGatewayTransaction ToModel(PaymentGatewayTransaction transaction)
@@ -68,7 +69,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             transaction.ResponseData = ResponseData;
             transaction.Status = Status;
             transaction.Type = Type;
-
+            transaction.RefundAmount = RefundAmount;
             return transaction;
         }
 
@@ -97,7 +98,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             ResponseData = transaction.ResponseData;
             Status = transaction.Status;
             Type = transaction.Type;
-
+            RefundAmount = transaction.RefundAmount;
             return this;
         }
 
@@ -121,6 +122,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.ResponseData = ResponseData;
             target.Status = Status;
             target.Type = Type;
+            target.RefundAmount = RefundAmount;
         }
     }
 }
