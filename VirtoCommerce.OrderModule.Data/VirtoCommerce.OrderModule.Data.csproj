@@ -174,10 +174,6 @@
     <Compile Include="Migrations\201804161328017_LongerEmailAddress.Designer.cs">
       <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808021638189_AddressName.cs" />
-    <Compile Include="Migrations\201808021638189_AddressName.Designer.cs">
-      <DependentUpon>201808021638189_AddressName.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -282,9 +278,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804161328017_LongerEmailAddress.resx">
       <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201808021638189_AddressName.resx">
-      <DependentUpon>201808021638189_AddressName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
