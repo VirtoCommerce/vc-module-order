@@ -178,6 +178,10 @@
     <Compile Include="Migrations\201808021627120_AddRefundAmountEntity.Designer.cs">
       <DependentUpon>201808021627120_AddRefundAmountEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808030910348_AddressName.cs" />
+    <Compile Include="Migrations\201808030910348_AddressName.Designer.cs">
+      <DependentUpon>201808030910348_AddressName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -285,6 +289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808021627120_AddRefundAmountEntity.resx">
       <DependentUpon>201808021627120_AddRefundAmountEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808030910348_AddressName.resx">
+      <DependentUpon>201808030910348_AddressName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
