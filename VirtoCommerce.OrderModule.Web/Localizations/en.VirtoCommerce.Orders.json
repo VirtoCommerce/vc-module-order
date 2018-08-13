@@ -153,65 +153,69 @@
                 }
             }
         },
-        "widgets": {
-            "customerOrder-address": {
-                "title": "Addresses",
-                "blade-title": "Manage addresses"
-            },
-            "customerOrder-items": {
-                "title": "Line items",
-                "blade-title": "{{title}} line items",
-                "blade-subtitle": "Edit line items"
-            },
-            "customerOrder-totals": {
-                "sub-total": "Subtotal",
-                "shipping-total": "Shipping total",
-                "shipping-sub-total": "Shipping sub total",
-                "payment-sub-total": "Payment fees",
-                "tax-total": "Tax total",
-                "discount": "Discount",
-                "discount-total": "Discount total",
-                "discount-total-with-tax": "Discount total with tax",
-                "total": "Total"
-            },
-            "operation-comment": {
-                "no-comments": "no comments",
-                "blade-title": "Write comments"
-            },
-            "shipment-address": {
-                "blade-title": "Manage delivery address",
-                "title": "Delivery address"
-            },
-            "shipment-items": {
-                "title": "Shipment items"
-            },
-            "shipment-totals": {
-                "tax-total": "Tax total",
-                "shipment-total": "Shipment total",
-                "shipment-price": "Shipping price",
-                "discount-total": "Discount total",
-                "total": "Total"
-            },
-            "payment-totals": {
-                "tax-total": "Tax total",
-                "payment-total": "Payment total",
-                "payment-price": "Payment price",
-                "discount-total": "Discount total",
-                "total": "Total"
-            },
-            "payment-address": {
-                "blade-title": "Manage billing address",
-                "title": "Payment address"
-            },
-            "statistics-templates": {
-                "revenue": "Revenue",
-                "customers-with-orders": "Customers with orders",
-                "average-order-value": "Average order value",
-                "items-purchased": "Items purchased",
-                "lines-per-order": "Lines per order",
-                "revenue-per-customer": "Revenue per customer"
-            }
+      "widgets": {
+        "notifications": {
+          "title": "Notifications feed",
+          "subtitle":  "Order notifications feed"
         },
+        "customerOrder-address": {
+          "title": "Addresses",
+          "blade-title": "Manage addresses"
+        },
+        "customerOrder-items": {
+          "title": "Line items",
+          "blade-title": "{{title}} line items",
+          "blade-subtitle": "Edit line items"
+        },
+        "customerOrder-totals": {
+          "sub-total": "Subtotal",
+          "shipping-total": "Shipping total",
+          "shipping-sub-total": "Shipping sub total",
+          "payment-sub-total": "Payment fees",
+          "tax-total": "Tax total",
+          "discount": "Discount",
+          "discount-total": "Discount total",
+          "discount-total-with-tax": "Discount total with tax",
+          "total": "Total"
+        },
+        "operation-comment": {
+          "no-comments": "no comments",
+          "blade-title": "Write comments"
+        },
+        "shipment-address": {
+          "blade-title": "Manage delivery address",
+          "title": "Delivery address"
+        },
+        "shipment-items": {
+          "title": "Shipment items"
+        },
+        "shipment-totals": {
+          "tax-total": "Tax total",
+          "shipment-total": "Shipment total",
+          "shipment-price": "Shipping price",
+          "discount-total": "Discount total",
+          "total": "Total"
+        },
+        "payment-totals": {
+          "tax-total": "Tax total",
+          "payment-total": "Payment total",
+          "payment-price": "Payment price",
+          "discount-total": "Discount total",
+          "total": "Total"
+        },
+        "payment-address": {
+          "blade-title": "Manage billing address",
+          "title": "Payment address"
+        },
+        "statistics-templates": {
+          "revenue": "Revenue",
+          "customers-with-orders": "Customers with orders",
+          "average-order-value": "Average order value",
+          "items-purchased": "Items purchased",
+          "lines-per-order": "Lines per order",
+          "revenue-per-customer": "Revenue per customer"
+        }
+      },
         "dialogs": {
             "orders-delete": {
                 "title": "Delete confirmation",

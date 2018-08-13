@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -189,7 +189,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             if (!Addresses.IsNullCollection())
             {
-                Addresses.Patch(target.Addresses, new AddressComparer(), (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Addresses.Patch(target.Addresses, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
 
             if (!Shipments.IsNullCollection())

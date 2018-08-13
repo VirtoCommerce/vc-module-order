@@ -59,6 +59,17 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
                 obj.Remove("childrenOperations");
             }
 
+            var payment = operation as PaymentIn;
+            if (payment != null)
+            {
+                var paymentStatus = obj["paymentStatus"].Value<string>();
+                var hasStatusValue = Enum.IsDefined(typeof(PaymentStatus), paymentStatus);
+                if (!hasStatusValue)
+                {
+                    obj["paymentStatus"] = PaymentStatus.Custom.ToString();
+                }
+            }
+
             serializer.Populate(obj.CreateReader(), retVal);
             return retVal;
         }

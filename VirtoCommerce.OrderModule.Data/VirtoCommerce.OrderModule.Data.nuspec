@@ -11,6 +11,6 @@
         <iconUrl>https://github.com/VirtoCommerce/vc-module-order/raw/master/NuGet/icon.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Order implementation</description>
-        <copyright>Copyright © VirtoCommerce 2011-2017</copyright>
+        <copyright>Copyright © VirtoCommerce 2011-2018</copyright>
     </metadata>
 </package>

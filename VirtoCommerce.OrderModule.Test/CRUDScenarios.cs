@@ -219,9 +219,9 @@ namespace VirtoCommerce.OrderModule.Test
 
             //var dynamicPropertyService = new DynamicPropertyService(platformRepositoryFactory);
             var dynamicPropertyService = new Mock<IDynamicPropertyService>().Object;
-            var orderEventPublisher = new EventPublisher<OrderChangeEvent>(Enumerable.Empty<IObserver<OrderChangeEvent>>().ToArray());
+            var eventPublisher = new Mock<IEventPublisher>().Object;
 
-            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), orderEventPublisher, dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, null);
+            var orderService = new CustomerOrderServiceImpl(GetOrderRepositoryFactory(), new TimeBasedNumberGeneratorImpl(), dynamicPropertyService, GetShippingMethodsService(), GetPaymentMethodsService(), GetStoreService(), null, eventPublisher, null);
 
             return orderService;
         }

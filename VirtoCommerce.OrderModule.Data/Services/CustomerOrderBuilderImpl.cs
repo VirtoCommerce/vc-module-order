@@ -4,7 +4,6 @@ using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
-using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.Platform.Core.Common;
 using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
@@ -14,12 +13,6 @@ namespace VirtoCommerce.OrderModule.Data.Services
     public class CustomerOrderBuilderImpl : ICustomerOrderBuilder
     {
         private readonly ICustomerOrderService _customerOrderService;
-
-        [Obsolete("Don't pass storeService")]
-        public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService, IStoreService storeService)
-            : this(customerOrderService)
-        {
-        }
 
         public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService)
         {
@@ -120,6 +113,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             //Save only disctinct addresses for order
             retVal.Addresses = retVal.Addresses.Distinct().ToList();
+            foreach (var address in retVal.Addresses)
+            {
+                //Reset primary key for addresses
+                address.Key = null;
+            }
             retVal.TaxDetails = cart.TaxDetails;
             return retVal;
         }
@@ -131,6 +129,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
             var retVal = AbstractTypeFactory<orderModel.LineItem>.TryCreateInstance();
 
+            retVal.CreatedDate = lineItem.CreatedDate;
             retVal.CatalogId = lineItem.CatalogId;
             retVal.CategoryId = lineItem.CategoryId;
             retVal.Comment = lineItem.Note;
@@ -151,6 +150,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Weight = lineItem.Weight;
             retVal.WeightUnit = lineItem.WeightUnit;
             retVal.Width = lineItem.Width;
+            retVal.FulfillmentCenterId = lineItem.FulfillmentCenterId;
+            retVal.FulfillmentCenterName = lineItem.FulfillmentCenterName;
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
@@ -191,6 +192,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.Height = shipment.Height;
             retVal.Length = shipment.Length;
             retVal.MeasureUnit = shipment.MeasureUnit;
+            retVal.FulfillmentCenterId = shipment.FulfillmentCenterId;
+            retVal.FulfillmentCenterName = shipment.FulfillmentCenterName;
             retVal.ShipmentMethodCode = shipment.ShipmentMethodCode;
             retVal.ShipmentMethodOption = shipment.ShipmentMethodOption;
             retVal.Sum = shipment.Total;
@@ -204,6 +207,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = shipment.DeliveryAddress;
+                retVal.DeliveryAddress.Key = null;
             }
             if (shipment.Discounts != null)
             {
@@ -242,6 +246,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
             if (payment.BillingAddress != null)
             {
                 retVal.BillingAddress = payment.BillingAddress;
+                retVal.BillingAddress.Key = null;
             }
             retVal.TaxDetails = payment.TaxDetails;
             return retVal;
