@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -100,8 +100,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.FromModel(payment, pkMap);
 
-            Status = payment.PaymentStatus.ToString();
-
             if (payment.PaymentMethod != null)
             {
                 GatewayCode = payment.PaymentMethod != null ? payment.PaymentMethod.Code : payment.GatewayCode;
@@ -125,6 +123,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (payment.Transactions != null)
             {
                 Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
+            }
+
+            if (payment.Status.IsNullOrEmpty())
+            {
+                Status = payment.PaymentStatus.ToString();
             }
 
             return this;
@@ -166,7 +169,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             if (!Addresses.IsNullCollection())
             {
-                Addresses.Patch(target.Addresses, new AddressComparer(), (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+                Addresses.Patch(target.Addresses, (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
             }
 
             if (!TaxDetails.IsNullCollection())

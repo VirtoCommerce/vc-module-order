@@ -1,4 +1,5 @@
-﻿using System;
+using CacheManager.Core;
+using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using CacheManager.Core;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
@@ -21,7 +21,9 @@ using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.OrderModule.Data.Services;
 using VirtoCommerce.OrderModule.Web.BackgroundJobs;
+using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Security;
+using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Notifications;
 using VirtoCommerce.Platform.Core.Security;
@@ -47,12 +49,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly IShoppingCartService _cartService;
         private readonly INotificationManager _notificationManager;
         private readonly INotificationTemplateResolver _notificationTemplateResolver;
+        private readonly IChangeLogService _changeLogService;
         private static readonly object _lockObject = new object();
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
                                      ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
                                      ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
-                                     INotificationTemplateResolver notificationTemplateResolver)
+                                     INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -66,6 +69,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _cartService = cartService;
             _notificationManager = notificationManager;
             _notificationTemplateResolver = notificationTemplateResolver;
+            _changeLogService = changeLogService;
         }
 
         /// <summary>
@@ -94,14 +98,15 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="number">customer order number</param>
+        /// <param name="respGroup"></param>
         [HttpGet]
         [Route("number/{number}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetByNumber(string number)
+        public IHttpActionResult GetByNumber(string number, [FromUri] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+            searchCriteria.ResponseGroup = respGroup;
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -125,12 +130,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// </summary>
         /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
         /// <param name="id">customer order id</param>
+        /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetById(string id)
+        public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var retVal = _customerOrderService.GetByIds(new[] { id }, respGroup).FirstOrDefault();
             if (retVal == null)
             {
                 return NotFound();
@@ -397,40 +403,52 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(PostProcessPaymentResult))]
         public IHttpActionResult PostProcessPayment(webModel.PaymentCallbackParameters callback)
         {
-            if (callback?.Parameters != null && callback.Parameters.Any(param => param.Key.EqualsInvariant("orderid")))
+            var parameters = new NameValueCollection();
+            foreach (var param in callback?.Parameters ?? Array.Empty<KeyValuePair>())
             {
-                var orderId = callback.Parameters.First(param => param.Key.EqualsInvariant("orderid")).Value;
+                parameters.Add(param.Key, param.Value);
+            }
+            var orderId = parameters.Get("orderid");
+            if (string.IsNullOrEmpty(orderId))
+            {
+                throw new InvalidOperationException("the 'orderid' parameter must be passed");
+            }
 
-                //some payment method require customer number to be passed and returned. First search customer order by number
-                var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-                searchCriteria.Number = orderId;
-                searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+            //some payment method require customer number to be passed and returned. First search customer order by number
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.Number = orderId;
+            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+            //if order not found by order number search by order id
+            var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
 
-                //if order not found by order number search by order id
-                var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            if (order == null)
+            {
+                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
+            }
 
-                if (order == null)
+            var orderPaymentsCodes = order.InPayments.Select(x => x.GatewayCode).Distinct().ToArray();
+            var store = _storeService.GetById(order.StoreId);
+            var paymentMethodCode = parameters.Get("code");
+            //Need to use concrete  payment method if it code passed otherwise use all order payment methods
+            var paymentMethods = store.PaymentMethods.Where(x => x.IsActive)
+                                                     .Where(x => orderPaymentsCodes.Contains(x.Code));
+            if (!string.IsNullOrEmpty(paymentMethodCode))
+            {
+                paymentMethods = paymentMethods.Where(x => x.Code.EqualsInvariant(paymentMethodCode));
+            }
+
+            foreach (var paymentMethod in paymentMethods)
+            {
+                //Each payment method must check that these parameters are addressed to it
+                var result = paymentMethod.ValidatePostProcessRequest(parameters);
+                if (result.IsSuccess)
                 {
-                    throw new InvalidOperationException($"Cannot find order with ID {orderId}");
-                }
-
-                var store = _storeService.GetById(order.StoreId);
-                var parameters = new NameValueCollection();
-                foreach (var param in callback.Parameters)
-                {
-                    parameters.Add(param.Key, param.Value);
-                }
-                var paymentMethod = store.PaymentMethods.Where(x => x.IsActive).FirstOrDefault(x => x.ValidatePostProcessRequest(parameters).IsSuccess);
-                if (paymentMethod != null)
-                {
-                    var paymentOuterId = paymentMethod.ValidatePostProcessRequest(parameters).OuterId;
-
+                    var paymentOuterId = result.OuterId;
                     var payment = order.InPayments.FirstOrDefault(x => string.IsNullOrEmpty(x.OuterId) || x.OuterId == paymentOuterId);
                     if (payment == null)
                     {
                         throw new InvalidOperationException(@"Cannot find payment");
                     }
-
                     var context = new PostProcessPaymentEvaluationContext
                     {
                         Order = order,
@@ -439,7 +457,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                         OuterId = paymentOuterId,
                         Parameters = parameters
                     };
-
                     var retVal = paymentMethod.PostProcessPayment(context);
                     if (retVal != null)
                     {
@@ -448,11 +465,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                         // order Number is required
                         retVal.OrderId = order.Number;
                     }
-
                     return Ok(retVal);
                 }
             }
-            return Ok(new PostProcessPaymentResult { ErrorMessage = "cancel payment" });
+            return Ok(new PostProcessPaymentResult { ErrorMessage = "Payment method not found" });
         }
 
         [HttpGet]
@@ -487,6 +503,26 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return ResponseMessage(result);
         }
 
+
+        [HttpGet]
+        [Route("{id}/changes")]
+        [ResponseType(typeof(OperationLog[]))]
+        public IHttpActionResult GetOrderChanges(string id)
+        {
+            var result = new OperationLog[] { };
+            var order = _customerOrderService.GetByIds(new[] { id }).FirstOrDefault();
+            if (order != null)
+            {
+                _changeLogService.LoadChangeLogs(order);
+                //Load general change log for order
+                result = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
+                                          .Distinct()
+                                          .SelectMany(x => x.OperationsLog)
+                                          .OrderBy(x => x.CreatedDate)
+                                          .Distinct().ToArray();
+            }
+            return Ok(result);
+        }
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {
 

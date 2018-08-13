@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.paymentTransactionsWidgetController', ['$scope', '$translate', 'platformWebApp.bladeNavigationService', function ($scope, $translate, bladeNavigationService) {
     var blade = $scope.widget.blade;
 
@@ -7,14 +7,12 @@
     });
 
     $scope.openItemsBlade = function () {
-        $translate('transactions', { number: $scope.operation.number }).then(function (result) {
             var newBlade = {
                 id: 'transactions',              
                 currentEntity: $scope.operation,
                 controller: 'virtoCommerce.orderModule.paymentTransactionsListController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-transactions-list.tpl.html'
             };
-            bladeNavigationService.showBlade(newBlade, blade);
-        });
+            bladeNavigationService.showBlade(newBlade, blade);        
     };
 }]);

@@ -94,8 +94,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentNullException(nameof(lineItem));
 
             lineItem.InjectFrom(this);
+            lineItem.IsGift = IsGift;
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+
             return lineItem;
         }
 
@@ -109,16 +111,20 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             this.InjectFrom(lineItem);
 
+            IsGift = lineItem.IsGift ?? false;
+
             if (lineItem.Discounts != null)
             {
                 Discounts = new ObservableCollection<DiscountEntity>();
                 Discounts.AddRange(lineItem.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
             }
+
             if (lineItem.TaxDetails != null)
             {
                 TaxDetails = new ObservableCollection<TaxDetailEntity>();
                 TaxDetails.AddRange(lineItem.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
+
             return this;
         }
 

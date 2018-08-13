@@ -48,40 +48,48 @@
       <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Omu.ValueInjecter, Version=2.3.3.0, Culture=neutral, PublicKeyToken=c7694541b0ac80e4, processorArchitecture=MSIL">
       <HintPath>..\packages\valueinjecter.2.3.3\lib\net35\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Redis, Version=1.2.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Redis.1.2.6\lib\net46\StackExchange.Redis.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VirtoCommerce.Domain, Version=2.24.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.24.11\lib\net461\VirtoCommerce.Domain.dll</HintPath>
+    <Reference Include="VirtoCommerce.Domain, Version=2.25.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Domain.2.25.8\lib\net461\VirtoCommerce.Domain.dll</HintPath>
     </Reference>
-    <Reference Include="VirtoCommerce.Platform.Core, Version=2.13.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Platform.Core.2.13.15\lib\net461\VirtoCommerce.Platform.Core.dll</HintPath>
+    <Reference Include="VirtoCommerce.Platform.Core, Version=2.13.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Platform.Core.2.13.26\lib\net461\VirtoCommerce.Platform.Core.dll</HintPath>
     </Reference>
-    <Reference Include="VirtoCommerce.Platform.Data, Version=2.13.15.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Platform.Data.2.13.15\lib\net461\VirtoCommerce.Platform.Data.dll</HintPath>
+    <Reference Include="VirtoCommerce.Platform.Data, Version=2.13.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Platform.Data.2.13.26\lib\net461\VirtoCommerce.Platform.Data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Handlers\AdjustInventoryOrderChangedEventHandler.cs" />
+    <Compile Include="Handlers\CancelPaymentOrderChangedEventHandler.cs" />
+    <Compile Include="Handlers\LogChangesOrderChangedEventHandler.cs" />
+    <Compile Include="Handlers\SendNotificationsOrderChangedEventHandler.cs" />
     <Compile Include="Migrations\201504300638236_Initial.cs" />
     <Compile Include="Migrations\201504300638236_Initial.Designer.cs">
       <DependentUpon>201504300638236_Initial.cs</DependentUpon>
@@ -158,6 +166,22 @@
     <Compile Include="Migrations\201703151348151_TaxPercentRateConversion.Designer.cs">
       <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.cs" />
+    <Compile Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.Designer.cs">
+      <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804161328017_LongerEmailAddress.cs" />
+    <Compile Include="Migrations\201804161328017_LongerEmailAddress.Designer.cs">
+      <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808021627120_AddRefundAmountEntity.cs" />
+    <Compile Include="Migrations\201808021627120_AddRefundAmountEntity.Designer.cs">
+      <DependentUpon>201808021627120_AddRefundAmountEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808030910348_AddressName.cs" />
+    <Compile Include="Migrations\201808030910348_AddressName.Designer.cs">
+      <DependentUpon>201808030910348_AddressName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -177,9 +201,6 @@
     <Compile Include="Notifications\OrderEmailNotificationBase.cs" />
     <Compile Include="Notifications\OrderPaidEmailNotification.cs" />
     <Compile Include="Notifications\OrderSentEmailNotification.cs" />
-    <Compile Include="Observers\CancelPaymentObserver.cs" />
-    <Compile Include="Observers\LogOrderChangesObserver.cs" />
-    <Compile Include="Observers\OrderNotificationObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IOrderRepository.cs" />
     <Compile Include="Repositories\OrderRepositoryImpl.cs" />
@@ -190,7 +211,7 @@
     </Compile>
     <Compile Include="Services\CustomerOrderBuilderImpl.cs" />
     <Compile Include="Services\CustomerOrderServiceImpl.cs" />
-    <Compile Include="Observers\AdjustInventoryObserver.cs" />
+    <Compile Include="Services\DefaultCustomerOrderTotalsCalculator.cs" />
     <Compile Include="Services\ICustomerOrderBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +280,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703151348151_TaxPercentRateConversion.resx">
       <DependentUpon>201703151348151_TaxPercentRateConversion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803050920063_IncreasePrecisionTaxPercentRate.resx">
+      <DependentUpon>201803050920063_IncreasePrecisionTaxPercentRate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804161328017_LongerEmailAddress.resx">
+      <DependentUpon>201804161328017_LongerEmailAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808021627120_AddRefundAmountEntity.resx">
+      <DependentUpon>201808021627120_AddRefundAmountEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808030910348_AddressName.resx">
+      <DependentUpon>201808030910348_AddressName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
