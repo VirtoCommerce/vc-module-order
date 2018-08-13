@@ -45,6 +45,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             discount.InjectFrom(this);
             discount.Coupon = CouponCode;
+            discount.Description = PromotionDescription;
 
             return discount;
         }
@@ -57,6 +58,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             this.InjectFrom(discount);
             CouponCode = discount.Coupon;
+            PromotionDescription = discount.Description;
 
             return this;
         }
