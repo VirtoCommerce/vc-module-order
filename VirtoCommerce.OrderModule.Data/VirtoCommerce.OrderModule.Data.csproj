@@ -186,6 +186,10 @@
     <Compile Include="Migrations\201809131215108_AddOuterIdColumnToCustomerOrderEntity.Designer.cs">
       <DependentUpon>201809131215108_AddOuterIdColumnToCustomerOrderEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.cs" />
+    <Compile Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.Designer.cs">
+      <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -299,6 +303,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809131215108_AddOuterIdColumnToCustomerOrderEntity.resx">
       <DependentUpon>201809131215108_AddOuterIdColumnToCustomerOrderEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.resx">
+      <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

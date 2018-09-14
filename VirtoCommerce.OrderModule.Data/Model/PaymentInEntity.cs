@@ -39,6 +39,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public string TaxType { get; set; }
 
         [Column(TypeName = "Money")]
+        public decimal Amount { get; set; }
+
+        [Column(TypeName = "Money")]
         public decimal Price { get; set; }
         [Column(TypeName = "Money")]
         public decimal PriceWithTax { get; set; }
@@ -141,6 +144,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             if (target == null)
                 throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(operation));
 
+            target.Amount = Amount;
             target.Price = Price;
             target.PriceWithTax = PriceWithTax;
             target.DiscountAmount = DiscountAmount;
