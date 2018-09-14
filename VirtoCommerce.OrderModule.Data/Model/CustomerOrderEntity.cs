@@ -40,6 +40,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(64)]
         public string SubscriptionNumber { get; set; }
 
+        [StringLength(64)]
+        public string OuterId { get; set; }
+
         public bool IsPrototype { get; set; }
 
         [Column(TypeName = "Money")]
