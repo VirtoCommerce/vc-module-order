@@ -71,6 +71,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             _notificationManager = notificationManager;
             _notificationTemplateResolver = notificationTemplateResolver;
             _changeLogService = changeLogService;
+            _totalsCalculator = totalsCalculator;
         }
 
         /// <summary>
