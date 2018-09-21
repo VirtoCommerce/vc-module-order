@@ -50,12 +50,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly INotificationManager _notificationManager;
         private readonly INotificationTemplateResolver _notificationTemplateResolver;
         private readonly IChangeLogService _changeLogService;
+        private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private static readonly object _lockObject = new object();
 
         public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
                                      ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
                                      ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
-                                     INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService)
+                                     INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService, ICustomerOrderTotalsCalculator totalsCalculator)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -165,7 +166,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult CalculateTotals(CustomerOrder order)
         {
-            //Nothing to do special because all order totals will be evaluated in domain CustomerOrder properties transiently        
+            _totalsCalculator.CalculateTotals(order);
             return Ok(order);
 
         }
