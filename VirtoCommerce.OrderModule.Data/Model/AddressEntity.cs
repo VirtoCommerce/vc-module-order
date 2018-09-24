@@ -89,6 +89,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.LastName = LastName;
             target.Line1 = Line1;
             target.Line2 = Line2;
+            target.Organization = Organization;
         }
 
         public override bool Equals(object obj)
