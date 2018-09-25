@@ -221,6 +221,7 @@
     <Compile Include="Services\CustomerOrderServiceImpl.cs" />
     <Compile Include="Services\DefaultCustomerOrderTotalsCalculator.cs" />
     <Compile Include="Services\ICustomerOrderBuilder.cs" />
+    <Compile Include="Utilities\OperationUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

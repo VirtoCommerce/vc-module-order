@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,6 +8,7 @@ using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Model;
 using VirtoCommerce.Domain.Shipping.Services;
+using VirtoCommerce.OrderModule.Data.Utilities;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Web.JsonConverters
@@ -71,6 +72,13 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
             }
 
             serializer.Populate(obj.CreateReader(), retVal);
+
+            // The ChildrenOperations property was reset on lines 57-61, so now we rebuild it
+            if (operation != null)
+            {
+                operation.ChildrenOperations = OperationUtilities.GetAllChildOperations(operation);
+            }
+
             return retVal;
         }
 
