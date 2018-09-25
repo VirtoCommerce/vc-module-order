@@ -6,8 +6,17 @@ using VirtoCommerce.Domain.Commerce.Model;
 
 namespace VirtoCommerce.OrderModule.Data.Utilities
 {
+    /// <summary>
+    /// Common operations for different implementations of the <see cref="IOperation"/> interface.
+    /// </summary>
     public static class OperationUtilities
     {
+        /// <summary>
+        /// Builds a list of all child operations related to the given operation.
+        /// Child operations are collected from properties of given operation using reflection.
+        /// </summary>
+        /// <param name="operation">The requested operation.</param>
+        /// <returns>List of all child operations of the <paramref name="operation"/>.</returns>
         public static IEnumerable<IOperation> GetAllChildOperations(IOperation operation)
         {
             var retVal = new List<IOperation>();
