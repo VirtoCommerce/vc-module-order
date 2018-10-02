@@ -169,7 +169,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             _totalsCalculator.CalculateTotals(order);
             return Ok(order);
-
         }
 
         /// <summary>
