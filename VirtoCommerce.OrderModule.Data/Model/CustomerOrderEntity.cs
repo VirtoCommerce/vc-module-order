@@ -189,6 +189,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.SubscriptionId = SubscriptionId;
             target.LanguageCode = LanguageCode;
             target.TaxPercentRate = TaxPercentRate;
+            target.OuterId = OuterId;
 
             if (!Addresses.IsNullCollection())
             {
