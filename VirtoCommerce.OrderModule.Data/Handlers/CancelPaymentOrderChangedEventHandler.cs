@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            foreach (var changedEntry in message.ChangedEntries.Where(x=>x.EntryState == EntryState.Modified))
+            foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
                 TryToCancelOrder(changedEntry);
             }
@@ -38,7 +38,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         {
             var store = _storeService.GetById(changedEntry.NewEntry.StoreId);
             //Try to load payment methods for payments
-            foreach (var payment in changedEntry.NewEntry.InPayments)
+            foreach (var payment in changedEntry.NewEntry?.InPayments ?? Enumerable.Empty<PaymentIn>())
             {
                 payment.PaymentMethod = store.PaymentMethods.FirstOrDefault(p => p.Code.EqualsInvariant(payment.GatewayCode));
             }
