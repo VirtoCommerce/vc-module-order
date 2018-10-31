@@ -22,30 +22,6 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        public class AdjustOrderInventoryJobArgs
-        {
-            public AdjustOrderInventoryJobArgs(EntryState entryState, string storeId, Shipment[] shipments,
-                LineItem[] oldItems, LineItem[] newItems)
-            {
-                EntryState = entryState;
-                StoreId = storeId;
-                Shipments = shipments;
-                OldItems = oldItems;
-                NewItems = newItems;
-            }
-
-            public AdjustOrderInventoryJobArgs()
-                : this(EntryState.Unchanged, string.Empty, new Shipment[0], new LineItem[0], new LineItem[0])
-            {
-            }
-
-            public EntryState EntryState { get; set; }
-            public string StoreId { get; set; }
-            public Shipment[] Shipments { get; set; }
-            public LineItem[] OldItems { get; set; }
-            public LineItem[] NewItems { get; set; }
-        }
-
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
@@ -75,18 +51,18 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                     var shipments = customerOrder.Shipments?.ToArray();
                     var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? new LineItem[0];
                     var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? new LineItem[0];
-                    var args = new AdjustOrderInventoryJobArgs(changedEntry.EntryState, storeId, shipments, oldLineItems, newLineItems);
 
-                    BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(args));
+                    BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(changedEntry.EntryState, storeId, shipments, oldLineItems, newLineItems));
                 }
             }
             return Task.CompletedTask;
         }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
-        public void TryAdjustOrderInventoryBackgroundJob(AdjustOrderInventoryJobArgs args)
+        public void TryAdjustOrderInventoryBackgroundJob(EntryState entryState, string orderStoreId, Shipment[] orderShipments,
+            LineItem[] oldLineItems, LineItem[] newLineItems)
         {
-            TryAdjustOrderInventory(args.EntryState, args.StoreId, args.Shipments, args.OldItems, args.NewItems);
+            TryAdjustOrderInventory(entryState, orderStoreId, orderShipments, oldLineItems, newLineItems);
         }
 
         protected virtual void TryAdjustOrderInventory(EntryState entryState, string orderStoreId, Shipment[] orderShipments,
