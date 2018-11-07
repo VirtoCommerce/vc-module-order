@@ -122,7 +122,7 @@
               <valueType>boolean</valueType>
               <defaultValue>true</defaultValue>
               <title>Adjust inventory for orders</title>
-              <description>Adjust inventory when order state changed.</description>
+              <description>Adjust inventory when order state or quantity of products in product line item had been changed. WARNING: this setting is intended for demo purposes only, and enabling it may cause unexpected inventory changes!</description>
             </setting>
             <setting>
                 <name>Order.ExportImport.Description</name>
