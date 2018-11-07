@@ -54,19 +54,19 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                     }
 
                     var itemChanges = GetLineItemChangesFor(changedEntry);
-                    BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(changedEntry.EntryState, itemChanges));
+                    BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
                 }
             }
             return Task.CompletedTask;
         }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
-        public void TryAdjustOrderInventoryBackgroundJob(EntryState entryState, OrderLineItemChange[] orderLineItemChanges)
+        public void TryAdjustOrderInventoryBackgroundJob(OrderLineItemChange[] orderLineItemChanges)
         {
-            TryAdjustOrderInventory(entryState, orderLineItemChanges);
+            TryAdjustOrderInventory(orderLineItemChanges);
         }
 
-        protected virtual void TryAdjustOrderInventory(EntryState entryState, OrderLineItemChange[] orderLineItemChanges)
+        protected virtual void TryAdjustOrderInventory(OrderLineItemChange[] orderLineItemChanges)
         {
             var inventoryAdjustments = new HashSet<InventoryInfo>();
             //Load all inventories records for all changes and old order items
@@ -81,7 +81,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             _inventoryService.UpsertInventories(inventoryAdjustments);
         }
 
-        [Obsolete("This method is not used anymore. Please use the TryAdjustOrderInventory(EntryState, OrderLineItemChange[]) method instead.")]
+        [Obsolete("This method is not used anymore. Please use the TryAdjustOrderInventory(OrderLineItemChange[]) method instead.")]
         protected virtual void TryAdjustOrderInventory(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.OldEntry;
@@ -91,7 +91,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             }
 
             var itemChanges = GetLineItemChangesFor(changedEntry);
-            TryAdjustOrderInventory(changedEntry.EntryState, itemChanges);
+            TryAdjustOrderInventory(itemChanges);
         }
 
         protected virtual OrderLineItemChange[] GetLineItemChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
