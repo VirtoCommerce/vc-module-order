@@ -20,7 +20,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        public class OrderLineItemChange
+        public class ProductInventoryChange
         {
             public string ProductId { get; set; }
             public string FulfillmentCenterId { get; set; }
@@ -48,78 +48,93 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 {
                     //Skip prototypes
                     var customerOrder = changedEntry.OldEntry;
-                    if (customerOrder.IsPrototype)
+                    //Do not process prototypes
+                    if (!customerOrder.IsPrototype)
                     {
-                        continue;
+                        var itemChanges = GetProductInventoryChangesFor(changedEntry);
+                        if (itemChanges.Any())
+                        {
+                            //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
+                            BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
+                        }
                     }
-
-                    var itemChanges = GetLineItemChangesFor(changedEntry);
-                    BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
                 }
             }
             return Task.CompletedTask;
         }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
-        public void TryAdjustOrderInventoryBackgroundJob(OrderLineItemChange[] orderLineItemChanges)
+        public void TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
         {
-            TryAdjustOrderInventory(orderLineItemChanges);
+            TryAdjustOrderInventory(productInventoryChanges);
         }
 
-        protected virtual void TryAdjustOrderInventory(OrderLineItemChange[] orderLineItemChanges)
+        protected virtual void TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
         {
             var inventoryAdjustments = new HashSet<InventoryInfo>();
             //Load all inventories records for all changes and old order items
-            var lineItemIds = orderLineItemChanges.Select(x => x.ProductId).Distinct().ToArray();
-            var inventoryInfos = _inventoryService.GetProductsInventoryInfos(lineItemIds);
-            foreach (var orderLineItemChange in orderLineItemChanges)
+            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
+            var inventoryInfos = _inventoryService.GetProductsInventoryInfos(productIds);
+            foreach (var productInventoryChange in productInventoryChanges)
             {
-                AdjustInventory(inventoryInfos, inventoryAdjustments, orderLineItemChange);
-            }
+                var inventoryInfo = inventoryInfos.Where(x => x.FulfillmentCenterId == (productInventoryChange.FulfillmentCenterId ?? x.FulfillmentCenterId))
+                                           .FirstOrDefault(x => x.ProductId.EqualsInvariant(productInventoryChange.ProductId));
+                if (inventoryInfo != null)
+                {
+                    inventoryAdjustments.Add(inventoryInfo);
 
-            //Save inventories adjustments
-            _inventoryService.UpsertInventories(inventoryAdjustments);
+                    // NOTE: itemChange.QuantityDelta keeps the count of additional items that should be taken from the inventory.
+                    //       That's why we subtract it from the current in-stock quantity instead of adding it.
+                    inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - productInventoryChange.QuantityDelta);
+                }
+            }
+            if (inventoryAdjustments.Any())
+            {
+                //Save inventories adjustments
+                _inventoryService.UpsertInventories(inventoryAdjustments);
+            }
         }
 
         [Obsolete("This method is not used anymore. Please use the TryAdjustOrderInventory(OrderLineItemChange[]) method instead.")]
         protected virtual void TryAdjustOrderInventory(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.OldEntry;
-            if (customerOrder.IsPrototype)
+            if (!customerOrder.IsPrototype)
             {
-                return;
+                var itemChanges = GetProductInventoryChangesFor(changedEntry);
+                if (itemChanges.Any())
+                {
+                    TryAdjustOrderInventory(itemChanges);
+                }
             }
-
-            var itemChanges = GetLineItemChangesFor(changedEntry);
-            TryAdjustOrderInventory(itemChanges);
         }
 
-        protected virtual OrderLineItemChange[] GetLineItemChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
+        protected virtual ProductInventoryChange[] GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.NewEntry;
-            var customerOrderShipments = customerOrder.Shipments.ToArray();
+            var customerOrderShipments = customerOrder.Shipments?.ToArray();
 
-            var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? new LineItem[0];
-            var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? new LineItem[0];
+            var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var itemChanges = new List<OrderLineItemChange>();
-            oldLineItems.CompareTo(newLineItems, EqualityComparer<LineItem>.Default, (state, originalItem, changedItem) =>
+            var itemChanges = new List<ProductInventoryChange>();
+            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
             {
-                int oldQuantity = originalItem.Quantity;
-                int newQuantity = changedItem.Quantity;
+                var newQuantity = changedItem.Quantity;
+                var oldQuantity = originalItem.Quantity;
 
-                if (state == EntryState.Added)
+                if (changedEntry.EntryState == EntryState.Added || state == EntryState.Added)
                 {
                     oldQuantity = 0;
                 }
-                else if (state == EntryState.Deleted)
+                else if (changedEntry.EntryState == EntryState.Deleted || state == EntryState.Deleted)
                 {
                     newQuantity = 0;
                 }
 
                 if (oldQuantity != newQuantity)
                 {
-                    itemChanges.Add(new OrderLineItemChange
+                    itemChanges.Add(new ProductInventoryChange
                     {
                         ProductId = changedItem.ProductId,
                         QuantityDelta = newQuantity - oldQuantity,
@@ -127,22 +142,8 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                     });
                 }
             });
-
-            return itemChanges.ToArray();
-        }
-
-        protected virtual void AdjustInventory(IEnumerable<InventoryInfo> inventories, HashSet<InventoryInfo> changedInventories, OrderLineItemChange itemChange)
-        {
-            var inventoryInfo = inventories.Where(x => x.FulfillmentCenterId == (itemChange.FulfillmentCenterId ?? x.FulfillmentCenterId))
-                                           .FirstOrDefault(x => x.ProductId.EqualsInvariant(itemChange.ProductId));
-            if (inventoryInfo != null)
-            {
-                changedInventories.Add(inventoryInfo);
-
-                // NOTE: itemChange.QuantityDelta keeps the count of additional items that should be taken from the inventory.
-                //       That's why we subtract it from the current in-stock quantity instead of adding it.
-                inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - itemChange.QuantityDelta);
-            }
+            //Do not return unchanged records
+            return itemChanges.Where(x => x.QuantityDelta != 0).ToArray();
         }
 
         /// <summary>
