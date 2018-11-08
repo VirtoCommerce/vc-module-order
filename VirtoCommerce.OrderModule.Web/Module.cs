@@ -1,15 +1,17 @@
-﻿using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web.Http;
 using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Common;
+using VirtoCommerce.Domain.Inventory.Services;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
+using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
@@ -54,6 +56,10 @@ namespace VirtoCommerce.OrderModule.Web
 
         public override void Initialize()
         {
+            // Here we explicitly indicate which constructor the Unity container should use to instantiate the AdjustInventoryOrderChangedEventHandler.
+            // Without this, Unity container might choose the constructor for unit tests and fail to create this type.
+            _container.RegisterType<AdjustInventoryOrderChangedEventHandler>(new InjectionConstructor(typeof(IInventoryService), typeof(IStoreService), typeof(ISettingsManager)));
+
             var eventHandlerRegistrar = _container.Resolve<IHandlerRegistrar>();
 
             //Registration welcome email notification.

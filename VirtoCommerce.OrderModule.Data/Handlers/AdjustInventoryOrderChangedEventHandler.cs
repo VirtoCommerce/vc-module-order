@@ -31,12 +31,35 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager)
+        /// <summary>
+        /// Constructor to use in unit tests. Provides the ability to override the implementation of <see cref="IBackgroundJobClient"/>
+        /// to allow mocking Hangfire job queue.
+        /// </summary>
+        /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
+        /// <param name="storeService">Implementation of store service.</param>
+        /// <param name="settingsManager">Implementation of settings manager.</param>
+        /// <param name="backgroundJobClient">Background job client that will be used to queue background jobs.</param>
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService,
+            ISettingsManager settingsManager, IBackgroundJobClient backgroundJobClient)
         {
             _inventoryService = inventoryService;
             _settingsManager = settingsManager;
             _storeService = storeService;
+            _backgroundJobClient = backgroundJobClient;
+        }
+
+        /// <summary>
+        /// Constructor to use outside of unit tests. It uses the default background job client implementation.
+        /// </summary>
+        /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
+        /// <param name="storeService">Implementation of store service.</param>
+        /// <param name="settingsManager">Implementation of settings manager.</param>
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService,
+            ISettingsManager settingsManager)
+            : this(inventoryService, storeService, settingsManager, new BackgroundJobClient())
+        {
         }
 
 
