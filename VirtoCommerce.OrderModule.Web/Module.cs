@@ -56,10 +56,6 @@ namespace VirtoCommerce.OrderModule.Web
 
         public override void Initialize()
         {
-            // Here we explicitly indicate which constructor the Unity container should use to instantiate the AdjustInventoryOrderChangedEventHandler.
-            // Without this, Unity container might choose the constructor for unit tests and fail to create this type.
-            _container.RegisterType<AdjustInventoryOrderChangedEventHandler>(new InjectionConstructor(typeof(IInventoryService), typeof(IStoreService), typeof(ISettingsManager)));
-
             var eventHandlerRegistrar = _container.Resolve<IHandlerRegistrar>();
 
             //Registration welcome email notification.

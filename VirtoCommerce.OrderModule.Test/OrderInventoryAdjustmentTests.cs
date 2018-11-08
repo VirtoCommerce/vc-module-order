@@ -1,12 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Hangfire;
-using Hangfire.Common;
-using Hangfire.States;
 using Moq;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Common.Events;
 using VirtoCommerce.Domain.Inventory.Model;
 using VirtoCommerce.Domain.Inventory.Services;
@@ -45,7 +40,6 @@ namespace VirtoCommerce.OrderModule.Test
         private readonly Mock<IInventoryService> _inventoryServiceMock;
         private readonly Mock<IStoreService> _storeServiceMock;
         private readonly Mock<ISettingsManager> _settingsManagerMock;
-        private readonly Mock<IBackgroundJobClient> _backgroundJobClientMock;
         private readonly AdjustInventoryOrderChangedEventHandler _targetHandler;
 
         public OrderInventoryAdjustmentTests()
@@ -58,18 +52,12 @@ namespace VirtoCommerce.OrderModule.Test
             _settingsManagerMock.Setup(x => x.GetValue("Order.AdjustInventory", It.IsAny<bool>()))
                 .Returns(true);
 
-            _backgroundJobClientMock = new Mock<IBackgroundJobClient>();
-
             _targetHandler = new AdjustInventoryOrderChangedEventHandler(_inventoryServiceMock.Object,
-                _storeServiceMock.Object, _settingsManagerMock.Object, _backgroundJobClientMock.Object);
-
-            // Setting up Hangfire background job client to immediately execute any queued task
-            _backgroundJobClientMock.Setup(x => x.Create(It.IsAny<Job>(), It.IsAny<IState>()))
-                .Callback((Job job, IState state) => job.Method.Invoke(_targetHandler, job.Args.ToArray()));
+                _storeServiceMock.Object, _settingsManagerMock.Object);
         }
 
         [Fact]
-        public async Task AdjustInventoryHandler_AdjustsInventory_OnLineItemQuantityChange()
+        public void AdjustInventoryHandler_AdjustsInventory_OnLineItemQuantityChange()
         {
             // Arrange
             var oldOrder = CreateTestOrder("TESTORDER-000001");
@@ -136,14 +124,14 @@ namespace VirtoCommerce.OrderModule.Test
                 .Callback((IEnumerable<InventoryInfo> inventoryInfos) => { actualInventoryInfos = inventoryInfos; });
 
             // Act
-            await _targetHandler.Handle(orderChangedEvent);
+            _targetHandler.HandleImmediately(orderChangedEvent);
 
             // Assert
             Assert.Equal(expectedInventoryInfos, actualInventoryInfos, new InventoryInfoEqualityComparer());
         }
 
         [Fact]
-        public async Task AdjustInventoryHandler_AdjustsInventory_OnOrderCreation()
+        public void AdjustInventoryHandler_AdjustsInventory_OnOrderCreation()
         {
             // Arrange
             var newOrder = CreateTestOrder("TESTORDER-000001");
@@ -185,14 +173,14 @@ namespace VirtoCommerce.OrderModule.Test
                 .Callback((IEnumerable<InventoryInfo> inventoryInfos) => { actualInventoryInfos = inventoryInfos; });
 
             // Act
-            await _targetHandler.Handle(orderChangedEvent);
+            _targetHandler.HandleImmediately(orderChangedEvent);
 
             // Assert
             Assert.Equal(expectedInventoryInfos, actualInventoryInfos, new InventoryInfoEqualityComparer());
         }
 
         [Fact]
-        public async Task AdjustInventoryHandler_AdjustsInventory_OnOrderDelete()
+        public void AdjustInventoryHandler_AdjustsInventory_OnOrderDelete()
         {
             // Arrange
             var oldOrder = CreateTestOrder("TESTORDER-000001");
@@ -234,7 +222,7 @@ namespace VirtoCommerce.OrderModule.Test
                 .Callback((IEnumerable<InventoryInfo> inventoryInfos) => { actualInventoryInfos = inventoryInfos; });
 
             // Act
-            await _targetHandler.Handle(orderChangedEvent);
+            _targetHandler.HandleImmediately(orderChangedEvent);
 
             // Assert
             Assert.Equal(expectedInventoryInfos, actualInventoryInfos, new InventoryInfoEqualityComparer());
