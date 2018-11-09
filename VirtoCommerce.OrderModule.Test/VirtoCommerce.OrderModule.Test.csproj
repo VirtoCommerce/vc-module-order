@@ -137,6 +137,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="MigrationScenarios.cs" />
+    <Compile Include="OrderInventoryAdjustmentTests.cs" />
     <Compile Include="OrderTotalsCalculationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CRUDScenarios.cs" />
