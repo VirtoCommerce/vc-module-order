@@ -136,18 +136,21 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         protected virtual IEnumerable<string> GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
         {
             var result = new List<string>();
-            modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), EqualityComparer<Address>.Default,
-                                      (state, source, target) =>
-                                      {
-                                          if (state == EntryState.Added)
+            if (modifiedAddress != null && originalAddress != null)
+            {
+                modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), EqualityComparer<Address>.Default,
+                                          (state, source, target) =>
                                           {
-                                              result.Add(string.Format(OrderResources.AddressAdded, operation.OperationType, operation.Number, StringifyAddress(target)));
-                                          }
-                                          else if (state == EntryState.Deleted)
-                                          {
-                                              result.Add(string.Format(OrderResources.AddressRemoved, operation.OperationType, operation.Number, StringifyAddress(target)));
-                                          }
-                                      });
+                                              if (state == EntryState.Added)
+                                              {
+                                                  result.Add(string.Format(OrderResources.AddressAdded, operation.OperationType, operation.Number, StringifyAddress(target)));
+                                              }
+                                              else if (state == EntryState.Deleted)
+                                              {
+                                                  result.Add(string.Format(OrderResources.AddressRemoved, operation.OperationType, operation.Number, StringifyAddress(target)));
+                                              }
+                                          });
+            }
             return result;
         }
 

@@ -51,7 +51,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             }
             else
             {
-                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments.Where(x => x.IsCancelled) ?? Enumerable.Empty<PaymentIn>())
+                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments?.Where(x => x.IsCancelled) ?? Enumerable.Empty<PaymentIn>())
                 {
                     var oldSamePayment = changedEntry.OldEntry?.InPayments.FirstOrDefault(x => x == canceledPayment);
                     if (oldSamePayment != null && !oldSamePayment.IsCancelled)
