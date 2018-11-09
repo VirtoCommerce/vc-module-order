@@ -126,21 +126,6 @@ namespace VirtoCommerce.OrderModule.Test
             }
         };
 
-        private bool CompareProductInventoryChanges(
-            AdjustInventoryOrderChangedEventHandler.ProductInventoryChange first,
-            AdjustInventoryOrderChangedEventHandler.ProductInventoryChange second)
-        {
-            if (ReferenceEquals(first, second))
-                return true;
-
-            if (first == null || second == null)
-                return false;
-
-            return first.FulfillmentCenterId == second.FulfillmentCenterId &&
-                   first.ProductId == second.ProductId &&
-                   first.QuantityDelta == second.QuantityDelta;
-        }
-
         [Theory]
         [MemberData(nameof(TestData))]
         public void AdjustInventoryHandler_GetProductInventoryChanges_ForOrderChanges(GenericChangedEntry<CustomerOrder> orderChangedEntry,
@@ -161,10 +146,7 @@ namespace VirtoCommerce.OrderModule.Test
             var actualChanges = targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
             
             // Assert
-            var equalityComparer =
-                AnonymousComparer.Create<AdjustInventoryOrderChangedEventHandler.ProductInventoryChange>(
-                    CompareProductInventoryChanges,
-                    change => change.GetHashCode());
+            var equalityComparer = AnonymousComparer.Create((AdjustInventoryOrderChangedEventHandler.ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
             Assert.Equal(expectedChanges, actualChanges, equalityComparer);
         }
     }
