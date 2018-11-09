@@ -48,31 +48,6 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
 
         /// <summary>
-        /// Handles the order change event immediately, without using Hangfire. 
-        /// This method is intended to use in unit tests and should not be called by the production code.
-        /// </summary>
-        /// <param name="message">Order changed event to handle.</param>
-        public virtual void HandleImmediately(OrderChangedEvent message)
-        {
-            if (_settingsManager.GetValue("Order.AdjustInventory", true))
-            {
-                foreach (var changedEntry in message.ChangedEntries)
-                {
-                    var customerOrder = changedEntry.OldEntry;
-                    //Do not process prototypes
-                    if (!customerOrder.IsPrototype)
-                    {
-                        var itemChanges = GetProductInventoryChangesFor(changedEntry);
-                        if (itemChanges.Any())
-                        {
-                            TryAdjustOrderInventoryBackgroundJob(itemChanges);
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Handles the order changed event by queueing a Hangfire task that adjusts inventories.
         /// </summary>
         /// <param name="message">Order changed event to handle.</param>
@@ -145,7 +120,13 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             }
         }
 
-        protected virtual ProductInventoryChange[] GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
+        /// <summary>
+        /// Forms a list of product inventory changes for inventory adjustment. This method is intended for unit-testing only,
+        /// and there should be no need to call it from the production code.
+        /// </summary>
+        /// <param name="changedEntry">The entry that describes changes made to order.</param>
+        /// <returns>Array of required product inventory changes.</returns>
+        public virtual ProductInventoryChange[] GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.NewEntry;
             var customerOrderShipments = customerOrder.Shipments?.ToArray();
