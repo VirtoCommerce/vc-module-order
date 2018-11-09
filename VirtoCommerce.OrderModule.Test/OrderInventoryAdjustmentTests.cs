@@ -14,6 +14,7 @@ using Xunit;
 namespace VirtoCommerce.OrderModule.Test
 {
     [CLSCompliant(false)]
+    [Trait("Category", "CI")]
     public class OrderInventoryAdjustmentTests
     {
         private const string TestStoreId = "TestStore";
