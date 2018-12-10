@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -87,11 +87,14 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
         public string CustomerOrderId { get; set; }
 
+        public virtual ObservableCollection<ShipmentItemEntity> ShipmentItems { get; set; } = new NullCollection<ShipmentItemEntity>();
 
         public virtual LineItem ToModel(LineItem lineItem)
         {
             if (lineItem == null)
+            {
                 throw new ArgumentNullException(nameof(lineItem));
+            }
 
             lineItem.InjectFrom(this);
             lineItem.IsGift = IsGift;
@@ -104,7 +107,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual LineItemEntity FromModel(LineItem lineItem, PrimaryKeyResolvingMap pkMap)
         {
             if (lineItem == null)
+            {
                 throw new ArgumentNullException(nameof(lineItem));
+            }
 
             ModelLineItem = lineItem;
             pkMap.AddPair(lineItem, this);

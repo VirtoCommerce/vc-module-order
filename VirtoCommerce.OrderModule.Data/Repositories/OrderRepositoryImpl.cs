@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
 
             modelBuilder.Entity<ShipmentItemEntity>().HasRequired(x => x.LineItem)
-                                       .WithMany()
+                                       .WithMany(x => x.ShipmentItems)
                                        .HasForeignKey(x => x.LineItemId).WillCascadeOnDelete(true);
 
             modelBuilder.Entity<ShipmentItemEntity>().HasRequired(x => x.Shipment)
