@@ -44,10 +44,16 @@ namespace VirtoCommerce.OrderModule.Data.Model
             pkMap.AddPair(shipmentItem, this);
             this.InjectFrom(shipmentItem);
             //Store ModelLineItem for future linking with the order line item only for new objects otherwise we will get error when saving
-            if (shipmentItem.LineItem != null && shipmentItem.LineItem.IsTransient())
+            if (shipmentItem.LineItem != null)
             {
-                ModelLineItem = shipmentItem.LineItem;
+                LineItemId = shipmentItem.LineItem.Id;
+                //Store ModelLineItem for future linking with the order line item only for new objects otherwise we will get error when saving
+                if (shipmentItem.LineItem.IsTransient())
+                {
+                    ModelLineItem = shipmentItem.LineItem;
+                }
             }
+
             return this;
         }
 
