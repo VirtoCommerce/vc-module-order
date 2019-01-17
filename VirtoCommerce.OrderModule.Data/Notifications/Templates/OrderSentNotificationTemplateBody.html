@@ -1,0 +1,6 @@
+Your order <strong>{{ customer_order.number}}</strong> has been sent.<br />
+Number of sent parcels: <strong>{{ customer_order.shipments | size}}</strong>.<br />
+Parcels tracking numbers:<br />
+{% for shipment in customer_order.shipments %}<br />
+<strong>{{ shipment.number}}</strong>{% endfor %}<br /><br />
+Sent date: <strong>{{ customer_order.modified_date }}</strong>.
