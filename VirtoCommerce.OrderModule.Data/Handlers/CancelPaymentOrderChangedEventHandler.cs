@@ -60,7 +60,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                     }
                 }
             }
-            TryToCancelOrderPayments(toCancelPayments,changedEntry);
+            TryToCancelOrderPayments(toCancelPayments,changedEntry.NewEntry);
             if (!toCancelPayments.IsNullOrEmpty())
             {
                 _orderService.SaveChanges(new[] { changedEntry.NewEntry });
@@ -68,17 +68,17 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         }
 
 
-        protected virtual void TryToCancelOrderPayments(IEnumerable<PaymentIn> toCancelPayments, GenericChangedEntry<CustomerOrder> changedEntry)
+        protected virtual void TryToCancelOrderPayments(IEnumerable<PaymentIn> toCancelPayments, CustomerOrder order)
         {
             foreach (var payment in toCancelPayments ?? Enumerable.Empty<PaymentIn>())
             {
                 if (payment.PaymentStatus == PaymentStatus.Authorized)
                 {
-                    payment.PaymentMethod?.VoidProcessPayment(new VoidProcessPaymentEvaluationContext { Payment = payment, Order = changedEntry.NewEntry });
+                    payment.PaymentMethod?.VoidProcessPayment(new VoidProcessPaymentEvaluationContext { Payment = payment, Order = order });
                 }
                 else if (payment.PaymentStatus == PaymentStatus.Paid)
                 {
-                    payment.PaymentMethod?.RefundProcessPayment(new RefundProcessPaymentEvaluationContext { Payment = payment, Order = changedEntry.NewEntry });
+                    payment.PaymentMethod?.RefundProcessPayment(new RefundProcessPaymentEvaluationContext { Payment = payment, Order = order });
                 }
                 else
                 {
