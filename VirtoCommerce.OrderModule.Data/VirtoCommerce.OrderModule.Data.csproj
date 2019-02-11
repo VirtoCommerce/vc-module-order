@@ -196,6 +196,10 @@
     <Compile Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.Designer.cs">
       <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902111419495_AddWorkflowEntity.cs" />
+    <Compile Include="Migrations\201902111419495_AddWorkflowEntity.Designer.cs">
+      <DependentUpon>201902111419495_AddWorkflowEntity.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -208,6 +212,7 @@
     <Compile Include="Model\ShipmentPackageEntity.cs" />
     <Compile Include="Model\ShipmentItemEntity.cs" />
     <Compile Include="Model\TaxDetailEntity.cs" />
+    <Compile Include="Model\WorkflowEntity.cs" />
     <Compile Include="Notifications\CancelOrderEmailNotification.cs" />
     <Compile Include="Notifications\InvoiceEmailNotification.cs" />
     <Compile Include="Notifications\NewOrderStatusEmailNotification.cs" />
@@ -313,6 +318,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.resx">
       <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902111419495_AddWorkflowEntity.resx">
+      <DependentUpon>201902111419495_AddWorkflowEntity.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

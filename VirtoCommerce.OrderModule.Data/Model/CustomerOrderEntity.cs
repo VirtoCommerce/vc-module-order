@@ -78,6 +78,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(128)]
         public string ShoppingCartId { get; set; }
 
+        [StringLength(128)]
+        public string WorkflowId { get; set; }
+
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
         public virtual ObservableCollection<AddressEntity> Addresses { get; set; } = new NullCollection<AddressEntity>();
         public virtual ObservableCollection<PaymentInEntity> InPayments { get; set; } = new NullCollection<PaymentInEntity>();
