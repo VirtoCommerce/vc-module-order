@@ -157,11 +157,6 @@
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\PaymentCallbackParameters.cs" />
-    <Compile Include="Resources\InvoiceResource.Designer.cs">
-      <DependentUpon>InvoiceResource.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\resources\securityAccounts.js" />
@@ -171,11 +166,6 @@
     <Compile Include="Model\CustomerOrderSearchResult.cs" />
     <Compile Include="Module.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\OrderNotificationResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>OrderNotificationResource.resx</DependentUpon>
-    </Compile>
     <Compile Include="Security\OrderResponsibleScope.cs" />
     <Compile Include="Security\OrderStoreScope.cs" />
     <Content Include="Content\logo.png" />
@@ -274,17 +264,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\InvoiceResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InvoiceResource.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\OrderNotificationResource.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>OrderNotificationResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

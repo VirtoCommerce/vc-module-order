@@ -73,6 +73,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -318,6 +319,20 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OrderResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Notifications\Templates\CancelOrderNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\CancelOrderNotificationTemplateSubject.html" />
+    <EmbeddedResource Include="Notifications\Templates\CreateOrderNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\CreateOrderNotificationTemplateSubject.html" />
+    <EmbeddedResource Include="Notifications\Templates\InvoiceNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\InvoiceNotificationTemplateSubject.html" />
+    <EmbeddedResource Include="Notifications\Templates\NewOrderStatusNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\NewOrderStatusNotificationTemplateSubject.html" />
+    <EmbeddedResource Include="Notifications\Templates\OrderPaidNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\OrderPaidNotificationTemplateSubject.html" />
+    <EmbeddedResource Include="Notifications\Templates\OrderSentNotificationTemplateBody.html" />
+    <EmbeddedResource Include="Notifications\Templates\OrderSentNotificationTemplateSubject.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
