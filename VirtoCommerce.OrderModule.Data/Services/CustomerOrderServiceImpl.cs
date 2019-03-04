@@ -190,7 +190,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
 
         protected virtual IQueryable<CustomerOrderEntity> GetOrdersQuery(IOrderRepository repository, CustomerOrderSearchCriteria criteria)
         {
-            var query = repository.CustomerOrders;
+            var query = GetQueryable(repository);
 
             // Don't return prototypes by default
             if (!criteria.WithPrototypes)
@@ -315,6 +315,11 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     operation.Number = UniqueNumberGenerator.GenerateNumber(numberTemplate);
                 }
             }
+        }
+
+        protected virtual IQueryable<CustomerOrderEntity> GetQueryable(IOrderRepository repository)
+        {
+            return repository.CustomerOrders;
         }
     }
 }
