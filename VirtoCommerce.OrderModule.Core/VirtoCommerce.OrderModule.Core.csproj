@@ -59,6 +59,7 @@
     <Compile Include="Models\WorkflowState.cs" />
     <Compile Include="Models\WorkflowStates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IWorkflowPermissionService.cs" />
     <Compile Include="Services\IWorkflowService.cs" />
   </ItemGroup>
   <ItemGroup>

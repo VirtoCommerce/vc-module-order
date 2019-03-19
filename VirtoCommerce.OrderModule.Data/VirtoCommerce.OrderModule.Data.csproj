@@ -99,6 +99,7 @@
     <Compile Include="Handlers\AdjustInventoryOrderChangedEventHandler.cs" />
     <Compile Include="Handlers\CancelPaymentOrderChangedEventHandler.cs" />
     <Compile Include="Handlers\LogChangesOrderChangedEventHandler.cs" />
+    <Compile Include="Handlers\SendNotificationsOrderWorkflowChangedEventHandler.cs" />
     <Compile Include="Handlers\SendNotificationsOrderChangedEventHandler.cs" />
     <Compile Include="Migrations\201504300638236_Initial.cs" />
     <Compile Include="Migrations\201504300638236_Initial.Designer.cs">
@@ -218,6 +219,7 @@
     <Compile Include="Model\ShipmentItemEntity.cs" />
     <Compile Include="Model\TaxDetailEntity.cs" />
     <Compile Include="Notifications\CancelOrderEmailNotification.cs" />
+    <Compile Include="Notifications\OrderWorkflowNotification.cs" />
     <Compile Include="Notifications\InvoiceEmailNotification.cs" />
     <Compile Include="Notifications\NewOrderStatusEmailNotification.cs" />
     <Compile Include="Notifications\OrderCreateEmailNotification.cs" />
@@ -351,6 +353,12 @@
       <Project>{047e296b-f3ea-4c49-85b5-81813840ec13}</Project>
       <Name>VirtoCommerce.OrderModule.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Notifications\Templates\OrderWorkflowNotificationTemplateBody.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Notifications\Templates\OrderWorkflowNotificationTemplateSubject.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
