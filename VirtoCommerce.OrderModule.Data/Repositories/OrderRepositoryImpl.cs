@@ -1,7 +1,11 @@
+using System;
 using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using VirtoCommerce.Domain.Commerce.Model.Search;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Model;
 using VirtoCommerce.Platform.Core.Common;
@@ -204,6 +208,15 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             modelBuilder.Entity<PaymentGatewayTransactionEntity>().ToTable("OrderPaymentGatewayTransaction");
             #endregion
 
+            #region Workflow
+
+            modelBuilder.Entity<WorkflowEntity>()
+                .ToTable("Workflow")
+                .HasKey(x => x.Id)
+                .Property(x => x.Id);
+
+            #endregion
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -218,6 +231,8 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
         public IQueryable<AddressEntity> Addresses => GetAsQueryable<AddressEntity>();
         public IQueryable<LineItemEntity> LineItems => GetAsQueryable<LineItemEntity>();
         public IQueryable<PaymentGatewayTransactionEntity> Transactions => GetAsQueryable<PaymentGatewayTransactionEntity>();
+
+
 
         public virtual CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup)
         {
@@ -270,5 +285,14 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 Remove(order);
             }
         }
+
+        #region Workflow
+
+        #endregion
+
+        #region Workflow
+        public IQueryable<WorkflowEntity> Workflows => GetAsQueryable<WorkflowEntity>();
+        #endregion
+       
     }
 }
