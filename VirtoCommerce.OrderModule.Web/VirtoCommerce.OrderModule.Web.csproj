@@ -160,6 +160,7 @@
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\resources\securityAccounts.js" />
+    <Compile Include="Security\OrderLimitResponseScope.cs" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
     <Compile Include="ExportImport\OrderExportImport.cs" />
     <Compile Include="Model\DashboardStatisticsResult.cs" />

@@ -1,17 +1,15 @@
-using Microsoft.Practices.Unity;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web.Http;
+using Microsoft.Practices.Unity;
 using VirtoCommerce.CoreModule.Data.Services;
 using VirtoCommerce.Domain.Common;
-using VirtoCommerce.Domain.Inventory.Services;
 using VirtoCommerce.Domain.Order.Events;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
-using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
@@ -35,7 +33,7 @@ namespace VirtoCommerce.OrderModule.Web
     public class Module : ModuleBase, ISupportExportImportModule
     {
         private readonly string _connectionString = ConfigurationHelper.GetConnectionStringValue("VirtoCommerce.Orders") ?? ConfigurationHelper.GetConnectionStringValue("VirtoCommerce");
-        private readonly IUnityContainer _container; 
+        private readonly IUnityContainer _container;
 
         public Module(IUnityContainer container)
         {
@@ -159,6 +157,7 @@ namespace VirtoCommerce.OrderModule.Web
             var securityScopeService = _container.Resolve<IPermissionScopeService>();
             securityScopeService.RegisterSope(() => new OrderStoreScope());
             securityScopeService.RegisterSope(() => new OrderResponsibleScope());
+            securityScopeService.RegisterSope(() => new OrderLimitResponseScope());
 
             //Next lines allow to use polymorph types in API controller methods
             var httpConfiguration = _container.Resolve<HttpConfiguration>();

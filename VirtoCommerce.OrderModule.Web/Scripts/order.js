@@ -374,11 +374,31 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
             }
         };
         scopeResolver.register(orderStoreScope);
+
         var responsibleOrderScope = {
             type: 'OrderResponsibleScope',
             title: 'Only for order responsible'
         };
         scopeResolver.register(responsibleOrderScope);
+
+        var orderLimitResponseScope = {
+            type: 'OrderLimitResponseScope',
+            title: 'Only available to display items',
+            selectFn: function (blade, callback) {
+                var newBlade = {
+                    id: 'store-pick',
+                    title: this.title,
+                    subtitle: 'Select stores',
+                    currentEntity: this,
+                    onChangesConfirmedFn: callback,
+                    dataPromise: stores.query().$promise,
+                    controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
+                    template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
+                };
+                bladeNavigationService.showBlade(newBlade, blade);
+            }
+        };
+        scopeResolver.register(orderLimitResponseScope);
 
         $rootScope.$on('loginStatusChanged', function (event, authContext) {
             if (authContext.isAuthenticated) {
