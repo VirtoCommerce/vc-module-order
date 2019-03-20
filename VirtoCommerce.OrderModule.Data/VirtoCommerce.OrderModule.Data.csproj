@@ -334,6 +334,12 @@
     <EmbeddedResource Include="Notifications\Templates\OrderSentNotificationTemplateBody.html" />
     <EmbeddedResource Include="Notifications\Templates\OrderSentNotificationTemplateSubject.html" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VirtoCommerce.OrderModule.Core\VirtoCommerce.OrderModule.Core.csproj">
+      <Project>{047e296b-f3ea-4c49-85b5-81813840ec13}</Project>
+      <Name>VirtoCommerce.OrderModule.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

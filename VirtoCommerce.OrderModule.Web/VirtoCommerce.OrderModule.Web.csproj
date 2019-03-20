@@ -202,6 +202,10 @@
     <Content Include="Scripts\order.js" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VirtoCommerce.OrderModule.Core\VirtoCommerce.OrderModule.Core.csproj">
+      <Project>{047e296b-f3ea-4c49-85b5-81813840ec13}</Project>
+      <Name>VirtoCommerce.OrderModule.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VirtoCommerce.OrderModule.Data\VirtoCommerce.OrderModule.Data.csproj">
       <Project>{061c4a3e-4d94-4807-9209-07d9f6392830}</Project>
       <Name>VirtoCommerce.OrderModule.Data</Name>
