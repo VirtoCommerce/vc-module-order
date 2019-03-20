@@ -4,6 +4,7 @@ using System.Linq;
 using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
+using VirtoCommerce.OrderModule.Core.Models;
 using VirtoCommerce.Platform.Core.Common;
 using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
@@ -31,7 +32,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
         #endregion
         protected virtual orderModel.CustomerOrder ConvertCartToOrder(cartModel.ShoppingCart cart)
         {
-            var retVal = AbstractTypeFactory<orderModel.CustomerOrder>.TryCreateInstance();
+            var retVal = AbstractTypeFactory<orderModel.CustomerOrder>.TryCreateInstance() as CustomerOrderWorkflow;
             retVal.ShoppingCartId = cart.Id;
             retVal.Comment = cart.Comment;
             retVal.Currency = cart.Currency;
@@ -45,7 +46,9 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.TaxType = cart.TaxType;
             retVal.LanguageCode = cart.LanguageCode;
 
-            retVal.Status = "New";
+            //[TODO] The code will be implemented when VT-1 done
+            retVal.Status = "Pending For Approval";
+            retVal.WorkflowId = Guid.NewGuid().ToString();
 
             var cartLineItemsMap = new Dictionary<string, orderModel.LineItem>();
             if (cart.Items != null)

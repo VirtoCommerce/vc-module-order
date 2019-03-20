@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web.Http;
 using VirtoCommerce.CoreModule.Data.Services;
+using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Common;
 using VirtoCommerce.Domain.Inventory.Services;
 using VirtoCommerce.Domain.Order.Events;
@@ -12,6 +13,7 @@ using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.Domain.Store.Services;
+using VirtoCommerce.OrderModule.Core.Models;
 using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
@@ -170,6 +172,9 @@ namespace VirtoCommerce.OrderModule.Web
             var allOrderKnownTypes = new[] { typeof(Shipment), typeof(PaymentIn), typeof(CustomerOrder) }.Concat(allPaymentMethodTypes).Concat(allShippingmethodTypes).ToArray();
             httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrder>(new DataContractSerializer(typeof(CustomerOrder), allOrderKnownTypes));
             httpConfiguration.Formatters.XmlFormatter.SetSerializer<CustomerOrderSearchResult>(new DataContractSerializer(typeof(CustomerOrderSearchResult), allOrderKnownTypes));
+
+            //customer order workflow
+            AbstractTypeFactory<CustomerOrder>.OverrideType<CustomerOrder, CustomerOrderWorkflow>();
         }
 
         #endregion
