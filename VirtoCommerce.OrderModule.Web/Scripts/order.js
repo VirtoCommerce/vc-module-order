@@ -381,17 +381,30 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         };
         scopeResolver.register(responsibleOrderScope);
 
+        var orderLimitsResponseData = {
+            then: function (callback) {
+                callback([
+                    { id: 'WithItems', name: 'Items' },
+                    { id: 'WithPayments', name: 'Payments' },
+                    { id: 'WithShipments', name: 'Shipments' },
+                    { id: 'WithAddresses', name: 'Addresses' },
+                    { id: 'WithDiscounts', name: 'Discounts' },
+                    { id: 'WithPrices', name: 'Prices' }
+                ]);
+            }
+        };
+
         var orderLimitResponseScope = {
             type: 'OrderLimitResponseScope',
             title: 'Only available to display items',
             selectFn: function (blade, callback) {
                 var newBlade = {
-                    id: 'store-pick',
+                    id: 'limit-response-pick',
                     title: this.title,
-                    subtitle: 'Select stores',
+                    subtitle: 'Select visible elements',
                     currentEntity: this,
                     onChangesConfirmedFn: callback,
-                    dataPromise: stores.query().$promise,
+                    dataPromise: orderLimitsResponseData,
                     controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
                     template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
                 };
