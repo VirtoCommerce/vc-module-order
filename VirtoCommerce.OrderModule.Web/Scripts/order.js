@@ -385,7 +385,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
             then: function (callback) {
                 callback([
                     { id: 'WithItems', name: 'Items' },
-                    { id: 'WithPayments', name: 'Payments' },
+                    { id: 'WithInPayments', name: 'InPayments' },
                     { id: 'WithShipments', name: 'Shipments' },
                     { id: 'WithAddresses', name: 'Addresses' },
                     { id: 'WithDiscounts', name: 'Discounts' },
