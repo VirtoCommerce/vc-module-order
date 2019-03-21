@@ -154,6 +154,7 @@
     </Compile>
     <Compile Include="BackgroundJobs\CollectOrderStatisticJob.cs" />
     <Compile Include="Controllers\Api\OrderModuleController.cs" />
+    <Compile Include="Controllers\Api\OrderWorkflowController.cs" />
     <Compile Include="Controllers\Api\WorkflowController.cs" />
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
