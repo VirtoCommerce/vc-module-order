@@ -139,5 +139,14 @@ namespace VirtoCommerce.OrderModule.Data.Services
             });
             workflow.States = workflowStates;
         }
+
+        public GenericSearchResult<string> GetStatuses(string organizationId)
+        {
+            GenericSearchResult<string> result = new GenericSearchResult<string>();
+            var model = GetByOrganizationId(organizationId);
+            if (model != null)
+                result.Results = model.States.States.Select(s => s.Status).ToArray();
+            return result;
+        }
     }
 }
