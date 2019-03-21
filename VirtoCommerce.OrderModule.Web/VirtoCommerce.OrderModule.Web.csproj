@@ -261,9 +261,6 @@
     <Content Include="Scripts\wizards\newOperation\newOperation-wizard.js" />
     <Content Include="Localizations\ru.VirtoCommerce.Orders.json" />
     <None Include="module.ignore" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="web.config">
       <SubType>Designer</SubType>
     </None>
