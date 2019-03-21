@@ -18,7 +18,6 @@ namespace VirtoCommerce.OrderModule.Test
             var order = new CustomerOrderEntity
             {
                 Id = orderId,
-
                 CustomerId = "customerId",
                 StoreId = "storeId",
                 Number = "number",
