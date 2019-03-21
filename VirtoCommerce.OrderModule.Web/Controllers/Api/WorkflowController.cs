@@ -32,7 +32,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         public IHttpActionResult Get(string organizationId)
         {
             var workflow = _workflowService.GetByOrganizationId(organizationId);
-            return Ok(new { data = workflow });
+            return Ok(workflow);
         }
 
         [HttpPost]
@@ -42,15 +42,12 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         public IHttpActionResult Upload([FromBody] Workflow model)
         {
             if (model == null)
-                return BadRequest();
+                throw new ArgumentNullException(nameof(model));
 
             var errorCode = ValidateWorkflowFile(model.JsonPath);
             if (!string.IsNullOrEmpty(errorCode))
             {
-                var err = new HttpError(errorCode);
-                return ResponseMessage(new System.Net.Http.HttpResponseMessage() {
-                    Content = new StringContent(errorCode),
-                });
+                throw new InvalidOperationException(errorCode);
             }
 
             var workflow = _workflowService.ImportOrUpdateWorkflow(model);
