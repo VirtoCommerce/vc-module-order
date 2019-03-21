@@ -225,12 +225,12 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             var orderDiscounts = Discounts.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             var orderTaxDetails = TaxDetails.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
 
-            if ((responseGroup & CustomerOrderResponseGroup.WithAddresses) == CustomerOrderResponseGroup.WithAddresses)
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
                 var addresses = Addresses.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
             }
 
-            if ((responseGroup & CustomerOrderResponseGroup.WithInPayments) == CustomerOrderResponseGroup.WithInPayments)
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
             {
                 var inPayments = InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var paymentsIds = inPayments.Select(x => x.Id).ToArray();
@@ -240,7 +240,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 var transactions = Transactions.Where(x => paymentsIds.Contains(x.PaymentInId)).ToArray();
             }
 
-            if ((responseGroup & CustomerOrderResponseGroup.WithItems) == CustomerOrderResponseGroup.WithItems)
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
                 var lineItems = LineItems.Where(x => ids.Contains(x.CustomerOrderId))
                                          .OrderByDescending(x => x.CreatedDate).ToArray();
@@ -249,7 +249,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 var lineItemTaxDetails = TaxDetails.Where(x => lineItemIds.Contains(x.LineItemId)).ToArray();
             }
 
-            if ((responseGroup & CustomerOrderResponseGroup.WithShipments) == CustomerOrderResponseGroup.WithShipments)
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
             {
                 var shipments = Shipments.Where(x => ids.Contains(x.CustomerOrderId)).ToArray();
                 var shipmentIds = shipments.Select(x => x.Id).ToArray();
@@ -259,6 +259,12 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 var shipmentItems = ShipmentItems.Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
                 var packages = ShipmentPackagesPackages.Include(x => x.Items).Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
             }
+
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
+            {
+                //TODO: обнулить поля цен
+            }
+
             return result;
         }
 
