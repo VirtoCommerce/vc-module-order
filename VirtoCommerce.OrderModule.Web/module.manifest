@@ -142,5 +142,10 @@
             <permission id="order:update" name="Update order data" description="Permission to update order data."/>
             <permission id="order:delete" name="Delete order" description="Permission to delete orders."/>
         </group>
+        <group name="Workflow">
+            <permission id="workflow:manager" name="workflow manager" description="Permission to approve, reject order."/>
+            <permission id="workflow:read" name="workflow read" description="Permission to read workflow."/>
+            <permission id="workflow:upload" name="workflow upload" description="Permission to upload workflow json file"/>
+        </group>
     </permissions>
 </module>

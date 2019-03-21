@@ -1,4 +1,4 @@
-﻿namespace VirtoCommerce.OrderModule.Web.Security
+namespace VirtoCommerce.OrderModule.Web.Security
 {
     public static class OrderPredefinedPermissions
     {

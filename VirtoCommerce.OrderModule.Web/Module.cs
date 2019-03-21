@@ -23,6 +23,7 @@ using VirtoCommerce.OrderModule.Web.ExportImport;
 using VirtoCommerce.OrderModule.Web.JsonConverters;
 using VirtoCommerce.OrderModule.Web.Model;
 using VirtoCommerce.OrderModule.Web.Security;
+using VirtoCommerce.OrderModule.Web.Services;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
@@ -65,6 +66,7 @@ namespace VirtoCommerce.OrderModule.Web
             eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<CancelPaymentOrderChangedEventHandler>().Handle(message));
             eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<LogChangesOrderChangedEventHandler>().Handle(message));
             eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<SendNotificationsOrderChangedEventHandler>().Handle(message));
+            eventHandlerRegistrar.RegisterHandler<OrderChangedEvent>(async (message, token) => await _container.Resolve<SendNotificationsOrderWorkflowChangedEventHandler>().Handle(message));
 
             _container.RegisterType<IOrderRepository>(new InjectionFactory(c => new OrderRepositoryImpl(_connectionString, _container.Resolve<AuditableInterceptor>(), new EntityPrimaryKeyGeneratorInterceptor())));
             _container.RegisterType<IUniqueNumberGenerator, SequenceUniqueNumberGeneratorServiceImpl>();
@@ -74,8 +76,8 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
 
             _container.RegisterType<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>(new ContainerControlledLifetimeManager());
-
             _container.RegisterType<IWorkflowService, WorkflowService>();
+            _container.RegisterType<IWorkflowPermissionService, WorkflowPermissionService>();
         }
 
         public override void PostInitialize()
@@ -157,6 +159,17 @@ namespace VirtoCommerce.OrderModule.Web
                 {
                     Body = assembly.GetManifestResourceStream("VirtoCommerce.OrderModule.Data.Notifications.Templates.InvoiceNotificationTemplateBody.html").ReadToString(),
                     Subject = assembly.GetManifestResourceStream("VirtoCommerce.OrderModule.Data.Notifications.Templates.InvoiceNotificationTemplateSubject.html").ReadToString(),
+                    Language = "en-US"
+                }
+            });
+            notificationManager.RegisterNotificationType(() => new OrderWorkflowNotification(_container.Resolve<IEmailNotificationSendingGateway>())
+            {
+                Description = "Order Workflow Notification",
+                DisplayName = "Order Workflow Notification",
+                NotificationTemplate = new NotificationTemplate
+                {
+                    Body = assembly.GetManifestResourceStream("VirtoCommerce.OrderModule.Data.Notifications.Templates.OrderWorkflowNotificationTemplateBody.html").ReadToString(),
+                    Subject = assembly.GetManifestResourceStream("VirtoCommerce.OrderModule.Data.Notifications.Templates.OrderWorkflowNotificationTemplateSubject.html").ReadToString(),
                     Language = "en-US"
                 }
             });
