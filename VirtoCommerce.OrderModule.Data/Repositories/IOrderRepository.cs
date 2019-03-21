@@ -18,6 +18,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
         IQueryable<LineItemEntity> LineItems { get; }
 
 
+
         CustomerOrderEntity[] GetCustomerOrdersByIds(string[] ids, CustomerOrderResponseGroup responseGroup);
         void RemoveOrdersByIds(string[] ids);
 

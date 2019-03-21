@@ -9,5 +9,6 @@ namespace VirtoCommerce.OrderModule.Core.Models
         public string WorkflowName { get; set; }
         public string JsonPath { get; set; }
         public bool Status { get; set; }
+        public WorkflowStates States { get; set; }
     }
 }
