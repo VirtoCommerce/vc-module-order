@@ -154,9 +154,11 @@
     </Compile>
     <Compile Include="BackgroundJobs\CollectOrderStatisticJob.cs" />
     <Compile Include="Controllers\Api\OrderModuleController.cs" />
+    <Compile Include="Controllers\Api\WorkflowController.cs" />
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\PaymentCallbackParameters.cs" />
+    <Compile Include="Security\WorkflowPredefinedPermissions.cs" />
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\resources\securityAccounts.js" />
