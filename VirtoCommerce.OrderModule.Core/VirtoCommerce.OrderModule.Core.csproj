@@ -55,7 +55,11 @@
     </Compile>
     <Compile Include="Models\CustomerOrderWorkflow.cs" />
     <Compile Include="Models\Workflow.cs" />
+    <Compile Include="Models\WorkflowSearchCriteria.cs" />
+    <Compile Include="Models\WorkflowState.cs" />
+    <Compile Include="Models\WorkflowStates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IWorkflowService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

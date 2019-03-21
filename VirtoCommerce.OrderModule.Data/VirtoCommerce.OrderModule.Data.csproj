@@ -236,6 +236,7 @@
     <Compile Include="Services\CustomerOrderServiceImpl.cs" />
     <Compile Include="Services\DefaultCustomerOrderTotalsCalculator.cs" />
     <Compile Include="Services\ICustomerOrderBuilder.cs" />
+    <Compile Include="Services\WorkflowService.cs" />
     <Compile Include="Utilities\OperationUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
