@@ -14,6 +14,7 @@ using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Services;
 using VirtoCommerce.Domain.Store.Services;
 using VirtoCommerce.OrderModule.Core.Models;
+using VirtoCommerce.OrderModule.Core.Services;
 using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Notifications;
 using VirtoCommerce.OrderModule.Data.Repositories;
@@ -73,6 +74,8 @@ namespace VirtoCommerce.OrderModule.Web
             _container.RegisterType<ICustomerOrderBuilder, CustomerOrderBuilderImpl>();
 
             _container.RegisterType<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>(new ContainerControlledLifetimeManager());
+
+            _container.RegisterType<IWorkflowService, WorkflowService>();
         }
 
         public override void PostInitialize()
