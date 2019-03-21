@@ -259,7 +259,6 @@
     <Content Include="Scripts\widgets\workflow-widget.js" />
     <Content Include="Scripts\widgets\workflow-widget.tpl.html" />
     <Content Include="Scripts\wizards\newOperation\newOperation-wizard.js" />
-    <Content Include="Localizations\ru.VirtoCommerce.Orders.json" />
     <None Include="module.ignore" />
     <None Include="web.config">
       <SubType>Designer</SubType>
