@@ -248,5 +248,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             base.Patch(operation);
         }
+
+        public virtual void ResetPrices()
+        {
+            TaxPercentRate = 0m;
+            ShippingTotalWithTax = 0m;
+            PaymentTotalWithTax = 0m;
+            DiscountAmount = 0m;
+        }
     }
 }

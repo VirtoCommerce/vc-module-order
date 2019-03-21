@@ -193,5 +193,14 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 Transactions.Patch(target.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
             }
         }
+
+        public virtual void ResetPrices()
+        {
+            TaxPercentRate = 0m;
+            Price = 0m;
+            DiscountAmount = 0m;
+            Amount = 0m;
+            Sum = 0m;
+        }
     }
 }

@@ -216,5 +216,12 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
         }
+
+        public virtual void ResetPrices()
+        {
+            TaxPercentRate = 0m;
+            Price = 0m;
+            DiscountAmount = 0m;
+        }
     }
 }
