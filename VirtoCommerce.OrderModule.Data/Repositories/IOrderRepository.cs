@@ -24,7 +24,12 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
         #region Workflow
         IQueryable<WorkflowEntity> Workflows { get; }
-        
+
+        #endregion
+
+        #region Order Workflow
+        IQueryable<OrderWorkflowEntity> OrderWorkflows { get; }
+
         #endregion
 
     }
