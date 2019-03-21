@@ -1,0 +1,71 @@
+<div class="blade-content">
+    <div class="blade-content">
+        <div class="blade-inner">
+            <div class="inner-block">
+                <form name="importWizardForm" class="form">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="form-label">{{ 'orders.blades.organization-workflow.labels.upload-json-file' | translate }}</label>
+                            <div class="form-input">
+                                <input type="file" accept="application/json" uploader="uploader" nv-file-select style="z-index: 0;" tabindex="-1">
+                                <input type="text" readonly="" ng-model="jsonPath">
+                                <button class="btn __file" type="button" onclick="$('input[type=file]').trigger('click')">
+                                    <i class="btn-ico fa fa-image"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn" ng-click="uploadWorkflow()">
+                                {{ 'orders.blades.organization-workflow.labels.import' | translate }}
+                            </button>
+                        </div>
+                        <div class="form-group __success"  ng-if="isUploadSuccess">
+                            <p>{{ 'orders.blades.organization-workflow.messages.success' | translate }}</p>
+                        </div>
+                        <div ng-show="uploader.isUploading">
+                            <div class="sub-t">{{ 'orders.blades.organization-workflow.labels.upload-progress' | translate }}</div>
+                            <div class="progress-bar __aqua" ng-style="{'width': uploader.progress + '%'}" style="width: 0%;"></div>
+                        </div>
+                    </fieldset>
+                </form>
+                <div ng-if="hasWorkflow">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="table-col">{{ 'orders.blades.organization-workflow.labels.workflow-file' | translate }}</th>
+                                    <th class="table-col">{{ 'orders.blades.organization-workflow.labels.upload-date' | translate }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-item">
+                                    <td class="table-col">
+                                        <span class="table-descr">{{ blade.workflow.workflowName }}</span>
+                                    </td>
+                                    <td class="table-col">
+                                        <span class="table-date">{{ blade.workflow.modifiedDate | date : 'MM/dd/yyyy HH:mm:ss' }}</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="__error">
+                        <p>{{ 'orders.blades.organization-workflow.messages.warning' | translate }}</p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">{{ 'orders.blades.organization-workflow.labels.enabled' | translate }}</label>
+                    <div>
+                        <div id="valuePlaceHolder">
+                            <label class="form-label __switch" ng-class="{ '__disabled' :  !hasWorkflow && !hasFileChanged }">
+                                <input type="checkbox" ng-model="blade.enabledWorkFlow" ng-checked="blade.enabledWorkFlow" ng-disabled="!hasWorkflow && !hasFileChanged" ng-change="onStatusChanged()">
+                                <span class="switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

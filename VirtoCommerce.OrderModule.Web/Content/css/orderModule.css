@@ -1,4 +1,7 @@
-﻿/* Prices */
+﻿.__success {
+    color: #63b506;
+}
+/* Prices */
 .list.__prices
 {
     background: #fbfdfe;
