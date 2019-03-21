@@ -5,6 +5,7 @@ using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Services;
 using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.OrderModule.Core.Models;
+using VirtoCommerce.OrderModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using cartModel = VirtoCommerce.Domain.Cart.Model;
 using orderModel = VirtoCommerce.Domain.Order.Model;
@@ -14,10 +15,12 @@ namespace VirtoCommerce.OrderModule.Data.Services
     public class CustomerOrderBuilderImpl : ICustomerOrderBuilder
     {
         private readonly ICustomerOrderService _customerOrderService;
+        private readonly IWorkflowService _workflowService;
 
-        public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService)
+        public CustomerOrderBuilderImpl(ICustomerOrderService customerOrderService, IWorkflowService workflowService)
         {
             _customerOrderService = customerOrderService;
+            _workflowService = workflowService;
         }
 
         #region ICustomerOrderConverter Members
@@ -46,9 +49,16 @@ namespace VirtoCommerce.OrderModule.Data.Services
             retVal.TaxType = cart.TaxType;
             retVal.LanguageCode = cart.LanguageCode;
 
-            //[TODO] The code will be implemented when VT-1 done
-            retVal.Status = "Pending For Approval";
-            retVal.WorkflowId = Guid.NewGuid().ToString();
+            var workflow =  _workflowService.GetByOrganizationId(cart.OrganizationId);
+            if (workflow != null && workflow.Status)
+            {
+                retVal.Status = workflow.States.States.FirstOrDefault()?.Status;
+                retVal.WorkflowId = workflow.Id;
+            }
+            else
+            {
+                retVal.Status = "New";
+            }
 
             var cartLineItemsMap = new Dictionary<string, orderModel.LineItem>();
             if (cart.Items != null)
