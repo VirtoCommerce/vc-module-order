@@ -2,6 +2,22 @@
   "orders": {
 	"main-menu-title": "Bestellungen",
     "blades": {
+      "organization-workflow": {
+        "title": "Import workflow from json",
+        "labels": {
+          "import": "Start import",
+          "workflow-file": "Workflow file",
+          "upload-date": "Upload date",
+          "upload-progress": "Upload progress",
+          "upload-json-file": "Upload Json file",
+          "enabled": "Enabled"
+        },
+        "messages": {
+          "warning": "If there's an existing workflow, it'll be overwritten.",
+          "success": "Uploaded workflow successfully.",
+          "error": "Workflow uploading failed."
+        }
+      },
       "customerOrder-detail": {
         "title": "Bestellung von {{customer}}",
         "subtitle": "Bearbeiten Sie die Details und die damit zusammenhängenden Dokumente an.",
@@ -154,6 +170,10 @@
       }
     },
     "widgets": {
+      "organization-workflow": {
+        "title": "Workflow",
+        "blade-subtitle": "Import workflow from json"
+      },
       "customerOrder-address": {
         "title": "Adressen",
         "blade-title": "Adressen verwalten"

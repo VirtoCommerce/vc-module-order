@@ -1,162 +1,182 @@
-﻿{
+{
     "orders": {
         "main-menu-title": "Заказы",
-        "blades": {
-            "customerOrder-detail": {
-                "title": "Заказ {{customer}}",
-                "subtitle": "Изменить данные заказа и соответствующие документы",
-                "labels": {
-                    "approved": "Одобрено",
-                    "employee": "Назначено",
-                    "order-number": "Номер заказа покупателя",
-                    "status": "Статус",
-                    "store": "Магазин",
-                    "from": "Из",
-                    "channel": "Канал",
-                    "customer": "Покупатель",
-                    "invoice": "Получить счет в PDF"
-                },
-                "placeholders": {
-                    "employee": "Выбрать исполнителя",
-                    "status": "Выбрать...",
-                    "store": "Выбрать..."
-                }
-            },
-            "customerOrder-items": {
-                "labels": {
-                    "item": "Товар",
-                    "quantity": "Количество",
-                    "available": "Доступно",
-                    "await": "Ожидание",
-                    "price": "Цена за единицу (без учета налога)",
-                    "tax": "Налог",
-                    "priceWithTax": "Цена за единицу (с учетом налога)",
-                    "discount": "Скидка (без учета налога)",
-                    "discountWithTax": "Скидка (с учетом налога)",
-                    "total": "Общее количество позиций",
-                    "dynamic-properties": "Динамические свойства",
-                    "sub-total": "Промежуточный итог",
-                    "discount-total": "Общая сумма скидки",
-                    "tax-total": "Общая сумма налога"
-                }
-            },
-            "customerOrder-list": {
-                "title": "Заказы Покупателя",
-                "labels": {
-                    "new-filter": "Добавить новый фильтр",
-                    "unnamed-filter": "Фильтр по умолчанию",
-                    "number": "Номер заказа",
-                    "customer":  "Покупатель", 
-                    "confirmed": "Подтвержден",
-                    "status": "Статус",
-                    "total": "Итог",
-                    "currency":  "Валюта",
-                    "store": "Магазин",
-                    "created": "Создан"
-                },
-                "placeholders": {
-                    "select-filter": "Выбрать фильтр"
-                }
-            },
-            "filter-detail": {
-                "subtitle": "Редактировать фильтр",
-                "new-title": "Новый фильтр",
-                "new-subtitle": "Создать новый фильтр",
-                "labels": {
-                    "name": "Название фильтра",
-                    "name_": "Как Вы назовете этот фильтр?",
-                    "criteria": "Критерии фильтра",
-                    "from": "Действует с",
-                    "to": "Действует до"
-                },
-                "placeholders": {
-                    "all": "Не определено"
-                }
-            },
-            "operation-comment": {
-                "labels": {
-                    "comments": "Комментарии"
-                }
-            },
-            "payment-detail": {
-                "title": "Входящий платеж #{{number}}",
-                "title-new": "Новый Входящий платеж",
-                "subtitle": "Редактировать данные платежа и соответствующие документы",
-                "labels": {
-                    "approved": "Утвержден",
-                    "payment-number": "Номер платежа",
-                    "status": "Статус",
-                    "amount": "Сумма",
-                    "from": "От",
-                    "payment-gateway": "Платежная система",
-                    "payment-purpose": "Цель платежа",
-                    "price": "Внесение оплаты",
-                    "price-with-tax": "Внесение оплаты (с учетом налога)"
-                },
-                "placeholders": {
-                    "status": "Выбрать...",
-                    "payment-gateway": "Выбрать..."
-                }
-            },
-            "transactions-list": {
-                "title": "Транзакции платежной системы",
-                "subtitle": "Список всех взаимодействий в платежной системе"
-            },
-            "transaction-detail": {
-                "title": "Детали транзакции",
-                "subtitle": "Необработанные данные транзакции "
-            },
-            "shipment-detail": {
-                "title": "Отправление #{{number}}",
-                "title-new": "Новое Отправление",
-                "subtitle": "Редактировать информацию об отправлении",
-                "labels": {
-                    "shipment-method": "Метод отгрузки",
-                    "approved": "Утвержден",
-                    "shipment-number": "Номер отправления",
-                    "status": "Статус",
-                    "fulfillment-center": "Фулфилмент-центр",
-                    "from": "От",
-                    "employee": "Назначено",
-                    "price": "Цена отправления",
-                    "price-with-tax": "Цена отправления с учетом налога"
-                },
-                "placeholders": {
-                    "status": "Выбрать...",
-                    "shipment-method": "Выбрать...",
-                    "fulfillment-center": "Выбрать или найти центр..."
-                }
-            },
-            "shipment-items": {
-                "title": "{{title}} товары",
-                "subtitle": "Редактировать товары отправления",
-                "labels": {
-                    "item": "Товар",
-                    "quantity": "Количество",
-                    "price": "Цена",
-                    "total": "Итог"
-                }
-            },
-            "catalog-items-select": {
-                "title": "Добавить товар в заказ"
-            },
-            "newOperation-wizard": {
-                "title": "Новая операция",
-                "subtitle": "Выбрать тип операции",
-                "menu": {
-                    "shipment-operation": {
-                        "description": "Документ о доставке"
-                    },
-                    "payment-operation": {
-                        "description": "Входящий платежный документ"
-                    }
-                }
-            }
+      "blades": {
+        "organization-workflow": {
+          "title": "Import workflow from json",
+          "labels": {
+            "import": "Start import",
+            "workflow-file": "Workflow file",
+            "upload-date": "Upload date",
+            "upload-progress": "Upload progress",
+            "upload-json-file": "Upload Json file",
+            "enabled": "Enabled"
+          },
+          "messages": {
+            "warning": "If there's an existing workflow, it'll be overwritten.",
+            "success": "Uploaded workflow successfully.",
+            "error": "Workflow uploading failed."
+          }
         },
+        "customerOrder-detail": {
+          "title": "Заказ {{customer}}",
+          "subtitle": "Изменить данные заказа и соответствующие документы",
+          "labels": {
+            "approved": "Одобрено",
+            "employee": "Назначено",
+            "order-number": "Номер заказа покупателя",
+            "status": "Статус",
+            "store": "Магазин",
+            "from": "Из",
+            "channel": "Канал",
+            "customer": "Покупатель",
+            "invoice": "Получить счет в PDF"
+          },
+          "placeholders": {
+            "employee": "Выбрать исполнителя",
+            "status": "Выбрать...",
+            "store": "Выбрать..."
+          }
+        },
+        "customerOrder-items": {
+          "labels": {
+            "item": "Товар",
+            "quantity": "Количество",
+            "available": "Доступно",
+            "await": "Ожидание",
+            "price": "Цена за единицу (без учета налога)",
+            "tax": "Налог",
+            "priceWithTax": "Цена за единицу (с учетом налога)",
+            "discount": "Скидка (без учета налога)",
+            "discountWithTax": "Скидка (с учетом налога)",
+            "total": "Общее количество позиций",
+            "dynamic-properties": "Динамические свойства",
+            "sub-total": "Промежуточный итог",
+            "discount-total": "Общая сумма скидки",
+            "tax-total": "Общая сумма налога"
+          }
+        },
+        "customerOrder-list": {
+          "title": "Заказы Покупателя",
+          "labels": {
+            "new-filter": "Добавить новый фильтр",
+            "unnamed-filter": "Фильтр по умолчанию",
+            "number": "Номер заказа",
+            "customer": "Покупатель",
+            "confirmed": "Подтвержден",
+            "status": "Статус",
+            "total": "Итог",
+            "currency": "Валюта",
+            "store": "Магазин",
+            "created": "Создан"
+          },
+          "placeholders": {
+            "select-filter": "Выбрать фильтр"
+          }
+        },
+        "filter-detail": {
+          "subtitle": "Редактировать фильтр",
+          "new-title": "Новый фильтр",
+          "new-subtitle": "Создать новый фильтр",
+          "labels": {
+            "name": "Название фильтра",
+            "name_": "Как Вы назовете этот фильтр?",
+            "criteria": "Критерии фильтра",
+            "from": "Действует с",
+            "to": "Действует до"
+          },
+          "placeholders": {
+            "all": "Не определено"
+          }
+        },
+        "operation-comment": {
+          "labels": {
+            "comments": "Комментарии"
+          }
+        },
+        "payment-detail": {
+          "title": "Входящий платеж #{{number}}",
+          "title-new": "Новый Входящий платеж",
+          "subtitle": "Редактировать данные платежа и соответствующие документы",
+          "labels": {
+            "approved": "Утвержден",
+            "payment-number": "Номер платежа",
+            "status": "Статус",
+            "amount": "Сумма",
+            "from": "От",
+            "payment-gateway": "Платежная система",
+            "payment-purpose": "Цель платежа",
+            "price": "Внесение оплаты",
+            "price-with-tax": "Внесение оплаты (с учетом налога)"
+          },
+          "placeholders": {
+            "status": "Выбрать...",
+            "payment-gateway": "Выбрать..."
+          }
+        },
+        "transactions-list": {
+          "title": "Транзакции платежной системы",
+          "subtitle": "Список всех взаимодействий в платежной системе"
+        },
+        "transaction-detail": {
+          "title": "Детали транзакции",
+          "subtitle": "Необработанные данные транзакции "
+        },
+        "shipment-detail": {
+          "title": "Отправление #{{number}}",
+          "title-new": "Новое Отправление",
+          "subtitle": "Редактировать информацию об отправлении",
+          "labels": {
+            "shipment-method": "Метод отгрузки",
+            "approved": "Утвержден",
+            "shipment-number": "Номер отправления",
+            "status": "Статус",
+            "fulfillment-center": "Фулфилмент-центр",
+            "from": "От",
+            "employee": "Назначено",
+            "price": "Цена отправления",
+            "price-with-tax": "Цена отправления с учетом налога"
+          },
+          "placeholders": {
+            "status": "Выбрать...",
+            "shipment-method": "Выбрать...",
+            "fulfillment-center": "Выбрать или найти центр..."
+          }
+        },
+        "shipment-items": {
+          "title": "{{title}} товары",
+          "subtitle": "Редактировать товары отправления",
+          "labels": {
+            "item": "Товар",
+            "quantity": "Количество",
+            "price": "Цена",
+            "total": "Итог"
+          }
+        },
+        "catalog-items-select": {
+          "title": "Добавить товар в заказ"
+        },
+        "newOperation-wizard": {
+          "title": "Новая операция",
+          "subtitle": "Выбрать тип операции",
+          "menu": {
+            "shipment-operation": {
+              "description": "Документ о доставке"
+            },
+            "payment-operation": {
+              "description": "Входящий платежный документ"
+            }
+          }
+        }
+      },
       "widgets": {
+        "organization-workflow": {
+          "title": "Workflow",
+          "blade-subtitle": "Import workflow from json"
+        },
         "notifications": {
           "title": "Отправка уведомлений",
-          "subtitle":  "Отправка уведомлений о заказе"
+          "subtitle": "Отправка уведомлений о заказе"
         },
         "customerOrder-address": {
           "title": "Адреса",

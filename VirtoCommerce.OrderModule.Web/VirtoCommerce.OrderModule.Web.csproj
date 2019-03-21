@@ -184,8 +184,11 @@
     <Content Include="Scripts\blades\shipment-items.js" />
     <Content Include="Scripts\blades\operation-comment.js" />
     <Content Include="Scripts\blades\operation-comment.tpl.html" />
+    <Content Include="Scripts\blades\upload-workflow.js" />
+    <Content Include="Scripts\blades\upload-workflow.tpl.html" />
     <Content Include="Scripts\dialogs\cancelOperation-dialog.tpl.html" />
     <Content Include="Scripts\services\statusTranslation.js" />
+    <Content Include="Scripts\resources\workflows.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.tpl.html" />
   </ItemGroup>
@@ -216,6 +219,10 @@
   <ItemGroup>
     <Content Include="Localizations\en.VirtoCommerce.Orders.json" />
     <Content Include="Localizations\de.VirtoCommerce.Orders.json" />
+    <Content Include="Localizations\ru.VirtoCommerce.Orders.json" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\resources\customerOrders.js" />
@@ -247,8 +254,9 @@
     <Content Include="Scripts\widgets\customerOrder-totals-widget.tpl.html" />
     <Content Include="Scripts\widgets\operation-tree-widget.tpl.html" />
     <Content Include="Scripts\widgets\operation-tree-widget.js" />
+    <Content Include="Scripts\widgets\workflow-widget.js" />
+    <Content Include="Scripts\widgets\workflow-widget.tpl.html" />
     <Content Include="Scripts\wizards\newOperation\newOperation-wizard.js" />
-    <Content Include="Localizations\ru.VirtoCommerce.Orders.json" />
     <None Include="module.ignore" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
