@@ -54,6 +54,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Models\CustomerOrderWorkflow.cs" />
+    <Compile Include="Models\OrderWorkflow.cs" />
     <Compile Include="Models\Workflow.cs" />
     <Compile Include="Models\WorkflowSearchCriteria.cs" />
     <Compile Include="Models\WorkflowState.cs" />

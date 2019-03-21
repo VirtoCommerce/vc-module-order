@@ -217,6 +217,15 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
 
             #endregion
 
+            #region Order Workflow
+
+            modelBuilder.Entity<OrderWorkflowEntity>()
+                .ToTable("OrderWorkflow")
+                .HasKey(x => x.Id)
+                .Property(x => x.Id);
+
+            #endregion
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -287,12 +296,14 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
         }
 
         #region Workflow
-
-        #endregion
-
-        #region Workflow
         public IQueryable<WorkflowEntity> Workflows => GetAsQueryable<WorkflowEntity>();
+
         #endregion
-       
+
+        #region Order Workflow
+
+        public IQueryable<OrderWorkflowEntity> OrderWorkflows => GetAsQueryable<OrderWorkflowEntity>();
+        #endregion
+
     }
 }
