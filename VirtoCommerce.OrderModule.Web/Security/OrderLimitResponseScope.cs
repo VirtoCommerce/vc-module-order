@@ -21,9 +21,14 @@ namespace VirtoCommerce.OrderModule.Web.Security
             }
 
             var customerOrder = entity as CustomerOrder;
-            return customerOrder != null
-                ? new[] { Type + ":" + customerOrder.EmployeeId }
-                : Enumerable.Empty<string>();
+
+            if (customerOrder == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            return Enum.GetValues(typeof(CustomerOrderResponseGroup)).Cast<CustomerOrderResponseGroup>()
+                .Select(x => x.ToString()).Where(x => x.StartsWith("With")).Select(x => $"{Type}:{x}");
         }
     }
 }
