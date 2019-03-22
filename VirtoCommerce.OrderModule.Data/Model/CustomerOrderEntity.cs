@@ -255,6 +255,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
             ShippingTotalWithTax = 0m;
             PaymentTotalWithTax = 0m;
             DiscountAmount = 0m;
+            Total = 0m;
+            SubTotal = 0m;
+            SubTotalWithTax = 0m;
+            ShippingTotal = 0m;
+            ShippingTotalWithTax = 0m;
+            PaymentTotal = 0m;
+            PaymentTotalWithTax = 0m;
+            HandlingTotal = 0m;
+            HandlingTotalWithTax = 0m;
+            DiscountTotal = 0m;
+            DiscountTotalWithTax = 0m;
+            TaxTotal = 0m;
         }
     }
 }
