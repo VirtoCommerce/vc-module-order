@@ -51,7 +51,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             var workflow = _workflowService.ImportOrUpdateWorkflow(model);
-            return Ok(new { data = workflow });
+            return Ok(workflow);
         }
 
         /// <summary>
