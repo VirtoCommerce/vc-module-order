@@ -566,13 +566,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private string CheckResponseGroup(string userName, string respGroup)
         {
             var userResponseGroupItems = _securityService.GetUserPermissions(userName)
-                .FirstOrDefault(x => x.Id == OrderPredefinedPermissions.Read)?.AssignedScopes
-                ?.Where(x => x.Type == nameof(OrderLimitResponseScope))
+                .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
+                .SelectMany(x => x.AssignedScopes)
+                .Where(x => x.Type == nameof(OrderLimitResponseScope))
                 .Select(x => x.Scope)
-                .ToArray();
+                .ToList();
 
             //if the user has no restrictions, then return the requested items
-            if (userResponseGroupItems == null || userResponseGroupItems.Length == 0)
+            if (!userResponseGroupItems.Any())
             {
                 return respGroup;
             }
