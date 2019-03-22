@@ -48,8 +48,8 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", "scope1,scope2"));
             Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", "scope_,scope1,scope2"));
             Assert.Equal("scope1", controller.CheckResponseGroup("user", "scope1"));
-            Assert.Equal("", controller.CheckResponseGroup("user", "scope_"));
-            Assert.Equal("", controller.CheckResponseGroup("user", "scope_, scope__"));
+            Assert.Null(controller.CheckResponseGroup("user", "scope_"));
+            Assert.Null(controller.CheckResponseGroup("user", "scope_, scope__"));
 
             securityService.Setup(x => x.GetUserPermissions(It.IsAny<string>())).Returns(new Permission[0]);
 
