@@ -72,14 +72,16 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
         private async Task<List<string>> GetManagerEmails(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var currentUser = await _securityService.FindByIdAsync(changedEntry.NewEntry.CustomerId, UserDetails.Reduced);
-
+           
+            var emplopyee = _memberService.GetByIds(new[] { currentUser.MemberId }).OfType<Employee>().FirstOrDefault();
+            
             var contact = _memberService.GetByIds(new[] { currentUser.MemberId }).OfType<Contact>().FirstOrDefault();
 
             var searchCriteria = new MembersSearchCriteria
             {
                 DeepSearch = true,
                 Take = int.MaxValue,
-                MemberId = contact.Organizations.FirstOrDefault()
+                MemberId = emplopyee == null ? contact.Organizations.FirstOrDefault(): emplopyee.Organizations.FirstOrDefault()
             };
             var membersOfContact = _memberSearchService.SearchMembers(searchCriteria);
             var membersWithSecurityInfo = membersOfContact.Results.OfType<IHasSecurityAccounts>();
