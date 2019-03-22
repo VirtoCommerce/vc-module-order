@@ -76,11 +76,12 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
             return {
                 check: function () {
                     var limitResponseScope = 'order:read:OrderLimitResponseScope';
-                    var limitResponseScopes = _.map(knownLimitResponseScopes.items, function (item) {
-                        return item.id;
-                    })
+                    var limitResponseScopes = _.map(knownLimitResponseScopes.items,
+                        function(item) {
+                            return item.id;
+                        });
                     var isSetOrderLimitResponseScope = authService.checkPermission(limitResponseScope, limitResponseScopes);
-                    var hasPermissionReadOrderPrices = authService.checkPermission(limitResponseScope + ':WithPrices')
+                    var hasPermissionReadOrderPrices = authService.checkPermission(limitResponseScope + ':WithPrices');
 
                     return hasPermissionReadOrderPrices || !isSetOrderLimitResponseScope;
                 }
@@ -295,6 +296,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                 var shipmentTotalWidget = {
                     controller: 'virtoCommerce.orderModule.shipmentTotalsWidgetController',
                     size: [2, 1],
+                    isVisible: hasPermissionsToReadPrices.check,
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-totals-widget.tpl.html'
                 };
                 widgetService.registerWidget(shipmentTotalWidget, 'shipmentDetailWidgets');
@@ -308,6 +310,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
                 var paymentTotalWidget = {
                     controller: 'virtoCommerce.orderModule.paymentTotalsWidgetController',
                     size: [2, 1],
+                    isVisible: hasPermissionsToReadPrices.check,
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-totals-widget.tpl.html'
                 };
                 widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');
