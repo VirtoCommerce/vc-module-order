@@ -53,14 +53,20 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private static readonly object _lockObject = new object();
 
-        public OrderModuleController(ICustomerOrderService customerOrderService,
-            ICustomerOrderSearchService searchService, IStoreService storeService,
+        public OrderModuleController(
+            ICustomerOrderService customerOrderService,
+            ICustomerOrderSearchService searchService,
+            IStoreService storeService,
             IUniqueNumberGenerator numberGenerator,
-            ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory,
-            IPermissionScopeService permissionScopeService, ISecurityService securityService,
-            ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService,
+            ICacheManager<object> cacheManager,
+            Func<IOrderRepository> repositoryFactory,
+            IPermissionScopeService permissionScopeService,
+            ISecurityService securityService,
+            ICustomerOrderBuilder customerOrderBuilder,
+            IShoppingCartService cartService,
             INotificationManager notificationManager,
-            INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService,
+            INotificationTemplateResolver notificationTemplateResolver,
+            IChangeLogService changeLogService,
             ICustomerOrderTotalsCalculator totalsCalculator)
         {
             _customerOrderService = customerOrderService;
@@ -563,7 +569,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="userName">User name</param>
         /// <param name="respGroup">Requested response group</param>
         /// <returns></returns>
-        private string CheckResponseGroup(string userName, string respGroup)
+        public string CheckResponseGroup(string userName, string respGroup)
         {
             var userResponseGroupItems = _securityService.GetUserPermissions(userName)
                 .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
@@ -579,9 +585,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             //if the user has restrictions, then make an intersection with the requested parameters
-            return string.Join(",", string.IsNullOrWhiteSpace(respGroup)
+            var result = string.Join(",", string.IsNullOrWhiteSpace(respGroup)
                 ? userResponseGroupItems
                 : respGroup.Split(',').Where(x => userResponseGroupItems.Contains(x)));
+
+            if (string.IsNullOrWhiteSpace(result))
+                result = null;
+
+            return result;
         }
 
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
@@ -602,15 +613,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
-                //responseGroup
-                var responseGroupItems = readPermissionScopes.OfType<OrderLimitResponseScope>().Select(x => x.Scope)
-                    .ToArray();
-
-                if (responseGroupItems.Any())
-                {
-                    criteria.ResponseGroup = string.Join(",", responseGroupItems);
-                }
-
                 //employee id
                 var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 if (responsibleScope != null)
@@ -618,6 +620,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     criteria.EmployeeId = userName;
                 }
             }
+
+            // ResponseGroup
+            criteria.ResponseGroup = CheckResponseGroup(userName, criteria.ResponseGroup);
 
             return criteria;
         }

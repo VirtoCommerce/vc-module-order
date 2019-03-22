@@ -136,6 +136,7 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ChekingResponseGroup.cs" />
     <Compile Include="MigrationScenarios.cs" />
     <Compile Include="OrderInventoryAdjustmentTests.cs" />
     <Compile Include="OrderTotalsCalculationTest.cs" />
