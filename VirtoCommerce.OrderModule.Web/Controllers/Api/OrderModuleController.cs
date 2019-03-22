@@ -608,15 +608,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
-                //responseGroup
-                var responseGroupItems = readPermissionScopes.OfType<OrderLimitResponseScope>().Select(x => x.Scope)
-                    .ToArray();
-
-                if (responseGroupItems.Any())
-                {
-                    criteria.ResponseGroup = string.Join(",", responseGroupItems);
-                }
-
                 //employee id
                 var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 if (responsibleScope != null)
@@ -624,6 +615,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     criteria.EmployeeId = userName;
                 }
             }
+
+            // ResponseGroup
+            criteria.ResponseGroup = CheckResponseGroup(userName, criteria.ResponseGroup);
 
             return criteria;
         }
