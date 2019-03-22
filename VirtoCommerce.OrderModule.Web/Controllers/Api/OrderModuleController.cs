@@ -585,9 +585,14 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             //if the user has restrictions, then make an intersection with the requested parameters
-            return string.Join(",", string.IsNullOrWhiteSpace(respGroup)
+            var result = string.Join(",", string.IsNullOrWhiteSpace(respGroup)
                 ? userResponseGroupItems
                 : respGroup.Split(',').Where(x => userResponseGroupItems.Contains(x)));
+
+            if (string.IsNullOrWhiteSpace(result))
+                result = null;
+
+            return result;
         }
 
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
