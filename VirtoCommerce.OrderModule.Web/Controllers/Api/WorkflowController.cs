@@ -51,7 +51,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             var workflow = _workflowService.ImportOrUpdateWorkflow(model);
-            return Ok(new { data = workflow });
+            return Ok(workflow);
         }
 
         /// <summary>
@@ -61,6 +61,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <returns>if return empty -> is valid, else error</returns>
         private string ValidateWorkflowFile(string jsonPath)
         {
+            if (string.IsNullOrEmpty(jsonPath))
+                return string.Empty;
+
             string jsonValue;
             using (var stream = _blobStorageProvider.OpenRead(jsonPath))
             {

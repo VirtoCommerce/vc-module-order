@@ -78,7 +78,7 @@ angular.module('virtoCommerce.orderModule')
                         // Save file information
                         workflows.updateWorkflow(workflowParams)
                             .$promise.then(function (workflow) {
-                                workflow = workflow.data;
+                                _file = {};
                                 $scope.jsonPath = '';
                                 $scope.hasWorkflow = true;
                                 blade.enabledWorkFlow = workflow.status;
@@ -87,6 +87,7 @@ angular.module('virtoCommerce.orderModule')
                                 $scope.hasFileChanged = false;
                                 $scope.isUploadSuccess = false;
                                 blade.isLoading = false;
+                                $scope.$emit('workflows.update');
                             }, function (response) {
                                 bladeNavigationService.setError(response, blade);
                             });
@@ -99,7 +100,7 @@ angular.module('virtoCommerce.orderModule')
             ];
 
             function resetWorkflowData() {
-                if (typeof blade.workflow !== 'undefined') {
+                if (blade.workflow && typeof blade.workflow.workflowName !== 'undefined') {
                     $scope.hasWorkflow = true;
                     blade.enabledWorkFlow = blade.workflow.status;
                 }

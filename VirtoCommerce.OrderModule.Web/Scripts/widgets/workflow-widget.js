@@ -1,7 +1,7 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.workflowWidgetController',
-        ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.workflows',
-            function ($scope, bladeNavigationService, workflows) {
+    ['$rootScope','$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.workflows',
+            function ($rootScope, $scope, bladeNavigationService, workflows) {
                 var blade = $scope.blade;
                 var _workflow;
                 $scope.workflow = "0";
@@ -9,7 +9,6 @@ angular.module('virtoCommerce.orderModule')
                 workflows.get({ id: blade.currentEntity.id })
                     .$promise
                     .then(function (workflow) {
-                        workflow = workflow.data;
                         $scope.workflow = typeof workflow !== 'undefined' && typeof workflow.workflowName !== 'undefined' && workflow.workflowName.length ? "1" : "0";
                         _workflow = workflow;
                     }, function(response) {
@@ -29,4 +28,8 @@ angular.module('virtoCommerce.orderModule')
                     if (_workflow) newBlade = angular.extend({}, newBlade, { workflow: _workflow });
                     bladeNavigationService.showBlade(newBlade, $scope.blade);
                 };
+
+                $rootScope.$on('workflows.update', function () {
+                    $scope.workflow = "1";
+                });
 }]);
