@@ -164,7 +164,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency", visible: false };
+            return { name: name, cellFilter: "currency | verifyPrice", visible: false };
         }));
 
         $scope.gridOptions = gridOptions;
