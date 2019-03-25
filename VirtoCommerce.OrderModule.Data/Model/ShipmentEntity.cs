@@ -79,7 +79,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var shipment = operation as Shipment;
             if (shipment == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type Shipment", nameof(operation));
+            }
 
             if (!Addresses.IsNullOrEmpty())
             {
@@ -103,7 +105,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var shipment = operation as Shipment;
             if (shipment == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type Shipment", nameof(operation));
+            }
 
             base.FromModel(shipment, pkMap);
 
@@ -156,12 +160,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
             var target = operation as ShipmentEntity;
             if (target == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
+            }
 
-            target.Price = Price;
-            target.PriceWithTax = PriceWithTax;
-            target.DiscountAmount = DiscountAmount;
-            target.DiscountAmountWithTax = DiscountAmountWithTax;
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
             target.OrganizationId = OrganizationId;
@@ -179,10 +181,19 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.WeightUnit = WeightUnit;
             target.Length = Length;
             target.TaxType = TaxType;
-            target.TaxPercentRate = TaxPercentRate;
-            target.TaxTotal = TaxTotal;
-            target.Total = Total;
-            target.TotalWithTax = TotalWithTax;
+
+            if (!(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
+                  (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m)))
+            {
+                target.Price = Price;
+                target.PriceWithTax = PriceWithTax;
+                target.DiscountAmount = DiscountAmount;
+                target.DiscountAmountWithTax = DiscountAmountWithTax;
+                target.TaxPercentRate = TaxPercentRate;
+                target.TaxTotal = TaxTotal;
+                target.Total = Total;
+                target.TotalWithTax = TotalWithTax;
+            }
 
             if (!InPayments.IsNullCollection())
             {
