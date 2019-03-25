@@ -154,15 +154,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation)
+        public override void Patch(OperationEntity operation, bool toPatchSum = true)
         {
-            base.Patch(operation);
-
             var target = operation as ShipmentEntity;
             if (target == null)
             {
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
             }
+
+            var zeroPrice = (TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
+                  (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m));
+
+            base.Patch(operation, !zeroPrice);
 
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
@@ -182,8 +185,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.Length = Length;
             target.TaxType = TaxType;
 
-            if (!(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
-                  (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m)))
+            if (!zeroPrice)
             {
                 target.Price = Price;
                 target.PriceWithTax = PriceWithTax;

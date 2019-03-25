@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
 using Omu.ValueInjecter;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Utilities;
 using VirtoCommerce.Platform.Core.Common;
@@ -57,7 +52,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public virtual void Patch(OperationEntity operation)
+        public virtual void Patch(OperationEntity operation, bool toPatchSum = true)
         {
             if (operation == null)
                 throw new ArgumentNullException(nameof(operation));
@@ -70,7 +65,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             operation.CancelledDate = CancelledDate;
             operation.CancelReason = CancelReason;
             operation.IsApproved = IsApproved;
-            operation.Sum = Sum;
+
+            if (toPatchSum)
+                operation.Sum = Sum;
         }
     }
 }
