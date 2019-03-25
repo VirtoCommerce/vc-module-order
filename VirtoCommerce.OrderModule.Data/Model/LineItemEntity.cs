@@ -136,16 +136,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual void Patch(LineItemEntity target)
         {
             if (target == null)
+            {
                 throw new ArgumentNullException(nameof(target));
+            }
 
-
-            target.Price = Price;
-            target.PriceWithTax = PriceWithTax;
-            target.DiscountAmount = DiscountAmount;
-            target.DiscountAmountWithTax = DiscountAmountWithTax;
             target.Quantity = Quantity;
-            target.TaxTotal = TaxTotal;
-            target.TaxPercentRate = TaxPercentRate;
             target.Weight = Weight;
             target.Height = Height;
             target.Width = Width;
@@ -157,6 +152,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.CancelledDate = CancelledDate;
             target.CancelReason = CancelReason;
             target.Comment = Comment;
+
+            if (!(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
+              (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m)))
+            {
+                target.TaxPercentRate = TaxPercentRate;
+                target.Price = Price;
+                target.DiscountAmount = DiscountAmount;
+
+                target.PriceWithTax = PriceWithTax;
+                target.DiscountAmountWithTax = DiscountAmountWithTax;
+                target.TaxTotal = TaxTotal;
+            }
 
             if (!Discounts.IsNullCollection())
             {

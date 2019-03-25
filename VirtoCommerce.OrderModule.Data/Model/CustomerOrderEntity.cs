@@ -92,7 +92,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+            }
 
             order.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
@@ -112,7 +114,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+            }
 
             base.FromModel(order, pkMap);
 
@@ -160,7 +164,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var target = operation as CustomerOrderEntity;
             if (target == null)
-                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity", nameof(operation));
+            {
+                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity",
+                    nameof(operation));
+            }
 
             target.CustomerId = CustomerId;
             target.CustomerName = CustomerName;
@@ -170,26 +177,30 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.OrganizationName = OrganizationName;
             target.EmployeeId = EmployeeId;
             target.EmployeeName = EmployeeName;
-            target.DiscountAmount = DiscountAmount;
-            target.Total = Total;
-            target.SubTotal = SubTotal;
-            target.SubTotalWithTax = SubTotalWithTax;
-            target.ShippingTotal = ShippingTotal;
-            target.ShippingTotalWithTax = ShippingTotalWithTax;
-            target.PaymentTotal = PaymentTotal;
-            target.PaymentTotalWithTax = PaymentTotalWithTax;
-            target.HandlingTotal = HandlingTotal;
-            target.HandlingTotalWithTax = HandlingTotalWithTax;
-            target.DiscountTotal = DiscountTotal;
-            target.DiscountTotalWithTax = DiscountTotalWithTax;
-            target.DiscountAmount = DiscountAmount;
-            target.TaxTotal = TaxTotal;
             target.IsPrototype = IsPrototype;
             target.SubscriptionNumber = SubscriptionNumber;
             target.SubscriptionId = SubscriptionId;
             target.LanguageCode = LanguageCode;
-            target.TaxPercentRate = TaxPercentRate;
             target.OuterId = OuterId;
+
+            if (!(TaxPercentRate == 0m && ShippingTotalWithTax == 0m && PaymentTotalWithTax == 0m && DiscountAmount == 0m &&
+                 (target.TaxPercentRate != 0m || target.ShippingTotalWithTax != 0m || target.PaymentTotalWithTax != 0m || target.DiscountAmount != 0m)))
+            {
+                target.Total = Total;
+                target.SubTotal = SubTotal;
+                target.SubTotalWithTax = SubTotalWithTax;
+                target.ShippingTotal = ShippingTotal;
+                target.ShippingTotalWithTax = ShippingTotalWithTax;
+                target.PaymentTotal = PaymentTotal;
+                target.PaymentTotalWithTax = PaymentTotalWithTax;
+                target.HandlingTotal = HandlingTotal;
+                target.HandlingTotalWithTax = HandlingTotalWithTax;
+                target.DiscountTotal = DiscountTotal;
+                target.DiscountTotalWithTax = DiscountTotalWithTax;
+                target.DiscountAmount = DiscountAmount;
+                target.TaxTotal = TaxTotal;
+                target.TaxPercentRate = TaxPercentRate;
+            }
 
             if (!Addresses.IsNullCollection())
             {
@@ -259,9 +270,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             SubTotal = 0m;
             SubTotalWithTax = 0m;
             ShippingTotal = 0m;
-            ShippingTotalWithTax = 0m;
             PaymentTotal = 0m;
-            PaymentTotalWithTax = 0m;
             HandlingTotal = 0m;
             HandlingTotalWithTax = 0m;
             DiscountTotal = 0m;
