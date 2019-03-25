@@ -162,10 +162,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
             }
 
-            var zeroPrice = (TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
+            var isNeedPatch = !(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
                   (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m));
 
-            base.Patch(operation, !zeroPrice);
+            base.Patch(operation, isNeedPatch);
 
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
@@ -185,7 +185,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.Length = Length;
             target.TaxType = TaxType;
 
-            if (!zeroPrice)
+            if (isNeedPatch)
             {
                 target.Price = Price;
                 target.PriceWithTax = PriceWithTax;

@@ -183,10 +183,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.LanguageCode = LanguageCode;
             target.OuterId = OuterId;
 
-            var zeroPrice = (TaxPercentRate == 0m && ShippingTotalWithTax == 0m && PaymentTotalWithTax == 0m && DiscountAmount == 0m &&
+            var isNeedPatch = !(TaxPercentRate == 0m && ShippingTotalWithTax == 0m && PaymentTotalWithTax == 0m && DiscountAmount == 0m &&
                  (target.TaxPercentRate != 0m || target.ShippingTotalWithTax != 0m || target.PaymentTotalWithTax != 0m || target.DiscountAmount != 0m));
 
-            if (!zeroPrice)
+            if (isNeedPatch)
             {
                 target.Total = Total;
                 target.SubTotal = SubTotal;
@@ -259,7 +259,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
-            base.Patch(operation, !zeroPrice);
+            base.Patch(operation, isNeedPatch);
         }
 
         public virtual void ResetPrices()
