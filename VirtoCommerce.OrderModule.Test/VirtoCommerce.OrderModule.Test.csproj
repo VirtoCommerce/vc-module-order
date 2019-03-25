@@ -140,6 +140,7 @@
     <Compile Include="MigrationScenarios.cs" />
     <Compile Include="OrderInventoryAdjustmentTests.cs" />
     <Compile Include="OrderTotalsCalculationTest.cs" />
+    <Compile Include="PatchingTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CRUDScenarios.cs" />
     <Compile Include="SequencesScenarios.cs" />
