@@ -18,21 +18,21 @@ namespace VirtoCommerce.OrderModule.Test
                 StoreId = "storeId",
                 Number = "number",
                 Currency = "usd",
-                PaymentTotal = 2,
-                PaymentTotalWithTax = 2,
-                ShippingTotalWithTax = 2,
-                DiscountAmount = 2,
-                DiscountTotal = 2,
-                DiscountTotalWithTax = 2,
-                HandlingTotal = 2,
-                HandlingTotalWithTax = 2,
-                ShippingTotal = 2,
-                SubTotal = 2,
-                SubTotalWithTax = 2,
-                Sum = 2,
-                TaxPercentRate = 2,
-                TaxTotal = 2,
-                Total = 2
+                PaymentTotal = 1,
+                PaymentTotalWithTax = 1,
+                ShippingTotalWithTax = 1,
+                DiscountAmount = 1,
+                DiscountTotal = 1,
+                DiscountTotalWithTax = 1,
+                HandlingTotal = 1,
+                HandlingTotalWithTax = 1,
+                ShippingTotal = 1,
+                SubTotal = 1,
+                SubTotalWithTax = 1,
+                Sum = 1,
+                TaxPercentRate = 1,
+                TaxTotal = 1,
+                Total = 1
             };
 
             var item = new LineItemEntity
@@ -44,12 +44,12 @@ namespace VirtoCommerce.OrderModule.Test
                 CatalogId = "catalogId",
                 Sku = "sku",
                 Name = "itemName",
-                Price = 2,
-                DiscountAmount = 2,
-                TaxPercentRate = 2,
-                TaxTotal = 2,
-                DiscountAmountWithTax = 2,
-                PriceWithTax = 2,
+                Price = 1,
+                DiscountAmount = 1,
+                TaxPercentRate = 1,
+                TaxTotal = 1,
+                DiscountAmountWithTax = 1,
+                PriceWithTax = 1,
             };
 
             var payment = new PaymentInEntity
@@ -59,16 +59,16 @@ namespace VirtoCommerce.OrderModule.Test
                 CustomerId = "customerId",
                 Number = "number",
                 Currency = "usd",
-                Price = 2,
-                Amount = 2,
-                DiscountAmount = 2,
-                DiscountAmountWithTax = 2,
-                PriceWithTax = 2,
-                TaxPercentRate = 2,
-                TaxTotal = 2,
-                Total = 2,
-                Sum = 2,
-                TotalWithTax = 2,
+                Price = 1,
+                Amount = 1,
+                DiscountAmount = 1,
+                DiscountAmountWithTax = 1,
+                PriceWithTax = 1,
+                TaxPercentRate = 1,
+                TaxTotal = 1,
+                Total = 1,
+                Sum = 1,
+                TotalWithTax = 1,
             };
 
             var shipment = new ShipmentEntity
@@ -77,15 +77,15 @@ namespace VirtoCommerce.OrderModule.Test
                 Id = "shipmentId",
                 Number = "number",
                 Currency = "usd",
-                Price = 2,
-                DiscountAmount = 2,
-                DiscountAmountWithTax = 2,
-                PriceWithTax = 2,
-                Sum = 2,
-                TaxPercentRate = 2,
-                TaxTotal = 2,
-                Total = 2,
-                TotalWithTax = 2,
+                Price = 1,
+                DiscountAmount = 1,
+                DiscountAmountWithTax = 1,
+                PriceWithTax = 1,
+                Sum = 1,
+                TaxPercentRate = 1,
+                TaxTotal = 1,
+                Total = 1,
+                TotalWithTax = 1,
             };
 
             order.Items = new ObservableCollection<LineItemEntity> { item };
@@ -119,21 +119,21 @@ namespace VirtoCommerce.OrderModule.Test
 
             modifiedOrder.Patch(oldOrder);
 
-            Assert.Equal(2, oldOrder.TaxPercentRate);
-            Assert.Equal(2, oldOrder.ShippingTotalWithTax);
-            Assert.Equal(2, oldOrder.PaymentTotalWithTax);
-            Assert.Equal(2, oldOrder.DiscountAmount);
-            Assert.Equal(2, oldOrder.Total);
-            Assert.Equal(2, oldOrder.SubTotal);
-            Assert.Equal(2, oldOrder.SubTotalWithTax);
-            Assert.Equal(2, oldOrder.ShippingTotal);
-            Assert.Equal(2, oldOrder.PaymentTotal);
-            Assert.Equal(2, oldOrder.HandlingTotal);
-            Assert.Equal(2, oldOrder.HandlingTotalWithTax);
-            Assert.Equal(2, oldOrder.DiscountTotal);
-            Assert.Equal(2, oldOrder.DiscountTotalWithTax);
-            Assert.Equal(2, oldOrder.TaxTotal);
-            Assert.Equal(2, oldOrder.Sum);
+            Assert.Equal(1, oldOrder.TaxPercentRate);
+            Assert.Equal(1, oldOrder.ShippingTotalWithTax);
+            Assert.Equal(1, oldOrder.PaymentTotalWithTax);
+            Assert.Equal(1, oldOrder.DiscountAmount);
+            Assert.Equal(1, oldOrder.Total);
+            Assert.Equal(1, oldOrder.SubTotal);
+            Assert.Equal(1, oldOrder.SubTotalWithTax);
+            Assert.Equal(1, oldOrder.ShippingTotal);
+            Assert.Equal(1, oldOrder.PaymentTotal);
+            Assert.Equal(1, oldOrder.HandlingTotal);
+            Assert.Equal(1, oldOrder.HandlingTotalWithTax);
+            Assert.Equal(1, oldOrder.DiscountTotal);
+            Assert.Equal(1, oldOrder.DiscountTotalWithTax);
+            Assert.Equal(1, oldOrder.TaxTotal);
+            Assert.Equal(1, oldOrder.Sum);
         }
 
 
@@ -194,14 +194,14 @@ namespace VirtoCommerce.OrderModule.Test
 
             foreach (var data in dataset)
             {
-                modifiedOrder.TaxPercentRate = data.Item2;
+                modifiedOrder.TaxPercentRate = data.Item1;
                 modifiedOrder.ShippingTotalWithTax = data.Item2;
                 modifiedOrder.PaymentTotalWithTax = data.Item3;
                 modifiedOrder.DiscountAmount = data.Item4;
 
                 modifiedOrder.Patch(oldOrder);
 
-                Assert.Equal(data.Item2, oldOrder.TaxPercentRate);
+                Assert.Equal(data.Item1, oldOrder.TaxPercentRate);
                 Assert.Equal(data.Item2, oldOrder.ShippingTotalWithTax);
                 Assert.Equal(data.Item3, oldOrder.PaymentTotalWithTax);
                 Assert.Equal(data.Item4, oldOrder.DiscountAmount);
@@ -223,12 +223,12 @@ namespace VirtoCommerce.OrderModule.Test
 
             modifiedItem.Patch(oldItem);
 
-            Assert.Equal(2, oldItem.Price);
-            Assert.Equal(2, oldItem.DiscountAmount);
-            Assert.Equal(2, oldItem.TaxPercentRate);
-            Assert.Equal(2, oldItem.TaxTotal);
-            Assert.Equal(2, oldItem.DiscountAmountWithTax);
-            Assert.Equal(2, oldItem.PriceWithTax);
+            Assert.Equal(1, oldItem.Price);
+            Assert.Equal(1, oldItem.DiscountAmount);
+            Assert.Equal(1, oldItem.TaxPercentRate);
+            Assert.Equal(1, oldItem.TaxTotal);
+            Assert.Equal(1, oldItem.DiscountAmountWithTax);
+            Assert.Equal(1, oldItem.PriceWithTax);
         }
 
         [Fact]
@@ -300,16 +300,16 @@ namespace VirtoCommerce.OrderModule.Test
 
             modifiedItem.Patch(oldItem);
 
-            Assert.Equal(2, oldItem.Price);
-            Assert.Equal(2, oldItem.Amount);
-            Assert.Equal(2, oldItem.DiscountAmount);
-            Assert.Equal(2, oldItem.Sum);
-            Assert.Equal(2, oldItem.TaxPercentRate);
-            Assert.Equal(2, oldItem.DiscountAmountWithTax);
-            Assert.Equal(2, oldItem.PriceWithTax);
-            Assert.Equal(2, oldItem.TaxTotal);
-            Assert.Equal(2, oldItem.Total);
-            Assert.Equal(2, oldItem.TotalWithTax);
+            Assert.Equal(1, oldItem.Price);
+            Assert.Equal(1, oldItem.Amount);
+            Assert.Equal(1, oldItem.DiscountAmount);
+            Assert.Equal(1, oldItem.Sum);
+            Assert.Equal(1, oldItem.TaxPercentRate);
+            Assert.Equal(1, oldItem.DiscountAmountWithTax);
+            Assert.Equal(1, oldItem.PriceWithTax);
+            Assert.Equal(1, oldItem.TaxTotal);
+            Assert.Equal(1, oldItem.Total);
+            Assert.Equal(1, oldItem.TotalWithTax);
         }
 
         [Fact]
@@ -344,7 +344,7 @@ namespace VirtoCommerce.OrderModule.Test
         }
 
         [Fact]
-        public void CanChangePricesByOneItemInPayments()
+        public void CanChangePricesByOneValueInPayments()
         {
             var dataset = new[]
             {
@@ -360,7 +360,7 @@ namespace VirtoCommerce.OrderModule.Test
 
             foreach (var data in dataset)
             {
-                modifiedItem.Price = data.Item2;
+                modifiedItem.Price = data.Item1;
                 modifiedItem.Amount = data.Item2;
                 modifiedItem.DiscountAmount = data.Item3;
                 modifiedItem.Sum = data.Item4;
@@ -368,7 +368,7 @@ namespace VirtoCommerce.OrderModule.Test
 
                 modifiedItem.Patch(oldItem);
 
-                Assert.Equal(data.Item2, oldItem.Price);
+                Assert.Equal(data.Item1, oldItem.Price);
                 Assert.Equal(data.Item2, oldItem.Amount);
                 Assert.Equal(data.Item3, oldItem.DiscountAmount);
                 Assert.Equal(data.Item4, oldItem.Sum);
@@ -395,16 +395,16 @@ namespace VirtoCommerce.OrderModule.Test
 
             modifiedItem.Patch(oldItem);
 
-            Assert.Equal(2, oldItem.Price);
-            Assert.Equal(2, oldItem.DiscountAmount);
-            Assert.Equal(2, oldItem.TaxPercentRate);
-            Assert.Equal(2, oldItem.DiscountAmountWithTax);
-            Assert.Equal(2, oldItem.PriceWithTax);
-            Assert.Equal(2, oldItem.Sum);
-            Assert.Equal(2, oldItem.TaxPercentRate);
-            Assert.Equal(2, oldItem.TaxTotal);
-            Assert.Equal(2, oldItem.Total);
-            Assert.Equal(2, oldItem.TotalWithTax);
+            Assert.Equal(1, oldItem.Price);
+            Assert.Equal(1, oldItem.DiscountAmount);
+            Assert.Equal(1, oldItem.TaxPercentRate);
+            Assert.Equal(1, oldItem.DiscountAmountWithTax);
+            Assert.Equal(1, oldItem.PriceWithTax);
+            Assert.Equal(1, oldItem.Sum);
+            Assert.Equal(1, oldItem.TaxPercentRate);
+            Assert.Equal(1, oldItem.TaxTotal);
+            Assert.Equal(1, oldItem.Total);
+            Assert.Equal(1, oldItem.TotalWithTax);
         }
 
         [Fact]
