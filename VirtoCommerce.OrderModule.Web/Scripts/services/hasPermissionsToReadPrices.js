@@ -16,6 +16,6 @@ angular.module('virtoCommerce.orderModule')
     // filter to hide the price if there is no corresponding role
     .filter('verifyPrice', ['virtoCommerce.orderModule.hasPermissionsToReadPrices', function (hasPermissionsToReadPrices) {
         return function (value) {
-            return hasPermissionsToReadPrices.check() ? value : value.replace(/\d/g, '*');
+            return hasPermissionsToReadPrices.check() ? value : value.replace(/\d/g, '#');
         };
     }]);
