@@ -189,7 +189,6 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 target.PriceWithTax = PriceWithTax;
                 target.DiscountAmount = DiscountAmount;
                 target.DiscountAmountWithTax = DiscountAmountWithTax;
-
                 target.TaxPercentRate = TaxPercentRate;
                 target.TaxTotal = TaxTotal;
                 target.Total = Total;
