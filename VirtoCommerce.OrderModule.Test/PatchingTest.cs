@@ -7,7 +7,7 @@ namespace VirtoCommerce.OrderModule.Test
 {
     public class PatchingTest
     {
-        public CustomerOrderEntity PrepareOrder()
+        private static CustomerOrderEntity PrepareOrder()
         {
             var orderId = "orderId";
 
