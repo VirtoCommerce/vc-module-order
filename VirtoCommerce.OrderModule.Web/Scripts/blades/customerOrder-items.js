@@ -2,6 +2,7 @@ angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', '$translate', 'virtoCommerce.orderModule.hasPermissionsToReadPrices', function ($scope, bladeNavigationService, dialogService, items, prices, $translate, hasPermissionsToReadPrices) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
+    blade.isVisiblePrices = hasPermissionsToReadPrices.check();
 
     //pagination settings
     $scope.pageSettings = {};
@@ -10,7 +11,6 @@ angular.module('virtoCommerce.orderModule')
     $scope.pageSettings.currentPage = 1;
     $scope.pageSettings.numPages = 5;
     $scope.pageSettings.itemsPerPageCount = 4;
-    $scope.isVisiblePrices = hasPermissionsToReadPrices.check();
 
     var selectedProducts = [];
 
