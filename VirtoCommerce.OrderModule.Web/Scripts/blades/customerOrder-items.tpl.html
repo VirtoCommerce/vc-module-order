@@ -52,7 +52,7 @@
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0 | verifyPrice}}</span>
+                                <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
                             </td>
                             <td class="table-col">
                                 <div ng-if="isVisiblePrices" class="form-input __mini">
