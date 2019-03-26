@@ -1,7 +1,9 @@
-﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.statusTranslationService',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters, statusTranslationService) {
+angular.module('virtoCommerce.orderModule')
+.controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.order_res_fulfilmentCenters', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.hasPermissionsToReadPrices',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters, statusTranslationService, hasPermissionsToReadPrices) {
         var blade = $scope.blade;
+
+        blade.isVisiblePrices = hasPermissionsToReadPrices.check();
 
         if (blade.isNew) {
             blade.title = 'orders.blades.shipment-detail.title-new';
