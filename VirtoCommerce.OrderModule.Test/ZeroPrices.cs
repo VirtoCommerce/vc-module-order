@@ -8,6 +8,7 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
+    [Trait("Category", "CI")]
     public class ZeroPrices
     {
         [Fact]

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
+    [Trait("Category", "CI")]
     [CLSCompliant(false)]
     public class PatchingTest
     {
