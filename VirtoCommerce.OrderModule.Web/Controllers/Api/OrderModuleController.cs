@@ -119,7 +119,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = CheckResponseGroup(User.Identity.Name, respGroup);
+            searchCriteria.ResponseGroup = GetAllowedResponseGroups(User.Identity.Name, respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -151,7 +151,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, CheckResponseGroup(User.Identity.Name, respGroup))
+            var retVal = _customerOrderService.GetByIds(new[] { id }, GetAllowedResponseGroups(User.Identity.Name, respGroup))
                 .FirstOrDefault();
 
             if (retVal == null)
@@ -327,8 +327,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 retVal.Status = "New";
 
                 var store = _storeService.GetById(order.StoreId);
-                var numberTemplate =
-                    store.Settings.GetSettingValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
+                var numberTemplate = store.Settings.GetSettingValue("Order.ShipmentNewNumberTemplate", "SH{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
 
                 return Ok(retVal);
@@ -367,8 +366,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 retVal.Status = retVal.PaymentStatus.ToString();
 
                 var store = _storeService.GetById(order.StoreId);
-                var numberTemplate =
-                    store.Settings.GetSettingValue("Order.PaymentInNewNumberTemplate", "PI{0:yyMMdd}-{1:D5}");
+                var numberTemplate = store.Settings.GetSettingValue("Order.PaymentInNewNumberTemplate", "PI{0:yyMMdd}-{1:D5}");
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
                 return Ok(retVal);
             }
@@ -399,8 +397,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
         [ResponseType(typeof(webModel.DashboardStatisticsResult))]
-        public IHttpActionResult GetDashboardStatistics([FromUri] DateTime? start = null,
-            [FromUri] DateTime? end = null)
+        public IHttpActionResult GetDashboardStatistics([FromUri] DateTime? start = null, [FromUri] DateTime? end = null)
         {
             webModel.DashboardStatisticsResult retVal;
             start = start ?? DateTime.UtcNow.AddYears(-1);
@@ -408,8 +405,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             // Hack: to compinsate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);
-            var cacheKey = string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"),
-                end.Value.ToString("yyyy-MM-dd"));
+            var cacheKey = string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd"));
             lock (_lockObject)
             {
                 retVal = _cacheManager.Get(cacheKey, "OrderModuleRegion", () =>
@@ -475,8 +471,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 if (result.IsSuccess)
                 {
                     var paymentOuterId = result.OuterId;
-                    var payment = order.InPayments.FirstOrDefault(x =>
-                        string.IsNullOrEmpty(x.OuterId) || x.OuterId == paymentOuterId);
+                    var payment = order.InPayments.FirstOrDefault(x => string.IsNullOrEmpty(x.OuterId) || x.OuterId == paymentOuterId);
                     if (payment == null)
                     {
                         throw new InvalidOperationException(@"Cannot find payment");
@@ -514,7 +509,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = CheckResponseGroup(User.Identity.Name, null);
+            searchCriteria.ResponseGroup = GetAllowedResponseGroups(User.Identity.Name, null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -523,9 +518,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find order with number {orderNumber}");
             }
 
-            var invoice =
-                _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store",
-                    order.LanguageCode);
+            var invoice = _notificationManager.GetNewNotification<InvoiceEmailNotification>(order.StoreId, "Store", order.LanguageCode);
 
             invoice.CustomerOrder = order;
             _notificationTemplateResolver.ResolveTemplate(invoice);
@@ -569,12 +562,12 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         /// <param name="userName">User name</param>
         /// <param name="respGroup">Requested response group</param>
         /// <returns></returns>
-        public string CheckResponseGroup(string userName, string respGroup)
+        public string GetAllowedResponseGroups(string userName, string respGroup)
         {
             var userResponseGroupItems = _securityService.GetUserPermissions(userName)
                 .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
                 .SelectMany(x => x.AssignedScopes)
-                .Where(x => x.Type == nameof(OrderLimitResponseScope))
+                .OfType<OrderLimitResponseScope>()
                 .Select(x => x.Scope)
                 .ToList();
 
@@ -590,7 +583,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 : respGroup.Split(',').Where(x => userResponseGroupItems.Contains(x)));
 
             if (string.IsNullOrWhiteSpace(result))
+            {
                 result = null;
+            }
 
             return result;
         }
@@ -619,10 +614,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 {
                     criteria.EmployeeId = userName;
                 }
-            }
 
-            // ResponseGroup
-            criteria.ResponseGroup = CheckResponseGroup(userName, criteria.ResponseGroup);
+                // ResponseGroup
+                criteria.ResponseGroup = GetAllowedResponseGroups(userName, criteria.ResponseGroup);
+            }
 
             return criteria;
         }

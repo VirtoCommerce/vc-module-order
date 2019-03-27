@@ -1,3 +1,4 @@
+using System;
 using Moq;
 using VirtoCommerce.OrderModule.Web.Controllers.Api;
 using VirtoCommerce.OrderModule.Web.Security;
@@ -6,10 +7,10 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
-    public class ChekingResponseGroup
+    [CLSCompliant(false)]
+    public class CheckingResponseGroup
     {
-        [Fact]
-        public void CanCheckResponseGroup()
+        private static Permission[] PreparePermissions()
         {
             var scope1 = new OrderLimitResponseScope
             {
@@ -22,7 +23,7 @@ namespace VirtoCommerce.OrderModule.Test
                 Scope = "scope2"
             };
 
-            var permissions = new Permission[]
+            return new Permission[]
             {
                 new Permission
                 {
@@ -39,21 +40,34 @@ namespace VirtoCommerce.OrderModule.Test
                     AssignedScopes = new PermissionScope [0]
                 }
             };
+        }
+
+        [Theory]
+        [InlineData("scope1,scope2", null)]
+        [InlineData("scope1,scope2","scope1,scope2")]
+        [InlineData("scope1,scope2", "scope_,scope1,scope2")]
+        [InlineData("scope1", "scope1")]
+        [InlineData(null, "scope_")]
+        [InlineData(null, "scope_,scope__")]
+        public void CanCheckResponseGroup(string expected, string scope)
+        {
+            var permissions = PreparePermissions();
 
             var securityService = new Mock<ISecurityService>();
             securityService.Setup(x => x.GetUserPermissions(It.IsAny<string>())).Returns(permissions);
             var controller = new OrderModuleController(null, null, null, null, null, null, null, securityService.Object, null, null, null, null, null, null);
 
-            Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", null));
-            Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", "scope1,scope2"));
-            Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", "scope_,scope1,scope2"));
-            Assert.Equal("scope1", controller.CheckResponseGroup("user", "scope1"));
-            Assert.Null(controller.CheckResponseGroup("user", "scope_"));
-            Assert.Null(controller.CheckResponseGroup("user", "scope_, scope__"));
+            Assert.Equal(expected, controller.GetAllowedResponseGroups("user", scope));
+        }
 
+        [Fact]
+        public void CanCheckResponseGroupForUserWithNoScope()
+        {
+            var securityService = new Mock<ISecurityService>();
             securityService.Setup(x => x.GetUserPermissions(It.IsAny<string>())).Returns(new Permission[0]);
+            var controller = new OrderModuleController(null, null, null, null, null, null, null, securityService.Object, null, null, null, null, null, null);
 
-            Assert.Equal("scope1,scope2", controller.CheckResponseGroup("user", "scope1,scope2"));
+            Assert.Equal("scope1,scope2", controller.GetAllowedResponseGroups("user", "scope1,scope2"));
         }
     }
 }
