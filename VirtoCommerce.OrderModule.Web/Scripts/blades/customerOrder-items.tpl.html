@@ -58,25 +58,25 @@
                                 <div ng-if="blade.isVisiblePrices" class="form-input __mini">
                                     <input money required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
-                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.price | currency:'' | verifyPrice}}</span>
+                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.price | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.priceWithTax | currency:'' | verifyPrice}}</span>
+                                <span class="list-price">{{data.priceWithTax | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
                                 <div ng-if="blade.isVisiblePrices" class="form-input __mini __inline">
                                     <input money required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
                                 </div>
-                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.discountAmount | currency:'' | verifyPrice}}</span>
+                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.discountAmount | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.discountAmountWithTax | currency:'' | verifyPrice}}</span>
+                                <span class="list-price">{{data.discountAmountWithTax | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <span class="list-price">{{data.taxTotal | currency:'' | verifyPrice}}</span>
+                                <span class="list-price">{{data.taxTotal | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col __total">
-                                <span class="list-price">{{data.extendedPriceWithTax | currency:'' | verifyPrice}}</span>
+                                <span class="list-price">{{data.extendedPriceWithTax | currency:'' | verifyPrice:blade.isVisiblePrices}}</span>
                             </td>
                            
                         </tr>
@@ -92,19 +92,19 @@
                 <table class="table __collapsed __order-info">
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.sub-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.subTotal | currency:blade.currentEntity.currency | verifyPrice}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotal | currency:blade.currentEntity.currency | verifyPrice:blade.isVisiblePrices}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount-total' | translate }}</td>
-                        <td class="table-col __price">{{blade.currentEntity.subTotalDiscount | currency:blade.currentEntity.currency | verifyPrice}}</td>
+                        <td class="table-col __price">{{blade.currentEntity.subTotalDiscount | currency:blade.currentEntity.currency | verifyPrice:blade.isVisiblePrices}}</td>
                     </tr>
                     <tr class="table-item">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.tax-total' | translate }}</td>
-                        <td class="table-col __price">{{ blade.currentEntity.subTotalTaxTotal | currency:blade.currentEntity.currency | verifyPrice}}</td>
+                        <td class="table-col __price">{{ blade.currentEntity.subTotalTaxTotal | currency:blade.currentEntity.currency | verifyPrice:blade.isVisiblePrices}}</td>
                     </tr>
                     <tr class="table-item __total">
                         <td class="table-col">{{ 'orders.blades.customerOrder-items.labels.total' | translate }}</td>
-                        <td class="table-col __price">{{ (blade.currentEntity.subTotalWithTax - blade.currentEntity.subTotalDiscountWithTax) | currency:blade.currentEntity.currency | verifyPrice}}</td>
+                        <td class="table-col __price">{{ (blade.currentEntity.subTotalWithTax - blade.currentEntity.subTotalDiscountWithTax) | currency:blade.currentEntity.currency | verifyPrice:blade.isVisiblePrices}}</td>
                     </tr>
                 </table>
             </div>
