@@ -7,6 +7,7 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
+    [Trait("Category", "CI")]
     [CLSCompliant(false)]
     public class CheckingResponseGroup
     {
@@ -44,7 +45,7 @@ namespace VirtoCommerce.OrderModule.Test
 
         [Theory]
         [InlineData("scope1,scope2", null)]
-        [InlineData("scope1,scope2","scope1,scope2")]
+        [InlineData("scope1,scope2", "scope1,scope2")]
         [InlineData("scope1,scope2", "scope_,scope1,scope2")]
         [InlineData("scope1", "scope1")]
         [InlineData(null, "scope_")]

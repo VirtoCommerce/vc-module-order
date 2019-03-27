@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using VirtoCommerce.OrderModule.Data.Repositories;
-using VirtoCommerce.Platform.Testing.Bases;
+using System.Linq;
 using VirtoCommerce.OrderModule.Data.Migrations;
-using Xunit;
+using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.Platform.Data.Infrastructure;
+using VirtoCommerce.Platform.Testing.Bases;
+using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
+    [Trait("Category", "CI")]
     public class MigrationScenarios : MigrationsTestBase
     {
         [Fact]
