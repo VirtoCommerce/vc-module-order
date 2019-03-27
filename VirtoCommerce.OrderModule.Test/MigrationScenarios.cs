@@ -7,7 +7,6 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
-    [Trait("Category", "CI")]
     public class MigrationScenarios : MigrationsTestBase
     {
         [Fact]
