@@ -27,8 +27,11 @@ namespace VirtoCommerce.OrderModule.Web.Security
                 return Enumerable.Empty<string>();
             }
 
-            return Enum.GetValues(typeof(CustomerOrderResponseGroup)).Cast<CustomerOrderResponseGroup>()
-                .Select(x => x.ToString()).Where(x => x.StartsWith("With")).Select(x => $"{Type}:{x}");
+            return Enum.GetValues(typeof(CustomerOrderResponseGroup))
+                       .Cast<CustomerOrderResponseGroup>()
+                       .Select(x => x.ToString())
+                       .Where(x => x.StartsWith("With"))
+                       .Select(x => $"{Type}:{x}");
         }
     }
 }

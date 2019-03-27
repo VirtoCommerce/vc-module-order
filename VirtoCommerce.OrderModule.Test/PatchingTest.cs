@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using VirtoCommerce.OrderModule.Data.Model;
@@ -5,6 +6,7 @@ using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
+    [CLSCompliant(false)]
     public class PatchingTest
     {
         private static CustomerOrderEntity PrepareOrder()
@@ -178,34 +180,27 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(2, oldOrder.Sum);
         }
 
-        [Fact]
-        public void CanChangePriceByOneValueInOrder()
+        [Theory]
+        [InlineData(0, 0, 0, 2)]
+        [InlineData(0, 0, 2, 0)]
+        [InlineData(0, 2, 0, 0)]
+        [InlineData(2, 0, 0, 0)]
+        public void CanChangePriceByOneValueInOrder(decimal item1, decimal item2, decimal item3, decimal item4)
         {
-            var dataset = new[]
-            {
-                (0,0,0,2),
-                (0,0,2,0),
-                (0,2,0,0),
-                (2,0,0,0)
-            };
-
             var oldOrder = PrepareOrder();
             var modifiedOrder = PrepareOrder();
 
-            foreach (var data in dataset)
-            {
-                modifiedOrder.TaxPercentRate = data.Item1;
-                modifiedOrder.ShippingTotalWithTax = data.Item2;
-                modifiedOrder.PaymentTotalWithTax = data.Item3;
-                modifiedOrder.DiscountAmount = data.Item4;
+            modifiedOrder.TaxPercentRate = item1;
+            modifiedOrder.ShippingTotalWithTax = item2;
+            modifiedOrder.PaymentTotalWithTax = item3;
+            modifiedOrder.DiscountAmount = item4;
 
-                modifiedOrder.Patch(oldOrder);
+            modifiedOrder.Patch(oldOrder);
 
-                Assert.Equal(data.Item1, oldOrder.TaxPercentRate);
-                Assert.Equal(data.Item2, oldOrder.ShippingTotalWithTax);
-                Assert.Equal(data.Item3, oldOrder.PaymentTotalWithTax);
-                Assert.Equal(data.Item4, oldOrder.DiscountAmount);
-            }
+            Assert.Equal(item1, oldOrder.TaxPercentRate);
+            Assert.Equal(item2, oldOrder.ShippingTotalWithTax);
+            Assert.Equal(item3, oldOrder.PaymentTotalWithTax);
+            Assert.Equal(item4, oldOrder.DiscountAmount);
         }
 
         [Fact]
@@ -254,31 +249,24 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(2, oldItem.PriceWithTax);
         }
 
-        [Fact]
-        public void CanChangePriceByOneValueInItem()
+        [Theory]
+        [InlineData(0, 0, 2)]
+        [InlineData(0, 2, 0)]
+        [InlineData(2, 0, 0)]
+        public void CanChangePriceByOneValueInItem(decimal item1, decimal item2, decimal item3)
         {
-            var dataset = new[]
-            {
-                (0,0,2),
-                (0,2,0),
-                (2,0,0)
-            };
-
             var oldItem = PrepareOrder().Items.FirstOrDefault();
             var modifiedItem = PrepareOrder().Items.FirstOrDefault();
 
-            foreach (var data in dataset)
-            {
-                modifiedItem.Price = data.Item2;
-                modifiedItem.DiscountAmount = data.Item2;
-                modifiedItem.TaxPercentRate = data.Item3;
+            modifiedItem.Price = item1;
+            modifiedItem.DiscountAmount = item2;
+            modifiedItem.TaxPercentRate = item3;
 
-                modifiedItem.Patch(oldItem);
+            modifiedItem.Patch(oldItem);
 
-                Assert.Equal(data.Item2, modifiedItem.Price);
-                Assert.Equal(data.Item2, modifiedItem.DiscountAmount);
-                Assert.Equal(data.Item3, modifiedItem.TaxPercentRate);
-            }
+            Assert.Equal(item1, modifiedItem.Price);
+            Assert.Equal(item2, modifiedItem.DiscountAmount);
+            Assert.Equal(item3, modifiedItem.TaxPercentRate);
         }
 
         [Fact]
@@ -343,37 +331,30 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(2, oldItem.TotalWithTax);
         }
 
-        [Fact]
-        public void CanChangePricesByOneValueInPayments()
+        [Theory]
+        [InlineData(0, 0, 0, 0, 2)]
+        [InlineData(0, 0, 0, 2, 0)]
+        [InlineData(0, 0, 2, 0, 0)]
+        [InlineData(0, 2, 0, 0, 0)]
+        [InlineData(1, 0, 0, 0, 0)]
+        public void CanChangePricesByOneValueInPayments(decimal item1, decimal item2, decimal item3, decimal item4, decimal item5)
         {
-            var dataset = new[]
-            {
-                (0,0,0,0,2),
-                (0,0,0,2,0),
-                (0,0,2,0,0),
-                (0,2,0,0,0),
-                (2,0,0,0,0)
-            };
-
             var oldItem = PrepareOrder().InPayments.FirstOrDefault();
             var modifiedItem = PrepareOrder().InPayments.FirstOrDefault();
 
-            foreach (var data in dataset)
-            {
-                modifiedItem.Price = data.Item1;
-                modifiedItem.Amount = data.Item2;
-                modifiedItem.DiscountAmount = data.Item3;
-                modifiedItem.Sum = data.Item4;
-                modifiedItem.TaxPercentRate = data.Item5;
+            modifiedItem.Price = item1;
+            modifiedItem.Amount = item2;
+            modifiedItem.DiscountAmount = item3;
+            modifiedItem.Sum = item4;
+            modifiedItem.TaxPercentRate = item5;
 
-                modifiedItem.Patch(oldItem);
+            modifiedItem.Patch(oldItem);
 
-                Assert.Equal(data.Item1, oldItem.Price);
-                Assert.Equal(data.Item2, oldItem.Amount);
-                Assert.Equal(data.Item3, oldItem.DiscountAmount);
-                Assert.Equal(data.Item4, oldItem.Sum);
-                Assert.Equal(data.Item5, oldItem.TaxPercentRate);
-            }
+            Assert.Equal(item1, oldItem.Price);
+            Assert.Equal(item2, oldItem.Amount);
+            Assert.Equal(item3, oldItem.DiscountAmount);
+            Assert.Equal(item4, oldItem.Sum);
+            Assert.Equal(item5, oldItem.TaxPercentRate);
         }
 
         [Fact]
@@ -436,31 +417,24 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(2, oldItem.TotalWithTax);
         }
 
-        [Fact]
-        public void CanChangePricesByOneValueInShipment()
+        [Theory]
+        [InlineData(0, 0, 2)]
+        [InlineData(0, 2, 0)]
+        [InlineData(2, 0, 0)]
+        public void CanChangePricesByOneValueInShipment(decimal item1, decimal item2, decimal item3)
         {
-            var dataset = new[]
-            {
-                (0,0,2),
-                (0,2,0),
-                (2,0,0)
-            };
-
             var oldItem = PrepareOrder().InPayments.FirstOrDefault();
             var modifiedItem = PrepareOrder().InPayments.FirstOrDefault();
 
-            foreach (var data in dataset)
-            {
-                modifiedItem.Price = data.Item1;
-                modifiedItem.DiscountAmount = data.Item2;
-                modifiedItem.TaxPercentRate = data.Item3;
+            modifiedItem.Price = item1;
+            modifiedItem.DiscountAmount = item2;
+            modifiedItem.TaxPercentRate = item3;
 
-                modifiedItem.Patch(oldItem);
+            modifiedItem.Patch(oldItem);
 
-                Assert.Equal(data.Item1, oldItem.Price);
-                Assert.Equal(data.Item2, oldItem.DiscountAmount);
-                Assert.Equal(data.Item3, oldItem.TaxPercentRate);
-            }
+            Assert.Equal(item1, oldItem.Price);
+            Assert.Equal(item2, oldItem.DiscountAmount);
+            Assert.Equal(item3, oldItem.TaxPercentRate);
         }
     }
 }

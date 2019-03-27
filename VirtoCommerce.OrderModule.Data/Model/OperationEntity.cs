@@ -67,7 +67,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
             operation.IsApproved = IsApproved;
 
             if (toPatchSum)
+            {
                 operation.Sum = Sum;
+            }
         }
     }
 }
