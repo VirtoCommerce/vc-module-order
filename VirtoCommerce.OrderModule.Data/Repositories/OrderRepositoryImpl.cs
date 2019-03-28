@@ -291,21 +291,6 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                 foreach (var customerOrder in result)
                 {
                     customerOrder.ResetPrices();
-
-                    foreach (var payment in customerOrder.InPayments)
-                    {
-                        payment.ResetPrices();
-                    }
-
-                    foreach (var shipment in customerOrder.Shipments)
-                    {
-                        shipment.ResetPrices();
-                    }
-
-                    foreach (var item in customerOrder.Items)
-                    {
-                        item.ResetPrices();
-                    }
                 }
             }
 

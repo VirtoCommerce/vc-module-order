@@ -154,7 +154,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation, bool toPatchSum = true)
+        public override void Patch(OperationEntity operation)
         {
             var target = operation as ShipmentEntity;
             if (target == null)
@@ -165,7 +165,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
             var isNeedPatch = !(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
                   (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m));
 
-            base.Patch(operation, isNeedPatch);
+            base.NeedPatchSum = isNeedPatch;
+            base.Patch(operation);
 
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
