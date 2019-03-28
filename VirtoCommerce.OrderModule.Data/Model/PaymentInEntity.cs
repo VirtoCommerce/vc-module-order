@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -140,7 +141,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation, bool toPatchSum = true)
+        public override void Patch(OperationEntity operation)
         {
             var target = operation as PaymentInEntity;
             if (target == null)
@@ -148,10 +149,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(operation));
             }
 
-            var isNeedPatch = !(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m && Amount == 0m && Sum == 0m &&
-                 (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m || target.Amount != 0m || target.Sum != 0m));
+            var isNeedPatch = !(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
 
-            base.Patch(operation, isNeedPatch);
+            base.NeedPatchSum = isNeedPatch;
+            base.Patch(operation);
 
             target.TaxType = TaxType;
             target.CustomerId = CustomerId;
@@ -213,6 +214,15 @@ namespace VirtoCommerce.OrderModule.Data.Model
             DiscountAmount = 0m;
             Amount = 0m;
             Sum = 0m;
+        }
+
+        public virtual IEnumerable<decimal> GetBaseAmounts()
+        {
+            yield return TaxPercentRate;
+            yield return Price;
+            yield return DiscountAmount;
+            yield return Amount;
+            yield return Sum;
         }
     }
 }

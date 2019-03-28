@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -154,7 +155,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation, bool toPatchSum = true)
+        public override void Patch(OperationEntity operation)
         {
             var target = operation as ShipmentEntity;
             if (target == null)
@@ -162,10 +163,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
             }
 
-            var isNeedPatch = !(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
-                  (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m));
+            var isNeedPatch = !(GetBaseAmounts().Any(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
 
-            base.Patch(operation, isNeedPatch);
+            base.NeedPatchSum = isNeedPatch;
+            base.Patch(operation);
 
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
@@ -235,6 +236,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
             TaxPercentRate = 0m;
             Price = 0m;
             DiscountAmount = 0m;
+        }
+
+        public virtual IEnumerable<decimal> GetBaseAmounts()
+        {
+            yield return TaxPercentRate;
+            yield return Price;
+            yield return DiscountAmount;
         }
     }
 }

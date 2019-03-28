@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -160,7 +161,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation, bool toPatchSum = true)
+        public override void Patch(OperationEntity operation)
         {
             var target = operation as CustomerOrderEntity;
             if (target == null)
@@ -183,8 +184,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.LanguageCode = LanguageCode;
             target.OuterId = OuterId;
 
-            var isNeedPatch = !(TaxPercentRate == 0m && ShippingTotalWithTax == 0m && PaymentTotalWithTax == 0m && DiscountAmount == 0m &&
-                 (target.TaxPercentRate != 0m || target.ShippingTotalWithTax != 0m || target.PaymentTotalWithTax != 0m || target.DiscountAmount != 0m));
+            var isNeedPatch = !(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
 
             if (isNeedPatch)
             {
@@ -259,7 +259,8 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
-            base.Patch(operation, isNeedPatch);
+            base.NeedPatchSum = isNeedPatch;
+            base.Patch(operation);
         }
 
         public virtual void ResetPrices()
@@ -278,6 +279,29 @@ namespace VirtoCommerce.OrderModule.Data.Model
             DiscountTotal = 0m;
             DiscountTotalWithTax = 0m;
             TaxTotal = 0m;
+
+            foreach (var payment in InPayments)
+            {
+                payment.ResetPrices();
+            }
+
+            foreach (var shipment in Shipments)
+            {
+                shipment.ResetPrices();
+            }
+
+            foreach (var item in Items)
+            {
+                item.ResetPrices();
+            }
+        }
+
+        public virtual IEnumerable<decimal> GetBaseAmounts()
+        {
+            yield return TaxPercentRate;
+            yield return ShippingTotalWithTax;
+            yield return PaymentTotalWithTax;
+            yield return DiscountAmount;
         }
     }
 }
