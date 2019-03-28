@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -183,8 +184,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.LanguageCode = LanguageCode;
             target.OuterId = OuterId;
 
-            var isNeedPatch = !(TaxPercentRate == 0m && ShippingTotalWithTax == 0m && PaymentTotalWithTax == 0m && DiscountAmount == 0m &&
-                 (target.TaxPercentRate != 0m || target.ShippingTotalWithTax != 0m || target.PaymentTotalWithTax != 0m || target.DiscountAmount != 0m));
+            var isNeedPatch = !(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
 
             if (isNeedPatch)
             {
@@ -294,6 +294,14 @@ namespace VirtoCommerce.OrderModule.Data.Model
             {
                 item.ResetPrices();
             }
+        }
+
+        public virtual IEnumerable<decimal> GetBaseAmounts()
+        {
+            yield return TaxPercentRate;
+            yield return ShippingTotalWithTax;
+            yield return PaymentTotalWithTax;
+            yield return DiscountAmount;
         }
     }
 }

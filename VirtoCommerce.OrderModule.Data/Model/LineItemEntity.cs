@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -153,8 +154,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.CancelReason = CancelReason;
             target.Comment = Comment;
 
-            if (!(TaxPercentRate == 0m && Price == 0m && DiscountAmount == 0m &&
-              (target.TaxPercentRate != 0m || target.Price != 0m || target.DiscountAmount != 0m)))
+            if (!(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m)))
             {
                 target.TaxPercentRate = TaxPercentRate;
                 target.Price = Price;
@@ -182,6 +182,13 @@ namespace VirtoCommerce.OrderModule.Data.Model
             TaxPercentRate = 0m;
             Price = 0m;
             DiscountAmount = 0m;
+        }
+
+        public virtual IEnumerable<decimal> GetBaseAmounts()
+        {
+            yield return TaxPercentRate;
+            yield return Price;
+            yield return DiscountAmount;
         }
     }
 }
