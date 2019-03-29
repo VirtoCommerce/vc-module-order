@@ -1,11 +1,11 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', 'virtoCommerce.orderModule.hasPermissionsToReadPrices',
-function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, hasPermissionsToReadPrices) {
+.controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', 'platformWebApp.authService',
+function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, authService) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
 
-    blade.isVisiblePrices = hasPermissionsToReadPrices.check();
+    blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
 
     blade.refresh = function () {
         if (blade.preloadedOrders) {
@@ -166,7 +166,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency | verifyPrice:" + blade.isVisiblePrices, visible: false };
+            return { name: name, cellFilter: "currency | showPrice:" + blade.isVisiblePrices, visible: false };
         }));
 
         $scope.gridOptions = gridOptions;

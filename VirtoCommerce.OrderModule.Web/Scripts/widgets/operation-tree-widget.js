@@ -1,8 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.knownOperations', 'virtoCommerce.orderModule.hasPermissionsToReadPrices', function ($scope, bladeNavigationService, knownOperations, hasPermissionsToReadPrices) {
+.controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.knownOperations', function ($scope, bladeNavigationService, knownOperations) {
     var blade = $scope.blade;
-
-    $scope.checkVisiblePrices = hasPermissionsToReadPrices.check;
 
     $scope.$watchCollection('blade.customerOrder.childrenOperations', function () {
         $scope.currentOperationId = blade.customerOrder.id;

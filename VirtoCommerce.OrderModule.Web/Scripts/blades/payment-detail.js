@@ -1,9 +1,9 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.hasPermissionsToReadPrices',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, hasPermissionsToReadPrices) {
+.controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.authService',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService) {
         var blade = $scope.blade;
 
-        blade.isVisiblePrices = hasPermissionsToReadPrices.check();
+        blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
 
         if (blade.isNew) {
             blade.title = 'orders.blades.payment-detail.title-new';

@@ -60,7 +60,7 @@
                                 <div class="form-input __currency">
                                     <span class="currency">{{blade.currentEntity.currency}}</span>
                                     <input ng-if="blade.isVisiblePrices" money required type="text" ng-model="blade.currentEntity.amount">
-                                    <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.amount | verifyPrice:blade.isVisiblePrices}}">
+                                    <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.amount | showPrice:blade.isVisiblePrices}}">
                                 </div>
                             </div>
                         </div>
@@ -95,14 +95,14 @@
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
         <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.price" ng-change="blade.updateRecalculationFlag()">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.price | verifyPrice:blade.isVisiblePrices}}">
+        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.price | showPrice:blade.isVisiblePrices}}">
     </div>
 </script>
 <script type="text/ng-template" id="priceWithTax.html">
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
         <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.priceWithTax | verifyPrice:blade.isVisiblePrices}}">
+        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.priceWithTax | showPrice:blade.isVisiblePrices}}">
     </div>
 </script>
 

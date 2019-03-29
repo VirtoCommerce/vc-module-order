@@ -184,7 +184,7 @@
     <Content Include="Scripts\blades\operation-comment.js" />
     <Content Include="Scripts\blades\operation-comment.tpl.html" />
     <Content Include="Scripts\dialogs\cancelOperation-dialog.tpl.html" />
-    <Content Include="Scripts\services\hasPermissionsToReadPrices.js" />
+    <Content Include="Scripts\services\showPriceFilter.js" />
     <Content Include="Scripts\services\statusTranslation.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.tpl.html" />
