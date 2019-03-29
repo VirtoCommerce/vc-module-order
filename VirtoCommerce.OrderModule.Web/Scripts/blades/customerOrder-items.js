@@ -1,8 +1,8 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', '$translate', 'virtoCommerce.orderModule.hasPermissionsToReadPrices', function ($scope, bladeNavigationService, dialogService, items, prices, $translate, hasPermissionsToReadPrices) {
+.controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.catalogModule.items', 'virtoCommerce.pricingModule.prices', '$translate', 'platformWebApp.authService', function ($scope, bladeNavigationService, dialogService, items, prices, $translate, authService) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
-    blade.isVisiblePrices = hasPermissionsToReadPrices.check();
+    blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
 
     //pagination settings
     $scope.pageSettings = {};

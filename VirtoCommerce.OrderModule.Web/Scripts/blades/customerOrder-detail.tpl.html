@@ -65,14 +65,14 @@
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
         <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmount | verifyPrice:blade.isVisiblePrices}}">
+        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmount | showPrice:blade.isVisiblePrices}}">
     </div>
 </script>
 <script type="text/ng-template" id="discountAmountWithTax.html">
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
         <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmountWithTax" focus-on="discountAmountWithTax">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmountWithTax | verifyPrice:blade.isVisiblePrices}}">
+        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmountWithTax | showPrice:blade.isVisiblePrices}}">
     </div>
 </script>
 

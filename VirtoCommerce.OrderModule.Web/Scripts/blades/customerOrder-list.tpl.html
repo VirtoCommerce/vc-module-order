@@ -29,7 +29,7 @@
                             { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
                             { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
                             { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
-                            { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency | verifyPrice:' + blade.isVisiblePrices, width: '**' },
+                            { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency | showPrice:' + blade.isVisiblePrices, width: '**' },
                             { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
                             { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
                             { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'statusTranslate:row.entity', width: '*' },

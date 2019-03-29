@@ -71,8 +71,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
     };
 })
 .run(
-    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'virtoCommerce.orderModule.knownLimitResponseScopes', 'virtoCommerce.orderModule.hasPermissionsToReadPrices',
-    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, knownLimitResponseScopes, hasPermissionsToReadPrices) {
+    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'virtoCommerce.orderModule.knownLimitResponseScopes', 'platformWebApp.authService',
+    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, knownLimitResponseScopes, authService) {
         //Register module in main menu
         var menuItem = {
             path: 'browse/orders',
@@ -248,10 +248,14 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         };
         widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
 
+        function checkPermissionToReadPrices() {
+            return authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
+        }
+
         var customerOrderTotalsWidget = {
             controller: 'virtoCommerce.orderModule.customerOrderTotalsWidgetController',
             size: [2, 2],
-            isVisible: hasPermissionsToReadPrices.check,
+            isVisible: checkPermissionToReadPrices,
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-totals-widget.tpl.html'
         };
         widgetService.registerWidget(customerOrderTotalsWidget, 'customerOrderDetailWidgets');
@@ -276,7 +280,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         var shipmentTotalWidget = {
             controller: 'virtoCommerce.orderModule.shipmentTotalsWidgetController',
             size: [2, 1],
-            isVisible: hasPermissionsToReadPrices.check,
+            isVisible: checkPermissionToReadPrices,
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-totals-widget.tpl.html'
         };
         widgetService.registerWidget(shipmentTotalWidget, 'shipmentDetailWidgets');
@@ -290,7 +294,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         var paymentTotalWidget = {
             controller: 'virtoCommerce.orderModule.paymentTotalsWidgetController',
             size: [2, 1],
-            isVisible: hasPermissionsToReadPrices.check,
+            isVisible: checkPermissionToReadPrices,
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-totals-widget.tpl.html'
         };
         widgetService.registerWidget(paymentTotalWidget, 'paymentDetailWidgets');

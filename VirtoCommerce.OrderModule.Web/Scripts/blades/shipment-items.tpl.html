@@ -52,11 +52,11 @@
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini">
-                                    {{data.lineItem.price | currency:data.lineItem.currency | verifyPrice:blade.isVisiblePrices}}
+                                    {{data.lineItem.price | currency:data.lineItem.currency | showPrice:blade.isVisiblePrices}}
                                 </div>
                             </td>
                             <td class="table-col __total">
-                                <span>{{data._total | currency:data.lineItem.currency | verifyPrice:blade.isVisiblePrices}}</span>
+                                <span>{{data._total | currency:data.lineItem.currency | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                         </tr>
                         <tr ng-repeat-end class="table-item" ng-class="{'__selected': data.id === selectedNodeId}" context-menu data-target="col_menu_{{data.id}}" ng-click='selectItem(data)'>
