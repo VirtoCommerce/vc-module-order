@@ -201,6 +201,7 @@
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
     <Compile Include="Model\DiscountEntity.cs" />
+    <Compile Include="Model\ISupportPartialPriceUpdate.cs" />
     <Compile Include="Model\LineItemEntity.cs" />
     <Compile Include="Model\OperationEntity.cs" />
     <Compile Include="Model\PaymentGatewayTransactionEntity.cs" />

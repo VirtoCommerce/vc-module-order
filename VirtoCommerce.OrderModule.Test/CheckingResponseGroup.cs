@@ -1,6 +1,4 @@
 using System;
-using Moq;
-using VirtoCommerce.OrderModule.Web.Controllers.Api;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Security;
 using Xunit;
@@ -54,21 +52,13 @@ namespace VirtoCommerce.OrderModule.Test
         {
             var permissions = PreparePermissions();
 
-            var securityService = new Mock<ISecurityService>();
-            securityService.Setup(x => x.GetUserPermissions(It.IsAny<string>())).Returns(permissions);
-            var controller = new OrderModuleController(null, null, null, null, null, null, null, securityService.Object, null, null, null, null, null, null);
-
-            Assert.Equal(expected, controller.GetAllowedResponseGroups("user", scope));
+            Assert.Equal(expected, OrderLimitResponseScope.GetAllowedResponseGroups(permissions, scope));
         }
 
         [Fact]
         public void CanCheckResponseGroupForUserWithNoScope()
         {
-            var securityService = new Mock<ISecurityService>();
-            securityService.Setup(x => x.GetUserPermissions(It.IsAny<string>())).Returns(new Permission[0]);
-            var controller = new OrderModuleController(null, null, null, null, null, null, null, securityService.Object, null, null, null, null, null, null);
-
-            Assert.Equal("scope1,scope2", controller.GetAllowedResponseGroups("user", "scope1,scope2"));
+            Assert.Equal("scope1,scope2", OrderLimitResponseScope.GetAllowedResponseGroups(new Permission[0], "scope1,scope2"));
         }
     }
 }

@@ -117,7 +117,10 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     {
                         customerOrder = orderEntity.ToModel(customerOrder) as CustomerOrder;
 
-                        TotalsCalculator.CalculateTotals(customerOrder);
+                        if (orderResponseGroup == CustomerOrderResponseGroup.Full)
+                        {
+                            TotalsCalculator.CalculateTotals(customerOrder);
+                        }
 
                         LoadOrderDependencies(customerOrder);
                         retVal.Add(customerOrder);

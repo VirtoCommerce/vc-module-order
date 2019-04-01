@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
-    public class LineItemEntity : AuditableEntity
+    public class LineItemEntity : AuditableEntity, ISupportPartialPriceUpdate
     {
         [StringLength(128)]
         public string PriceId { get; set; }
@@ -154,7 +154,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.CancelReason = CancelReason;
             target.Comment = Comment;
 
-            if (!(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m)))
+            if (!(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m)))
             {
                 target.TaxPercentRate = TaxPercentRate;
                 target.Price = Price;
@@ -179,12 +179,15 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public virtual void ResetPrices()
         {
-            TaxPercentRate = 0m;
             Price = 0m;
+            PriceWithTax = 0m;
             DiscountAmount = 0m;
+            DiscountAmountWithTax = 0m;
+            TaxTotal = 0m;
+            TaxPercentRate = 0m;
         }
 
-        public virtual IEnumerable<decimal> GetBaseAmounts()
+        public virtual IEnumerable<decimal> GetNonCalculatablePrices()
         {
             yield return TaxPercentRate;
             yield return Price;

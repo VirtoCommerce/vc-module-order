@@ -10,7 +10,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
-    public class CustomerOrderEntity : OperationEntity
+    public class CustomerOrderEntity : OperationEntity, ISupportPartialPriceUpdate
     {
         [Required]
         [StringLength(64)]
@@ -184,9 +184,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.LanguageCode = LanguageCode;
             target.OuterId = OuterId;
 
-            var isNeedPatch = !(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
 
-            if (isNeedPatch)
+            // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
+            var needPathPrices = !(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
+
+            if (needPathPrices)
             {
                 target.Total = Total;
                 target.SubTotal = SubTotal;
@@ -259,7 +261,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
-            base.NeedPatchSum = isNeedPatch;
+            base.NeedPatchSum = needPathPrices;
             base.Patch(operation);
         }
 
@@ -279,6 +281,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             DiscountTotal = 0m;
             DiscountTotalWithTax = 0m;
             TaxTotal = 0m;
+            Sum = 0m;
 
             foreach (var payment in InPayments)
             {
@@ -296,7 +299,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             }
         }
 
-        public virtual IEnumerable<decimal> GetBaseAmounts()
+        public virtual IEnumerable<decimal> GetNonCalculatablePrices()
         {
             yield return TaxPercentRate;
             yield return ShippingTotalWithTax;

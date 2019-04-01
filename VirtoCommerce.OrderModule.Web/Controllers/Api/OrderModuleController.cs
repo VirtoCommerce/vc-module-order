@@ -119,7 +119,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = GetAllowedResponseGroups(User.Identity.Name, respGroup);
+            searchCriteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -151,7 +151,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, GetAllowedResponseGroups(User.Identity.Name, respGroup))
+            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
                 .FirstOrDefault();
 
             if (retVal == null)
@@ -509,7 +509,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = GetAllowedResponseGroups(User.Identity.Name, null);
+            searchCriteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -556,40 +556,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        /// <summary>
-        /// The method checks the requested elements and valid for the user
-        /// </summary>
-        /// <param name="userName">User name</param>
-        /// <param name="respGroup">Requested response group</param>
-        /// <returns></returns>
-        public string GetAllowedResponseGroups(string userName, string respGroup)
-        {
-            var userResponseGroupItems = _securityService.GetUserPermissions(userName)
-                .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
-                .SelectMany(x => x.AssignedScopes)
-                .OfType<OrderLimitResponseScope>()
-                .Select(x => x.Scope)
-                .ToList();
-
-            //if the user has no restrictions, then return the requested items
-            if (!userResponseGroupItems.Any())
-            {
-                return respGroup;
-            }
-
-            //if the user has restrictions, then make an intersection with the requested parameters
-            var result = string.Join(",", string.IsNullOrWhiteSpace(respGroup)
-                ? userResponseGroupItems
-                : respGroup.Split(',').Where(x => userResponseGroupItems.Contains(x)));
-
-            if (string.IsNullOrWhiteSpace(result))
-            {
-                result = null;
-            }
-
-            return result;
-        }
-
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
             CustomerOrderSearchCriteria criteria)
         {
@@ -616,7 +582,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 }
 
                 // ResponseGroup
-                criteria.ResponseGroup = GetAllowedResponseGroups(userName, criteria.ResponseGroup);
+                criteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
             }
 
             return criteria;

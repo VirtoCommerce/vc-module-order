@@ -33,5 +33,40 @@ namespace VirtoCommerce.OrderModule.Web.Security
                        .Where(x => x.StartsWith("With"))
                        .Select(x => $"{Type}:{x}");
         }
+
+
+        /// <summary>
+        /// The method checks the requested elements and valid for the user
+        /// </summary>
+        /// <param name="permissions">Array of user permissions</param>
+        /// <param name="respGroup">Requested response group</param>
+        /// <returns></returns>
+        public static string GetAllowedResponseGroups(Permission[] permissions, string respGroup)
+        {
+            var userResponseGroupItems = permissions
+                .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
+                .SelectMany(x => x.AssignedScopes)
+                .OfType<OrderLimitResponseScope>()
+                .Select(x => x.Scope)
+                .ToList();
+
+            //if the user has no restrictions, then return the requested items
+            if (!userResponseGroupItems.Any())
+            {
+                return respGroup;
+            }
+
+            //if the user has restrictions, then make an intersection with the requested parameters
+            var result = string.Join(",", string.IsNullOrWhiteSpace(respGroup)
+                ? userResponseGroupItems
+                : respGroup.Split(',').Where(x => userResponseGroupItems.Contains(x)));
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                result = null;
+            }
+
+            return result;
+        }
     }
 }
