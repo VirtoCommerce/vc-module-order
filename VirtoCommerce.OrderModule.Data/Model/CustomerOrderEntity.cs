@@ -281,7 +281,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             DiscountTotal = 0m;
             DiscountTotalWithTax = 0m;
             TaxTotal = 0m;
-
+            Sum = 0m;
 
             foreach (var payment in InPayments)
             {
