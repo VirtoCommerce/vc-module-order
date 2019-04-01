@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
-    public class PaymentInEntity : OperationEntity
+    public class PaymentInEntity : OperationEntity, ISupportPartialPriceUpdate
     {
         [StringLength(64)]
         public string OrganizationId { get; set; }
@@ -149,7 +149,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(operation));
             }
 
-            var isNeedPatch = !(GetBaseAmounts().All(x => x == 0m) && target.GetBaseAmounts().Any(x => x != 0m));
+            var isNeedPatch = !(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
 
             base.NeedPatchSum = isNeedPatch;
             base.Patch(operation);
@@ -209,14 +209,18 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public virtual void ResetPrices()
         {
-            TaxPercentRate = 0m;
-            Price = 0m;
-            DiscountAmount = 0m;
             Amount = 0m;
-            Sum = 0m;
+            Price = 0m;
+            PriceWithTax = 0m;
+            DiscountAmount = 0m;
+            DiscountAmountWithTax = 0m;
+            Total = 0m;
+            TotalWithTax = 0m;
+            TaxTotal = 0m;
+            TaxPercentRate = 0m;
         }
 
-        public virtual IEnumerable<decimal> GetBaseAmounts()
+        public virtual IEnumerable<decimal> GetNonCalculatablePrices()
         {
             yield return TaxPercentRate;
             yield return Price;
