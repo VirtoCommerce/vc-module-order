@@ -11,8 +11,7 @@ namespace VirtoCommerce.OrderModule.Test
     [Trait("Category", "CI")]
     public class ZeroPrices
     {
-        [Fact]
-        public void CanZeroPrices()
+        public static CustomerOrderEntity GetResetedOrder()
         {
             var orderId = "orderId";
 
@@ -102,6 +101,14 @@ namespace VirtoCommerce.OrderModule.Test
             order.InPayments = new ObservableCollection<PaymentInEntity> { payment };
             order.Shipments = new ObservableCollection<ShipmentEntity> { shipment };
 
+            return order;
+        }
+
+        [Fact]
+        public void CanZeroPrices()
+        {
+            var order = GetResetedOrder();
+
             var calc = new DefaultCustomerOrderTotalsCalculator();
             var domainOrder = (CustomerOrder)order.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
 
@@ -173,6 +180,56 @@ namespace VirtoCommerce.OrderModule.Test
             Assert.Equal(0, domainOrder.Items.FirstOrDefault().PriceWithTax);
             Assert.Equal(0, domainOrder.Items.FirstOrDefault().TaxPercentRate);
             Assert.Equal(0, domainOrder.Items.FirstOrDefault().TaxTotal);
+        }
+
+        [Fact]
+        public void CanZeroPricesWithoutCalc()
+        {
+            var order = GetResetedOrder();
+
+            Assert.Equal(0, order.TaxPercentRate);
+            Assert.Equal(0, order.ShippingTotalWithTax);
+            Assert.Equal(0, order.PaymentTotalWithTax);
+            Assert.Equal(0, order.DiscountAmount);
+            Assert.Equal(0, order.Total);
+            Assert.Equal(0, order.SubTotal); 
+            Assert.Equal(0, order.SubTotalWithTax);
+            Assert.Equal(0, order.ShippingTotal);
+            Assert.Equal(0, order.PaymentTotal);
+            Assert.Equal(0, order.HandlingTotal);
+            Assert.Equal(0, order.HandlingTotalWithTax);
+            Assert.Equal(0, order.DiscountTotal);
+            Assert.Equal(0, order.DiscountTotalWithTax);
+            Assert.Equal(0, order.TaxTotal);
+            Assert.Equal(0, order.Sum);
+
+            Assert.Equal(0, order.InPayments.FirstOrDefault().Amount);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().Price);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().PriceWithTax);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().DiscountAmount);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().DiscountAmountWithTax);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().Total);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().TotalWithTax);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().TaxTotal);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().TaxPercentRate);
+            Assert.Equal(0, order.InPayments.FirstOrDefault().Sum);
+
+            Assert.Equal(0, order.Shipments.FirstOrDefault().Price);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().PriceWithTax);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().DiscountAmount);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().DiscountAmountWithTax);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().Total);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().TotalWithTax);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().TaxTotal);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().TaxPercentRate);
+            Assert.Equal(0, order.Shipments.FirstOrDefault().Sum);
+
+            Assert.Equal(0, order.Items.FirstOrDefault().Price);
+            Assert.Equal(0, order.Items.FirstOrDefault().PriceWithTax);
+            Assert.Equal(0, order.Items.FirstOrDefault().DiscountAmount);
+            Assert.Equal(0, order.Items.FirstOrDefault().DiscountAmountWithTax);
+            Assert.Equal(0, order.Items.FirstOrDefault().TaxTotal);
+            Assert.Equal(0, order.Items.FirstOrDefault().TaxPercentRate);
         }
     }
 }
