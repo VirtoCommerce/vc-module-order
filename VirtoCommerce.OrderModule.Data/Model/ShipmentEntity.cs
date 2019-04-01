@@ -241,6 +241,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
             TotalWithTax = 0m;
             TaxTotal = 0m;
             TaxPercentRate = 0m;
+            Sum = 0m;
         }
 
         public virtual IEnumerable<decimal> GetNonCalculatablePrices()
