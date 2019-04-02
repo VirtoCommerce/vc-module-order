@@ -159,6 +159,7 @@
     <Compile Include="Model\PaymentCallbackParameters.cs" />
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
+    <Content Include="Scripts\directives\maskMoney.js" />
     <Content Include="Scripts\resources\securityAccounts.js" />
     <Compile Include="Security\OrderLimitResponseScope.cs" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
