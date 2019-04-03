@@ -64,15 +64,13 @@
 <script type="text/ng-template" id="discountAmount.html">
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
-        <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmount | showPrice:blade.isVisiblePrices}}">
+        <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
     </div>
 </script>
 <script type="text/ng-template" id="discountAmountWithTax.html">
     <div class="form-input __currency">
         <span class="currency">{{blade.currentEntity.currency}}</span>
-        <input ng-if="blade.isVisiblePrices" money required ng-model="blade.currentEntity.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmountWithTax" focus-on="discountAmountWithTax">
-        <input ng-if="!blade.isVisiblePrices" value="{{blade.currentEntity.discountAmountWithTax | showPrice:blade.isVisiblePrices}}">
+        <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.discountAmountWithTax" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmountWithTax" focus-on="discountAmountWithTax">
     </div>
 </script>
 

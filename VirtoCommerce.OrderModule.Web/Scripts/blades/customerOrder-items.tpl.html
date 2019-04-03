@@ -55,19 +55,17 @@
                                 <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
                             </td>
                             <td class="table-col">
-                                <div ng-if="blade.isVisiblePrices" class="form-input __mini">
-                                    <input money required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
+                                <div class="form-input __mini">
+                                    <input money mask-money="!blade.isVisiblePrices" required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
-                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.price | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
                                 <span class="list-price">{{data.priceWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <div ng-if="blade.isVisiblePrices" class="form-input __mini __inline">
-                                    <input money required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
+                                <div class="form-input __mini __inline">
+                                    <input money mask-money="!blade.isVisiblePrices" required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
                                 </div>
-                                <span ng-if="!blade.isVisiblePrices" class="list-price">{{data.discountAmount | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
                                 <span class="list-price">{{data.discountAmountWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
