@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    // directive to mask the price if value passed to directive is true
-    .directive('maskMoney', ['$timeout', 'showPriceFilter', function ($timeout, showPriceFilter) {
+    // directive mask the price if value passed to directive is true
+    .directive('maskMoney', ['showPriceFilter', function (showPriceFilter) {
         return {
             restrict: 'A',
             require: 'ngModel',
