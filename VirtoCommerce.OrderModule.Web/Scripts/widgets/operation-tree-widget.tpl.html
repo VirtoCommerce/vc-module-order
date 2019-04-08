@@ -17,7 +17,7 @@
                 <i class="tree-ico fa fa-calendar"></i>
                 {{node.operation.createdDate | amParse | date}}
             </div>
-            <div class="tree-el __price" va-permission="order:read" security-scopes="'OrderLimitResponseScope:WithPrices'">
+            <div class="tree-el __price" va-permission="order:read_prices">
                 <i class="tree-ico fa fa-money"></i>
                 {{node.operation.sum  | currency:node.operation.currency}}
             </div>

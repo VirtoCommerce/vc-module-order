@@ -57,22 +57,9 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         getOperation: getOperation
     };
 }])
-// define known order limit response
-.factory('virtoCommerce.orderModule.knownLimitResponseScopes', function () {
-    return {
-        items: [
-            { id: 'WithItems', name: 'Items' },
-            { id: 'WithInPayments', name: 'InPayments' },
-            { id: 'WithShipments', name: 'Shipments' },
-            { id: 'WithAddresses', name: 'Addresses' },
-            { id: 'WithDiscounts', name: 'Discounts' },
-            { id: 'WithPrices', name: 'Prices' }
-        ]
-    };
-})
 .run(
-    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'virtoCommerce.orderModule.knownLimitResponseScopes', 'platformWebApp.authService',
-    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, knownLimitResponseScopes, authService) {
+    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'platformWebApp.authService',
+    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, authService) {
         //Register module in main menu
         var menuItem = {
             path: 'browse/orders',
@@ -249,7 +236,7 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
         widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
 
         function checkPermissionToReadPrices() {
-            return authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
+            return authService.checkPermission('order:read_prices');
         }
 
         var customerOrderTotalsWidget = {
@@ -399,29 +386,6 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
             title: 'Only for order responsible'
         };
         scopeResolver.register(responsibleOrderScope);
-
-        var orderLimitResponseScope = {
-            type: 'OrderLimitResponseScope',
-            title: 'Only available to display items',
-            selectFn: function (blade, callback) {
-                var newBlade = {
-                    id: 'limit-response-pick',
-                    title: this.title,
-                    subtitle: 'Select visible elements',
-                    currentEntity: this,
-                    onChangesConfirmedFn: callback,
-                    dataPromise: {
-                        then: function (resolve) {
-                            resolve(knownLimitResponseScopes.items);
-                        }
-                    },
-                    controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
-                    template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
-            }
-        };
-        scopeResolver.register(orderLimitResponseScope);
 
         $rootScope.$on('loginStatusChanged', function (event, authContext) {
             if (authContext.isAuthenticated) {

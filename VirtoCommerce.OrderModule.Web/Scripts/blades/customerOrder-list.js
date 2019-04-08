@@ -5,7 +5,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
 
-    blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
+    blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
     blade.refresh = function () {
         if (blade.preloadedOrders) {
