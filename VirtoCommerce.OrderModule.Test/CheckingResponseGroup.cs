@@ -57,5 +57,16 @@ namespace VirtoCommerce.OrderModule.Test
             var permissions = PreparePermissions(true);
             Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
         }
+
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("scope1,scope2", "scope1,scope2")]
+        [InlineData("WithPrices,scope1,scope2", "WithPrices,scope1,scope2")]
+        [InlineData("scope1", "scope1")]
+        public void CanCheckPermissionsNoPermissions(string expected, string respGroup)
+        {
+            var permissions = new Permission[0];
+            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
+        }
     }
 }
