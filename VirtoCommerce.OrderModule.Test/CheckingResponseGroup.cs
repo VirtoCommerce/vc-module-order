@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using VirtoCommerce.OrderModule.Web.Controllers.Api;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Security;
 using Xunit;
@@ -9,56 +11,51 @@ namespace VirtoCommerce.OrderModule.Test
     [CLSCompliant(false)]
     public class CheckingResponseGroup
     {
-        private static Permission[] PreparePermissions()
+        private static Permission[] PreparePermissions(bool withPrices = false)
         {
-            var scope1 = new OrderLimitResponseScope
-            {
-                Type = nameof(OrderLimitResponseScope),
-                Scope = "scope1"
-            };
-            var scope2 = new OrderLimitResponseScope
-            {
-                Type = nameof(OrderLimitResponseScope),
-                Scope = "scope2"
-            };
-
-            return new Permission[]
+            var permissions = new List<Permission>
             {
                 new Permission
                 {
                     Id = OrderPredefinedPermissions.Read,
-                    AssignedScopes = new PermissionScope[]
-                    {
-                        scope1,
-                        scope2
-                    }
                 },
                 new Permission
                 {
                     Id = OrderPredefinedPermissions.Access,
-                    AssignedScopes = new PermissionScope [0]
                 }
             };
+
+            if (withPrices)
+            {
+                permissions.Add(new Permission
+                {
+                    Id = OrderPredefinedPermissions.ReadPrices
+                });
+            }
+
+            return permissions.ToArray();
         }
 
         [Theory]
-        [InlineData("scope1,scope2", null)]
+        [InlineData("WithItems,WithInPayments,WithShipments,WithAddresses,WithDiscounts", null)]
         [InlineData("scope1,scope2", "scope1,scope2")]
-        [InlineData("scope1,scope2", "scope_,scope1,scope2")]
+        [InlineData("scope1,scope2", "WithPrices,scope1,scope2")]
         [InlineData("scope1", "scope1")]
-        [InlineData(null, "scope_")]
-        [InlineData(null, "scope_,scope__")]
-        public void CanCheckResponseGroup(string expected, string scope)
+        public void CanCheckPermissionsWithNoPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions();
-
-            Assert.Equal(expected, OrderLimitResponseScope.GetAllowedResponseGroups(permissions, scope));
+            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
         }
 
-        [Fact]
-        public void CanCheckResponseGroupForUserWithNoScope()
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("scope1,scope2", "scope1,scope2")]
+        [InlineData("WithPrices,scope1,scope2", "WithPrices,scope1,scope2")]
+        [InlineData("scope1", "scope1")]
+        public void CanCheckPermissionsWithPrices(string expected, string respGroup)
         {
-            Assert.Equal("scope1,scope2", OrderLimitResponseScope.GetAllowedResponseGroups(new Permission[0], "scope1,scope2"));
+            var permissions = PreparePermissions(true);
+            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
         }
     }
 }

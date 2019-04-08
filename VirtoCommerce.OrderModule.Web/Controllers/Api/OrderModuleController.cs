@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CacheManager.Core;
+using Microsoft.Practices.ObjectBuilder2;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
@@ -556,7 +557,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        public string CheckReadPricesAvailable(Permission[] permissions, string respGroup)
+        public static string CheckReadPricesAvailable(Permission[] permissions, string respGroup)
         {
             if (!permissions.Any() || permissions.Any(x => x.Id == OrderPredefinedPermissions.ReadPrices))
             {
@@ -574,7 +575,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                                                      .ToArray());
             }
 
-            var items = respGroup.Split(',').ToList();
+            var items = respGroup.Split(',').Select(x => x.Trim()).ToList();
 
             items.Remove(CustomerOrderResponseGroup.WithPrices.ToString());
 
