@@ -157,7 +157,7 @@
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\PaymentCallbackParameters.cs" />
-    <Compile Include="Security\ReadPricesPermission.cs" />
+    <Compile Include="Security\OrderReadPricesPermission.cs" />
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\directives\maskMoney.js" />
