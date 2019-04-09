@@ -25,11 +25,11 @@ namespace VirtoCommerce.OrderModule.Web.Security
                 items.Remove(CustomerOrderResponseGroup.WithPrices.ToString());
 
                 result = string.Join(",", items);
-            }
 
-            if (string.IsNullOrEmpty(result))
-            {
-                result = CustomerOrderResponseGroup.Default.ToString();
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = CustomerOrderResponseGroup.Default.ToString();
+                }
             }
 
             return result;
