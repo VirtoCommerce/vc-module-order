@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using VirtoCommerce.OrderModule.Web.Controllers.Api;
 using VirtoCommerce.OrderModule.Web.Security;
 using VirtoCommerce.Platform.Core.Security;
 using Xunit;
@@ -37,14 +36,14 @@ namespace VirtoCommerce.OrderModule.Test
         }
 
         [Theory]
-        [InlineData("WithItems,WithInPayments,WithShipments,WithAddresses,WithDiscounts", null)]
+        [InlineData("WithItems, WithInPayments, WithShipments, WithAddresses, WithDiscounts", null)]
         [InlineData("scope1,scope2", "scope1,scope2")]
         [InlineData("scope1,scope2", "WithPrices,scope1,scope2")]
         [InlineData("scope1", "scope1")]
         public void CanCheckPermissionsWithNoPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions();
-            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
+            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
         }
 
         [Theory]
@@ -55,7 +54,7 @@ namespace VirtoCommerce.OrderModule.Test
         public void CanCheckPermissionsWithPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions(true);
-            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
+            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
         }
 
         [Theory]
@@ -66,7 +65,7 @@ namespace VirtoCommerce.OrderModule.Test
         public void CanCheckPermissionsNoPermissions(string expected, string respGroup)
         {
             var permissions = new Permission[0];
-            Assert.Equal(expected, OrderModuleController.CheckReadPricesAvailable(permissions, respGroup));
+            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
         }
     }
 }

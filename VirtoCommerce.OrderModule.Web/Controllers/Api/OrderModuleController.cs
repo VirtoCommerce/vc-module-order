@@ -120,7 +120,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = CheckReadPricesAvailable(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
+            searchCriteria.ResponseGroup = ReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -152,7 +152,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, CheckReadPricesAvailable(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
+            var retVal = _customerOrderService.GetByIds(new[] { id }, ReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
                 .FirstOrDefault();
 
             if (retVal == null)
@@ -510,7 +510,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = CheckReadPricesAvailable(_securityService.GetUserPermissions(User.Identity.Name), null);
+            searchCriteria.ResponseGroup = ReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -557,31 +557,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        public static string CheckReadPricesAvailable(Permission[] permissions, string respGroup)
-        {
-            if (!permissions.Any() || permissions.Any(x => x.Id == OrderPredefinedPermissions.ReadPrices))
-            {
-                return respGroup;
-            }
-
-            if (string.IsNullOrWhiteSpace(respGroup))
-            {
-                const CustomerOrderResponseGroup val = CustomerOrderResponseGroup.Full & ~CustomerOrderResponseGroup.WithPrices;
-
-                return string.Join(",", Enum.GetValues(typeof(CustomerOrderResponseGroup))
-                                                     .Cast<CustomerOrderResponseGroup>()
-                                                     .Where(x => val.HasFlag(x) && x != CustomerOrderResponseGroup.Default)
-                                                     .Select(x => x.ToString())
-                                                     .ToArray());
-            }
-
-            var items = respGroup.Split(',').Select(x => x.Trim()).ToList();
-
-            items.Remove(CustomerOrderResponseGroup.WithPrices.ToString());
-
-            return string.Join(",", items);
-        }
-
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
             CustomerOrderSearchCriteria criteria)
         {
@@ -608,7 +583,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 }
 
                 // ResponseGroup
-                criteria.ResponseGroup = CheckReadPricesAvailable(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+                criteria.ResponseGroup = ReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
             }
 
             return criteria;
