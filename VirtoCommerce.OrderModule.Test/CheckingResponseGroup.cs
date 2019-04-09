@@ -43,7 +43,7 @@ namespace VirtoCommerce.OrderModule.Test
         public void CanCheckPermissionsWithNoPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions();
-            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
+            Assert.Equal(expected, OrderReadPricesPermission.Check(permissions, respGroup));
         }
 
         [Theory]
@@ -54,7 +54,7 @@ namespace VirtoCommerce.OrderModule.Test
         public void CanCheckPermissionsWithPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions(true);
-            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
+            Assert.Equal(expected, OrderReadPricesPermission.Check(permissions, respGroup));
         }
 
         [Theory]
@@ -65,7 +65,7 @@ namespace VirtoCommerce.OrderModule.Test
         public void CanCheckPermissionsNoPermissions(string expected, string respGroup)
         {
             var permissions = new Permission[0];
-            Assert.Equal(expected, ReadPricesPermission.Check(permissions, respGroup));
+            Assert.Equal(expected, OrderReadPricesPermission.Check(permissions, respGroup));
         }
     }
 }

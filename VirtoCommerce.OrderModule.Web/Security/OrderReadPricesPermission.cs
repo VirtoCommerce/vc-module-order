@@ -4,7 +4,7 @@ using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.OrderModule.Web.Security
 {
-    public static class ReadPricesPermission
+    public static class OrderReadPricesPermission
     {
         public static string Check(Permission[] permissions, string respGroup)
         {
@@ -14,8 +14,7 @@ namespace VirtoCommerce.OrderModule.Web.Security
 
             if (needRestrict && string.IsNullOrWhiteSpace(respGroup))
             {
-                const CustomerOrderResponseGroup val =
-                    CustomerOrderResponseGroup.Full & ~CustomerOrderResponseGroup.WithPrices;
+                const CustomerOrderResponseGroup val = CustomerOrderResponseGroup.Full & ~CustomerOrderResponseGroup.WithPrices;
 
                 result = val.ToString();
             }
