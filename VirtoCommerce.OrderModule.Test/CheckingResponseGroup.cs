@@ -40,6 +40,7 @@ namespace VirtoCommerce.OrderModule.Test
         [InlineData("scope1,scope2", "scope1,scope2")]
         [InlineData("scope1,scope2", "WithPrices,scope1,scope2")]
         [InlineData("scope1", "scope1")]
+        [InlineData("Default", "WithPrices")]
         public void CanCheckPermissionsWithNoPrices(string expected, string respGroup)
         {
             var permissions = PreparePermissions();
