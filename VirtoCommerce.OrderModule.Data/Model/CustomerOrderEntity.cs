@@ -186,9 +186,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
 
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
-            var needPathPrices = !(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
+            var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
 
-            if (needPathPrices)
+            if (needPatchPrices)
             {
                 target.Total = Total;
                 target.SubTotal = SubTotal;
@@ -261,7 +261,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
-            base.NeedPatchSum = needPathPrices;
+            base.NeedPatchSum = needPatchPrices;
             base.Patch(operation);
         }
 
