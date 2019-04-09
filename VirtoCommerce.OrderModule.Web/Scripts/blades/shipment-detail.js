@@ -3,7 +3,7 @@ angular.module('virtoCommerce.orderModule')
     function ($scope, bladeNavigationService, dialogService, settings, customerOrders, order_res_fulfilmentCenters, statusTranslationService, authService) {
         var blade = $scope.blade;
 
-        blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
+        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
         if (blade.isNew) {
             blade.title = 'orders.blades.shipment-detail.title-new';

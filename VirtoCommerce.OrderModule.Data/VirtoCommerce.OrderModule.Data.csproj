@@ -197,6 +197,10 @@
     <Compile Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.Designer.cs">
       <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904090807084_AddReadPricesPermissionForExistingRoles.cs" />
+    <Compile Include="Migrations\201904090807084_AddReadPricesPermissionForExistingRoles.Designer.cs">
+      <DependentUpon>201904090807084_AddReadPricesPermissionForExistingRoles.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\AddressEntity.cs" />
     <Compile Include="Model\CustomerOrderEntity.cs" />
@@ -315,6 +319,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201809140916230_AddedAmountColumnToPaymentInEntity.resx">
       <DependentUpon>201809140916230_AddedAmountColumnToPaymentInEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904090807084_AddReadPricesPermissionForExistingRoles.resx">
+      <DependentUpon>201904090807084_AddReadPricesPermissionForExistingRoles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\OrderResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

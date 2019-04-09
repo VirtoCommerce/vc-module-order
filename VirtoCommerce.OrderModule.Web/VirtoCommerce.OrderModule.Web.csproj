@@ -157,11 +157,11 @@
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\PaymentCallbackParameters.cs" />
+    <Compile Include="Security\OrderReadPricesPermission.cs" />
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
     <Content Include="Scripts\directives\maskMoney.js" />
     <Content Include="Scripts\resources\securityAccounts.js" />
-    <Compile Include="Security\OrderLimitResponseScope.cs" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
     <Compile Include="ExportImport\OrderExportImport.cs" />
     <Compile Include="Model\DashboardStatisticsResult.cs" />

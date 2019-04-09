@@ -157,7 +157,6 @@ namespace VirtoCommerce.OrderModule.Web
             var securityScopeService = _container.Resolve<IPermissionScopeService>();
             securityScopeService.RegisterSope(() => new OrderStoreScope());
             securityScopeService.RegisterSope(() => new OrderResponsibleScope());
-            securityScopeService.RegisterSope(() => new OrderLimitResponseScope());
 
             //Next lines allow to use polymorph types in API controller methods
             var httpConfiguration = _container.Resolve<HttpConfiguration>();

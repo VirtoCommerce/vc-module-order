@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using CacheManager.Core;
+using Microsoft.Practices.ObjectBuilder2;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
@@ -119,7 +120,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -151,7 +152,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
+            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
                 .FirstOrDefault();
 
             if (retVal == null)
@@ -509,7 +510,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), null);
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -580,10 +581,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 {
                     criteria.EmployeeId = userName;
                 }
-
-                // ResponseGroup
-                criteria.ResponseGroup = OrderLimitResponseScope.GetAllowedResponseGroups(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
             }
+
+            // ResponseGroup
+            criteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
 
             return criteria;
         }

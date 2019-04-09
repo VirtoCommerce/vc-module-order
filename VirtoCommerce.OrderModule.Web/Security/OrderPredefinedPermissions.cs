@@ -1,4 +1,4 @@
-﻿namespace VirtoCommerce.OrderModule.Web.Security
+namespace VirtoCommerce.OrderModule.Web.Security
 {
     public static class OrderPredefinedPermissions
     {
@@ -7,5 +7,6 @@
         public const string Access = "order:access";
         public const string Update = "order:update";
         public const string Delete = "order:delete";
+        public const string ReadPrices = "order:read_prices";
     }
 }

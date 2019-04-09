@@ -3,7 +3,7 @@ angular.module('virtoCommerce.orderModule')
     function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService, statusTranslationService, securityAccounts, authService) {
         var blade = $scope.blade;
 
-        blade.isVisiblePrices = authService.checkPermission('order:read', 'OrderLimitResponseScope:WithPrices');
+        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
         angular.extend(blade, {
             title: 'orders.blades.customerOrder-detail.title',
