@@ -1,9 +1,9 @@
 using System.Linq;
-using VirtoCommerce.OrderModule.Data.Migrations;
 using VirtoCommerce.OrderModule.Data.Repositories;
-using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.Platform.Testing.Bases;
+using VirtoCommerce.OrderModule.Data.Migrations;
 using Xunit;
+using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.OrderModule.Test
 {
