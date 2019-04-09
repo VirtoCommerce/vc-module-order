@@ -120,7 +120,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -152,7 +152,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
+            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
                 .FirstOrDefault();
 
             if (retVal == null)
@@ -510,7 +510,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), null);
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -584,7 +584,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             // ResponseGroup
-            criteria.ResponseGroup = OrderReadPricesPermission.Check(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
 
             return criteria;
         }
