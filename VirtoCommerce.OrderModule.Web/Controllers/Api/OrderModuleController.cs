@@ -1,4 +1,3 @@
-using CacheManager.Core;
 using System;
 using System.Collections.Specialized;
 using System.IO;
@@ -10,6 +9,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using CacheManager.Core;
+using Microsoft.Practices.ObjectBuilder2;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
@@ -53,10 +54,21 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private static readonly object _lockObject = new object();
 
-        public OrderModuleController(ICustomerOrderService customerOrderService, ICustomerOrderSearchService searchService, IStoreService storeService, IUniqueNumberGenerator numberGenerator,
-                                     ICacheManager<object> cacheManager, Func<IOrderRepository> repositoryFactory, IPermissionScopeService permissionScopeService, ISecurityService securityService,
-                                     ICustomerOrderBuilder customerOrderBuilder, IShoppingCartService cartService, INotificationManager notificationManager,
-                                     INotificationTemplateResolver notificationTemplateResolver, IChangeLogService changeLogService, ICustomerOrderTotalsCalculator totalsCalculator)
+        public OrderModuleController(
+            ICustomerOrderService customerOrderService,
+            ICustomerOrderSearchService searchService,
+            IStoreService storeService,
+            IUniqueNumberGenerator numberGenerator,
+            ICacheManager<object> cacheManager,
+            Func<IOrderRepository> repositoryFactory,
+            IPermissionScopeService permissionScopeService,
+            ISecurityService securityService,
+            ICustomerOrderBuilder customerOrderBuilder,
+            IShoppingCartService cartService,
+            INotificationManager notificationManager,
+            INotificationTemplateResolver notificationTemplateResolver,
+            IChangeLogService changeLogService,
+            ICustomerOrderTotalsCalculator totalsCalculator)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -87,7 +99,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             criteria = FilterOrderSearchCriteria(HttpContext.Current.User.Identity.Name, criteria);
 
             var result = _searchService.SearchCustomerOrders(criteria);
-            var retVal = new webModel.CustomerOrderSearchResult
+            var retVal = new CustomerOrderSearchResult
             {
                 CustomerOrders = result.Results.ToList(),
                 TotalCount = result.TotalCount
@@ -108,7 +120,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = respGroup;
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -120,9 +132,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 {
                     throw new HttpResponseException(HttpStatusCode.Unauthorized);
                 }
+
                 //Set scopes for UI scope bounded ACL checking
                 retVal.Scopes = scopes;
             }
+
             return Ok(retVal);
         }
 
@@ -138,7 +152,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, respGroup).FirstOrDefault();
+            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
+                .FirstOrDefault();
+
             if (retVal == null)
             {
                 return NotFound();
@@ -146,6 +162,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             //Scope bound security check
             var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
+
             if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
             {
                 throw new HttpResponseException(HttpStatusCode.Unauthorized);
@@ -157,17 +174,19 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(retVal);
         }
 
+
         /// <summary>
-		/// Calculate order totals after changes
+        /// Calculate order totals after changes
         /// </summary>
-		/// <remarks>Return order with recalculated totals</remarks>
-		/// <param name="order">Customer order</param>
+        /// <remarks>Return order with recalculated totals</remarks>
+        /// <param name="order">Customer order</param>
         [HttpPut]
         [Route("recalculate")]
         [ResponseType(typeof(CustomerOrder))]
         public IHttpActionResult CalculateTotals(CustomerOrder order)
         {
             _totalsCalculator.CalculateTotals(order);
+
             return Ok(order);
         }
 
@@ -181,9 +200,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ResponseType(typeof(ProcessPaymentResult))]
-        public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
+        public IHttpActionResult ProcessOrderPayments(string orderId, string paymentId,
+            [SwaggerOptional] BankCardInfo bankCardInfo)
         {
-            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var order = _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString())
+                .FirstOrDefault();
 
             if (order == null)
             {
@@ -296,7 +317,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(Shipment))]
         public IHttpActionResult GetNewShipment(string id)
         {
-            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString())
+                .FirstOrDefault();
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
@@ -334,7 +356,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(PaymentIn))]
         public IHttpActionResult GetNewPayment(string id)
         {
-            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var order = _customerOrderService.GetByIds(new[] { id }, CustomerOrderResponseGroup.Full.ToString())
+                .FirstOrDefault();
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
@@ -375,7 +398,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
         [ResponseType(typeof(webModel.DashboardStatisticsResult))]
-        public IHttpActionResult GetDashboardStatistics([FromUri]DateTime? start = null, [FromUri]DateTime? end = null)
+        public IHttpActionResult GetDashboardStatistics([FromUri] DateTime? start = null, [FromUri] DateTime? end = null)
         {
             webModel.DashboardStatisticsResult retVal;
             start = start ?? DateTime.UtcNow.AddYears(-1);
@@ -392,6 +415,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     return collectStaticJob.CollectStatistics(start.Value, end.Value);
                 });
             }
+
             return Ok(retVal);
         }
 
@@ -409,6 +433,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             {
                 parameters.Add(param.Key, param.Value);
             }
+
             var orderId = parameters.Get("orderid");
             if (string.IsNullOrEmpty(orderId))
             {
@@ -420,7 +445,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             searchCriteria.Number = orderId;
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
             //if order not found by order number search by order id
-            var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ?? _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString()).FirstOrDefault();
+            var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault() ??
+                        _customerOrderService.GetByIds(new[] { orderId }, CustomerOrderResponseGroup.Full.ToString())
+                            .FirstOrDefault();
 
             if (order == null)
             {
@@ -432,7 +459,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var paymentMethodCode = parameters.Get("code");
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
             var paymentMethods = store.PaymentMethods.Where(x => x.IsActive)
-                                                     .Where(x => orderPaymentsCodes.Contains(x.Code));
+                .Where(x => orderPaymentsCodes.Contains(x.Code));
             if (!string.IsNullOrEmpty(paymentMethodCode))
             {
                 paymentMethods = paymentMethods.Where(x => x.Code.EqualsInvariant(paymentMethodCode));
@@ -450,6 +477,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     {
                         throw new InvalidOperationException(@"Cannot find payment");
                     }
+
                     var context = new PostProcessPaymentEvaluationContext
                     {
                         Order = order,
@@ -466,9 +494,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                         // order Number is required
                         retVal.OrderId = order.Number;
                     }
+
                     return Ok(retVal);
                 }
             }
+
             return Ok(new PostProcessPaymentResult { ErrorMessage = "Payment method not found" });
         }
 
@@ -480,6 +510,7 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -517,16 +548,18 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 _changeLogService.LoadChangeLogs(order);
                 //Load general change log for order
                 result = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
-                                          .Distinct()
-                                          .SelectMany(x => x.OperationsLog)
-                                          .OrderBy(x => x.CreatedDate)
-                                          .Distinct().ToArray();
+                    .Distinct()
+                    .SelectMany(x => x.OperationsLog)
+                    .OrderBy(x => x.CreatedDate)
+                    .Distinct().ToArray();
             }
+
             return Ok(result);
         }
-        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
-        {
 
+        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
+            CustomerOrderSearchCriteria criteria)
+        {
             if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
             {
                 //Get defined user 'read' permission scopes
@@ -542,13 +575,17 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
-                var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 //employee id
+                var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
                 if (responsibleScope != null)
                 {
                     criteria.EmployeeId = userName;
                 }
             }
+
+            // ResponseGroup
+            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+
             return criteria;
         }
     }

@@ -4,7 +4,7 @@
     <version>2.17.22</version>
     <platformVersion>2.13.24</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Core" version="2.25.13" />
+        <dependency id="VirtoCommerce.Core" version="2.25.19" />
         <dependency id="VirtoCommerce.Catalog" version="2.12.0" />
         <dependency id="VirtoCommerce.Pricing" version="2.11.0" />
         <dependency id="VirtoCommerce.Customer" version="2.11.0" />
@@ -141,6 +141,7 @@
             <permission id="order:read" name="View order data" description="Permission to browse and view order data."/>
             <permission id="order:update" name="Update order data" description="Permission to update order data."/>
             <permission id="order:delete" name="Delete order" description="Permission to delete orders."/>
+            <permission id="order:read_prices" name="View order prices" description="Permission to view order prices."/>
         </group>
     </permissions>
 </module>

@@ -1,12 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
 using Omu.ValueInjecter;
-using VirtoCommerce.Domain.Commerce.Model;
 using VirtoCommerce.Domain.Order.Model;
 using VirtoCommerce.OrderModule.Data.Utilities;
 using VirtoCommerce.Platform.Core.Common;
@@ -34,10 +29,15 @@ namespace VirtoCommerce.OrderModule.Data.Model
         [StringLength(2048)]
         public string CancelReason { get; set; }
 
+        [NotMapped]
+        public bool NeedPatchSum { get; set; } = true;
+
         public virtual OrderOperation ToModel(OrderOperation operation)
         {
             if (operation == null)
+            {
                 throw new ArgumentNullException(nameof(operation));
+            }
 
             operation.InjectFrom(this);
 
@@ -48,7 +48,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
             if (operation == null)
+            {
                 throw new ArgumentNullException(nameof(operation));
+            }
 
             pkMap.AddPair(operation, this);
 
@@ -60,7 +62,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         public virtual void Patch(OperationEntity operation)
         {
             if (operation == null)
+            {
                 throw new ArgumentNullException(nameof(operation));
+            }
 
             operation.Comment = Comment;
             operation.Currency = Currency;
@@ -70,7 +74,11 @@ namespace VirtoCommerce.OrderModule.Data.Model
             operation.CancelledDate = CancelledDate;
             operation.CancelReason = CancelReason;
             operation.IsApproved = IsApproved;
-            operation.Sum = Sum;
+
+            if (NeedPatchSum)
+            {
+                operation.Sum = Sum;
+            }
         }
     }
 }

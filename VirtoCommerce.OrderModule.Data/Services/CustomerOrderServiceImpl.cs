@@ -117,20 +117,19 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     {
                         customerOrder = orderEntity.ToModel(customerOrder) as CustomerOrder;
 
-                        //Calculate totals only for full responseGroup
                         if (orderResponseGroup == CustomerOrderResponseGroup.Full)
                         {
                             TotalsCalculator.CalculateTotals(customerOrder);
                         }
+
                         LoadOrderDependencies(customerOrder);
                         retVal.Add(customerOrder);
                     }
                 }
             }
-            if (DynamicPropertyService != null)
-            {
-                DynamicPropertyService.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
-            }
+
+            DynamicPropertyService?.LoadDynamicPropertyValues(retVal.ToArray<IHasDynamicProperties>());
+
             return retVal.ToArray();
         }
 

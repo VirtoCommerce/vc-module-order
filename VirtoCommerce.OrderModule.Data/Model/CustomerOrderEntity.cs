@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +10,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrderModule.Data.Model
 {
-    public class CustomerOrderEntity : OperationEntity
+    public class CustomerOrderEntity : OperationEntity, ISupportPartialPriceUpdate
     {
         [Required]
         [StringLength(64)]
@@ -92,7 +93,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+            }
 
             order.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
@@ -112,7 +115,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var order = operation as CustomerOrder;
             if (order == null)
+            {
                 throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+            }
 
             base.FromModel(order, pkMap);
 
@@ -160,7 +165,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
         {
             var target = operation as CustomerOrderEntity;
             if (target == null)
-                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity", nameof(operation));
+            {
+                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity",
+                    nameof(operation));
+            }
 
             target.CustomerId = CustomerId;
             target.CustomerName = CustomerName;
@@ -170,26 +178,33 @@ namespace VirtoCommerce.OrderModule.Data.Model
             target.OrganizationName = OrganizationName;
             target.EmployeeId = EmployeeId;
             target.EmployeeName = EmployeeName;
-            target.DiscountAmount = DiscountAmount;
-            target.Total = Total;
-            target.SubTotal = SubTotal;
-            target.SubTotalWithTax = SubTotalWithTax;
-            target.ShippingTotal = ShippingTotal;
-            target.ShippingTotalWithTax = ShippingTotalWithTax;
-            target.PaymentTotal = PaymentTotal;
-            target.PaymentTotalWithTax = PaymentTotalWithTax;
-            target.HandlingTotal = HandlingTotal;
-            target.HandlingTotalWithTax = HandlingTotalWithTax;
-            target.DiscountTotal = DiscountTotal;
-            target.DiscountTotalWithTax = DiscountTotalWithTax;
-            target.DiscountAmount = DiscountAmount;
-            target.TaxTotal = TaxTotal;
             target.IsPrototype = IsPrototype;
             target.SubscriptionNumber = SubscriptionNumber;
             target.SubscriptionId = SubscriptionId;
             target.LanguageCode = LanguageCode;
-            target.TaxPercentRate = TaxPercentRate;
             target.OuterId = OuterId;
+
+
+            // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
+            var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
+
+            if (needPatchPrices)
+            {
+                target.Total = Total;
+                target.SubTotal = SubTotal;
+                target.SubTotalWithTax = SubTotalWithTax;
+                target.ShippingTotal = ShippingTotal;
+                target.ShippingTotalWithTax = ShippingTotalWithTax;
+                target.PaymentTotal = PaymentTotal;
+                target.PaymentTotalWithTax = PaymentTotalWithTax;
+                target.HandlingTotal = HandlingTotal;
+                target.HandlingTotalWithTax = HandlingTotalWithTax;
+                target.DiscountTotal = DiscountTotal;
+                target.DiscountTotalWithTax = DiscountTotalWithTax;
+                target.DiscountAmount = DiscountAmount;
+                target.TaxTotal = TaxTotal;
+                target.TaxPercentRate = TaxPercentRate;
+            }
 
             if (!Addresses.IsNullCollection())
             {
@@ -246,7 +261,50 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
+            base.NeedPatchSum = needPatchPrices;
             base.Patch(operation);
+        }
+
+        public virtual void ResetPrices()
+        {
+            TaxPercentRate = 0m;
+            ShippingTotalWithTax = 0m;
+            PaymentTotalWithTax = 0m;
+            DiscountAmount = 0m;
+            Total = 0m;
+            SubTotal = 0m;
+            SubTotalWithTax = 0m;
+            ShippingTotal = 0m;
+            PaymentTotal = 0m;
+            HandlingTotal = 0m;
+            HandlingTotalWithTax = 0m;
+            DiscountTotal = 0m;
+            DiscountTotalWithTax = 0m;
+            TaxTotal = 0m;
+            Sum = 0m;
+
+            foreach (var payment in InPayments)
+            {
+                payment.ResetPrices();
+            }
+
+            foreach (var shipment in Shipments)
+            {
+                shipment.ResetPrices();
+            }
+
+            foreach (var item in Items)
+            {
+                item.ResetPrices();
+            }
+        }
+
+        public virtual IEnumerable<decimal> GetNonCalculatablePrices()
+        {
+            yield return TaxPercentRate;
+            yield return ShippingTotalWithTax;
+            yield return PaymentTotalWithTax;
+            yield return DiscountAmount;
         }
     }
 }
