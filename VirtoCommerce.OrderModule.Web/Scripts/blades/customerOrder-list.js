@@ -5,6 +5,8 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
 
+    blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+
     blade.refresh = function () {
         if (blade.preloadedOrders) {
             $scope.pageSettings.totalItems = blade.preloadedOrders.length;
@@ -14,6 +16,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
         } else {
             blade.isLoading = true;
             var criteria = {
+                responseGroup: "WithPrices",
                 keyword: filter.keyword,
                 sort: uiGridHelper.getSortExpression($scope),
                 skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
@@ -164,7 +167,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency", visible: false };
+            return { name: name, cellFilter: "currency | showPrice:" + blade.isVisiblePrices, visible: false };
         }));
 
         $scope.gridOptions = gridOptions;

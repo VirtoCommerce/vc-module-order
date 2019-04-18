@@ -135,8 +135,8 @@
     <Reference Include="VirtoCommerce.CoreModule.Data, Version=2.25.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\VirtoCommerce.CoreModule.Data.2.25.1\lib\net461\VirtoCommerce.CoreModule.Data.dll</HintPath>
     </Reference>
-    <Reference Include="VirtoCommerce.Domain, Version=2.25.13.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.Domain.2.25.13\lib\net461\VirtoCommerce.Domain.dll</HintPath>
+    <Reference Include="VirtoCommerce.Domain, Version=2.25.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VirtoCommerce.Domain.2.25.19\lib\net461\VirtoCommerce.Domain.dll</HintPath>
     </Reference>
     <Reference Include="VirtoCommerce.Platform.Core, Version=2.13.26.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\VirtoCommerce.Platform.Core.2.13.26\lib\net461\VirtoCommerce.Platform.Core.dll</HintPath>
@@ -157,8 +157,10 @@
     <Compile Include="JsonConverters\PolymorphicOperationJsonConverter.cs" />
     <Compile Include="Model\KeyValuePair.cs" />
     <Compile Include="Model\PaymentCallbackParameters.cs" />
+    <Compile Include="Security\OrderReadPricesPermission.cs" />
     <Content Include="Scripts\blades\customerOrder-change-log.js" />
     <Content Include="Scripts\blades\customerOrder-change-log.tpl.html" />
+    <Content Include="Scripts\directives\maskMoney.js" />
     <Content Include="Scripts\resources\securityAccounts.js" />
     <Compile Include="Security\OrderPredefinedPermissions.cs" />
     <Compile Include="ExportImport\OrderExportImport.cs" />
@@ -183,6 +185,7 @@
     <Content Include="Scripts\blades\operation-comment.js" />
     <Content Include="Scripts\blades\operation-comment.tpl.html" />
     <Content Include="Scripts\dialogs\cancelOperation-dialog.tpl.html" />
+    <Content Include="Scripts\services\showPriceFilter.js" />
     <Content Include="Scripts\services\statusTranslation.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.js" />
     <Content Include="Scripts\widgets\customerOrder-address-widget.tpl.html" />

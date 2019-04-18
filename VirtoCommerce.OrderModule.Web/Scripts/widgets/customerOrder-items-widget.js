@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderItemsWidgetController', ['$scope', '$translate', 'platformWebApp.bladeNavigationService',
     function ($scope, $translate, bladeNavigationService) {
     var blade = $scope.widget.blade;

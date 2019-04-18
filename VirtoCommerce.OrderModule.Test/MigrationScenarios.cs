@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.Platform.Testing.Bases;
 using VirtoCommerce.OrderModule.Data.Migrations;
