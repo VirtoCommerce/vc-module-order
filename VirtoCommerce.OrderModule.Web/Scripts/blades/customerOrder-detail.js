@@ -51,16 +51,15 @@ angular.module('virtoCommerce.orderModule')
 
         blade.openCustomerDetails = function () {
             securityAccounts.get({id: blade.customerOrder.customerId}, function (account) {
-                if (account && account.memberId) {
-                    members.get({ id: account.memberId }, function (member) {
-                        if(member && member.id) {
-                            showCustomerDetailBlade(member);    
-                        }
-                    });
-                }
+                var contactId = (account && account.memberId) ? account.memberId : blade.customerOrder.customerId;
+                members.get({id: contactId}, function (member) {
+                    if (member && member.id) {
+                        showCustomerDetailBlade(member);
+                    }
+                });
             });
         };
-    
+
         // load employees
         members.search(
            {
