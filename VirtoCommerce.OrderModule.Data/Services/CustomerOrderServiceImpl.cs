@@ -59,7 +59,8 @@ namespace VirtoCommerce.OrderModule.Data.Services
             using (var repository = RepositoryFactory())
             using (var changeTracker = GetChangeTracker(repository))
             {
-                var dataExistOrders = repository.GetCustomerOrdersByIds(orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray(), CustomerOrderResponseGroup.Full);
+                var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
+                var dataExistOrders = repository.GetCustomerOrdersByIds(orderIds, CustomerOrderResponseGroup.Full);
                 foreach (var order in orders)
                 {
                     EnsureThatAllOperationsHaveNumber(order);
