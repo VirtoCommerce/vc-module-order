@@ -88,9 +88,7 @@ Vitro Commers Orders Module supports the following functionalities:
     1. Discount (incl. taxes)
     1. Tax
     1. Line items
-
 ![Fig.Customer Orders](/docs/media/screen-line-items.png)
-
 1. Changes widget displays the order changes history (logs)
 1. Addresses widget displays the shipment addresses specified by customer
 1. Comments widget displays all comments related to
