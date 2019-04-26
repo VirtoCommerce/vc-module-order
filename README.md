@@ -6,7 +6,7 @@ The Orders Module in Virto Commerce is a document based flexible orders manageme
 
 The Orders Module main purpose is to store order details and manage orders created by users on client side. This module is not designed to be a full order processing system like EPR but serves as storage for customer orders details and can be synchronized with different external processing systems.
 
-The order itself contains minimum details, when the documents present additional order details, like payment, shipment, etc.  and display the order management lifecycle.
+The order itself contains minimum details, when the documents present additional order details, like payment, shipment, etc.  and display the order management life cycle.
 
 ## Constraints
 
@@ -64,7 +64,6 @@ Vitro Commers Orders Module supports the following functionalities:
     1. The user navigates to settings->Orders->General
     1. The system opens the General Settings screen
     1. The user specifies the Order number template
-
 ![Fig.Customer Orders](/docs/media/screen-order-number-template.png)
 
 1. From – date of creation
@@ -88,7 +87,6 @@ Vitro Commers Orders Module supports the following functionalities:
     1. Discount (incl. taxes)
     1. Tax
     1. Line items
-
 ![Fig.Customer Orders](/docs/media/screen-line-items.png)
 
 1. Changes widget displays the order changes history (logs)
@@ -120,7 +118,6 @@ The  Payment document contains the following fields:
     1. The user navigates to settings->Orders->General
     1. The system opens the General Settings screen
     1. The user specifies the Order payment number template
-
 ![Fig.Customer Orders](/docs/media/screen-order-payment-number-template.png)
 
 1. From label displays the order creation date
@@ -191,7 +188,6 @@ The Order shipment document screen displays the following fields:
 
    1. The user specifies the Order shipment number
 template
-
 ![Fig.Customer Orders](/docs/media/screen-order-shipment-number-template.png)
 
 1. From (label) displays the order creation date
@@ -238,20 +234,13 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
 1. The system displays the ‘Roles’ screen
 1. The admin clicks the ‘Add’ button to create a new role
 1. The system displays the ‘New Role’ screen that contains the following elements:
-
      1. Name input field
-
      1. Description input field
-
      1. List of permissions. Each set of permissions contains:
-
          1. Permission name
 	     1. Selectable list of permissions
-
 ![Fig.Customer Orders](/docs/media/screen-permission-name.png)
-
 ![Fig.Customer Orders](/docs/media/screen-assign-permissions.png)
-
 1. The admin fills out the fields, assigns permissions to the new role and clicks the ‘Create’ button
 1. The new role with permissions is created
 
@@ -260,7 +249,6 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
 #### Assign Order Role to User
 
 ![Fig.Customer Orders](/docs/media/diagram-assign-role-with-permissions.png)
-
 1. The admin navigates to Browse->Security->Users and selects a user
 1. The system displays the user details screen
 1. The admin selects the Roles widget that can be either empty or may contain previously assigned roles to the selected user
