@@ -253,6 +253,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             if (!ids.IsNullOrEmpty())
             {
                 result = CustomerOrders.Where(x => ids.Contains(x.Id)).ToArray();
+
                 if (result.Any())
                 {
                     ids = result.Select(x => x.Id).ToArray();
