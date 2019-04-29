@@ -248,7 +248,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
             CustomerOrderResponseGroup responseGroup)
         {
 
-            CustomerOrderEntity[] result = Array.Empty<CustomerOrderEntity>();
+            var result = Array.Empty<CustomerOrderEntity>();
 
             if (!ids.IsNullOrEmpty())
             {
@@ -309,6 +309,7 @@ namespace VirtoCommerce.OrderModule.Data.Repositories
                             var packages = ShipmentPackagesPackages.Include(x => x.Items)
                                 .Where(x => shipmentIds.Contains(x.ShipmentId)).ToArray();
                         }
+
                     }
 
                     if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
