@@ -310,6 +310,10 @@ This template is used for customer invoice generation in PDF format
 
 ![Fig.Customer Orders](/docs/media/screen-invoice-for-customer-order.png)
 
+## Database Model
+
+![Fig.db-model](/docs/media/diagram-db-model.png)
+
 ## License
 
 Copyright (c) Virto Solutions LTD.  All rights reserved.
