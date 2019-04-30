@@ -64,7 +64,7 @@ In order to manage Virto Commerce functionality each user must be assigned to at
 Permissions are controlled by assigning Roles to users. A Role is a collection of permissions. A Role can be assigned to multiple users. Each user can have more than one assigned Role.
 Through the combination of assigned Roles, you can ensure that users only have access to the information and functionality they need.
 
-[User Scenarios](roles-and-permissions-scenarios.ms)
+[User Scenarios](/docs/roles-and-permissions-scenarios.ms)
 
 
 
