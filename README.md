@@ -51,170 +51,12 @@ Vitro Commers Orders Module supports the following functionalities:
 
  ![Fig.Customer Orders](/docs/media/screen-customer-orders.png)
 
-### Order Details
+1. [Order Details](/docs/order-details.md)
 
- Once the order is created by customer on client side, the details will immediately appear on admin side.
- ![Fig.Customer Orders](/docs/media/screen-order-details.png)
+1. [Widgets](/docs/widgets.md)
+1. [Order Documents](/docs/order-documents.md)
 
- The admin side displays the following order details:
 
-1. Approved: Yes/No button
-1. Assigned to: displays the name of the assignee. The admin can select the assignee from the drop-down list
-1. Customer order Number: generated automatically by the system. The order number template can be specified by user
-    1. The user navigates to settings->Orders->General
-    1. The system opens the General Settings screen
-    1. The user specifies the Order number template
-![Fig.Customer Orders](/docs/media/screen-order-number-template.png)
-
-1. From – date of creation
-1. Status
-1. Customer Name
-1. Discount
-1. Store
-
-### Widgets
-
-![Fig.Customer Orders](/docs/media/screen-order-widgets.png)
-
-1. Notification feed widget displays all notifications related to customer order
-1. Line Items widget display the list of selected items with details:
-    1. Item
-    1. Quantity
-    1. Avail
-    1. Unit price (excl. taxes)
-    1. Unit price (incl. taxes)
-    1. Discount (excl. taxes)
-    1. Discount (incl. taxes)
-    1. Tax
-    1. Line items
-![Fig.Customer Orders](/docs/media/screen-line-items.png)
-
-1. Changes widget displays the order changes history (logs)
-1. Addresses widget displays the shipment addresses specified by customer
-1. Comments widget displays all comments related to
-customer order
-1. Dynamic properties  
-1. Open Subscription
-
-### Order Documents
-
-Order documents are created by the system to store additional order details. There are two types of documents that are provided ‘out of the box’:
-
-1. Payment document
-1. Shipment document
-The user can access the order documents by selecting a specific order. Order documents are displayed on order details screen
-
-![Fig.Customer Orders](/docs/media/screen-order-documents1.png)
-
-#### Order Payment Document
-
-The user can view the payment details by clicking on the order payment document
-
-![Fig.Customer Orders](/docs/media/screen-payment-document-details.png)
-
-The  Payment document contains the following fields:
-
-1. Payment number generated automatically by the system. The order payment number template can be specified by user:
-    1. The user navigates to settings->Orders->General
-    1. The system opens the General Settings screen
-    1. The user specifies the Order payment number template
-![Fig.Customer Orders](/docs/media/screen-order-payment-number-template.png)
-
-1. From label displays the order creation date
-1. Payment fees input field with currency as a label
-1. Payment fees incl. taxes input field with currency as a label
-1. Status drop down
-1. Payment purpose input field
-1. Amount input field
-
-The order payment document screen contains the following widgets:
-
-![Fig.Customer Orders](/docs/media/screen-payment-document-widgets.png)
-
-1. Comments – contains all comments related to order payments
-1. Payment address widget displays the billing address details
-
-   1. Address Name
-
-   1. Address type: Shipping/ Billing and Shipping
-
-   1. First Name
-
-   1. Last Name
-
-   1. Currency
-
-   1. Region
-
-   1. City
-
-   1. Address 1
-
-   1. Address 2
-
-   1. Zip code
-
-   1. Email
-
-   1. Phone
-
-1. Transactions widget displays the list of all
-payment gateway transactions
-1. Totals widget displays the total payment details:
-
-    1. Payment price
-
-    1. Discount total
-
-    1. Tax total
-
-    1. Total
-
-1. Changes widget displays the payment changes history(logs)
-1. Dynamic properties widget
-
-#### Order Shipment Document
-
-The user can view the Shipment document details by clicking on the ‘Shipment’ document
-The Order shipment document screen displays the following fields:
-
-![Fig.Customer Orders](/docs/media/screen-shipment-document.png)
-
-1. Order Shipment number generated automatically by the system. The order shipment number template can be specified by user:
-
-   1. The user navigates to settings->Orders->General
-
-   1. The system opens the General Settings screen
-
-   1. The user specifies the Order shipment number
-template
-![Fig.Customer Orders](/docs/media/screen-order-shipment-number-template.png)
-
-1. From (label) displays the order creation date
-1. Status drop down displays the shipment status
-1. Assigned to drop down displays the name of the person responsible for the shipment processing
-1. Shipment amount input field
-1. Shipment amount with tax
-1. Fulfillment center drop down
-
-![Fig.Customer Orders](/docs/media/screen-fullfilment-center.png)
-
-The order shipment document screen displays the following widgets:
-
-1. Shipment items widget displays the list of items for shipping
-1. Changes widget displays the shipment changes history (logs)
-1. Comments widget displays the comments related to the shipment
-1. Dynamic properties widget
-1. Delivery address widget
-1. Totals widget:
-
-    1. Shipping price
-
-    1. Discount total
-
-    1. Tax total
-
-    1. Total
 
 ## Roles and Permissions
 
@@ -222,83 +64,17 @@ In order to manage Virto Commerce functionality each user must be assigned to at
 Permissions are controlled by assigning Roles to users. A Role is a collection of permissions. A Role can be assigned to multiple users. Each user can have more than one assigned Role.
 Through the combination of assigned Roles, you can ensure that users only have access to the information and functionality they need.
 
-### Scenarios
+[User Scenarios](roles-and-permissions-scenarios.ms)
 
-In order to view and manage Orders in the ‘Orders Module’ the user shall be assigned to the ‘Order’ role with a pre-defined set of permissions.
 
-#### Add Order Role and Permissions
-
-![Fig.Customer Orders](/docs/media/diagram-add-roles-and-permissions.png)
-
-1. The admin navigates to Browse->Security->Roles
-1. The system displays the ‘Roles’ screen
-1. The admin clicks the ‘Add’ button to create a new role
-1. The system displays the ‘New Role’ screen that contains the following elements:
-     1. Name input field
-     1. Description input field
-     1. List of permissions. Each set of permissions contains:
-         1. Permission name
-	     1. Selectable list of permissions
-![Fig.Customer Orders](/docs/media/screen-permission-name.png)
-![Fig.Customer Orders](/docs/media/screen-assign-permissions.png)
-1. The admin fills out the fields, assigns permissions to the new role and clicks the ‘Create’ button
-1. The new role with permissions is created
-
-**Important**: The admin can select different set of permissions for multiple roles related to Orders Module. Roles and permissions can be both edited and deleted from the system.
-
-#### Assign Order Role to User
-
-![Fig.Customer Orders](/docs/media/diagram-assign-role-with-permissions.png)
-1. The admin navigates to Browse->Security->Users and selects a user
-1. The system displays the user details screen
-1. The admin selects the Roles widget that can be either empty or may contain previously assigned roles to the selected user
-1. The admin clicks the ‘Assign’ button to assign a new role to the user
-1. The admin selects the role(s) and confirms the selection by clicking the ‘OK’ button
-1. The system will assign the selected role to the user
 
 ## Notification Templates
 
 Each notification has its own template (NotificationTemplate) which is responsible for notification contents and consists of a view template with placeholders.
 
-### Order Module Notification Types
+[Order Module Notification Types](/docs/order-module-notification-types.md)
 
-The Orders Module provides the following Notification types:
 
-#### Create Order Notification Template
-
-This notification can be used to notify the customer when a new order has been created. The notification is sent to customer via email
-
-![Fig.Customer Orders](/docs/media/screen-create-order-notification.png)
-
-#### Order Paid Notification Template
-
-This notification can be used to notify the customer that his orders are paid. The notification is sent to customer via email
-
-![Fig.Customer Orders](/docs/media/screen-order-paid-notification.png)
-
-#### Order Sent Notification Template
-
-This notification is sent to customer via email when the status of the shipments changes to 'Sent'
-
-![Fig.Customer Orders](/docs/media/screen-order-sent-notification.png)
-
-#### New Order Status Notification Template
-
-This notification is sent to customer via email when his order status was changed
-
-![Fig.Customer Orders](/docs/media/screen-new-order-status-notification.png)
-
-#### Cancel Order Notification
-
-This notification can be sent via email to notify the customer that his order was canceled
-
-![Fig.Customer Orders](/docs/media/screen-cancel-order-notification.png)
-
-#### Invoice for Customer Order
-
-This template is used for customer invoice generation in PDF format
-
-![Fig.Customer Orders](/docs/media/screen-invoice-for-customer-order.png)
 
 ## Database Model
 
