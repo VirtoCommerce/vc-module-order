@@ -17,16 +17,16 @@ The Order Management process in Vitro Commerce OMS is not coded and not pre-dete
 Vitro Commers Orders Module supports the following functionalities:
 
 1. Status update for each document type
-2. Document based order structure. The Order contains related documents such as Payments, Shipments, Addresses, etc.
+2. Document based order structure. The Order contains related documents such as Payments, Shipments, Addresses, etc. The Order, being a document itself, is also a container for all documents related to the order processing: shipping, payment, custom documents. This approach allows mapping of supplier internal business processes of any complexity (multi-shipments, multi payments, specific inventory operations) to Virtocommerce order structure. So it makes possible to keep track of documents begot by each order and show it to a customer if required.
 3. Ability to view and manage fulfillment, packages, pick-up and shipments documents
-4. Dynamic extensibility of the Order Documents (possibility to add random fields)
+4. Dynamic extensibility of the Order Documents (possibility to add random fields). It is relatively easy to implement additional data for existent documents and new kinds of custom documents to the Order container.
 5. Additional invoices
 6. Saving Order drafts (postponed confirmation of order changes)
 7. Changing Order products (quantity, product change, new products)
 8. Changing of Order Product Price
 9. Changing discounts
 10. Add promotion coupons to Order
-11. Managing financial documents
+11. Payment history tracking. Orders contain document type "Payment". Using this type of documents allows keeping information about bills and a full log of payment gateway transactions related to the order.
 12. Refunds
 13. Changing of Product items
 14. Saving Order details change history (logs)
