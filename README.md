@@ -14,7 +14,7 @@ The Order Management process in VitroCommerce OMS is not coded and not pre-deter
 
 ## Functional possibilities
 
-VirtoCommers Orders Module supports the following functionalities:
+VirtoCommerce Orders Module supports the following functionalities:
 
 1. Status update for each document type.
 2. Document based order structure. The order contains related documents such as Payments, Shipments, Addresses, etc. The order, being a document itself, is also a container for all documents related to the order processing: shipping, payment, custom documents. This approach allows mapping of supplier internal business processes of any complexity (multi-shipments, multi payments, specific inventory operations) to VirtoCommerce order structure. So it makes possible to keep track of documents begot by each order and show it to a customer if required.
