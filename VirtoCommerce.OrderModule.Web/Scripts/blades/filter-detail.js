@@ -1,6 +1,6 @@
-﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService',
-    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService) {
+angular.module('virtoCommerce.orderModule')
+.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.metaFormsService',
+    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, metaFormsService) {
         var blade = $scope.blade;
 
         blade.metaFields = [
@@ -35,6 +35,12 @@
                 templateUrl: 'filter-employeeSelector.html'
             }
         ];
+
+        var registeredMetaFields = metaFormsService.getMetaFields('orderFilterDetail');
+
+        if (angular.isArray(registeredMetaFields)) {
+            blade.metaFields = blade.metaFields.concat(registeredMetaFields);
+        }
         
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
