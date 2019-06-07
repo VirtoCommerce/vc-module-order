@@ -1,6 +1,6 @@
-﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService',
-    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService) {
+angular.module('virtoCommerce.orderModule')
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.bladeUtils',
+    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, securityAccounts, bladeUtils) {
         var blade = $scope.blade;
 
         blade.metaFields = [
@@ -61,7 +61,7 @@
                blade.contacts = data.results;
            });
 
-        $scope.saveChanges = function () {
+        $scope.applyCriteria = function () {
             angular.copy(blade.currentEntity, blade.origEntity);
             if (blade.isNew) {
                 $localStorage.orderSearchFilters.push(blade.origEntity);
@@ -73,6 +73,24 @@
             initializeBlade(blade.origEntity);
             blade.parentBlade.filter.criteriaChanged();
             // $scope.bladeClose();
+        };
+
+
+        $scope.saveChanges = function () {
+            
+            if (blade.currentEntity.customerId) {
+                // Search for accounts by memberId (because customerID in order is an account)
+                securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {                    
+                    blade.currentEntity.customerIds = _.pluck(data.users, 'id');
+                    $scope.applyCriteria();
+                },
+                    function (error) { bladeUtils.bladeNavigationService.setError('Error ' + error.status, blade); }
+                );
+            }
+            else {
+                $scope.applyCriteria();
+            }
+            
         };
 
         function initializeBlade(data) {
