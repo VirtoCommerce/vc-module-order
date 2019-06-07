@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.accounts', 'platformWebApp.bladeUtils',
-    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, securityAccounts, bladeUtils) {
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.accounts',
+    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, securityAccounts) {
         var blade = $scope.blade;
 
         blade.metaFields = [
@@ -78,12 +78,10 @@ angular.module('virtoCommerce.orderModule')
         $scope.saveChanges = function () {
             if (blade.currentEntity.customerId) {
                 // Search for accounts by memberId (because customerID in order is an account)
-                securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {                    
+                securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {
                     blade.currentEntity.customerIds = _.pluck(data.users, 'id');
                     $scope.applyCriteria();
-                },
-                    function (error) { bladeUtils.bladeNavigationService.setError('Error ' + error.status, blade); }
-                );
+                });
             }
             else {
                 $scope.applyCriteria();
