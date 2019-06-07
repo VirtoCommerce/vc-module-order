@@ -202,7 +202,7 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 query = query.Where(x => x.SubscriptionId != null);
             }
 
-            if (criteria.CustomerIds != null)
+            if (!criteria.CustomerIds.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.CustomerIds.Contains(x.CustomerId));
             }
