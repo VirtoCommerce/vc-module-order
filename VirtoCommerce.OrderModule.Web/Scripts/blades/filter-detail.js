@@ -1,5 +1,5 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.bladeUtils',
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.accounts', 'platformWebApp.bladeUtils',
     function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, securityAccounts, bladeUtils) {
         var blade = $scope.blade;
 
@@ -74,10 +74,8 @@ angular.module('virtoCommerce.orderModule')
             blade.parentBlade.filter.criteriaChanged();
             // $scope.bladeClose();
         };
-
-
+        
         $scope.saveChanges = function () {
-            
             if (blade.currentEntity.customerId) {
                 // Search for accounts by memberId (because customerID in order is an account)
                 securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {                    
@@ -90,7 +88,6 @@ angular.module('virtoCommerce.orderModule')
             else {
                 $scope.applyCriteria();
             }
-            
         };
 
         function initializeBlade(data) {
