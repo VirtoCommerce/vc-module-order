@@ -133,7 +133,7 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="VirtoCommerce.CoreModule.Data, Version=2.25.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VirtoCommerce.CoreModule.Data.2.25.23\lib\net461\VirtoCommerce.CoreModule.Data.dll</HintPath>
+      <HintPath>..\packages\VirtoCommerce.CoreModule.Data.2.25.1\lib\net461\VirtoCommerce.CoreModule.Data.dll</HintPath>
     </Reference>
     <Reference Include="VirtoCommerce.Domain, Version=2.25.24.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\VirtoCommerce.Domain.2.25.24\lib\net461\VirtoCommerce.Domain.dll</HintPath>
