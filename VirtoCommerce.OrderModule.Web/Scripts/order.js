@@ -58,8 +58,8 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
     };
 }])
 .run(
-    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'platformWebApp.authService',
-    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, authService) {
+    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'platformWebApp.authService', 'platformWebApp.metaFormsService',
+    function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, authService, metaFormsService) {
         //Register module in main menu
         var menuItem = {
             path: 'browse/orders',
@@ -355,6 +355,39 @@ angular.module(moduleName, ['virtoCommerce.catalogModule', 'virtoCommerce.pricin
             size: [3, 2],
             template: 'order-statistics-orderValueByQuarter.html'
         }, 'mainDashboard');
+
+        metaFormsService.registerMetaFields('orderFilterDetail', [
+            {
+                name: 'statuses',
+                title: "orders.blades.customerOrder-detail.labels.status",
+                templateUrl: 'statusesSelector.html'
+            },
+            {
+                name: 'storeIds',
+                title: "orders.blades.customerOrder-detail.labels.store",
+                templateUrl: 'storeSelector.html'
+            },
+            {
+                name: 'startDate',
+                title: "orders.blades.filter-detail.labels.from",
+                valueType: "DateTime"
+            },
+            {
+                name: 'endDate',
+                title: "orders.blades.filter-detail.labels.to",
+                valueType: "DateTime"
+            },
+            {
+                name: 'customerId',
+                title: "orders.blades.customerOrder-detail.labels.customer",
+                templateUrl: 'customerSelector.html'
+            },
+            {
+                name: 'employeeId',
+                title: "orders.blades.shipment-detail.labels.employee",
+                templateUrl: 'filter-employeeSelector.html'
+            }
+        ]);
 
         $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
             // compile the response, which will put stuff into the cache

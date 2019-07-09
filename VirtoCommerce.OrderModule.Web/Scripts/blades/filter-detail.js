@@ -3,44 +3,7 @@ angular.module('virtoCommerce.orderModule')
     function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, metaFormsService) {
         var blade = $scope.blade;
 
-        blade.metaFields = [
-            {
-                name: 'statuses',
-                title: "orders.blades.customerOrder-detail.labels.status",
-                templateUrl: 'statusesSelector.html'
-            },
-            {
-                name: 'storeIds',
-                title: "orders.blades.customerOrder-detail.labels.store",
-                templateUrl: 'storeSelector.html'
-            },
-            {
-                name: 'startDate',
-                title: "orders.blades.filter-detail.labels.from",
-                valueType: "DateTime"
-            },
-            {
-                name: 'endDate',
-                title: "orders.blades.filter-detail.labels.to",
-                valueType: "DateTime"
-            },
-            {
-                name: 'customerId',
-                title: "orders.blades.customerOrder-detail.labels.customer",
-                templateUrl: 'customerSelector.html'
-            },
-            {
-                name: 'employeeId',
-                title: "orders.blades.shipment-detail.labels.employee",
-                templateUrl: 'filter-employeeSelector.html'
-            }
-        ];
-
-        var registeredMetaFields = metaFormsService.getMetaFields('orderFilterDetail');
-
-        if (angular.isArray(registeredMetaFields)) {
-            blade.metaFields = blade.metaFields.concat(registeredMetaFields);
-        }
+        blade.metaFields = blade.metaFields ? blade.metaFields : metaFormsService.getMetaFields('orderFilterDetail');
         
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
