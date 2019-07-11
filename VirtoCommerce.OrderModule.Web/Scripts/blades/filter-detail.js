@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.metaFormsService',
-    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, metaFormsService) {
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.metaFormsService', 'platformWebApp.accounts',
+        function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, metaFormsService, securityAccounts) {
         var blade = $scope.blade;
 
         blade.metaFields = blade.metaFields ? blade.metaFields : metaFormsService.getMetaFields('orderFilterDetail');
@@ -30,7 +30,7 @@ angular.module('virtoCommerce.orderModule')
                blade.contacts = data.results;
            });
 
-        $scope.saveChanges = function () {
+        $scope.applyCriteria = function () {
             angular.copy(blade.currentEntity, blade.origEntity);
             if (blade.isNew) {
                 $localStorage.orderSearchFilters.push(blade.origEntity);
@@ -42,6 +42,19 @@ angular.module('virtoCommerce.orderModule')
             initializeBlade(blade.origEntity);
             blade.parentBlade.filter.criteriaChanged();
             // $scope.bladeClose();
+        };
+        
+        $scope.saveChanges = function () {
+            if (blade.currentEntity.customerId) {
+                // Search for accounts by memberId (because customerID in order is an account)
+                securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {
+                    blade.currentEntity.customerIds = _.pluck(data.users, 'id');
+                    $scope.applyCriteria();
+                });
+            }
+            else {
+                $scope.applyCriteria();
+            }
         };
 
         function initializeBlade(data) {
