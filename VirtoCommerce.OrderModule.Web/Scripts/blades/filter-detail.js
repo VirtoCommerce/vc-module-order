@@ -1,40 +1,9 @@
-﻿angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService',
-    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService) {
+angular.module('virtoCommerce.orderModule')
+.controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.metaFormsService',
+    function ($scope, $localStorage, order_res_stores, settings, members, $translate, statusTranslationService, metaFormsService) {
         var blade = $scope.blade;
 
-        blade.metaFields = [
-            {
-                name: 'statuses',
-                title: "orders.blades.customerOrder-detail.labels.status",
-                templateUrl: 'statusesSelector.html'
-            },
-            {
-                name: 'storeIds',
-                title: "orders.blades.customerOrder-detail.labels.store",
-                templateUrl: 'storeSelector.html'
-            },
-            {
-                name: 'startDate',
-                title: "orders.blades.filter-detail.labels.from",
-                valueType: "DateTime"
-            },
-            {
-                name: 'endDate',
-                title: "orders.blades.filter-detail.labels.to",
-                valueType: "DateTime"
-            },
-            {
-                name: 'customerId',
-                title: "orders.blades.customerOrder-detail.labels.customer",
-                templateUrl: 'customerSelector.html'
-            },
-            {
-                name: 'employeeId',
-                title: "orders.blades.shipment-detail.labels.employee",
-                templateUrl: 'filter-employeeSelector.html'
-            }
-        ];
+        blade.metaFields = blade.metaFields ? blade.metaFields : metaFormsService.getMetaFields('orderFilterDetail');
         
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
