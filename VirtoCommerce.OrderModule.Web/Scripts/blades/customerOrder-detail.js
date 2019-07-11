@@ -30,7 +30,7 @@ angular.module('virtoCommerce.orderModule')
             newBlade.parentRefresh = translateBladeStatuses;
             bladeNavigationService.showBlade(newBlade, blade);
         };
-        
+
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
         }
@@ -52,22 +52,15 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.openCustomerDetails = function () {
-            members.get({ id: blade.customerOrder.customerId }, function (member) {
-                if (!member.id) {
-                    securityAccounts.get({ id: blade.customerOrder.customerId }, function (account) {
-                        if (account && account.memberId) {
-                            var member = { id: account.memberId, memberType: 'Contact' };
-                            showCustomerDetailBlade(member);
-                        }
-                    });
-                }
-                else {
-                    showCustomerDetailBlade(member);
-                }
+            securityAccounts.get({id: blade.customerOrder.customerId}, function (account) {
+                var contactId = (account && account.memberId) ? account.memberId : blade.customerOrder.customerId;
+                members.get({id: contactId}, function (member) {
+                    if (member && member.id) {
+                        showCustomerDetailBlade(member);
+                    }
+                });
             });
-         
         };
-
 
         // load employees
         members.search(
