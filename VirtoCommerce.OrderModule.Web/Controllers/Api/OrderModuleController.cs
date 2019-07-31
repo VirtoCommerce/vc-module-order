@@ -560,31 +560,37 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
             CustomerOrderSearchCriteria criteria)
         {
-            if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).Result;
+            if (!user.IsAdministrator)
             {
-                //Get defined user 'read' permission scopes
-                var readPermissionScopes = _securityService.GetUserPermissions(userName)
-                    .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
-                    .SelectMany(x => x.AssignedScopes)
-                    .ToList();
-
-                //Check user has a scopes
-                //Stores
-                criteria.StoreIds = readPermissionScopes.OfType<OrderStoreScope>()
-                    .Select(x => x.Scope)
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .ToArray();
-
-                //employee id
-                var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
-                if (responsibleScope != null)
+                if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
                 {
-                    criteria.EmployeeId = userName;
-                }
-            }
+                    //Get defined user 'read' permission scopes
+                    var readPermissionScopes = _securityService.GetUserPermissions(userName)
+                        .Where(x => x.Id.StartsWith(OrderPredefinedPermissions.Read))
+                        .SelectMany(x => x.AssignedScopes)
+                        .ToList();
 
-            // ResponseGroup
-            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+                    //Check user has a scopes
+                    //Stores
+                    criteria.StoreIds = readPermissionScopes.OfType<OrderStoreScope>()
+                        .Select(x => x.Scope)
+                        .Where(x => !string.IsNullOrEmpty(x))
+                        .ToArray();
+
+                    //employee id
+                    var responsibleScope = readPermissionScopes.OfType<OrderResponsibleScope>().FirstOrDefault();
+                    if (responsibleScope != null)
+                    {
+                        criteria.EmployeeId = userName;
+                    }
+                }
+
+                // ResponseGroup
+                criteria.ResponseGroup =
+                    OrderReadPricesPermission.ApplyResponseGroupFiltering(
+                        _securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+            }
 
             return criteria;
         }
