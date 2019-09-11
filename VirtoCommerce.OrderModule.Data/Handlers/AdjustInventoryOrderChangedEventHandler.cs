@@ -26,7 +26,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             public string FulfillmentCenterId { get; set; }
             public int QuantityDelta { get; set; }
         }
-        
+
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
@@ -151,10 +151,10 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 if (oldQuantity != newQuantity)
                 {
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
+
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItem(changedItem, customerOrder.StoreId,
-                        customerOrderShipments);
+                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItem(changedItem, customerOrder.StoreId, customerOrderShipments);
                     itemChanges.Add(itemChange);
                 }
             });
