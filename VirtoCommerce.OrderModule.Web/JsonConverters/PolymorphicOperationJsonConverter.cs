@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 {
     public class PolymorphicOperationJsonConverter : JsonConverter
     {
-        private static readonly Type[] _knowTypes =
+        private static readonly Type[] _knownTypes =
         {
             typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria),
             typeof(PaymentMethod), typeof(ShippingMethod),
@@ -36,7 +36,7 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 
         public override bool CanConvert(Type objectType)
         {
-            return _knowTypes.Any(x => x.IsAssignableFrom(objectType));
+            return _knownTypes.Any(x => x.IsAssignableFrom(objectType));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
