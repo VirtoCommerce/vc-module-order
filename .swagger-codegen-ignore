@@ -22,6 +22,6 @@
 # Then explicitly reverse the ignore rule for a single file:
 #!docs/README.md
  
-VirtoCommerce.OrderModule.Client/Properties/AssemblyInfo.cs 
-VirtoCommerce.OrderModule.Client/VirtoCommerce.OrderModule.Client.csproj 
-VirtoCommerce.OrderModule.Client/VirtoCommerce.OrderModule.Client.nuspec
+VirtoCommerce.CoreModule.Client/Properties/AssemblyInfo.cs 
+VirtoCommerce.CoreModule.Client/VirtoCommerce.CoreModule.Client.csproj 
+VirtoCommerce.CoreModule.Client/VirtoCommerce.CoreModule.Client.nuspec
