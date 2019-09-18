@@ -43,6 +43,8 @@ class Build : NukeBuild
     [GitRepository] readonly GitRepository GitRepository;
     [GitVersion] readonly GitVersion GitVersion;
 
+    readonly Tool Git;
+
     readonly string MasterBranch = "master";
     readonly string DevelopBranch = "develop";
     readonly string ReleaseBranchPrefix = "release";
@@ -116,12 +118,13 @@ class Build : NukeBuild
                .EnableNoBuild()
                .SetLogger("trx")
                .SetResultsDirectory(ArtifactsDirectory)
+               .SetFilter("Category!=IntegrationTest")
                .CombineWith(
                    Solution.GetProjects("*.Tests"), (cs, v) => cs
                        .SetProjectFile(v)));
        });
 
-    Target Publish => _ => _
+    Target PublishPackages => _ => _
         .DependsOn(Clean, Compile, Test, Pack)
         .Requires(() => ApiKey)
         .Executes(() =>
@@ -138,12 +141,28 @@ class Build : NukeBuild
                 completeOnFailure: true);
         });
 
+    Target Publish => _ => _
+       .DependsOn(Compile)
+       .Before(WebPackBuild)
+       .Executes(() =>
+       {
+           DotNetPublish(s => s
+               .SetWorkingDirectory(WebProject.Directory)
+               .EnableNoRestore()
+               .SetOutput(IsModule ? ModuleOutputDirectory / "bin" : ArtifactsDirectory / "publish")
+               .SetConfiguration(Configuration)
+               .SetAssemblyVersion(IsModule ? ModuleVersion : GitVersion.GetNormalizedAssemblyVersion())
+               .SetFileVersion(IsModule ? ModuleVersion : GitVersion.GetNormalizedFileVersion())
+               .SetInformationalVersion(IsModule ? ModuleVersion : GitVersion.InformationalVersion));
+
+       });
+
     Target WebPackBuild => _ => _
      .Executes(() =>
      {
          if (FileExists(WebProject.Directory / "package.json"))
          {
-             NpmTasks.NpmInstall(s => s.SetWorkingDirectory(WebProject.Directory));
+             NpmTasks.Npm("ci", WebProject.Directory);
              NpmTasks.NpmRun(s => s.SetWorkingDirectory(WebProject.Directory).SetCommand("webpack:build"));
          }
          else
@@ -164,44 +183,43 @@ class Build : NukeBuild
                 .SetInformationalVersion(IsModule ? ModuleVersion : GitVersion.InformationalVersion)
                 .EnableNoRestore());
 
-            if (IsModule)
-            {
-                DotNetPublish(s => s
-                     .SetWorkingDirectory(WebProject.Directory)
-                     .EnableNoRestore()
-                     .SetOutput(ModuleOutputDirectory / "bin")
-                     .SetConfiguration(Configuration)
-                     .SetAssemblyVersion(ModuleVersion)
-                     .SetFileVersion(ModuleVersion)
-                     .SetInformationalVersion(ModuleVersion));
-
-                //Copy module.manifest and all content directories into a module output folder
-                CopyFileToDirectory(ModuleManifest, ModuleOutputDirectory, FileExistsPolicy.Overwrite);
-                foreach (var moduleFolder in ModuleContentFolders)
-                {
-                    var srcModuleFolder = WebProject.Directory / moduleFolder;
-                    if (DirectoryExists(srcModuleFolder))
-                    {
-                        CopyDirectoryRecursively(srcModuleFolder, ModuleOutputDirectory / moduleFolder, DirectoryExistsPolicy.Merge, FileExistsPolicy.Overwrite);
-                    }
-                }
-            }
         });
 
     Target Compress => _ => _
-     .DependsOn(Clean, Compile, Test, WebPackBuild)
+     .DependsOn(Clean, WebPackBuild, Test, Publish)
      .Executes(() =>
      {
-         var ignoredFiles = HttpTasks.HttpDownloadString(GlobalModuleIgnoreFileUrl).SplitLineBreaks();
-         if (FileExists(ModuleIgnoreFile))
+       
+         if (IsModule)
          {
-             ignoredFiles = ignoredFiles.Concat(TextTasks.ReadAllLines(ModuleIgnoreFile)).ToArray();
-         }
-         ignoredFiles = ignoredFiles.Select(x => x.Trim()).Distinct().ToArray();
+             //Copy module.manifest and all content directories into a module output folder
+             CopyFileToDirectory(ModuleManifest, ModuleOutputDirectory, FileExistsPolicy.Overwrite);
+             foreach (var moduleFolder in ModuleContentFolders)
+             {
+                 var srcModuleFolder = WebProject.Directory / moduleFolder;
+                 if (DirectoryExists(srcModuleFolder))
+                 {
+                     CopyDirectoryRecursively(srcModuleFolder, ModuleOutputDirectory / moduleFolder, DirectoryExistsPolicy.Merge, FileExistsPolicy.Overwrite);
+                 }
+             }
 
-         var zipFileName = ArtifactsDirectory / ModuleId + "_" + ModuleVersion + ".zip";
-         DeleteFile(zipFileName);
-         CompressionTasks.CompressZip(ModuleOutputDirectory, zipFileName, (x) => !ignoredFiles.Contains(x.Name, StringComparer.OrdinalIgnoreCase));
+             var ignoredFiles = HttpTasks.HttpDownloadString(GlobalModuleIgnoreFileUrl).SplitLineBreaks();
+             if (FileExists(ModuleIgnoreFile))
+             {
+                 ignoredFiles = ignoredFiles.Concat(TextTasks.ReadAllLines(ModuleIgnoreFile)).ToArray();
+             }
+             ignoredFiles = ignoredFiles.Select(x => x.Trim()).Distinct().ToArray();
+
+             var zipFileName = ArtifactsDirectory / ModuleId + "_" + ModuleVersion + ".zip";
+             DeleteFile(zipFileName);
+             CompressionTasks.CompressZip(ModuleOutputDirectory, zipFileName, (x) => !ignoredFiles.Contains(x.Name, StringComparer.OrdinalIgnoreCase));
+         }
+         else
+         {
+             var zipFileName = ArtifactsDirectory / "VirtoCommerce.Platform." + GitVersion.SemVer + ".zip";
+             DeleteFile(zipFileName);
+             CompressionTasks.CompressZip(ArtifactsDirectory / "publish", zipFileName);
+         }
      });
 
     Target PublishModuleManifest => _ => _
@@ -234,6 +252,26 @@ class Build : NukeBuild
 
             GitTasks.Git($"push origin HEAD:master -f", modulesLocalDirectory);
         });
+
+    Target SwaggerValidation => _ => _
+     .DependsOn(Publish)
+     .Requires(() => !IsModule)
+     .Executes(() =>
+     {
+         //dotnet %userprofile%\.nuget\packages\swashbuckle.aspnetcore.cli\4.0.1\lib\netcoreapp2.0\dotnet-swagger.dll tofile --output swagger.json bin/Debug/netcoreapp2.2/VirtoCommerce.Platform.Web.dll VirtoCommerce.Platform
+         //better use in the future a .Net Global Tool https://github.com/domaindrivendev/Swashbuckle.AspNetCore/blob/master/README-v5.md#retrieve-swagger-directly-from-a-startup-assembly
+         var swashbucklePackage = NuGetPackageResolver.GetGlobalInstalledPackage("swashbuckle.aspnetcore.cli", "4.0.1", "dotnet-swagger.dll");
+         var swashbucklePath = swashbucklePackage.Directory / "lib" / "netcoreapp2.0" / "dotnet-swagger.dll";
+         var projectPublishPath = ArtifactsDirectory / "publish" / $"{WebProject.Name}.dll";
+         var swaggerJson = ArtifactsDirectory / "swagger.json";
+         DotNet($"{swashbucklePath} tofile --output {swaggerJson} {projectPublishPath} VirtoCommerce.Platform");
+
+         NpmTasks.NpmRun(s => s
+            .SetWorkingDirectory(WebProject.Directory)
+            .SetCommand($"swagger-cli")
+            .SetArguments("validate", IsLocalBuild ? "-d" : "", swaggerJson)
+            .SetLogOutput(true)); 
+     });
 
 }
 

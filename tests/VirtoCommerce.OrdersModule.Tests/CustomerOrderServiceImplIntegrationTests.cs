@@ -1,4 +1,3 @@
-/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using VirtoCommerce.CoreModule.Core.Common;
-
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -29,13 +27,12 @@ using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
-*/
+
 namespace VirtoCommerce.OrdersModule.Tests
 {
-    // Itegration tests temporary switched off due to module release issues. Inttest will moved to separate place later.
-    /*
-    // [Trait("Category", "CI")]
-    public class CustomerOrderServiceImplIntegrationTests// : FunctionalTestBase
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "CI")]
+    public class CustomerOrderServiceImplIntegrationTests //: FunctionalTestBase
     {
         private readonly Mock<IStoreService> _storeServiceMock;
         private readonly Mock<IShippingMethodsRegistrar> _shippingMethodRegistrarMock;
@@ -48,6 +45,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<IPlatformMemoryCache> _platformMemoryCacheMock;
         private readonly Mock<IChangeLogService> _changeLogServiceMock;
         private readonly Mock<ICacheEntry> _cacheEntryMock;
+        private readonly Mock<IEventPublisher> _eventPublisherMock;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ICustomerOrderSearchService _customerOrderSearchService;
 
@@ -62,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _paymentMethodsSearchService.Setup(s => s.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>())).ReturnsAsync(new PaymentMethodsSearchResult());
             _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
-            //_eventPublisherMock = new Mock<IEventPublisher>();
+            _eventPublisherMock = new Mock<IEventPublisher>();
             _dynamicPropertyServiceMock = new Mock<IDynamicPropertyService>();
             _platformMemoryCacheMock = new Mock<IPlatformMemoryCache>();
             _cacheEntryMock = new Mock<ICacheEntry>();
@@ -255,5 +253,4 @@ namespace VirtoCommerce.OrdersModule.Tests
             return order;
         }
     }
-    */
 }
