@@ -90,7 +90,27 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         /// It used to limit search within an operation (customer order for example)
         /// </summary>
         public string OperationId { get; set; }
-        public string[] CustomerIds { get; set; }
+
+
+        public string CustomerId { get; set; }
+
+        private string[] _customerIds;
+        public string[] CustomerIds
+        {
+            get
+            {
+                if (_customerIds == null && !string.IsNullOrEmpty(CustomerId))
+                {
+                    _customerIds = new[] { CustomerId };
+                }
+                return _customerIds;
+            }
+            set
+            {
+                _customerIds = value;
+            }
+        }
+
         public string EmployeeId { get; set; }
         public string[] StoreIds { get; set; }
         public DateTime? StartDate { get; set; }
