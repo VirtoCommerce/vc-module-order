@@ -24,6 +24,10 @@
 
     <ItemGroup>
         <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
+        <PackageReference Include="GitVersionTask" Version="5.0.2-beta1.58">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="Select.HtmlToPdf.NetCore" Version="19.1.0" />
