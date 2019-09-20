@@ -53,6 +53,13 @@ namespace VirtoCommerce.OrderModule.Data.Services
             order.FeeTotal = order.Fee;
             order.TaxTotal = 0m;
 
+            order.SubTotal = 0m;
+            order.SubTotalWithTax = 0m;
+            order.SubTotalTaxTotal = 0m;
+            order.SubTotalDiscount = 0m;
+            order.SubTotalDiscountWithTax = 0m;
+            order.FeeTotalWithTax = 0m;
+
             if (!order.Items.IsNullOrEmpty())
             {
                 order.SubTotal = order.Items.Sum(x => x.Price * x.Quantity);
@@ -66,6 +73,13 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 order.FeeTotalWithTax += order.Items.Sum(x => x.FeeWithTax);
                 order.TaxTotal += order.Items.Sum(x => x.TaxTotal);
             }
+
+            order.ShippingTotal = 0m;
+            order.ShippingTotalWithTax = 0m;
+            order.ShippingSubTotal = 0m;
+            order.ShippingSubTotalWithTax = 0m;
+            order.ShippingDiscountTotal = 0m;
+            order.ShippingDiscountTotalWithTax = 0m;
 
             if (!order.Shipments.IsNullOrEmpty())
             {
@@ -81,6 +95,13 @@ namespace VirtoCommerce.OrderModule.Data.Services
                 order.FeeTotalWithTax += order.Shipments.Sum(x => x.FeeWithTax);
                 order.TaxTotal += order.Shipments.Sum(x => x.TaxTotal);
             }
+
+            order.PaymentTotal = 0m;
+            order.PaymentTotalWithTax = 0m;
+            order.PaymentSubTotal = 0m;
+            order.PaymentSubTotalWithTax = 0m;
+            order.PaymentDiscountTotal = 0m;
+            order.PaymentDiscountTotalWithTax = 0m;
 
             if (!order.InPayments.IsNullOrEmpty())
             {

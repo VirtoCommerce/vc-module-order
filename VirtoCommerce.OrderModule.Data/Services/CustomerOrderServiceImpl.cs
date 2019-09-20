@@ -66,21 +66,41 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     LoadOrderDependencies(order);
 
                     var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
-                    //Calculate order totals
-                    TotalsCalculator.CalculateTotals(order);
 
-                    var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
-                                                                                 .FromModel(order, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
                     {
                         changeTracker.Attach(originalEntity);
+
                         var oldEntry = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
                         DynamicPropertyService.LoadDynamicPropertyValues(oldEntry);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, oldEntry, EntryState.Modified));
+
+                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>
+                            .TryCreateInstance()
+                            .FromModel(order, pkMap) as CustomerOrderEntity;
+
                         modifiedEntity?.Patch(originalEntity);
+
+                        //originalEntity is fully loaded and contains changes from order
+                        var newModel = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+
+                        //newmodel is fully loaded, so we can call CalculateTotals for order
+                        TotalsCalculator.CalculateTotals(newModel);
+
+                        var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>
+                            .TryCreateInstance()
+                            .FromModel(newModel, pkMap) as CustomerOrderEntity;
+
+                        newModifiedEntity?.Patch(originalEntity);
                     }
                     else
                     {
+                        TotalsCalculator.CalculateTotals(order);
+
+                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>
+                            .TryCreateInstance()
+                            .FromModel(order, pkMap) as CustomerOrderEntity;
+
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, EntryState.Added));
                     }
