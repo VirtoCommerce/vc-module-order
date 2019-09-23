@@ -34,7 +34,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
-        private readonly IChangeLogService _changeLogService;
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private readonly IPlatformMemoryCache _platformMemoryCache;
 
@@ -48,7 +47,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _repositoryFactory = orderRepositoryFactory;
             _eventPublisher = eventPublisher;
             _storeService = storeService;
-            _changeLogService = changeLogService;
             _totalsCalculator = totalsCalculator;
             _shippingMethodsSearchService = shippingMethodsSearchService;
 

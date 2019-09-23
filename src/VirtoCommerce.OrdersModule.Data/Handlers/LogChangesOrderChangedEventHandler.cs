@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoCompare;
+using Hangfire;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
@@ -20,17 +22,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     {
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
-        private static readonly string[] _observedProperties;
-
-        static LogChangesOrderChangedEventHandler()
-        {
-            var operationPropNames = ReflectionUtility.GetPropertyNames<IOperation>(x => x.Status, x => x.Comment, x => x.Currency, x => x.Number, x => x.IsApproved);
-            var orderPropNames = ReflectionUtility.GetPropertyNames<CustomerOrder>(x => x.DiscountAmount, x => x.Total, x => x.Fee, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType);
-            var shipmentPropNames = ReflectionUtility.GetPropertyNames<Shipment>(x => x.DiscountAmount, x => x.Total, x => x.Fee, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType, x => x.Height, x => x.Length, x => x.MeasureUnit, x => x.Price, x => x.ShipmentMethodCode, x => x.ShipmentMethodOption, x => x.Weight, x => x.WeightUnit, x => x.Width);
-            var paymentPropNames = ReflectionUtility.GetPropertyNames<PaymentIn>(x => x.DiscountAmount, x => x.Total, x => x.Number, x => x.TaxPercentRate, x => x.TaxTotal, x => x.TaxType, x => x.OuterId, x => x.AuthorizedDate, x => x.CapturedDate, x => x.Price, x => x.GatewayCode, x => x.IncomingDate, x => x.Purpose, x => x.VoidedDate);
-
-            _observedProperties = operationPropNames.Concat(orderPropNames).Concat(shipmentPropNames).Concat(paymentPropNames).Distinct().ToArray();
-        }
+        private static ConcurrentDictionary<string, List<string>> _auditablePropertiesListByTypeDict = new ConcurrentDictionary<string, List<string>>();
 
         public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService)
         {
@@ -38,10 +30,20 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _memberService = memberService;
         }
 
-        public virtual async Task Handle(OrderChangedEvent message)
+        public virtual Task Handle(OrderChangedEvent @event)
+        {
+            if (@event.ChangedEntries.Any())
+            {
+                BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(@event));
+            }
+            return Task.CompletedTask;
+        }
+
+        [DisableConcurrentExecution(60 * 60 * 24)]
+        public async Task TryToLogChangesBackgroundJob(OrderChangedEvent @event)
         {
             var operationLogs = new List<OperationLog>();
-            foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+            foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
                 var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
                 var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
@@ -59,34 +61,44 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var result = new List<string>();
 
+            //TDB: Rework to make more extensible
             if (changedEntry.EntryState == EntryState.Modified)
             {
                 var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
 
-                var shipment = changedEntry.OldEntry as Shipment;
-                if (shipment != null)
+                if (changedEntry.OldEntry is Shipment shipment)
                 {
                     result.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
-                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
+                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));                   
                 }
-
-                var payment = changedEntry.OldEntry as PaymentIn;
-                if (payment != null)
+                else if (changedEntry.OldEntry is PaymentIn payment)
                 {
                     result.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
                     diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
                 }
-
-                var order = changedEntry.OldEntry as CustomerOrder;
-                if (order != null)
+                else if (changedEntry.OldEntry is CustomerOrder order)
                 {
                     result.AddRange(await GetCustomerOrderChangesAsync(order, changedEntry.NewEntry as CustomerOrder));
                     diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
                 }
-                var observedDifferences = diff.Join(_observedProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
-                foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
+
+                List<string> auditableProperties;
+                var type = changedEntry.OldEntry.GetType();
+                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out auditableProperties))
                 {
-                    result.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to  '{difference.NewValue}'");
+                    auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
+                                                              .Select(x => x.Name)
+                                                              .ToList();
+                    _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
+                }
+
+                if (auditableProperties.Any())
+                {
+                    var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
+                    foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
+                    {
+                        result.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to  '{difference.NewValue}'");
+                    }
                 }
             }
             else if (changedEntry.EntryState == EntryState.Deleted)

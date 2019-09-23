@@ -12,10 +12,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class PaymentIn : OrderOperation, IHasTaxDetalization, ITaxable, IHasDiscounts, ICloneable
     {
+        [Auditable]
         public string Purpose { get; set; }
         /// <summary>
         /// Payment method (gateway) code
         /// </summary>
+        [Auditable]
         public string GatewayCode { get; set; }
         /// <summary>
         /// Payment method contains additional payment method information
@@ -26,13 +28,17 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string CustomerId { get; set; }
         public string CustomerName { get; set; }
-
+        [Auditable]
         public DateTime? IncomingDate { get; set; }
         public Address BillingAddress { get; set; }
 
+        [Auditable]
         public PaymentStatus PaymentStatus { get; set; }
+        [Auditable]
         public DateTime? AuthorizedDate { get; set; }
+        [Auditable]
         public DateTime? CapturedDate { get; set; }
+        [Auditable]
         public DateTime? VoidedDate { get; set; }
 
         public ProcessPaymentRequestResult ProcessPaymentResult { get; set; }
@@ -40,11 +46,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         //the self cost of the payment method
         public virtual decimal Price { get; set; }
         public virtual decimal PriceWithTax { get; set; }
-
+        [Auditable]
         public virtual decimal Total { get; set; }
 
         public virtual decimal TotalWithTax { get; set; }
-
+        [Auditable]
         public virtual decimal DiscountAmount { get; set; }
         public virtual decimal DiscountAmountWithTax { get; set; }
 
@@ -54,10 +60,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// <summary>
         /// Tax category or type
         /// </summary>
+        [Auditable]
         public string TaxType { get; set; }
-
+        [Auditable]
         public decimal TaxTotal { get; set; }
-
+        [Auditable]
         public decimal TaxPercentRate { get; set; }
 
         #endregion

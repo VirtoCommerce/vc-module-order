@@ -56,7 +56,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// Therefore, a discount applying to the order  will occur after tax. 
         /// For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100).
         /// </summary>
-		public decimal DiscountAmount { get; set; }
+        [Auditable]
+        public decimal DiscountAmount { get; set; }
 
         #region ITaxDetailSupport Members
 
@@ -72,6 +73,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// <summary>
         /// Grand order total
         /// </summary>
+        [Auditable]
         public virtual decimal Total { get; set; }
 
 
@@ -118,7 +120,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal DiscountTotalWithTax { get; set; }
 
 
-        //Any extra Fee 
+        //Any extra Fee
+        [Auditable]
         public decimal Fee { get; set; }
 
         public virtual decimal FeeWithTax { get; set; }
@@ -131,10 +134,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// <summary>
         /// Tax category or type
         /// </summary>
+        [Auditable]
         public string TaxType { get; set; }
-
+        [Auditable]
         public virtual decimal TaxTotal { get; set; }
-
+        [Auditable]
         public decimal TaxPercentRate { get; set; }
 
         #endregion

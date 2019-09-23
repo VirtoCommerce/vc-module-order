@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -34,47 +35,57 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
 
-        public virtual async Task Handle(OrderChangedEvent message)
+        public virtual Task Handle(OrderChangedEvent @event)
+        {          
+            if(@event.ChangedEntries.Any())
+            { 
+                BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(@event));
+            }
+            return Task.CompletedTask;
+        }
+
+        [DisableConcurrentExecution(60 * 60 * 24)]
+        public async Task TryToCancelOrderBackgroundJob(OrderChangedEvent @event)
         {
-            foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+            foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
-                await TryToCancelOrder(changedEntry);
+                await TryToCancelOrders(changedEntry.NewEntry, changedEntry.OldEntry);
             }
         }
 
-        protected virtual async Task TryToCancelOrder(GenericChangedEntry<CustomerOrder> changedEntry)
+        protected virtual async Task TryToCancelOrders(CustomerOrder changedOrder, CustomerOrder oldOrder)
         {
-            var store = await _storeService.GetByIdAsync(changedEntry.NewEntry.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            var store = await _storeService.GetByIdAsync(changedOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
 
             //Try to load payment methods for payments
-            var gatewayCodes = changedEntry.NewEntry.InPayments.Select(x => x.GatewayCode).ToArray();
+            var gatewayCodes = changedOrder.InPayments.Select(x => x.GatewayCode).ToArray();
             var paymentMethods = await GetPaymentMethodsAsync(store.Id, gatewayCodes);
-            foreach (var payment in changedEntry.NewEntry.InPayments)
+            foreach (var payment in changedOrder.InPayments)
             {
                 payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code == payment.GatewayCode);
             }
 
             var toCancelPayments = new List<PaymentIn>();
-            var isOrderCancelled = !changedEntry.OldEntry.IsCancelled && changedEntry.NewEntry.IsCancelled;
+            var isOrderCancelled = !oldOrder.IsCancelled && changedOrder.IsCancelled;
             if (isOrderCancelled)
             {
-                toCancelPayments = changedEntry.NewEntry.InPayments?.ToList();
+                toCancelPayments = changedOrder.InPayments?.ToList();
             }
             else
             {
-                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments.Where(x => x.IsCancelled))
+                foreach (var canceledPayment in changedOrder?.InPayments.Where(x => x.IsCancelled))
                 {
-                    var oldSamePayment = changedEntry.OldEntry?.InPayments.FirstOrDefault(x => x == canceledPayment);
+                    var oldSamePayment = oldOrder?.InPayments.FirstOrDefault(x => x == canceledPayment);
                     if (oldSamePayment != null && !oldSamePayment.IsCancelled)
                     {
                         toCancelPayments.Add(canceledPayment);
                     }
                 }
             }
-            TryToCancelOrderPayments(toCancelPayments, changedEntry.NewEntry);
+            TryToCancelOrderPayments(toCancelPayments, changedOrder);
             if (!toCancelPayments.IsNullOrEmpty())
             {
-                await _orderService.SaveChangesAsync(new[] { changedEntry.NewEntry });
+                await _orderService.SaveChangesAsync(new[] { changedOrder });
             }
         }
 

@@ -46,12 +46,17 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public ICollection<PaymentIn> InPayments { get; set; }
 
+        [Auditable]
         public string WeightUnit { get; set; }
+        [Auditable]
         public decimal? Weight { get; set; }
-
+        [Auditable]
         public string MeasureUnit { get; set; }
+        [Auditable]
         public decimal? Height { get; set; }
+        [Auditable]
         public decimal? Length { get; set; }
+        [Auditable]
         public decimal? Width { get; set; }
 
         #region IHasDiscounts
@@ -62,15 +67,16 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public virtual decimal Price { get; set; }
         public virtual decimal PriceWithTax { get; set; }
-
+        [Auditable]
         public virtual decimal Total { get; set; }
 
         public virtual decimal TotalWithTax { get; set; }
-
+        [Auditable]
         public virtual decimal DiscountAmount { get; set; }
         public virtual decimal DiscountAmountWithTax { get; set; }
 
-        //Any extra Fee 
+        //Any extra Fee
+        [Auditable]
         public virtual decimal Fee { get; set; }
 
         public virtual decimal FeeWithTax { get; set; }
@@ -80,10 +86,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// <summary>
         /// Tax category or type
         /// </summary>
+        [Auditable]
         public string TaxType { get; set; }
-
+        [Auditable]
         public decimal TaxTotal { get; set; }
-
+        [Auditable]
         public decimal TaxPercentRate { get; set; }
 
         #endregion

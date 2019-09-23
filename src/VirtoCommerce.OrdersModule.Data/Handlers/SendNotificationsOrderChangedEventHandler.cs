@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -40,14 +41,21 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _userManager = userManager;
         }
 
-        public virtual async Task Handle(OrderChangedEvent message)
+        public virtual Task Handle(OrderChangedEvent @event)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && @event.ChangedEntries.Any())
             {
-                foreach (var changedEntry in message.ChangedEntries)
-                {
-                    await TryToSendOrderNotificationsAsync(changedEntry);
-                }
+                BackgroundJob.Enqueue(() => TryToSendOrderNotificationsBackgroundJob(@event));
+            }
+            return Task.CompletedTask;
+        }
+
+        [DisableConcurrentExecution(60 * 60 * 24)]
+        public async Task TryToSendOrderNotificationsBackgroundJob(OrderChangedEvent @event)
+        {
+            foreach (var changedEntry in @event.ChangedEntries)
+            {
+                await TryToSendOrderNotificationsAsync(changedEntry);
             }
         }
 

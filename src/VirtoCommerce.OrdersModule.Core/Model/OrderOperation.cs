@@ -11,19 +11,24 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public abstract class OrderOperation : AuditableEntity, IOperation, ISupportCancellation, IHasDynamicProperties, IHasChangesHistory, ICloneable
     {
-        public OrderOperation()
+        protected OrderOperation()
         {
             OperationType = GetType().Name;
         }
         public string OperationType { get; set; }
         public string ParentOperationId { get; set; }
+        [Auditable]
         public string Number { get; set; }
+        [Auditable]
         public bool IsApproved { get; set; }
+        [Auditable]
         public string Status { get; set; }
-
+        [Auditable]
         public string Comment { get; set; }
+        [Auditable]
         public string Currency { get; set; }
         public decimal Sum { get; set; }
+        [Auditable]
         public string OuterId { get; set; }
 
         public IEnumerable<IOperation> ChildrenOperations { get; set; }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,9 +30,13 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
         public virtual async Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null)
-        {
-            var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+        {           
+            if(ids.IsNullOrEmpty())
+            {
+                return Array.Empty<CustomerOrderEntity>();
+            }
 
+            var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
             var result = await CustomerOrders.Where(x => ids.Contains(x.Id))
                                              .Include(x=> x.Discounts)
                                              .Include(x=> x.TaxDetails).ToArrayAsync();
