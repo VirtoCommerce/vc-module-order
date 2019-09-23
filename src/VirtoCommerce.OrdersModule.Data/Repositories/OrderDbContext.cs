@@ -29,7 +29,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             #region LineItem
 
             modelBuilder.Entity<LineItemEntity>().HasKey(x => x.Id);
-            modelBuilder.Entity<LineItemEntity>().Property(x => x.Id).HasMaxLength(128); ;
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Id).HasMaxLength(128);
 
             modelBuilder.Entity<LineItemEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
             modelBuilder.Entity<LineItemEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Items)
@@ -41,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             #region ShipmentItemEntity
 
             modelBuilder.Entity<ShipmentItemEntity>().HasKey(x => x.Id);
-            modelBuilder.Entity<ShipmentItemEntity>().Property(x => x.Id).HasMaxLength(128); ;
+            modelBuilder.Entity<ShipmentItemEntity>().Property(x => x.Id).HasMaxLength(128);
 
             modelBuilder.Entity<ShipmentItemEntity>().HasOne(x => x.LineItem).WithMany(x => x.ShipmentItems)
                         .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Cascade).IsRequired();
@@ -155,7 +155,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             #region PaymentGatewayTransactionEntity
 
             modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasKey(x => x.Id);
-            modelBuilder.Entity<PaymentGatewayTransactionEntity>().Property(x => x.Id).HasMaxLength(128); ;
+            modelBuilder.Entity<PaymentGatewayTransactionEntity>().Property(x => x.Id).HasMaxLength(128);
 
             modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasOne(x => x.PaymentIn).WithMany(x => x.Transactions)
                         .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Cascade).IsRequired();
