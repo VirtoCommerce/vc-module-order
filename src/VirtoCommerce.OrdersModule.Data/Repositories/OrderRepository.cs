@@ -44,34 +44,35 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
             {
-                var shipmentsLoadBreakingQuery = InPayments.Where(x => ids.Contains(x.CustomerOrderId))
+                IQueryable<PaymentInEntity> inPaymentsLoadBreakingQuery = InPayments.Where(x => ids.Contains(x.CustomerOrderId))
                                                  .Include(x => x.Discounts)
                                                  .Include(x => x.TaxDetails)
                                                  .Include(x => x.Addresses)
                                                  .Include(x => x.Transactions);
+
                 if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                 {
-                    shipmentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    inPaymentsLoadBreakingQuery =  inPaymentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
-                breakingLoadTasks.Add(shipmentsLoadBreakingQuery.LoadAsync());
+                breakingLoadTasks.Add(inPaymentsLoadBreakingQuery.LoadAsync());
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
-                var itemsLoadBreakingQuery = LineItems.Where(x => ids.Contains(x.CustomerOrderId))
+                IQueryable<LineItemEntity> itemsLoadBreakingQuery = LineItems.Where(x => ids.Contains(x.CustomerOrderId))
                                                 .Include(x => x.Discounts)
                                                 .Include(x => x.TaxDetails)
                                                 .Include(x => x.DynamicPropertyObjectValues);
                 if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                 {
-                    itemsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    itemsLoadBreakingQuery = itemsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
                 breakingLoadTasks.Add(itemsLoadBreakingQuery.LoadAsync());
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
             {
-                var shipmentLoadBreakingQuery = Shipments.Where(x => ids.Contains(x.CustomerOrderId))
+                IQueryable<ShipmentEntity> shipmentLoadBreakingQuery = Shipments.Where(x => ids.Contains(x.CustomerOrderId))
                                                .Include(x => x.Discounts)
                                                .Include(x => x.TaxDetails)
                                                .Include(x => x.Addresses)
@@ -80,7 +81,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
                 if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                 {
-                    shipmentLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    shipmentLoadBreakingQuery = shipmentLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
                 breakingLoadTasks.Add(shipmentLoadBreakingQuery.LoadAsync());
             }
