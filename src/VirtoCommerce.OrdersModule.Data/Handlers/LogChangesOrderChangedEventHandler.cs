@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoCompare;
 using Hangfire;
@@ -32,16 +34,22 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent @event)
         {
+            var stopwatch = Stopwatch.StartNew();
+            Debug.WriteLine($"#####LogChangesOrderChangedEventHandler.Handle {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             if (@event.ChangedEntries.Any())
             {
                 BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(@event));
             }
+            stopwatch.Stop();
+            Debug.WriteLine($"#######LogChangesOrderChangedEventHandler.Handle Elapsed {stopwatch.ElapsedMilliseconds} ms {Thread.CurrentThread.ManagedThreadId }");
+
             return Task.CompletedTask;
         }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
         public async Task TryToLogChangesBackgroundJob(OrderChangedEvent @event)
         {
+            Debug.WriteLine($"#####LogChangesOrderChangedEventHandler.TryToLogChangesBackgroundJob {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             var operationLogs = new List<OperationLog>();
             foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {

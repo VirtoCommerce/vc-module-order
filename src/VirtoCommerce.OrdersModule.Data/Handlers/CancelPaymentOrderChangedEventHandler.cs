@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -36,17 +38,23 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
 
         public virtual Task Handle(OrderChangedEvent @event)
-        {          
-            if(@event.ChangedEntries.Any())
+        {
+            var stopwatch = Stopwatch.StartNew();
+            Debug.WriteLine($"#######CancelPaymentOrderChangedEventHandler.Handle {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId } ");
+            if (@event.ChangedEntries.Any())
             { 
                 BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(@event));
             }
+            stopwatch.Stop();
+            Debug.WriteLine($"#######CancelPaymentOrderChangedEventHandler.Handle Elapsed {stopwatch.ElapsedMilliseconds} ms {Thread.CurrentThread.ManagedThreadId }");
+
             return Task.CompletedTask;
         }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
         public async Task TryToCancelOrderBackgroundJob(OrderChangedEvent @event)
         {
+            Debug.WriteLine($"#######CancelPaymentOrderChangedEventHandler.TryToCancelOrderBackgroundJob {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
                 await TryToCancelOrders(changedEntry.NewEntry, changedEntry.OldEntry);

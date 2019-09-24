@@ -105,7 +105,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
-
             using (var repository = _repositoryFactory())
             {
                 var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
@@ -134,10 +133,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
-                await repository.UnitOfWork.CommitAsync();
+                await repository.UnitOfWork.CommitAsync();             
                 pkMap.ResolvePrimaryKeys();
             }
-
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
             ClearCache(orders);
         }
@@ -169,20 +167,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new ArgumentNullException(nameof(order));
             }
 
-            var shippingMethods = await _shippingMethodsSearchService.SearchShippingMethodsAsync(new ShippingMethodsSearchCriteria { StoreId = order.StoreId });
-            if (!shippingMethods.Results.IsNullOrEmpty())
+            var searchShippingMethodsTask = _shippingMethodsSearchService.SearchShippingMethodsAsync(new ShippingMethodsSearchCriteria { StoreId = order.StoreId });
+            var searchPaymentMethodsTask = _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria { StoreId = order.StoreId });
+
+            await Task.WhenAll(searchShippingMethodsTask, searchPaymentMethodsTask);
+            if (!searchShippingMethodsTask.Result.Results.IsNullOrEmpty())
             {
                 foreach (var shipment in order.Shipments)
                 {
-                    shipment.ShippingMethod = shippingMethods.Results.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                    shipment.ShippingMethod = searchShippingMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
                 }
             }
-            var paymentMethods = await _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria { StoreId = order.StoreId });
-            if (!paymentMethods.Results.IsNullOrEmpty())
+            if (!searchPaymentMethodsTask.Result.Results.IsNullOrEmpty())
             {
                 foreach (var payment in order.InPayments)
                 {
-                    payment.PaymentMethod = paymentMethods.Results.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                    payment.PaymentMethod = searchPaymentMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
                 }
             }
         }

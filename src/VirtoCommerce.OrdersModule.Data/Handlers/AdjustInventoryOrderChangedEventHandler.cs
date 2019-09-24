@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.InventoryModule.Core.Model;
@@ -52,6 +54,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns>A task that allows to <see langword="await"/> this method.</returns>
         public virtual async Task Handle(OrderChangedEvent message)
         {
+            var stopwatch = Stopwatch.StartNew();
+            Debug.WriteLine($"#######AdjustInventoryOrderChangedEventHandler.Handle {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.OrderAdjustInventory.Name, true))
             {
                 foreach (var changedEntry in message.ChangedEntries)
@@ -63,17 +67,19 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                         var itemChanges = await GetProductInventoryChangesFor(changedEntry);
                         if (itemChanges.Any())
                         {
+                            
                             //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
                             BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
                         }
                     }
                 }
             }
-        }
+          }
 
         [DisableConcurrentExecution(60 * 60 * 24)]
         public async Task TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
         {
+            Debug.WriteLine($"#######AdjustInventoryOrderChangedEventHandler.TryAdjustOrderInventoryBackgroundJob {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             await TryAdjustOrderInventory(productInventoryChanges);
         }
 
@@ -83,7 +89,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// </summary>
         /// <param name="changedEntry">The entry that describes changes made to order.</param>
         /// <returns>Array of required product inventory changes.</returns>
-        public virtual Task<ProductInventoryChange[]> GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
+        public virtual async Task<ProductInventoryChange[]> GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.NewEntry;
             var customerOrderShipments = customerOrder.Shipments?.ToArray();
@@ -117,7 +123,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             });
             //Do not return unchanged records
-            return Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
+            return itemChanges.Where(x => x.QuantityDelta != 0).ToArray();
         }
 
 
