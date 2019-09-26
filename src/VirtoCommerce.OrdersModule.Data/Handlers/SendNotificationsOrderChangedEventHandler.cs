@@ -201,11 +201,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             // Allow to filter notification log either by customer order or by subscription
             if (string.IsNullOrEmpty(order.SubscriptionId))
             {
-                notification.TenantIdentity = new TenantIdentity("CustomerOrder", order.Id);
+                notification.TenantIdentity = new TenantIdentity(order.Id, nameof(CustomerOrder));
             }
             else
             {
-                notification.TenantIdentity = new TenantIdentity("Subscription", order.SubscriptionId);
+                notification.TenantIdentity = new TenantIdentity(order.SubscriptionId, "Subscription");
             }
         }
 
