@@ -54,8 +54,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns>A task that allows to <see langword="await"/> this method.</returns>
         public virtual async Task Handle(OrderChangedEvent message)
         {
-            var stopwatch = Stopwatch.StartNew();
-            Debug.WriteLine($"#######AdjustInventoryOrderChangedEventHandler.Handle {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.OrderAdjustInventory.Name, true))
             {
                 foreach (var changedEntry in message.ChangedEntries)
@@ -78,8 +76,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         [DisableConcurrentExecution(60 * 60 * 24)]
         public async Task TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
-        {
-            Debug.WriteLine($"#######AdjustInventoryOrderChangedEventHandler.TryAdjustOrderInventoryBackgroundJob {DateTime.UtcNow.Ticks} {Thread.CurrentThread.ManagedThreadId }");
+        {            
             await TryAdjustOrderInventory(productInventoryChanges);
         }
 
