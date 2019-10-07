@@ -61,7 +61,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                     DefaultValue = "CO{0:yyMMdd}-{1:D5}"
                 };
-                
+
                 public static SettingDescriptor OrderShipmentNewNumberTemplate = new SettingDescriptor
                 {
                     Name = "Order.ShipmentNewNumberTemplate",
@@ -94,6 +94,8 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
+              
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -107,6 +109,15 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return SendOrderNotifications;
                         yield return OrderAdjustInventory;
                     }
+                }
+            }
+
+            public static IEnumerable<SettingDescriptor> StoreLevelSettings
+            {
+                get
+                {
+                    yield return  General.OrderCustomerOrderNewNumberTemplate;
+                    yield return General.OrderPaymentInNewNumberTemplate;
                 }
             }
         }
