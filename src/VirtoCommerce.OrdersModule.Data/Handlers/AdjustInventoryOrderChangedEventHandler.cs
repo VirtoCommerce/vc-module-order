@@ -111,16 +111,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
                 if (oldQuantity != newQuantity)
                 {
-                    itemChanges.Add(new ProductInventoryChange
-                    {
-                        ProductId = changedItem.ProductId,
-                        QuantityDelta = newQuantity - oldQuantity,
-                        FulfillmentCenterId = await GetFullfilmentCenterForLineItem(changedItem, customerOrder.StoreId, customerOrderShipments)
-                    });
+                    var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
+                    itemChange.ProductId = changedItem.ProductId;
+                    itemChange.QuantityDelta = newQuantity - oldQuantity;
+                    itemChange.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments);
+                    itemChanges.Add(itemChange);
                 }
             });
             //Do not return unchanged records
-            return itemChanges.Where(x => x.QuantityDelta != 0).ToArray();
+            return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
         }
 
 
@@ -191,7 +190,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual async Task AdjustInventory(IEnumerable<InventoryInfo> inventories, HashSet<InventoryInfo> changedInventories, CustomerOrder order, EntryState action, LineItem changedLineItem, LineItem origLineItem)
         {
-            var fulfillmentCenterId = await GetFullfilmentCenterForLineItem(origLineItem, order.StoreId, order.Shipments?.ToArray());
+            var fulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(origLineItem, order.StoreId, order.Shipments?.ToArray());
             var inventoryInfo = inventories.Where(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId))
                                            .FirstOrDefault(x => x.ProductId.EqualsInvariant(origLineItem.ProductId));
             if (inventoryInfo != null)
@@ -227,7 +226,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="orderStoreId"></param>
         /// <param name="orderShipments"></param>
         /// <returns></returns>
-        protected virtual async Task<string> GetFullfilmentCenterForLineItem(LineItem lineItem, string orderStoreId, Shipment[] orderShipments)
+        protected virtual async Task<string> GetFullfilmentCenterForLineItemAsync(LineItem lineItem, string orderStoreId, Shipment[] orderShipments)
         {
             if (lineItem == null)
             {
