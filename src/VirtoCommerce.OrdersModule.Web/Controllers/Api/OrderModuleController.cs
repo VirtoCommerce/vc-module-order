@@ -96,7 +96,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
-            
+
             var result = await _searchService.SearchCustomerOrdersAsync(criteria);
 
             return Ok(result);
@@ -122,7 +122,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
             var result = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
 
-            var retVal = result.Results.FirstOrDefault();      
+            var retVal = result.Results.FirstOrDefault();
             return Ok(retVal);
         }
 
@@ -145,7 +145,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Unauthorized();
             }
             var result = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
-                   
+
             return Ok(result.Results.FirstOrDefault());
         }
 
@@ -368,16 +368,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="end">end interval date</param>
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
-        public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromRoute]DateTime? start = null, [FromRoute]DateTime? end = null)
+        public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery]DateTime? start = null, [FromQuery]DateTime? end = null)
         {
-            DashboardStatisticsResult retVal;
             start = start ?? DateTime.UtcNow.AddYears(-1);
             end = end ?? DateTime.UtcNow;
 
             // Hack: to compinsate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);
             var cacheKey = CacheKey.With(GetType(), string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd")));
-            retVal = await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
+            var retVal = await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
             {
                 cacheEntry.AddExpirationToken(OrderSearchCacheRegion.CreateChangeToken());
                 var collectStaticJob = new CollectOrderStatisticJob(_repositoryFactory);
@@ -475,7 +474,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find order with number {orderNumber}");
             }
 
-            var notification = await _notificationSearchService.GetNotificationAsync<InvoiceEmailNotification>(new TenantIdentity(order.StoreId, nameof(StoreModule.Core.Model.Store)));
+            var notification = await _notificationSearchService.GetNotificationAsync<InvoiceEmailNotification>(new TenantIdentity(order.StoreId, nameof(Store)));
             notification.CustomerOrder = order;
             var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
