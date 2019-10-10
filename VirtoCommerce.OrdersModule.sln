@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule.Core", "src\VirtoCommerce.OrdersModule.Core\VirtoCommerce.OrdersModule.Core.csproj", "{4CD63305-A0A3-4687-888F-AF98CECD977D}"
 EndProject
@@ -12,8 +12,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule.Web", "src\VirtoCommerce.OrdersModule.Web\VirtoCommerce.OrdersModule.Web.csproj", "{00EC072F-A656-441C-9CC2-4BA9490C8809}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule2.Web", "samples\VirtoCommerce.OrdersModule2.Web\VirtoCommerce.OrdersModule2.Web.csproj", "{1A2186CC-F93D-4269-87C1-371560D4BE62}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{0F23C70A-4AA9-4106-8C3E-049EC9F7075A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BFD3CCBE-2CCA-4F9F-889B-88401E00A308}"
 EndProject
@@ -47,8 +45,6 @@ Global
 		{1A2186CC-F93D-4269-87C1-371560D4BE62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A2186CC-F93D-4269-87C1-371560D4BE62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A2186CC-F93D-4269-87C1-371560D4BE62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F23C70A-4AA9-4106-8C3E-049EC9F7075A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F23C70A-4AA9-4106-8C3E-049EC9F7075A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
