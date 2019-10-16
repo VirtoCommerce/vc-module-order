@@ -949,22 +949,22 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("CustomerOrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("LineItemId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "PaymentIn")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("PaymentInId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.ShipmentEntity", "Shipment")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("ShipmentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.PaymentGatewayTransactionEntity", b =>
@@ -999,7 +999,7 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ShipmentItemEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
-                        .WithMany()
+                        .WithMany("ShipmentItems")
                         .HasForeignKey("LineItemId")
                         .OnDelete(DeleteBehavior.Cascade);
 

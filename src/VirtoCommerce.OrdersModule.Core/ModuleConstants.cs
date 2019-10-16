@@ -81,7 +81,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 public static SettingDescriptor SendOrderNotifications = new SettingDescriptor
                 {
                     Name = "Order.SendOrderNotifications",
-                    GroupName = "Store|General",
+                    GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = true,
                 };
@@ -89,7 +89,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 public static SettingDescriptor OrderAdjustInventory = new SettingDescriptor
                 {
                     Name = "Order.AdjustInventory",
-                    GroupName = "Store|General",
+                    GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = true,
                 };

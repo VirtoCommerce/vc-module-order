@@ -37,9 +37,16 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             }
 
             var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-            var result = await CustomerOrders.Where(x => ids.Contains(x.Id))
+            var query = CustomerOrders.Where(x => ids.Contains(x.Id))
                                              .Include(x=> x.Discounts)
-                                             .Include(x=> x.TaxDetails).ToArrayAsync();
+                                             .Include(x=> x.TaxDetails).AsQueryable();
+
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            var result = await query.ToArrayAsync();
 
             var breakingLoadTasks = new List<Task>();
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
