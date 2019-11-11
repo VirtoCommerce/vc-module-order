@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <noWarn>1591</noWarn>
+        <IsPackable>True</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,12 +12,12 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.0-rc.1" />
+      <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.1.0-3-0-0-vp-733-cor0001" />
       <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.0.0-rc.1" />
-      <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-rc.1" />
-      <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.0.0-rc.1" />
-      <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc0001" />
-      <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.0.0-rc.1" />
+      <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-3-0-0-vp-834-co-0001" />
+      <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.0.0-3-0-0-vp-733-co-0001" />
+      <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-v3-feature-vp-7-0001" />
+      <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.0.0-3-0-0-vp-862-co-0001" />
     </ItemGroup>
 
 </Project>

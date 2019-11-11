@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <noWarn>1591</noWarn>
         <IsPackable>false</IsPackable>
+        <OutputType>Library</OutputType>
         <!--This line is necessary to copy all dependencies in the bin folder-->
         <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
     </PropertyGroup>
@@ -16,6 +17,7 @@
     <ItemGroup>
       <Compile Remove="dist\**" />
       <Compile Remove="node_modules\**" />
+      <Content Remove="dist\**" />
       <EmbeddedResource Remove="dist\**" />
       <EmbeddedResource Remove="node_modules\**" />
       <None Remove="dist\**" />
@@ -28,18 +30,23 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.0-preview2.19525.6" />
         <PackageReference Include="Select.HtmlToPdf.NetCore" Version="19.1.0" />
-        <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.CartModule.Data" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc0001" />
+        <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.0.0-release-3-0-0-v-0001" />
+        <PackageReference Include="VirtoCommerce.CartModule.Data" Version="3.0.0-release-3-0-0-v-0001" />
+        <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-3-0-0-vp-834-co-0001" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-v3-feature-vp-7-0001" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\VirtoCommerce.OrdersModule.Core\VirtoCommerce.OrdersModule.Core.csproj" />
         <ProjectReference Include="..\VirtoCommerce.OrdersModule.Data\VirtoCommerce.OrdersModule.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Properties\" />
     </ItemGroup>
 
 </Project>
