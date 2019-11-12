@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -41,17 +40,17 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                                              .Include(x=> x.Discounts)
                                              .Include(x=> x.TaxDetails).AsQueryable();
 
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-            {
-                query = query.Include(x => x.DynamicPropertyObjectValues);
-            }
-
+      
             var result = await query.ToArrayAsync();
 
-            var breakingLoadTasks = new List<Task>();
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
+            }
+
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
-                breakingLoadTasks.Add(Addresses.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync());
+                await Addresses.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
@@ -66,7 +65,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 {
                     inPaymentsLoadBreakingQuery =  inPaymentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
-                breakingLoadTasks.Add(inPaymentsLoadBreakingQuery.LoadAsync());
+                await inPaymentsLoadBreakingQuery.LoadAsync();
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
@@ -79,7 +78,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 {
                     itemsLoadBreakingQuery = itemsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
-                breakingLoadTasks.Add(itemsLoadBreakingQuery.LoadAsync());
+                await itemsLoadBreakingQuery.LoadAsync();
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
@@ -95,10 +94,8 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 {
                     shipmentLoadBreakingQuery = shipmentLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
-                breakingLoadTasks.Add(shipmentLoadBreakingQuery.LoadAsync());
+                await shipmentLoadBreakingQuery.LoadAsync();
             }
-
-            await Task.WhenAll(breakingLoadTasks);
 
             if (!customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
