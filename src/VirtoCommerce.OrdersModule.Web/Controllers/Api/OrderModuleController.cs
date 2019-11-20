@@ -173,7 +173,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="bankCardInfo">banking card information</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] BankCardInfo bankCardInfo)
+        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] [FromBody] BankCardInfo bankCardInfo)
         {
             var order = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
