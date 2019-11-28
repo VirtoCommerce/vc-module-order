@@ -8,6 +8,7 @@ using VirtoCommerce.Domain.Payment.Model;
 using VirtoCommerce.Domain.Payment.Services;
 using VirtoCommerce.Domain.Shipping.Model;
 using VirtoCommerce.Domain.Shipping.Services;
+using VirtoCommerce.OrderModule.Data.Handlers;
 using VirtoCommerce.OrderModule.Data.Utilities;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -15,7 +16,12 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 {
     public class PolymorphicOperationJsonConverter : JsonConverter
     {
-        private static readonly Type[] _knowTypes = { typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria), typeof(PaymentMethod), typeof(ShippingMethod) };
+        private static readonly Type[] _knownTypes =
+        {
+            typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria),
+            typeof(PaymentMethod), typeof(ShippingMethod),
+            typeof(AdjustInventoryOrderChangedEventHandler.ProductInventoryChange)
+        };
 
         private readonly IPaymentMethodsService _paymentMethodsService;
         private readonly IShippingMethodsService _shippingMethodsService;
@@ -30,7 +36,7 @@ namespace VirtoCommerce.OrderModule.Web.JsonConverters
 
         public override bool CanConvert(Type objectType)
         {
-            return _knowTypes.Any(x => x.IsAssignableFrom(objectType));
+            return _knownTypes.Any(x => x.IsAssignableFrom(objectType));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
