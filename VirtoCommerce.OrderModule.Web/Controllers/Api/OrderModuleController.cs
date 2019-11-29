@@ -11,7 +11,6 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using CacheManager.Core;
-using Microsoft.Practices.ObjectBuilder2;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
 using VirtoCommerce.Domain.Cart.Services;
 using VirtoCommerce.Domain.Common;
@@ -141,7 +140,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(retVal);
         }
 
-
         /// <summary>
         /// Find customer order by id
         /// </summary>
@@ -174,7 +172,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
 
             return Ok(retVal);
         }
-
 
         /// <summary>
         /// Calculate order totals after changes
@@ -391,7 +388,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-
         /// <summary>
         ///  Get a some order statistic information for Commerce manager dashboard
         /// </summary>
@@ -537,7 +533,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return ResponseMessage(result);
         }
 
-
         [HttpGet]
         [Route("{id}/changes")]
         [ResponseType(typeof(OperationLog[]))]
@@ -562,6 +557,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
             CustomerOrderSearchCriteria criteria)
         {
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).Result;
+
             if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
             {
                 //Get defined user 'read' permission scopes
@@ -585,8 +582,12 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 }
             }
 
-            // ResponseGroup
-            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+            if (!user.IsAdministrator)
+            {
+                // ResponseGroup
+                criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(
+                        _securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
+            }
 
             return criteria;
         }
