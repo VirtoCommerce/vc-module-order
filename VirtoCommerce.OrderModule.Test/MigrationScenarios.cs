@@ -1,16 +1,15 @@
 using System.Linq;
-using VirtoCommerce.OrderModule.Data.Repositories;
-using VirtoCommerce.Platform.Testing.Bases;
 using VirtoCommerce.OrderModule.Data.Migrations;
-using Xunit;
+using VirtoCommerce.OrderModule.Data.Repositories;
 using VirtoCommerce.Platform.Data.Infrastructure;
+using VirtoCommerce.Platform.Testing.Bases;
+using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
     public class MigrationScenarios : MigrationsTestBase
     {
         [Fact]
-        [Trait("Category", "CI")]
         public void Can_create_order_new_database()
         {
             DropDatabase();

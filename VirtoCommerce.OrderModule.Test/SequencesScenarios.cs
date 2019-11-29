@@ -1,17 +1,16 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Diagnostics;
+using VirtoCommerce.CoreModule.Data.Migrations;
 using VirtoCommerce.CoreModule.Data.Repositories;
 using VirtoCommerce.CoreModule.Data.Services;
-using VirtoCommerce.Platform.Testing.Bases;
-using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
 using VirtoCommerce.Platform.Data.Infrastructure;
-using VirtoCommerce.CoreModule.Data.Migrations;
-using System.Data.Entity;
+using VirtoCommerce.Platform.Data.Infrastructure.Interceptors;
+using VirtoCommerce.Platform.Testing.Bases;
 using Xunit;
 
 namespace VirtoCommerce.OrderModule.Test
 {
-    [Trait("Category", "CI")]
     public class SequencesScenarios : FunctionalTestBase
     {
         public static Dictionary<string, string> GlobalNumbers = new Dictionary<string, string>();
@@ -41,11 +40,11 @@ namespace VirtoCommerce.OrderModule.Test
         }
         */
 
-            /*
-        [TestMethod]
-        [DeploymentItem("connectionStrings.config")]
-        [DeploymentItem("Configs/AppConfig.config", "Configs")]
-        */
+        /*
+    [TestMethod]
+    [DeploymentItem("connectionStrings.config")]
+    [DeploymentItem("Configs/AppConfig.config", "Configs")]
+    */
 
         [Fact]
         public void Can_run_sequences_performance()

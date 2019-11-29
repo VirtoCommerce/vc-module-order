@@ -60,29 +60,41 @@ namespace VirtoCommerce.OrderModule.Data.Services
             using (var changeTracker = GetChangeTracker(repository))
             {
                 var dataExistOrders = repository.GetCustomerOrdersByIds(orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray(), CustomerOrderResponseGroup.Full);
-                foreach (var order in orders)
+                foreach (var modifiedOrder in orders)
                 {
-                    EnsureThatAllOperationsHaveNumber(order);
-                    LoadOrderDependencies(order);
+                    EnsureThatAllOperationsHaveNumber(modifiedOrder);
+                    LoadOrderDependencies(modifiedOrder);
 
-                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
-                    //Calculate order totals
-                    TotalsCalculator.CalculateTotals(order);
+                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == modifiedOrder.Id);
 
-                    var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
-                                                                                 .FromModel(order, pkMap) as CustomerOrderEntity;
+                    var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
+
                     if (originalEntity != null)
                     {
                         changeTracker.Attach(originalEntity);
-                        var oldEntry = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
-                        DynamicPropertyService.LoadDynamicPropertyValues(oldEntry);
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, oldEntry, EntryState.Modified));
+
+                        var originalOlder = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        DynamicPropertyService.LoadDynamicPropertyValues(originalOlder);
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalOlder, EntryState.Modified));                   
+
                         modifiedEntity?.Patch(originalEntity);
+
+                        //originalEntity is fully loaded and contains changes from order
+                        var newModel = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+
+                        //newmodel is fully loaded, so we can call CalculateTotals for order
+                        TotalsCalculator.CalculateTotals(newModel);
+                        //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
+                        var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
+
+                        newModifiedEntity?.Patch(originalEntity);
                     }
                     else
                     {
+                        TotalsCalculator.CalculateTotals(modifiedOrder);                     
+
                         repository.Add(modifiedEntity);
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, EntryState.Added));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
                     }
                 }
                 //Raise domain events
