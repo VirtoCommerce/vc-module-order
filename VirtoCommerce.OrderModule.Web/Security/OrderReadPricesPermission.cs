@@ -6,11 +6,11 @@ namespace VirtoCommerce.OrderModule.Web.Security
 {
     public static class OrderReadPricesPermission
     {
-        public static string ApplyResponseGroupFiltering(Permission[] permissions, string respGroup)
+        public static string ApplyResponseGroupFiltering(ApplicationUserExtended user, Permission[] permissions, string respGroup)
         {
             var result = respGroup;
 
-            var needRestrict = permissions.Any() && !permissions.Any(x => x.Id == OrderPredefinedPermissions.ReadPrices);
+            var needRestrict = !user.IsAdministrator && permissions.Any() && !permissions.Any(x => x.Id == OrderPredefinedPermissions.ReadPrices);
 
             if (needRestrict && string.IsNullOrWhiteSpace(respGroup))
             {

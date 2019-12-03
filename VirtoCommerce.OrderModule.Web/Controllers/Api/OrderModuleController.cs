@@ -122,8 +122,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             searchCriteria.Number = number;
 
             var userName = User.Identity.Name;
-            var responseGroup = GetFilteredResponseGroup(userName, respGroup);
-            searchCriteria.ResponseGroup = responseGroup;
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).GetAwaiter().GetResult();
+
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -155,8 +156,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
         {
             var userName = User.Identity.Name;
-            var responseGroup = GetFilteredResponseGroup(userName, respGroup);
-            var result = _customerOrderService.GetByIds(new[] { id }, responseGroup).FirstOrDefault();
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).GetAwaiter().GetResult();
+
+            respGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), respGroup);
+
+            var result = _customerOrderService.GetByIds(new[] { id }, respGroup).FirstOrDefault();
 
             if (result == null)
             {
@@ -511,7 +515,8 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             var userName = User.Identity.Name;
-            var responseGroup = GetFilteredResponseGroup(userName, null);
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).GetAwaiter().GetResult();
+            var responseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), null);
 
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
@@ -561,10 +566,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
-            CustomerOrderSearchCriteria criteria)
+        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {
-            criteria.ResponseGroup = GetFilteredResponseGroup(userName, criteria.ResponseGroup);
+            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).GetAwaiter().GetResult();
+
+            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), criteria.ResponseGroup);
 
             if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
             {
@@ -590,19 +596,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             return criteria;
-        }
-
-        private string GetFilteredResponseGroup(string userName, string responseGroup)
-        {
-            var result = responseGroup;
-            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).GetAwaiter().GetResult();
-
-            if (!user.IsAdministrator)
-            {
-                result = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(userName), responseGroup);
-            }
-
-            return result;
         }
     }
 }
