@@ -93,10 +93,10 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpPost]
         [Route("search")]
         [ResponseType(typeof(webModel.CustomerOrderSearchResult))]
-        public IHttpActionResult Search(CustomerOrderSearchCriteria criteria)
+        public async Task<IHttpActionResult> Search(CustomerOrderSearchCriteria criteria)
         {
             //Scope bound ACL filtration
-            criteria = FilterOrderSearchCriteria(HttpContext.Current.User.Identity.Name, criteria);
+            criteria = await FilterOrderSearchCriteria(HttpContext.Current.User.Identity.Name, criteria);
 
             var result = _searchService.SearchCustomerOrders(criteria);
             var retVal = new CustomerOrderSearchResult
@@ -116,11 +116,15 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("number/{number}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetByNumber(string number, [FromUri] string respGroup = null)
+        public async Task<IHttpActionResult> GetByNumber(string number, [FromUri] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
-            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup);
+
+            var userName = User.Identity.Name;
+            var user = await _securityService.FindByNameAsync(userName, UserDetails.Reduced);
+
+            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), respGroup);
 
             var result = _searchService.SearchCustomerOrders(searchCriteria);
 
@@ -149,18 +153,22 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("{id}")]
         [ResponseType(typeof(CustomerOrder))]
-        public IHttpActionResult GetById(string id, [FromUri] string respGroup = null)
+        public async Task<IHttpActionResult> GetById(string id, [FromUri] string respGroup = null)
         {
-            var retVal = _customerOrderService.GetByIds(new[] { id }, OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), respGroup))
-                .FirstOrDefault();
+            var userName = User.Identity.Name;
+            var user = await _securityService.FindByNameAsync(userName, UserDetails.Reduced);
 
-            if (retVal == null)
+            respGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), respGroup);
+
+            var result = _customerOrderService.GetByIds(new[] { id }, respGroup).FirstOrDefault();
+
+            if (result == null)
             {
                 return NotFound();
             }
 
             //Scope bound security check
-            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(retVal).ToArray();
+            var scopes = _permissionScopeService.GetObjectPermissionScopeStrings(result).ToArray();
 
             if (!_securityService.UserHasAnyPermission(User.Identity.Name, scopes, OrderPredefinedPermissions.Read))
             {
@@ -168,9 +176,9 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             }
 
             //Set scopes for UI scope bounded ACL checking
-            retVal.Scopes = scopes;
+            result.Scopes = scopes;
 
-            return Ok(retVal);
+            return Ok(result);
         }
 
         /// <summary>
@@ -333,13 +341,13 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 return Ok(retVal);
 
                 ////Detect not whole shipped items
-                ////TODO: LineItem partial shipping
-                //var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
+                ////TechDebt: LineItem partial shipping
+                ////var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
 
-                ////TODO Add check for digital products (don't add to shipment)
+                ////TechDebt: Add check for digital products (don't add to shipment)
                 //retVal.Items = order.Items.Where(x => !shippedLineItemIds.Contains(x.Id))
-                //              .Select(x => new coreModel.ShipmentItem(x)).ToList();
-                //return Ok(retVal.ToWebModel());
+                ////              .Select(x => new coreModel.ShipmentItem(x)).ToList();
+                ////return Ok(retVal.ToWebModel());
             }
 
             return NotFound();
@@ -503,12 +511,16 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [HttpGet]
         [Route("invoice/{orderNumber}")]
         [SwaggerFileResponse]
-        public IHttpActionResult GetInvoicePdf(string orderNumber)
+        public async Task<IHttpActionResult> GetInvoicePdf(string orderNumber)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            var userName = User.Identity.Name;
+            var user = await _securityService.FindByNameAsync(userName, UserDetails.Reduced);
+            var responseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), null);
+
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
+            searchCriteria.ResponseGroup = responseGroup;
 
             var order = _searchService.SearchCustomerOrders(searchCriteria).Results.FirstOrDefault();
 
@@ -554,10 +566,11 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        private CustomerOrderSearchCriteria FilterOrderSearchCriteria(string userName,
-            CustomerOrderSearchCriteria criteria)
+        private async Task<CustomerOrderSearchCriteria> FilterOrderSearchCriteria(string userName, CustomerOrderSearchCriteria criteria)
         {
-            var user = _securityService.FindByNameAsync(userName, UserDetails.Reduced).Result;
+            var user = await _securityService.FindByNameAsync(userName, UserDetails.Reduced);
+
+            criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(user, _securityService.GetUserPermissions(userName), criteria.ResponseGroup);
 
             if (!_securityService.UserHasAnyPermission(userName, null, OrderPredefinedPermissions.Read))
             {
@@ -580,13 +593,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 {
                     criteria.EmployeeId = userName;
                 }
-            }
-
-            if (!user.IsAdministrator)
-            {
-                // ResponseGroup
-                criteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(
-                        _securityService.GetUserPermissions(User.Identity.Name), criteria.ResponseGroup);
             }
 
             return criteria;
