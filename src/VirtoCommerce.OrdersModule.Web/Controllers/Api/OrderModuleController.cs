@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using SelectPdf;
@@ -165,6 +166,20 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         }
 
         /// <summary>
+        /// Register customer order payment in external payment system (without bankCardInfo).
+        /// It's a workaround method, allowing to accept requests without bankCardInfo.
+        /// </summary>
+        /// <param name="orderId">customer order id</param>
+        /// <param name="paymentId">payment id</param>
+        [HttpPost]
+        [Route("{orderId}/processPayment/{paymentId}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
+        {
+            return await ProcessOrderPayments(orderId, paymentId, null);
+        }
+
+        /// <summary>
         /// Register customer order payment in external payment system
         /// </summary>
         /// <remarks>Used in storefront checkout or manual order payment registration</remarks>
@@ -173,7 +188,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="bankCardInfo">banking card information</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments(string orderId, string paymentId, [SwaggerOptional] [FromBody] BankCardInfo bankCardInfo)
+        [Consumes("application/json", new[] { "application/json-patch+json" })] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
+        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
         {
             var order = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
@@ -268,6 +284,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="customerOrder">customer order</param>
         [HttpPut]
         [Route("")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateOrder([FromBody]CustomerOrder customerOrder)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
@@ -355,6 +372,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpDelete]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Delete)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteOrdersByIds([FromQuery] string[] ids)
         {
             await _customerOrderService.DeleteAsync(ids);
