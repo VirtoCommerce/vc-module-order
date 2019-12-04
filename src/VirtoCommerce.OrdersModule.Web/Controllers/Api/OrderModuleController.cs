@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using SelectPdf;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -52,6 +52,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
+        private readonly IConverter _converter;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -66,7 +67,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , INotificationTemplateRenderer notificationTemplateRenderer
             , INotificationSearchService notificationSearchService
             , ICustomerOrderTotalsCalculator totalsCalculator
-            , IAuthorizationService authorizationService)
+            , IAuthorizationService authorizationService
+            , IConverter converter)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -81,6 +83,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _notificationSearchService = notificationSearchService;
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
+            _converter = converter;
         }
 
         /// <summary>
@@ -480,18 +483,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
 
-            //need to do https://selectpdf.com/html-to-pdf/docs/html/Deployment.htm
-            HtmlToPdf converter = new HtmlToPdf();
-            converter.Options.PdfPageSize = PdfPageSize.A4;
-            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
-            converter.Options.MarginLeft = 10;
-            converter.Options.MarginRight = 10;
-            converter.Options.MarginTop = 20;
-            converter.Options.MarginBottom = 20;
+            byte[] result = GeneratePdf(((EmailNotificationMessage)message).Body);
 
-            var doc = converter.ConvertHtmlString(((EmailNotificationMessage)message).Body);
-            var byteArray = doc.Save();
-            return new FileContentResult(byteArray, "application/pdf");
+            return new FileContentResult(result, "application/pdf");
         }
 
         [HttpGet]
@@ -521,6 +515,29 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             }
             return Ok(result);
+        }
+
+        private byte[] GeneratePdf(string htmlContent)
+        {
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = PaperKind.A4,
+                    ViewportSize = "1920x1080",
+                    DPI = 300
+                },
+                Objects = {
+                    new ObjectSettings() {
+                        HtmlContent = htmlContent,
+                        WebSettings = { DefaultEncoding = "utf-8", MinimumFontSize = 10 },
+                    }
+                }
+            };
+            var result = _converter.Convert(doc);
+
+            return result;
         }
 
     }
