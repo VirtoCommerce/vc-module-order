@@ -8,10 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
-        <PackageReference Include="GitVersionTask" Version="5.0.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="Hangfire" Version="1.6.22" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
         <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.0.0-rc.1" />
