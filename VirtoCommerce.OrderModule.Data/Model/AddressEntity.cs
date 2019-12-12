@@ -77,6 +77,7 @@ namespace VirtoCommerce.OrderModule.Data.Model
 
         public virtual void Patch(AddressEntity target)
         {
+            target.Name = Name;
             target.City = City;
             target.CountryCode = CountryCode;
             target.CountryName = CountryName;
