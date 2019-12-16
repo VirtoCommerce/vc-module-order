@@ -8,7 +8,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using CacheManager.Core;
 using TheArtOfDev.HtmlRenderer.PdfSharp;
@@ -266,7 +265,6 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
         [ResponseType(typeof(CustomerOrder))]
         [Route("{id}")]
         [CheckPermission(Permission = OrderPredefinedPermissions.Create)]
-        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<IHttpActionResult> CreateOrderFromCart(string id)
         {
             CustomerOrder retVal;
