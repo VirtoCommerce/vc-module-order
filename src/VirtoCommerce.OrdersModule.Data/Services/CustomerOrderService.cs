@@ -109,31 +109,39 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
                 var dataExistOrders = await repository.GetCustomerOrdersByIdsAsync(orderIds, CustomerOrderResponseGroup.Full.ToString());
-                foreach (var order in orders)
+                foreach (var modifiedOrder in orders)
                 {
-                    await EnsureThatAllOperationsHaveNumber(order);
-                    await LoadOrderDependenciesAsync(order);
+                    await EnsureThatAllOperationsHaveNumber(modifiedOrder);
+                    await LoadOrderDependenciesAsync(modifiedOrder);
 
-                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == order.Id);
-                    //Calculate order totals
-                    _totalsCalculator.CalculateTotals(order);
+                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == modifiedOrder.Id);
 
                     var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
-                                                                                 .FromModel(order, pkMap) as CustomerOrderEntity;
+                                                                                 .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
                     if (originalEntity != null)
                     {
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
                         modifiedEntity?.Patch(originalEntity);
+
+                        //originalEntity is fully loaded and contains changes from order
+                        var newModel = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+
+                        //newmodel is fully loaded,so we can CalculateTotals for order
+                        _totalsCalculator.CalculateTotals(newModel);
+                        //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
+                        var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
+                        newModifiedEntity?.Patch(originalEntity);
                     }
                     else
                     {
+                        _totalsCalculator.CalculateTotals(modifiedOrder);
                         repository.Add(modifiedEntity);
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(order, EntryState.Added));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
                     }
                 }
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
-                await repository.UnitOfWork.CommitAsync();             
+                await repository.UnitOfWork.CommitAsync();
                 pkMap.ResolvePrimaryKeys();
             }
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
