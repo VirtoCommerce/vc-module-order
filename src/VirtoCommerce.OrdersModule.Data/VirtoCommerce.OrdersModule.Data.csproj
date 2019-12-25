@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -15,8 +15,8 @@
         <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-rc.1" />
         <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.0.0-rc.1" />
         <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-rc.1" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc0001" />
-        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-rc0001" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc2-0109" />
+        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-rc2-0109" />
         <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.0.0-rc.1" />
         <PackageReference Include="VirtoCommerce.Platform.Security" Version="3.0.0-rc0001" />
         <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-rc.1" />
