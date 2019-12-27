@@ -17,16 +17,16 @@
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
-        <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.0.0-release-3-0-0-v-0001" />
-        <PackageReference Include="VirtoCommerce.CartModule.Data" Version="3.0.0-release-3-0-0-v-0001" />
-        <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.0.0-3-0-0-core3-0001" />
-        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-3-0-0-vp-852-co-0001" />
-        <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.0.0-3-0-0-vp-856-co-0001" />
-        <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-3-0-0-vp-834-co-0001" />
+        <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.0.0-rc.2" />
+        <PackageReference Include="VirtoCommerce.CartModule.Data" Version="3.0.0-rc.2" />
+        <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.0.0-rc.2" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-rc.2" />
+        <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.0.0-rc.2" />
+        <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-rc.2" />
         <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-v3-feature-vp-7-0001" />
         <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.0.0-v3-feature-vp-7-0001" />
         <PackageReference Include="VirtoCommerce.Platform.Security" Version="3.0.0-v3-feature-vp-7-0001" />
-        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-3-0-0-vp-835-co-0001" />
+        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.0.0-rc.2" />
     </ItemGroup>
 
     <ItemGroup>
