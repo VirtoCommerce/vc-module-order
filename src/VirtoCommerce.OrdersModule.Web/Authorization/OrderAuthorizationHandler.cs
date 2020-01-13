@@ -22,8 +22,8 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
 
     public sealed class OrderAuthorizationHandler : PermissionAuthorizationHandlerBase<OrderAuthorizationRequirement>
     {
-        private readonly MvcJsonOptions _jsonOptions;
-        public OrderAuthorizationHandler(IOptions<MvcJsonOptions> jsonOptions)
+        private readonly MvcNewtonsoftJsonOptions _jsonOptions;
+        public OrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOptions)
         {
             _jsonOptions = jsonOptions.Value;
         }

@@ -311,7 +311,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
 
-                retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.Status = "New";
 
@@ -349,7 +348,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
-                retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.CustomerId = order.CustomerId;
                 retVal.Status = retVal.PaymentStatus.ToString();
@@ -388,8 +386,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/order/dashboardStatistics")]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery]DateTime? start = null, [FromQuery]DateTime? end = null)
         {
-            start = start ?? DateTime.UtcNow.AddYears(-1);
-            end = end ?? DateTime.UtcNow;
+            start ??= DateTime.UtcNow.AddYears(-1);
+            end ??= DateTime.UtcNow;
 
             // Hack: to compinsate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);

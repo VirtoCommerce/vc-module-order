@@ -116,7 +116,7 @@ namespace VirtoCommerce.OrdersModule.Web
             notificationRegistrar.RegisterNotification<OrderSentEmailNotification>();
 
             // enable polymorphic types in API controller methods
-            var mvcJsonOptions = appBuilder.ApplicationServices.GetService<IOptions<MvcJsonOptions>>();
+            var mvcJsonOptions = appBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
             mvcJsonOptions.Value.SerializerSettings.Converters.Add(appBuilder.ApplicationServices.GetService<PolymorphicOperationJsonConverter>());
         }
 
