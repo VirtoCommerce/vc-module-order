@@ -59,11 +59,11 @@ namespace VirtoCommerce.OrdersModule.Web.BackgroundJobs
                         endDate = new DateTime(Math.Min(end.Ticks, endDate.Ticks));
                         var quarter = (startDate.Month - 1) / 3 + 1;
 
-                        var amount = await repository.InPayments.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && !x.IsCancelled && x.Currency == currency)
-                                                         .GroupBy(x => 1, (key, result) => result.Sum(x => x.Sum)).FirstOrDefaultAsync();
+                        var amount = repository.InPayments.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && !x.IsCancelled && x.Currency == currency)
+                                                         .GroupBy(x => 1, (key, result) => result.Sum(x => x.Sum)).FirstOrDefault();
 
-                        var avgOrderValue = await repository.CustomerOrders.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && x.Currency == currency)
-                                                         .GroupBy(x => 1, (key, result) => result.Average(x => x.Total)).FirstOrDefaultAsync();
+                        var avgOrderValue = repository.CustomerOrders.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && x.Currency == currency)
+                                                         .GroupBy(x => 1, (key, result) => result.Average(x => x.Total)).FirstOrDefault();
 
                         var periodStat = new QuarterPeriodMoney(currency, amount)
                         {
