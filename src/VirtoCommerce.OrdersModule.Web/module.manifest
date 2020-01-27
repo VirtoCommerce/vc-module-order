@@ -28,7 +28,7 @@
     </groups>
     <projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/VirtoCommerce/vc-module-order/release/3.0.0/src/VirtoCommerce.OrdersModule.Web/Content/logo.png</iconUrl>
-    <copyright>Copyright © 2011-2019 Virto Commerce. All rights reserved</copyright>
+    <copyright>Copyright © 2011-2020 Virto Commerce. All rights reserved</copyright>
     <tags>order system</tags>
 
     <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
