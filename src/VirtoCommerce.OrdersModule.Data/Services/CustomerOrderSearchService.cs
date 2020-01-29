@@ -39,9 +39,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 using (var repository = _repositoryFactory())
                 {
                     repository.DisableChangesTracking();
+                    
                     var result = AbstractTypeFactory<CustomerOrderSearchResult>.TryCreateInstance();
-                    var orderResponseGroup = EnumUtility.SafeParseFlags(criteria.ResponseGroup, CustomerOrderResponseGroup.Full);
-
+      
                     var query = BuildQuery(repository, criteria);
                     var sortInfos = BuildSortExpression(criteria);
 
