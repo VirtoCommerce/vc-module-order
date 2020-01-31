@@ -60,6 +60,8 @@ namespace VirtoCommerce.OrdersModule.Web
 
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
+            serviceCollection.AddOptions<HtmlToPdfOptions>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

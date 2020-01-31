@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -54,6 +55,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
         private readonly IConverter _converter;
+        private readonly HtmlToPdfOptions _htmlToPdfOptions;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -69,7 +71,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , INotificationSearchService notificationSearchService
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
-            , IConverter converter)
+            , IConverter converter
+            , IOptions<HtmlToPdfOptions> htmlToPdfOptions)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -85,6 +88,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
             _converter = converter;
+            _htmlToPdfOptions = htmlToPdfOptions.Value;
         }
 
         /// <summary>
@@ -538,16 +542,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var doc = new HtmlToPdfDocument()
             {
                 GlobalSettings = {
-                    ColorMode = ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                    PaperSize = PaperKind.A4,
-                    ViewportSize = "1920x1080",
-                    DPI = 300
+                    PaperSize = EnumUtility.SafeParse(_htmlToPdfOptions.PaperSize, PaperKind.A4),
+                    ViewportSize = _htmlToPdfOptions.ViewportSize,
+                    DPI = _htmlToPdfOptions.DPI
                 },
                 Objects = {
                     new ObjectSettings() {
                         HtmlContent = htmlContent,
-                        WebSettings = { DefaultEncoding = "utf-8", MinimumFontSize = 10 },
+                        WebSettings = { DefaultEncoding = _htmlToPdfOptions.DefaultEncoding, MinimumFontSize = _htmlToPdfOptions.MinimumFontSize },
                     }
                 }
             };
