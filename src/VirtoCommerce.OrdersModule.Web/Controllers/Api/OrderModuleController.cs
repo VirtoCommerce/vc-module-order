@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -224,14 +223,20 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find payment method with code {inPayment.GatewayCode}");
             }
 
+            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+            }
+
             var request = new ProcessPaymentRequest
             {
                 OrderId = order.Id,
                 Order = order,
                 PaymentId = inPayment.Id,
                 Payment = inPayment,
-                //TODO
-                //Store = store,
+                StoreId = order.StoreId,
+                Store = store,
                 BankCardInfo = bankCardInfo
             };
             var result = inPayment.PaymentMethod.ProcessPayment(request);
@@ -435,6 +440,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find order with ID {orderId}");
             }
 
+            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+            }
+
             var paymentMethodCode = parameters.Get("code");
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
@@ -452,8 +463,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                         PaymentId = inPayment.Id,
                         Payment = inPayment,
                         StoreId = order.StoreId,
-                        //TODO
-                        //Store = store,
+                        Store = store,
                         OuterId = result.OuterId,
                         Parameters = parameters
                     };
