@@ -83,10 +83,12 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
                 notifications.Add(notification);
             }
 
+            var customer = await GetCustomerAsync(changedEntry.NewEntry.CustomerId);
+
             foreach (var notification in notifications)
             {
                 notification.CustomerOrder = changedEntry.NewEntry;
-                notification.Customer = _memberService.GetByIds(new[] { changedEntry.NewEntry.CustomerId }).OfType<Contact>().FirstOrDefault();
+                notification.Customer = customer;
                 await SetNotificationParametersAsync(notification, changedEntry);
                 _notificationManager.ScheduleSendNotification(notification);
             }
@@ -180,14 +182,27 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
 
         protected virtual async Task<string> GetCustomerEmailAsync(string customerId)
         {
+            var contact = await GetCustomerAsync(customerId);
+
+            if (contact == null)
+            {
+                var user = await _securityService.FindByIdAsync(customerId, UserDetails.Reduced);
+
+                return user?.Email;
+            }
+
+            return contact?.Emails?.FirstOrDefault(x => !string.IsNullOrEmpty(x));
+        }
+
+        protected virtual async Task<Contact> GetCustomerAsync(string customerId)
+        {
             var user = await _securityService.FindByIdAsync(customerId, UserDetails.Reduced);
 
             var contact = user != null
                 ? _memberService.GetByIds(new[] { user.MemberId }).OfType<Contact>().FirstOrDefault()
                 : _memberService.GetByIds(new[] { customerId }).OfType<Contact>().FirstOrDefault();
 
-            var email = contact?.Emails?.FirstOrDefault(x => !string.IsNullOrEmpty(x)) ?? user?.Email;
-            return email;
+            return contact;
         }
     }
 }
