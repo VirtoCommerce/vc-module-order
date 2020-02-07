@@ -86,6 +86,7 @@ namespace VirtoCommerce.OrderModule.Data.Handlers
             foreach (var notification in notifications)
             {
                 notification.CustomerOrder = changedEntry.NewEntry;
+                notification.Customer = _memberService.GetByIds(new[] { changedEntry.NewEntry.CustomerId }).OfType<Contact>().FirstOrDefault();
                 await SetNotificationParametersAsync(notification, changedEntry);
                 _notificationManager.ScheduleSendNotification(notification);
             }
