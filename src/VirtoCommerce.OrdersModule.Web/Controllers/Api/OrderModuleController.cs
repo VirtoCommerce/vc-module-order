@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using SelectPdf;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -27,6 +28,8 @@ using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
+using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
@@ -54,8 +57,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
-        private readonly IConverter _converter;
-        private readonly HtmlToPdfOptions _htmlToPdfOptions;
+        private readonly PlatformOptions _platformOptions;
+        private readonly IBlobStorageProvider _blobStorageProvider;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -71,8 +74,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , INotificationSearchService notificationSearchService
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
-            , IConverter converter
-            , IOptions<HtmlToPdfOptions> htmlToPdfOptions)
+            , IOptions<PlatformOptions> platformOptions
+            , IBlobStorageProvider blobStorageProvider)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -87,8 +90,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _notificationSearchService = notificationSearchService;
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
-            _converter = converter;
-            _htmlToPdfOptions = htmlToPdfOptions.Value;
+            _platformOptions = platformOptions.Value;
+            _blobStorageProvider = blobStorageProvider;
         }
 
         /// <summary>
@@ -231,14 +234,20 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find payment method with code {inPayment.GatewayCode}");
             }
 
+            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+            }
+
             var request = new ProcessPaymentRequest
             {
                 OrderId = order.Id,
                 Order = order,
                 PaymentId = inPayment.Id,
                 Payment = inPayment,
-                //TODO
-                //Store = store,
+                StoreId = order.StoreId,
+                Store = store,
                 BankCardInfo = bankCardInfo
             };
             var result = inPayment.PaymentMethod.ProcessPayment(request);
@@ -442,6 +451,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find order with ID {orderId}");
             }
 
+            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+            }
+
             var paymentMethodCode = parameters.Get("code");
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
@@ -459,8 +474,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                         PaymentId = inPayment.Id,
                         Payment = inPayment,
                         StoreId = order.StoreId,
-                        //TODO
-                        //Store = store,
+                        Store = store,
                         OuterId = result.OuterId,
                         Parameters = parameters
                     };
@@ -503,9 +517,28 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
 
-            byte[] result = GeneratePdf(((EmailNotificationMessage)message).Body);
+            //need to do https://selectpdf.com/html-to-pdf/docs/html/Deployment.htm
+            HtmlToPdf converter = new HtmlToPdf();
+            converter.Options.PdfPageSize = PdfPageSize.A4;
+            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+            converter.Options.MarginLeft = 10;
+            converter.Options.MarginRight = 10;
+            converter.Options.MarginTop = 20;
+            converter.Options.MarginBottom = 20;
 
-            return new FileContentResult(result, "application/pdf");
+            var uploadPath = Path.GetFullPath(_platformOptions.LocalUploadFolderPath);
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            var targetFilePath = Path.Combine(uploadPath, $"order{orderNumber}.html");
+            System.IO.File.WriteAllText(targetFilePath, ((EmailNotificationMessage)message).Body);
+
+            //var doc = converter.ConvertHtmlString(((EmailNotificationMessage)message).Body);
+            //var byteArray = doc.Save();
+            var pdf = WkHtmlToPdf(targetFilePath);
+            return new FileContentResult(pdf, "application/pdf");
         }
 
         [HttpGet]
@@ -537,25 +570,48 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        private byte[] GeneratePdf(string htmlContent)
+        byte[] WkHtmlToPdf(string url)
         {
-            var doc = new HtmlToPdfDocument()
+            var p = new System.Diagnostics.Process
             {
-                GlobalSettings = {
-                    PaperSize = EnumUtility.SafeParse(_htmlToPdfOptions.PaperSize, PaperKind.A4),
-                    ViewportSize = _htmlToPdfOptions.ViewportSize,
-                    DPI = _htmlToPdfOptions.DPI
-                },
-                Objects = {
-                    new ObjectSettings() {
-                        HtmlContent = htmlContent,
-                        WebSettings = { DefaultEncoding = _htmlToPdfOptions.DefaultEncoding, MinimumFontSize = _htmlToPdfOptions.MinimumFontSize },
-                    }
+                StartInfo =
+                {
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    UseShellExecute = false,
+                    FileName = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe",
+                    WorkingDirectory = @"c:\_CODE\vc\V3\pdf\"
                 }
             };
-            var result = _converter.Convert(doc);
 
-            return result;
+            string switches = "--print-media-type ";
+            switches += "--margin-top 19.05mm --margin-bottom 19.05mm --margin-right 19.05mm --margin-left 19.05mm ";
+            switches += "--page-size Letter ";
+            p.StartInfo.Arguments = switches + " " + url + " " + " - ";
+            p.Start();
+
+            //read output
+            byte[] buffer = new byte[32768];
+            byte[] file;
+            using (var ms = new MemoryStream())
+            {
+                while (true)
+                {
+                    int read = p.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
+
+                    if (read <= 0)
+                    {
+                        break;
+                    }
+                    ms.Write(buffer, 0, read);
+                }
+                file = ms.ToArray();
+            }
+            p.WaitForExit(30000);
+            p.Close();
+            return file;
         }
 
     }
