@@ -2,14 +2,12 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using SelectPdf;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -33,7 +31,9 @@ using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ProcessSettings;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.Helpers;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
@@ -516,28 +516,22 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
-
-            //need to do https://selectpdf.com/html-to-pdf/docs/html/Deployment.htm
-            HtmlToPdf converter = new HtmlToPdf();
-            converter.Options.PdfPageSize = PdfPageSize.A4;
-            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
-            converter.Options.MarginLeft = 10;
-            converter.Options.MarginRight = 10;
-            converter.Options.MarginTop = 20;
-            converter.Options.MarginBottom = 20;
-
+            
             var uploadPath = Path.GetFullPath(_platformOptions.LocalUploadFolderPath);
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
 
-            var targetFilePath = Path.Combine(uploadPath, $"order{orderNumber}.html");
+            var htmlFile = $"order{orderNumber}.html";
+            var targetFilePath = Path.Combine(uploadPath, htmlFile);
             System.IO.File.WriteAllText(targetFilePath, ((EmailNotificationMessage)message).Body);
 
-            //var doc = converter.ConvertHtmlString(((EmailNotificationMessage)message).Body);
-            //var byteArray = doc.Save();
-            var pdf = WkHtmlToPdf(targetFilePath);
+            var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
+                                                        .SetWorkingDirectory(uploadPath)
+                                                        .SetArguments(new[] {htmlFile, "-"}))
+                                        .GetOutputAsByteArray();
+
             return new FileContentResult(pdf, "application/pdf");
         }
 
@@ -568,50 +562,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             }
             return Ok(result);
-        }
-
-        byte[] WkHtmlToPdf(string url)
-        {
-            var p = new System.Diagnostics.Process
-            {
-                StartInfo =
-                {
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true,
-                    UseShellExecute = false,
-                    FileName = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe",
-                    WorkingDirectory = @"c:\_CODE\vc\V3\pdf\"
-                }
-            };
-
-            string switches = "--print-media-type ";
-            switches += "--margin-top 19.05mm --margin-bottom 19.05mm --margin-right 19.05mm --margin-left 19.05mm ";
-            switches += "--page-size Letter ";
-            p.StartInfo.Arguments = switches + " " + url + " " + " - ";
-            p.Start();
-
-            //read output
-            byte[] buffer = new byte[32768];
-            byte[] file;
-            using (var ms = new MemoryStream())
-            {
-                while (true)
-                {
-                    int read = p.StandardOutput.BaseStream.Read(buffer, 0, buffer.Length);
-
-                    if (read <= 0)
-                    {
-                        break;
-                    }
-                    ms.Write(buffer, 0, read);
-                }
-                file = ms.ToArray();
-            }
-            p.WaitForExit(30000);
-            p.Close();
-            return file;
         }
 
     }
