@@ -532,6 +532,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                                                         .SetArguments(new[] {htmlFile, "-"}))
                                         .GetOutputAsByteArray();
 
+            System.IO.File.Delete(targetFilePath);
+
             return new FileContentResult(pdf, "application/pdf");
         }
 
