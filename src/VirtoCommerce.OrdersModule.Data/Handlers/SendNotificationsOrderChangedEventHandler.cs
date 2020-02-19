@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
 using VirtoCommerce.NotificationsModule.Core.Model;
@@ -72,7 +73,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var notification = await _notificationSearchService.GetNotificationAsync<CancelOrderEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notification.CustomerOrder = changedEntry.NewEntry;
                     notifications.Add(notification);
                 }
             }
@@ -82,7 +82,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var notification = await _notificationSearchService.GetNotificationAsync<OrderCreateEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notification.CustomerOrder = changedEntry.NewEntry;
                     notifications.Add(notification);
                 }
             }
@@ -92,7 +91,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var notification = await _notificationSearchService.GetNotificationAsync<NewOrderStatusEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notification.CustomerOrder = changedEntry.NewEntry;
                     notification.NewStatus = changedEntry.NewEntry.Status;
                     notification.OldStatus = changedEntry.OldEntry.Status;
                     notifications.Add(notification);
@@ -104,7 +102,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var notification = await _notificationSearchService.GetNotificationAsync<OrderPaidEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notification.CustomerOrder = changedEntry.NewEntry;
                     notifications.Add(notification);
                 }
             }
@@ -114,14 +111,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var notification = await _notificationSearchService.GetNotificationAsync<OrderSentEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notification.CustomerOrder = changedEntry.NewEntry;
                     notifications.Add(notification);
                 }
             }
 
+            var customer = await GetCustomerAsync(changedEntry.NewEntry.CustomerId);
+
             foreach (var notification in notifications)
             {
                 notification.CustomerOrder = changedEntry.NewEntry;
+                notification.Customer = customer;
                 notification.LanguageCode = changedEntry.NewEntry.LanguageCode;
                 await SetNotificationParametersAsync(notification, changedEntry);
                 _notificationSender.ScheduleSendNotification(notification);
@@ -217,17 +216,35 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual async Task<string> GetCustomerEmailAsync(string customerId)
         {
-            // try to find user
-            var user = await _userManager.FindByIdAsync(customerId);
+            var customer = await GetCustomerAsync(customerId);
 
-            // Try to find contact
-            var contact = await _memberService.GetByIdAsync(customerId);
-            if (contact == null && user != null)
+            if (customer == null)
             {
-                contact = await _memberService.GetByIdAsync(user.MemberId);
+                // try to find user
+                var user = await _userManager.FindByIdAsync(customerId);
+
+                return user?.Email;
             }
 
-            return contact?.Emails?.FirstOrDefault() ?? user?.Email;
+            return customer?.Emails?.FirstOrDefault();
+        }
+
+        protected virtual async Task<Member> GetCustomerAsync(string customerId)
+        {
+            // Try to find contact
+            var result = await _memberService.GetByIdAsync(customerId);
+
+            if (result == null)
+            {
+                var user = await _userManager.FindByIdAsync(customerId);
+
+                if (user != null)
+                {
+                    result = await _memberService.GetByIdAsync(user.MemberId);
+                }
+            }
+
+            return result;
         }
     }
 }
