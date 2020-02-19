@@ -184,14 +184,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var searchPaymentMethodsTask = _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria { StoreId = order.StoreId });
 
             await Task.WhenAll(searchShippingMethodsTask, searchPaymentMethodsTask);
-            if (!searchShippingMethodsTask.Result.Results.IsNullOrEmpty())
+            if (!searchShippingMethodsTask.Result.Results.IsNullOrEmpty() && !order.Shipments.IsNullOrEmpty())
             {
                 foreach (var shipment in order.Shipments)
                 {
                     shipment.ShippingMethod = searchShippingMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
                 }
             }
-            if (!searchPaymentMethodsTask.Result.Results.IsNullOrEmpty())
+            if (!searchPaymentMethodsTask.Result.Results.IsNullOrEmpty() && !order.InPayments.IsNullOrEmpty())
             {
                 foreach (var payment in order.InPayments)
                 {
