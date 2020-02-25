@@ -57,8 +57,6 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
 
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
-
-            serviceCollection.AddOptions<HtmlToPdfOptions>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -516,7 +517,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
             
-            var uploadPath = Path.GetFullPath(_platformOptions.LocalUploadFolderPath);
+            var uploadPath = Path.GetFullPath(Path.Combine(_platformOptions.LocalUploadFolderPath, "Invoices"));
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
