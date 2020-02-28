@@ -238,12 +238,20 @@ namespace VirtoCommerce.OrderModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find payment method with code {payment.GatewayCode}");
             }
 
+            var parameters = new NameValueCollection();
+
+            foreach (var key in HttpContext.Current.Request.Headers.AllKeys)
+            {
+                parameters.Add(key, HttpContext.Current.Request.Headers[key]);
+            }
+
             var context = new ProcessPaymentEvaluationContext
             {
                 Order = order,
                 Payment = payment,
                 Store = store,
-                BankCardInfo = bankCardInfo
+                BankCardInfo = bankCardInfo,
+                Parameters = parameters
             };
 
             var result = paymentMethod.ProcessPayment(context);
