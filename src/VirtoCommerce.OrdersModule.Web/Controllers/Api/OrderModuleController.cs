@@ -529,7 +529,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
                                                         .SetWorkingDirectory(uploadPath)
-                                                        .SetArguments(new[] {htmlFile, "-"}))
+                                                        .SetArguments(new[] { _platformOptions.WkhtmlToPdfArguments, htmlFile, "-"}))
                                         .GetOutputAsByteArray();
 
             System.IO.File.Delete(targetFilePath);
