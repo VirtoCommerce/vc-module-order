@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using SelectPdf;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -25,10 +26,14 @@ using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
+using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.ProcessSettings;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.Helpers;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
@@ -52,6 +57,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
+        private readonly PlatformOptions _platformOptions;
+        private readonly IBlobStorageProvider _blobStorageProvider;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -66,7 +73,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , INotificationTemplateRenderer notificationTemplateRenderer
             , INotificationSearchService notificationSearchService
             , ICustomerOrderTotalsCalculator totalsCalculator
-            , IAuthorizationService authorizationService)
+            , IAuthorizationService authorizationService
+            , IOptions<PlatformOptions> platformOptions
+            , IBlobStorageProvider blobStorageProvider)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -81,6 +90,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _notificationSearchService = notificationSearchService;
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
+            _platformOptions = platformOptions.Value;
+            _blobStorageProvider = blobStorageProvider;
         }
 
         /// <summary>
@@ -505,19 +516,25 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
+            
+            var uploadPath = Path.GetFullPath(Path.Combine(_platformOptions.LocalUploadFolderPath, "Invoices"));
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
 
-            //need to do https://selectpdf.com/html-to-pdf/docs/html/Deployment.htm
-            HtmlToPdf converter = new HtmlToPdf();
-            converter.Options.PdfPageSize = PdfPageSize.A4;
-            converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
-            converter.Options.MarginLeft = 10;
-            converter.Options.MarginRight = 10;
-            converter.Options.MarginTop = 20;
-            converter.Options.MarginBottom = 20;
+            var htmlFile = $"order{orderNumber}.html";
+            var targetFilePath = Path.Combine(uploadPath, htmlFile);
+            System.IO.File.WriteAllText(targetFilePath, ((EmailNotificationMessage)message).Body);
 
-            var doc = converter.ConvertHtmlString(((EmailNotificationMessage)message).Body);
-            var byteArray = doc.Save();
-            return new FileContentResult(byteArray, "application/pdf");
+            var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
+                                                        .SetWorkingDirectory(uploadPath)
+                                                        .SetArguments(new[] { _platformOptions.WkhtmlToPdfArguments, htmlFile, "-"}))
+                                        .GetOutputAsByteArray();
+
+            System.IO.File.Delete(targetFilePath);
+
+            return new FileContentResult(pdf, "application/pdf");
         }
 
         [HttpGet]
