@@ -527,7 +527,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var targetFilePath = Path.Combine(uploadPath, htmlFile);
             System.IO.File.WriteAllText(targetFilePath, ((EmailNotificationMessage)message).Body);
 
-            var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
+            var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings(_platformOptions)
                                                         .SetWorkingDirectory(uploadPath)
                                                         .SetArguments(new[] { _platformOptions.WkhtmlToPdfArguments, htmlFile, "-"}))
                                         .GetOutputAsByteArray();
