@@ -53,6 +53,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         [Auditable]
         public virtual decimal DiscountAmount { get; set; }
         public virtual decimal DiscountAmountWithTax { get; set; }
+        public override string ObjectType { get; set; } = typeof(PaymentIn).FullName;
 
 
         #region ITaxable Members
