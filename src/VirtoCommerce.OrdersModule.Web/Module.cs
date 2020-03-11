@@ -57,6 +57,8 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
 
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
+
+            serviceCollection.AddOptions<WkhtmlToPdfOptions>().Bind(configuration.GetSection("WkhtmlToPdf")).ValidateDataAnnotations();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

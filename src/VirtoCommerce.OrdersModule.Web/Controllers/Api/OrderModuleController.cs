@@ -59,6 +59,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IChangeLogSearchService _changeLogSearchService;
         private readonly PlatformOptions _platformOptions;
         private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly WkhtmlToPdfOptions _wkhtmlToPdfOptions;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -75,7 +76,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
             , IOptions<PlatformOptions> platformOptions
-            , IBlobStorageProvider blobStorageProvider)
+            , IBlobStorageProvider blobStorageProvider
+            , IOptions<WkhtmlToPdfOptions> wkhtmlToPdfOptions)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -92,6 +94,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _authorizationService = authorizationService;
             _platformOptions = platformOptions.Value;
             _blobStorageProvider = blobStorageProvider;
+            _wkhtmlToPdfOptions = wkhtmlToPdfOptions.Value;
         }
 
         /// <summary>
@@ -529,7 +532,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings(_platformOptions)
                                                         .SetWorkingDirectory(uploadPath)
-                                                        .SetArguments(new[] { _platformOptions.WkhtmlToPdfArguments, htmlFile, "-"}))
+                                                        .SetArguments(new[] { _wkhtmlToPdfOptions.Arguments, htmlFile, "-"}))
                                         .GetOutputAsByteArray();
 
             System.IO.File.Delete(targetFilePath);
