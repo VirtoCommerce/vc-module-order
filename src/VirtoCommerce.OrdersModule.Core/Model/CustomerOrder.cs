@@ -40,6 +40,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// </summary>
         public string SubscriptionId { get; set; }
 
+        public override string ObjectType { get; set; } = typeof(CustomerOrder).FullName;
+
         public ICollection<Address> Addresses { get; set; }
         public ICollection<PaymentIn> InPayments { get; set; }
 
@@ -212,7 +214,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         }
 
         #region ICloneable members
-
+        
         public override object Clone()
         {
             var result = base.Clone() as CustomerOrder;

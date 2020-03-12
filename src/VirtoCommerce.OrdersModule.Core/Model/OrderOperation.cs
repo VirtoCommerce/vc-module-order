@@ -43,7 +43,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #region IHasDynamicProperties Members
 
-        public string ObjectType => typeof(CustomerOrder).FullName;
+        public virtual string ObjectType { get; set; }
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
         #endregion

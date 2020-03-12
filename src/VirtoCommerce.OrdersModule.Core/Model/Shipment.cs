@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
@@ -78,8 +77,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         //Any extra Fee
         [Auditable]
         public virtual decimal Fee { get; set; }
-
         public virtual decimal FeeWithTax { get; set; }
+
+        public override string ObjectType { get; set; } = typeof(Shipment).FullName;
 
         #region ITaxable Members
 
