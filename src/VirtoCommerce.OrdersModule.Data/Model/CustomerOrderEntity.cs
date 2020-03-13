@@ -365,11 +365,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 var propValueComparer = AnonymousComparer.Create((OrderDynamicPropertyObjectValueEntity x, OrderDynamicPropertyObjectValueEntity y) =>
                 {
-                    if (
-                    (string.IsNullOrEmpty(x.Id) || string.IsNullOrEmpty(y.Id)) &&
-                    x.PropertyName + x.ObjectType + x.GetValue((DynamicPropertyValueType)Enum.Parse(typeof(DynamicPropertyValueType), x.ValueType)).ToString() ==
-                    y.PropertyName + y.ObjectType + y.GetValue((DynamicPropertyValueType)Enum.Parse(typeof(DynamicPropertyValueType), y.ValueType)).ToString()
-                    )
+                    if ((string.IsNullOrEmpty(x.Id) || string.IsNullOrEmpty(y.Id)) &&
+                        @$"{x.PropertyName} {x.ObjectType} {x.GetValue(EnumUtility.SafeParse(x.ValueType, DynamicPropertyValueType.ShortText))}" ==
+                        @$"{y.PropertyName} {y.ObjectType} {y.GetValue(EnumUtility.SafeParse(y.ValueType, DynamicPropertyValueType.ShortText))}")
                     {
                         x.Id ??= y.Id;
                         y.Id ??= x.Id;
