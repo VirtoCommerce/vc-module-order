@@ -363,7 +363,22 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
-                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
+                var propValueComparer = AnonymousComparer.Create((OrderDynamicPropertyObjectValueEntity x, OrderDynamicPropertyObjectValueEntity y) =>
+                {
+                    if (
+                    (string.IsNullOrEmpty(x.Id) || string.IsNullOrEmpty(y.Id)) &&
+                    x.PropertyName + x.ObjectType + x.GetValue((DynamicPropertyValueType)Enum.Parse(typeof(DynamicPropertyValueType), x.ValueType)).ToString() ==
+                    y.PropertyName + y.ObjectType + y.GetValue((DynamicPropertyValueType)Enum.Parse(typeof(DynamicPropertyValueType), y.ValueType)).ToString()
+                    )
+                    {
+                        x.Id ??= y.Id;
+                        y.Id ??= x.Id;
+                    }
+                    return x.Equals(y);
+                },
+                (OrderDynamicPropertyObjectValueEntity x) => x.GetHashCode()
+                );
+                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, propValueComparer, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
 
             base.Patch(operation);
