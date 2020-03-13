@@ -18,9 +18,10 @@ namespace VirtoCommerce.OrdersModule.Tests
         public void StartProcess_ConvertHtmlToPdf()
         {
             var platformOptions = new PlatformOptions();
-            var result = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
+            var htmlToPdfOptions = new HtmlToPdfOptions();
+            var result = ProcessHelper.StartProcess(new WkHtmlToPdfSettings(platformOptions)
                     .SetWorkingDirectory(Directory.GetCurrentDirectory())
-                    .SetArguments(new[] { platformOptions.WkhtmlToPdfArguments, "input.html", " ", " - " }))
+                    .SetArguments(new[] { htmlToPdfOptions.Arguments, "input.html", " ", " - " }))
                 .GetOutputAsByteArray();
 
             File.WriteAllBytes("output.pdf", result);
