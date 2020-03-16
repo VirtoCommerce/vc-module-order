@@ -29,18 +29,18 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
         public virtual async Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null)
-        {           
-            if(ids.IsNullOrEmpty())
+        {
+            if (ids.IsNullOrEmpty())
             {
                 return Array.Empty<CustomerOrderEntity>();
             }
 
             var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
             var query = CustomerOrders.Where(x => ids.Contains(x.Id))
-                                             .Include(x=> x.Discounts)
-                                             .Include(x=> x.TaxDetails).AsQueryable();
+                                             .Include(x => x.Discounts)
+                                             .Include(x => x.TaxDetails).AsQueryable();
 
-      
+
             var result = await query.ToArrayAsync();
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
                 if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                 {
-                    inPaymentsLoadBreakingQuery =  inPaymentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    inPaymentsLoadBreakingQuery = inPaymentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
                 }
                 await inPaymentsLoadBreakingQuery.LoadAsync();
             }
@@ -104,6 +104,23 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     customerOrder.ResetPrices();
                 }
             }
+
+            return result;
+        }
+
+        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null)
+        {
+            if (ids.IsNullOrEmpty())
+            {
+                return Array.Empty<PaymentInEntity>();
+            }
+
+            var result = await InPayments.Where(x => ids.Contains(x.Id))
+                                             .Include(x => x.Discounts)
+                                             .Include(x => x.TaxDetails)
+                                             .Include(x => x.Addresses)
+                                             .Include(x => x.Transactions)
+                                             .Include(x => x.DynamicPropertyObjectValues).ToArrayAsync();
 
             return result;
         }

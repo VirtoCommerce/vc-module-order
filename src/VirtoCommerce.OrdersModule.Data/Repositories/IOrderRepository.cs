@@ -15,6 +15,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         IQueryable<LineItemEntity> LineItems { get; }
 
         Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null);
+        Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null);
         Task RemoveOrdersByIdsAsync(string[] ids);
     }
 }

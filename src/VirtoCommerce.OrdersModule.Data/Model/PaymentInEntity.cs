@@ -94,6 +94,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 payment.BillingAddress = Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
 
+            payment.OrderId = CustomerOrderId;
+
             payment.Price = Price;
             payment.PriceWithTax = PriceWithTax;
             payment.DiscountAmount = DiscountAmount;

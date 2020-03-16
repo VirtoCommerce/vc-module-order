@@ -1,32 +1,9 @@
 using System;
-using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
 {
-    public class CustomerOrderSearchCriteria : SearchCriteriaBase
-    {
-        public string[] Ids { get; set; }
-        /// <summary>
-        /// Search by numbers
-        /// </summary>
-        public string Number { get; set; }
-
-        private string[] _numbers;
-        public string[] Numbers
-        {
-            get
-            {
-                if (_numbers == null && !string.IsNullOrEmpty(Number))
-                {
-                    _numbers = new[] { Number };
-                }
-                return _numbers;
-            }
-            set
-            {
-                _numbers = value;
-            }
-        }
+    public class CustomerOrderSearchCriteria : OrderOperationSearchCriteriaBase
+    {     
 
         /// <summary>
         /// Search orders with flag IsPrototype
@@ -63,28 +40,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
             }
         }
 
-        /// <summary>
-        /// Search by status
-        /// </summary>
-        public string Status { get; set; }
-
-        private string[] _statuses;
-        public string[] Statuses
-        {
-            get
-            {
-                if (_statuses == null && !string.IsNullOrEmpty(Status))
-                {
-                    _statuses = new[] { Status };
-                }
-                return _statuses;
-            }
-            set
-            {
-                _statuses = value;
-            }
-        }
-
+    
 
         /// <summary>
         /// It used to limit search within an operation (customer order for example)
@@ -111,8 +67,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
             }
         }
 
-        public string EmployeeId { get; set; }
-        public string[] StoreIds { get; set; }
+  
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }

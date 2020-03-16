@@ -41,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                     var onlyResponsibleScope = userPermission.AssignedScopes.OfType<OnlyOrderResponsibleScope>().FirstOrDefault();
                     var allowedStoreIds = storeSelectedScopes.Select(x => x.StoreId).Distinct().ToArray();
 
-                    if (context.Resource is CustomerOrderSearchCriteria criteria)
+                    if (context.Resource is OrderOperationSearchCriteriaBase criteria)
                     {
                         criteria.StoreIds = allowedStoreIds;                       
                         if (onlyResponsibleScope != null)
@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                             criteria.EmployeeId = context.User.Identity.Name;
                         }                      
                         context.Succeed(requirement);                        
-                    }
+                    }                  
                     if (context.Resource is CustomerOrder order)
                     {                     
                         if (allowedStoreIds.Contains(order.StoreId) || (onlyResponsibleScope != null && order.EmployeeId.EqualsInvariant(context.User.Identity.Name)))
@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
             //Apply ReadPrices authorization rules for all checks
             if (!context.User.HasGlobalPermission(ModuleConstants.Security.Permissions.ReadPrices))
             {
-                if (context.Resource is CustomerOrderSearchCriteria criteria)
+                if (context.Resource is OrderOperationSearchCriteriaBase criteria)
                 {
                     if (string.IsNullOrEmpty(criteria.ResponseGroup))
                     {

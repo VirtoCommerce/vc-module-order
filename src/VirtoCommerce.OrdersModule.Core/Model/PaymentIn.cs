@@ -12,6 +12,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class PaymentIn : OrderOperation, IHasTaxDetalization, ITaxable, IHasDiscounts, ICloneable
     {
+        public string OrderId { get; set; }
+
         [Auditable]
         public string Purpose { get; set; }
         /// <summary>

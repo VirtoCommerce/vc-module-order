@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Web.JsonConverters
     {
         private static readonly Type[] _knownTypes =
         {
-            typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria),
+            typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria), typeof(PaymentSearchCriteria),
             typeof(PaymentMethod), typeof(ShippingMethod),
             typeof(AdjustInventoryOrderChangedEventHandler.ProductInventoryChange)
         };
