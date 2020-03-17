@@ -11,6 +11,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         /// <summary>
         /// It used to limit search within a customer order number
         /// </summary>
-        public string OrderNumber { get; set; }  
+        public string OrderNumber { get; set; }
+
+        public DateTime? CapturedStartDate { get; set; }
+        public DateTime? CapturedEndDate { get; set; }
+
+        public DateTime? AuthorizedStartDate { get; set; }
+        public DateTime? AuthorizedEndDate { get; set; }
     }
 }

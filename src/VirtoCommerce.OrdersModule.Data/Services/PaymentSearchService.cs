@@ -94,12 +94,26 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(x => x.CreatedDate >= criteria.StartDate);
             }
-
             if (criteria.EndDate != null)
             {
                 query = query.Where(x => x.CreatedDate <= criteria.EndDate);
             }
-
+            if (criteria.CapturedStartDate != null)
+            {
+                query = query.Where(x => x.CapturedDate >= criteria.CapturedStartDate);
+            }
+            if (criteria.CapturedEndDate != null)
+            {
+                query = query.Where(x => x.CapturedDate <= criteria.CapturedEndDate);
+            }
+            if (criteria.AuthorizedStartDate != null)
+            {
+                query = query.Where(x => x.AuthorizedDate >= criteria.AuthorizedStartDate);
+            }
+            if (criteria.AuthorizedEndDate != null)
+            {
+                query = query.Where(x => x.AuthorizedDate <= criteria.AuthorizedEndDate);
+            }
             if (!criteria.Numbers.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.Numbers.Contains(x.Number));
