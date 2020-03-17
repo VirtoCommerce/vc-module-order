@@ -3,6 +3,8 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -59,6 +61,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IChangeLogSearchService _changeLogSearchService;
         private readonly PlatformOptions _platformOptions;
         private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly IConverter _converter;
+        private readonly HtmlToPdfOptions _htmlToPdfOptions;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -75,7 +79,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
             , IOptions<PlatformOptions> platformOptions
-            , IBlobStorageProvider blobStorageProvider)
+            , IBlobStorageProvider blobStorageProvider
+            , IConverter converter
+            , IOptions<HtmlToPdfOptions> htmlToPdfOptions)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -92,6 +98,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _authorizationService = authorizationService;
             _platformOptions = platformOptions.Value;
             _blobStorageProvider = blobStorageProvider;
+            _htmlToPdfOptions = htmlToPdfOptions.Value;
+            _converter = converter;
         }
 
         /// <summary>
@@ -516,25 +524,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
             notification.ToMessage(message, _notificationTemplateRenderer);
-            
-            var uploadPath = Path.GetFullPath(Path.Combine(_platformOptions.LocalUploadFolderPath, "Invoices"));
-            if (!Directory.Exists(uploadPath))
-            {
-                Directory.CreateDirectory(uploadPath);
-            }
 
-            var htmlFile = $"order{orderNumber}.html";
-            var targetFilePath = Path.Combine(uploadPath, htmlFile);
-            System.IO.File.WriteAllText(targetFilePath, ((EmailNotificationMessage)message).Body);
+            byte[] result = GeneratePdf(((EmailNotificationMessage)message).Body);
 
-            var pdf = ProcessHelper.StartProcess(new WkHtmlToPdfSettings()
-                                                        .SetWorkingDirectory(uploadPath)
-                                                        .SetArguments(new[] { _platformOptions.WkhtmlToPdfArguments, htmlFile, "-"}))
-                                        .GetOutputAsByteArray();
-
-            System.IO.File.Delete(targetFilePath);
-
-            return new FileContentResult(pdf, "application/pdf");
+            return new FileContentResult(result, "application/pdf");
         }
 
         [HttpGet]
@@ -564,6 +557,28 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             }
             return Ok(result);
+        }
+
+
+        private byte[] GeneratePdf(string htmlContent)
+        {
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    PaperSize = EnumUtility.SafeParse(_htmlToPdfOptions.PaperSize, PaperKind.A4),
+                    ViewportSize = _htmlToPdfOptions.ViewportSize,
+                    DPI = _htmlToPdfOptions.DPI
+                },
+                Objects = {
+                    new ObjectSettings() {
+                        HtmlContent = htmlContent,
+                        WebSettings = { DefaultEncoding = _htmlToPdfOptions.DefaultEncoding, MinimumFontSize = _htmlToPdfOptions.MinimumFontSize },
+                    }
+                }
+            };
+            var result = _converter.Convert(doc);
+
+            return result;
         }
 
     }
