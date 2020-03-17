@@ -39,6 +39,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
+        [Authorize(ModuleConstants.Security.Permissions.Access)]
         public async Task<ActionResult<PaymentSearchResult>> SearchOrderPayments([FromBody]PaymentSearchCriteria criteria)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
@@ -60,6 +61,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
+        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<PaymentIn>> GetById(string id, [FromRoute] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
@@ -115,6 +117,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="ids">order payment ids</param>
         [HttpDelete]
         [Route("")]
+        [Authorize(ModuleConstants.Security.Permissions.Delete)]
         public async Task<ActionResult> DeleteOrderPaymentsByIds([FromQuery] string[] ids)
         {
             if (ids == null)
