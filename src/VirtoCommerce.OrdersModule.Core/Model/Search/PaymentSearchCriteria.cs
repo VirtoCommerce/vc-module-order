@@ -1,3 +1,5 @@
+using System;
+
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
 {
     public class PaymentSearchCriteria : OrderOperationSearchCriteriaBase
@@ -9,7 +11,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         /// <summary>
         /// It used to limit search within a customer order number
         /// </summary>
-        public string OrderNumber { get; set; }
-
+        public string OrderNumber { get; set; }  
     }
 }

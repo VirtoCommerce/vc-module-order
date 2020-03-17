@@ -66,9 +66,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
                 _customerIds = value;
             }
         }
-
   
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
     }
 }

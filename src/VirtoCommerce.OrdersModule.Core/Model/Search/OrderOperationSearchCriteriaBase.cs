@@ -1,3 +1,4 @@
+using System;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
@@ -52,5 +53,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
             }
         }
 
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 }
