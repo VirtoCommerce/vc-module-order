@@ -108,6 +108,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
+        [Authorize(ModuleConstants.Security.Permissions.Access)]
         public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrder([FromBody]CustomerOrderSearchCriteria criteria)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
