@@ -13,7 +13,7 @@ namespace VirtoCommerce.OrdersModule2.Web.Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region CustomerOrder2
-            modelBuilder.Entity<CustomerOrder2Entity>().ToTable("CustomerOrder");
+            modelBuilder.Entity<CustomerOrder2Entity>();
             #endregion
 
             #region OrderInvoice
