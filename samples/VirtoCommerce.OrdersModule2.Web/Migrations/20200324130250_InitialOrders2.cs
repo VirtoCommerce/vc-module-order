@@ -30,7 +30,8 @@ namespace VirtoCommerce.OrdersModule2.Web.Migrations
                     Sum = table.Column<decimal>(type: "Money", nullable: false),
                     CustomerId = table.Column<string>(nullable: true),
                     CustomerName = table.Column<string>(nullable: true),
-                    CustomerOrder2Id = table.Column<string>(nullable: true)
+                    CustomerOrder2Id = table.Column<string>(nullable: true),
+                    OuterId = table.Column<string>(maxLength: 128, nullable: true)
                 },
                 constraints: table =>
                 {
