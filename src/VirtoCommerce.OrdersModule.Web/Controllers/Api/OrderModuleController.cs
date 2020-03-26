@@ -108,7 +108,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
-        [Authorize(ModuleConstants.Security.Permissions.Access)]
         public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrder([FromBody]CustomerOrderSearchCriteria criteria)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
@@ -130,7 +129,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("number/{number}")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<CustomerOrder>> GetByNumber(string number, [FromRoute] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
@@ -155,7 +153,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<CustomerOrder>> GetById(string id, [FromRoute] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
@@ -178,7 +175,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="order">Customer order</param>
         [HttpPut]
         [Route("recalculate")]
-        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public ActionResult<CustomerOrder> CalculateTotals([FromBody]CustomerOrder order)
         {
             _totalsCalculator.CalculateTotals(order);
@@ -196,7 +192,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
         {
             return await ProcessOrderPayments(orderId, paymentId, null);
@@ -212,7 +207,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [Consumes("application/json", new[] { "application/json-patch+json" })] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
-        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
         {
             var order = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
@@ -315,7 +309,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPut]
         [Route("")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult> UpdateOrder([FromBody]CustomerOrder customerOrder)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
@@ -335,7 +328,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="id">customer order id </param>
         [HttpGet]
         [Route("{id}/shipments/new")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<Shipment>> GetNewShipment(string id)
         {
             var order = await _customerOrderService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
@@ -374,7 +366,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="id">customer order id </param>
         [HttpGet]
         [Route("{id}/payments/new")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<PaymentIn>> GetNewPayment(string id)
         {
             var order = await _customerOrderService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
@@ -417,7 +408,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="end">end interval date</param>
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery]DateTime? start = null, [FromQuery]DateTime? end = null)
         {
             start ??= DateTime.UtcNow.AddYears(-1);
@@ -443,7 +433,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="callback">payment callback parameters</param>
         [HttpPost]
         [Route("~/api/paymentcallback")]
-        [Authorize(ModuleConstants.Security.Permissions.Update)]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody]PaymentCallbackParameters callback)
         {
             var parameters = new NameValueCollection();
@@ -514,7 +503,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpGet]
         [Route("invoice/{orderNumber}")]
         [SwaggerFileResponse]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult> GetInvoicePdf(string orderNumber)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
@@ -544,7 +532,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("{id}/changes")]
-        [Authorize(ModuleConstants.Security.Permissions.Read)]
         public async Task<ActionResult<OperationLog[]>> GetOrderChanges(string id)
         {
             var result = Array.Empty<OperationLog>();
