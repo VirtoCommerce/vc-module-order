@@ -33,9 +33,7 @@ using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.ProcessSettings;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.Data.Helpers;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
@@ -43,6 +41,7 @@ using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.C
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
     [Route("api/order/customerOrders")]
+    [Authorize]
     public class OrderModuleController : Controller
     {
         private readonly ICustomerOrderService _customerOrderService;

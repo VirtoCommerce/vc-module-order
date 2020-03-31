@@ -12,6 +12,7 @@ using VirtoCommerce.Platform.Core.Common;
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
     [Route("api/order/payments")]
+    [Authorize]
     public class OrderModulePaymentsController : Controller
     {
         private readonly IPaymentSearchService _paymentSearchService;
@@ -83,7 +84,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [HttpPut]
         [Route("")]
-        [Authorize(ModuleConstants.Security.Permissions.Create)]
         public async Task<ActionResult<CustomerOrder>> CreatePayment([FromBody]PaymentIn payment)
         {
             if (payment == null)
