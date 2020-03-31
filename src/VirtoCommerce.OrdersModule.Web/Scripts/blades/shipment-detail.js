@@ -31,8 +31,14 @@ angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModul
 
         settings.getValues({ id: 'Shipment.Status' }, translateBladeStatuses);
         blade.openStatusSettingManagement = function () {
-            var newBlade = new DictionarySettingDetailBlade('Shipment.Status');
-            newBlade.parentRefresh = translateBladeStatuses;
+            var newBlade = {
+                id: 'settingDetailChild',
+                isApiSave: true,
+                currentEntityId: 'Shipment.Status',
+                parentRefresh: translateBladeStatuses,
+                controller: 'platformWebApp.settingDictionaryController',
+                template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
+            };
             bladeNavigationService.showBlade(newBlade, blade);
         };
 
