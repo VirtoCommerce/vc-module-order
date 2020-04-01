@@ -1,4 +1,5 @@
 using System;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
 {
@@ -55,7 +56,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         {
             get
             {
-                if (_customerIds == null && !string.IsNullOrEmpty(CustomerId))
+                if (_customerIds.IsNullOrEmpty() && !string.IsNullOrEmpty(CustomerId))
                 {
                     _customerIds = new[] { CustomerId };
                 }
