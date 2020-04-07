@@ -183,8 +183,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var order = changedEntry.NewEntry;
             var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
 
-            notification.IsActive = true;
-
             if (notification is EmailNotification emailNotification)
             {
                 emailNotification.From = store.Email;
