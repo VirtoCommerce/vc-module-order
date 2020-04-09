@@ -29,7 +29,7 @@ namespace VirtoCommerce.OrdersModule.Web.BackgroundJobs
             {
                 var currencies = repository.InPayments.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
                                         .Where(x => !x.IsCancelled)
-                                        .GroupBy(x => x.Currency, (key, result) => key);
+                                        .GroupBy(x => x.Currency, (key, result) => key).ToList();
 
                 retVal.OrderCount = await repository.CustomerOrders.CountAsync(x => x.CreatedDate >= start && x.CreatedDate <= end && !x.IsCancelled);
                 //avg order value
