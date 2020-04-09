@@ -9,7 +9,8 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
             migrationBuilder.Sql(@"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory'))
                 IF (EXISTS (SELECT * FROM __MigrationHistory WHERE ContextKey = 'VirtoCommerce.OrderModule.Data.Migrations.Configuration'))
                     BEGIN
-                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20190530163834_InitialOrders', '2.2.3-servicing-35854')
+                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20190530163834_InitialOrders', '3.1.2')
+                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200409175753_AddOrderAddressName', '3.1.2')
 
 	                    BEGIN
                             ALTER TABLE [CustomerOrder] ADD [Status] nvarchar(64) NULL
