@@ -258,6 +258,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new ArgumentNullException(nameof(address));
 
             var retVal = AbstractTypeFactory<Address>.TryCreateInstance();
+            retVal.Name = address.Name;
             retVal.Key = null;
             retVal.City = address.City;
             retVal.CountryCode = address.CountryCode;
