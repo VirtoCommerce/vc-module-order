@@ -13,7 +13,7 @@
       <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.0-rc.4" />
       <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.0-rc.5-003" />
       <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.0.0-rc.4" />
-      <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc4-245" />
+      <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc4-0245" />
       <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.0.0-rc.4" />
     </ItemGroup>
 
