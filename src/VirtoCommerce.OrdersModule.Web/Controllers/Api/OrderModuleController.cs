@@ -522,7 +522,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             notification.CustomerOrder = order;
             var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
-            notification.ToMessage(message, _notificationTemplateRenderer);
+            await notification.ToMessageAsync(message, _notificationTemplateRenderer);
 
             byte[] result = GeneratePdf(((EmailNotificationMessage)message).Body);
 
