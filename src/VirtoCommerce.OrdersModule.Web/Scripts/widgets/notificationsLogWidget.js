@@ -8,7 +8,7 @@
             var newBlade = {
                 id: 'notificationLogWidgetChild',
                 objectId: objectId,
-                objectTypeId: objectTypeId,
+                objectType: objectTypeId,
                 title: 'orders.widgets.notifications.title',
                 subtitle: 'orders.widgets.notifications.subtitle',
                 controller: 'virtoCommerce.notificationsModule.notificationsJournalController',
