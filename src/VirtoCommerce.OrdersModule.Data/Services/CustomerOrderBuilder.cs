@@ -155,7 +155,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.FulfillmentCenterName = lineItem.FulfillmentCenterName;
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
-            retVal.Price = lineItem.SalePrice;
+            retVal.Price = lineItem.ListPrice;
 
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
             retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
