@@ -296,7 +296,8 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
 
         var dynamicPropertyWidget = {
             controller: 'platformWebApp.dynamicPropertyWidgetController',
-            template: '$(Platform)/Scripts/app/dynamicProperties/widgets/dynamicPropertyWidget.tpl.html'
+            template: '$(Platform)/Scripts/app/dynamicProperties/widgets/dynamicPropertyWidget.tpl.html',
+            isVisible: function (blade) { return authService.checkPermission('platform:dynamic_properties:read'); }
         };
         widgetService.registerWidget(dynamicPropertyWidget, 'shipmentDetailWidgets');
         widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderDetailWidgets');
