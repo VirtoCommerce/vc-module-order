@@ -82,7 +82,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// </summary>
         /// <param name="payment">payment</param>
         [HttpPost]
-        [HttpPut]
         [Route("")]
         public async Task<ActionResult<CustomerOrder>> CreatePayment([FromBody]PaymentIn payment)
         {
@@ -106,6 +105,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
             await _paymentService.SaveChangesAsync(new[] { payment });
             return Ok(payment);
+        }
+
+        [HttpPut]
+        [Route("")]
+        public Task<ActionResult<CustomerOrder>> UpdatePayment([FromBody]PaymentIn payment)
+        {
+            return CreatePayment(payment);
         }
 
 
