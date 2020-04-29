@@ -204,7 +204,8 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
         //Register widgets
         widgetService.registerWidget({
             controller: 'virtoCommerce.orderModule.notificationsLogWidgetController',
-            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/notificationsLogWidget.tpl.html'
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/notificationsLogWidget.tpl.html',
+            isVisible: function (blade) { return authService.checkPermission('notifications:access'); }
         }, 'customerOrderDetailWidgets');
 
         var operationItemsWidget = {
