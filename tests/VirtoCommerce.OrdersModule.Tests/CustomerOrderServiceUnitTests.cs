@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using VirtoCommerce.CoreModule.Core.Common;
@@ -12,6 +15,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
@@ -53,34 +57,73 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
         [Fact]
-        public async Task GetByIdsAsync_GetThenSaveOrder_ReturnOrder()
+        public async Task GetByIdsAsync_GetThenSaveOrder_ReturnCachedOrder()
+        {
+            //Arrange
+            var id = Guid.NewGuid().ToString();
+            var fakeOrder = GetFakeCustomerOrder(id);
+            var fakeOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(fakeOrder, new PrimaryKeyResolvingMap());
+            var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
+            var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), new Mock<ILogger<PlatformMemoryCache>>().Object);
+            var service = GetCustomerOrderService(platformMemoryCache);
+            _cacheEntryMock.SetupGet(c => c.ExpirationTokens).Returns(new List<IChangeToken>());
+            var cacheKey = CacheKey.With(service.GetType(), nameof(service.GetByIdsAsync), string.Join("-", new[] { id }), null);
+
+            //Act
+            var nullOrder = await service.GetByIdAsync(id);
+            var cachedNullOrder = (CustomerOrder[])platformMemoryCache.Get(cacheKey);
+            await service.SaveChangesAsync(new[] { fakeOrder });
+            _orderRepositoryMock
+                .Setup(x => x.GetCustomerOrdersByIdsAsync(new[] {id}, null))
+                .ReturnsAsync(new [] { fakeOrderEntity });
+            var order = await service.GetByIdAsync(id);
+            //need to call again for verify calling times
+            await service.GetByIdAsync(id);
+            var cachedOrder = (CustomerOrder[])platformMemoryCache.Get(cacheKey);
+
+            //Assert
+            Assert.Null(nullOrder);
+            Assert.Empty(cachedNullOrder);
+            Assert.NotNull(order);
+            Assert.NotEmpty(cachedOrder);
+            _orderRepositoryMock.Verify(x => x.GetCustomerOrdersByIdsAsync(It.IsAny<string[]>(), It.IsAny<string>()), Times.AtMost(3));
+        }
+
+        [Fact]
+        public async Task GetByIdsAsync_GetThenSaveOrder_ReturnNotCachedOrder()
         {
             //Arrange
             var id = Guid.NewGuid().ToString();
             var fakeOrder = GetFakeCustomerOrder(id);
             var fakeOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(fakeOrder, new PrimaryKeyResolvingMap());
             var service = GetCustomerOrderService();
-            var cacheKey = CacheKey.With(service.GetType(), nameof(service.GetByIdsAsync), string.Join("-", id), null);
-            _platformMemoryCacheMock.Setup(pmc => pmc.CreateEntry(cacheKey)).Returns(_cacheEntryMock.Object);
             _cacheEntryMock.SetupGet(c => c.ExpirationTokens).Returns(new List<IChangeToken>());
+            var cacheKey = CacheKey.With(service.GetType(), nameof(service.GetByIdsAsync), string.Join("-", new[] { id }), null);
+            _platformMemoryCacheMock.Setup(pmc => pmc.CreateEntry(cacheKey)).Returns(_cacheEntryMock.Object);
 
             //Act
-            var order = await service.GetByIdAsync(id);
-            Assert.Null(order);
-
+            var nullOrder = await service.GetByIdAsync(id);
             await service.SaveChangesAsync(new[] { fakeOrder });
-
             _orderRepositoryMock
-                .Setup(x => x.GetCustomerOrdersByIdsAsync(new[] {id}, null))
-                .ReturnsAsync(new [] { fakeOrderEntity });
-            order = await service.GetByIdAsync(id);
+                .Setup(x => x.GetCustomerOrdersByIdsAsync(new[] { id }, null))
+                .ReturnsAsync(new[] { fakeOrderEntity });
+            var order = await service.GetByIdAsync(id);
+            //need to call again for verify calling times
+            await service.GetByIdAsync(id);
 
             //Assert
+            Assert.Null(nullOrder);
             Assert.NotNull(order);
+            _orderRepositoryMock.Verify(x => x.GetCustomerOrdersByIdsAsync(It.IsAny<string[]>(), It.IsAny<string>()), Times.AtLeast(4));
         }
 
 
         private CustomerOrderService GetCustomerOrderService()
+        {
+            return GetCustomerOrderService(_platformMemoryCacheMock.Object);
+        }
+
+        private CustomerOrderService GetCustomerOrderService(IPlatformMemoryCache platformMemoryCache)
         {
             _shippingMethodsSearchServiceMock
                 .Setup(x => x.SearchShippingMethodsAsync(It.IsAny<ShippingMethodsSearchCriteria>()))
@@ -98,7 +141,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 _customerOrderTotalsCalculatorMock.Object,
                 _shippingMethodsSearchServiceMock.Object,
                 _paymentMethodsSearchServiceMock.Object,
-                _platformMemoryCacheMock.Object);
+                platformMemoryCache);
         }
 
         private CustomerOrder GetFakeCustomerOrder(string id)
