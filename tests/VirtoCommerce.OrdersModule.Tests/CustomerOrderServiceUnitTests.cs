@@ -36,8 +36,6 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<ICustomerOrderTotalsCalculator> _customerOrderTotalsCalculatorMock;
         private readonly Mock<IShippingMethodsSearchService> _shippingMethodsSearchServiceMock;
         private readonly Mock<IPaymentMethodsSearchService> _paymentMethodsSearchServiceMock;
-        private readonly Mock<IPlatformMemoryCache> _platformMemoryCacheMock;
-        private readonly Mock<ICacheEntry> _cacheEntryMock;
 
         public CustomerOrderServiceUnitTests()
         {
@@ -50,9 +48,6 @@ namespace VirtoCommerce.OrdersModule.Tests
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
             _shippingMethodsSearchServiceMock = new Mock<IShippingMethodsSearchService>();
             _paymentMethodsSearchServiceMock = new Mock<IPaymentMethodsSearchService>();
-            _platformMemoryCacheMock = new Mock<IPlatformMemoryCache>();
-            _cacheEntryMock = new Mock<ICacheEntry>();
-            _cacheEntryMock.SetupGet(c => c.ExpirationTokens).Returns(new List<IChangeToken>());
         }
 
         [Fact]
