@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -18,6 +16,7 @@ using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
@@ -62,7 +61,14 @@ namespace VirtoCommerce.OrdersModule.Tests
             //Arrange
             var id = Guid.NewGuid().ToString();
             var newOrder = new CustomerOrder { Id = id };
+            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
             var service = GetCustomerOrderServiceWithPlatformMemoryCache();
+            _orderRepositoryMock.Setup(x => x.Add(newOrderEntity))
+                .Callback(() =>
+                {
+                    _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] {id}, null))
+                        .ReturnsAsync(new[] {newOrderEntity});
+                });
 
             //Act
             var nullOrder = await service.GetByIdAsync(id);
@@ -79,19 +85,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
             var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), new Mock<ILogger<PlatformMemoryCache>>().Object);
 
-            var options = new Mock<DbContextOptions<OrderDbContext>>();
-            options.Setup(x => x.ContextType).Returns(typeof(DbContext));
-            var orderDbConextMock = new Mock<OrderDbContext>(options.Object);
-            orderDbConextMock.Setup(x => x.Set<CustomerOrderEntity>())
-                .Returns(GetQueryableMockDbSet(new List<CustomerOrderEntity>()));
-            var orderRepository = new FakeOrderRepository(orderDbConextMock.Object, _unitOfWorkMock.Object);
-
-            return GetCustomerOrderService(platformMemoryCache, orderRepository);
-        }
-        
-        private CustomerOrderService GetCustomerOrderService()
-        {
-            return GetCustomerOrderService(_platformMemoryCacheMock.Object, _orderRepositoryMock.Object);
+            return GetCustomerOrderService(platformMemoryCache, _orderRepositoryMock.Object);
         }
 
         private CustomerOrderService GetCustomerOrderService(IPlatformMemoryCache platformMemoryCache, IOrderRepository orderRepository)
@@ -113,80 +107,6 @@ namespace VirtoCommerce.OrdersModule.Tests
                 _shippingMethodsSearchServiceMock.Object,
                 _paymentMethodsSearchServiceMock.Object,
                 platformMemoryCache);
-        }
-
-        
-
-        private static DbSet<T> GetQueryableMockDbSet<T>(List<T> sourceList) where T : class
-        {
-            var queryable = sourceList.AsQueryable();
-
-            var dbSet = new Mock<DbSet<T>>();
-            dbSet.As<IQueryable<T>>().Setup(m => m.Provider).Returns(queryable.Provider);
-            dbSet.As<IQueryable<T>>().Setup(m => m.Expression).Returns(queryable.Expression);
-            dbSet.As<IQueryable<T>>().Setup(m => m.ElementType).Returns(queryable.ElementType);
-            dbSet.As<IQueryable<T>>().Setup(m => m.GetEnumerator()).Returns(() => queryable.GetEnumerator());
-            dbSet.Setup(d => d.Add(It.IsAny<T>())).Callback<T>((s) => sourceList.Add(s));
-
-            return dbSet.Object;
-        }
-    }
-
-
-    class FakeOrderRepository : IOrderRepository
-    {
-        private readonly OrderDbContext _orderDbContext;
-
-        public FakeOrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork)
-        {
-            _orderDbContext = dbContext;
-            UnitOfWork = unitOfWork;
-        }
-        public void Dispose()
-        {
-            _orderDbContext.Dispose();
-        }
-
-        public void Attach<T>(T item) where T : class
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add<T>(T item) where T : class
-        {
-            _orderDbContext.Set<T>().Add(item);
-        }
-
-        public void Update<T>(T item) where T : class
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove<T>(T item) where T : class
-        {
-            throw new NotImplementedException();
-        }
-
-        public IUnitOfWork UnitOfWork { get; }
-
-        public IQueryable<CustomerOrderEntity> CustomerOrders => _orderDbContext.Set<CustomerOrderEntity>();
-        public IQueryable<ShipmentEntity> Shipments { get; }
-        public IQueryable<PaymentInEntity> InPayments { get; }
-        public IQueryable<AddressEntity> Addresses { get; }
-        public IQueryable<LineItemEntity> LineItems { get; }
-        public Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null)
-        {
-            return Task.FromResult(CustomerOrders.Where(x => ids.Contains(x.Id)).ToArray());
-        }
-
-        public Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task RemoveOrdersByIdsAsync(string[] ids)
-        {
-            throw new NotImplementedException();
         }
     }
 }
