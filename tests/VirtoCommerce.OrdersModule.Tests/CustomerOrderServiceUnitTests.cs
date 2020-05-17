@@ -41,7 +41,6 @@ namespace VirtoCommerce.OrdersModule.Tests
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _orderRepositoryMock = new Mock<IOrderRepository>();
-            _orderRepositoryMock.Setup(ss => ss.UnitOfWork).Returns(_unitOfWorkMock.Object);
             _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
             _storeServiceMock = new Mock<IStoreService>();
             _eventPublisherMock = new Mock<IEventPublisher>();
@@ -79,6 +78,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
             var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), new Mock<ILogger<PlatformMemoryCache>>().Object);
+            _orderRepositoryMock.Setup(ss => ss.UnitOfWork).Returns(_unitOfWorkMock.Object);
 
             return GetCustomerOrderService(platformMemoryCache, _orderRepositoryMock.Object);
         }
@@ -92,8 +92,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _paymentMethodsSearchServiceMock
                 .Setup(x => x.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>()))
                 .ReturnsAsync(new PaymentMethodsSearchResult());
-
-            _orderRepositoryMock.Setup(ss => ss.UnitOfWork).Returns(_unitOfWorkMock.Object);
+            
             return new CustomerOrderService(() => orderRepository,
                 _uniqueNumberGeneratorMock.Object,
                 _storeServiceMock.Object,
