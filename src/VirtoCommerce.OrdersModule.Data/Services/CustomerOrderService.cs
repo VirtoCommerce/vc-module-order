@@ -60,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         public virtual async Task<CustomerOrder[]> GetByIdsAsync(string[] orderIds, string responseGroup = null)
         {
             var cacheKey = CacheKey.With(GetType(), nameof(GetByIdsAsync), string.Join("-", orderIds), responseGroup);
-            var result = await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
+            return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
             {
                 var retVal = new List<CustomerOrder>();
                 var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
@@ -98,8 +98,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
                 return retVal.ToArray();
             });
-
-            return result.Select(x => x.Clone() as CustomerOrder).ToArray();
         }
 
         public virtual async Task<CustomerOrder> GetByIdAsync(string orderId, string responseGroup = null)
