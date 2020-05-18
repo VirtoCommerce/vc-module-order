@@ -10,7 +10,7 @@ The order itself contains minimum details, when the documents present additional
 
 ## Constraints
 
-The Order Management process in VitroCommerce OMS is not coded and not pre-determined. This system is designed as an Order Details Editor with no validation logics available. The system is implied to be an additional storage for customer orders details.
+The Order Management process in VirtoCommerce OMS is not coded and not pre-determined. This system is designed as an Order Details Editor with no validation logics available. The system is implied to be an additional storage for customer orders details.
 
 ## Functional possibilities
 
