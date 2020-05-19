@@ -103,11 +103,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 if (payment.PaymentStatus == PaymentStatus.Authorized)
                 {
-                    payment.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { Payment = payment, Order = order});
+                    payment.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order});
                 }
                 else if (payment.PaymentStatus == PaymentStatus.Paid)
                 {
-                    payment.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { Payment = payment, Order = order});
+                    payment.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order});
                 }
                 else
                 {
