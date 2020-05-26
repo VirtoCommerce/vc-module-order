@@ -28,7 +28,7 @@ angular.module('virtoCommerce.orderModule')
                 openAddEntityWizard();
             },
             canExecuteMethod: function () {
-                return false;
+                return blade.currentEntity.operationType === 'Shipment';
             },
             permission: blade.updatePermission
         },
@@ -60,6 +60,44 @@ angular.module('virtoCommerce.orderModule')
 			item.selected = selected;
 		});
 	};
+
+	function openAddEntityWizard() {
+        var options = {
+            checkItemFn: function (listItem, isSelected) {
+                if (isSelected) {
+                    if (_.all(selectedProducts, function (x) { return x.id != listItem.id; })) {
+                        selectedProducts.push(listItem);
+                    }
+                }
+                else {
+                    selectedProducts = _.reject(selectedProducts, function (x) { return x.id == listItem.id; });
+                }
+            }
+        };
+        var newBlade = {
+			id: "OrderItemsSelect",
+			currentEntity: blade.currentEntity,
+            orderItems: blade.parentBlade.parentBlade.currentEntity.items,
+            title: "orders.blades.catalog-items-select.title",
+            controller: 'virtoCommerce.orderModule.orderItemSelectController',
+            template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items-select.tpl.html',
+            options: options,
+            breadcrumbs: [],
+            toolbarCommands: [
+              {
+                  name: "orders.commands.add-selected", icon: 'fa fa-plus',
+                  executeMethod: function (blade) {
+                      //addProductsToOrder(selectedProducts);
+                      selectedProducts.length = 0;
+                      bladeNavigationService.closeBlade(blade);
+                  },
+                  canExecuteMethod: function () {
+                      return selectedProducts.length > 0;
+                  }
+              }]
+        };
+        bladeNavigationService.showBlade(newBlade, $scope.blade);
+    }
 
 	blade.refresh();
 }]);

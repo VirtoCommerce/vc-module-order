@@ -69,11 +69,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (shipmentItem.LineItem != null)
             {
                 LineItemId = shipmentItem.LineItem.Id;
-                //Store ModelLineItem for future linking with the order line item only for new objects otherwise we will get error when saving
-                if (shipmentItem.LineItem.IsTransient())
-                {
-                    ModelLineItem = shipmentItem.LineItem;
-                }
+                ModelLineItem = shipmentItem.LineItem;
             }
 
             return this;
