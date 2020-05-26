@@ -73,9 +73,9 @@ namespace VirtoCommerce.OrderModule.Data.Services
                     {
                         changeTracker.Attach(originalEntity);
 
-                        var originalOlder = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
-                        DynamicPropertyService.LoadDynamicPropertyValues(originalOlder);
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalOlder, EntryState.Modified));                   
+                        var originalOrder = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        DynamicPropertyService.LoadDynamicPropertyValues(originalOrder);
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalOrder, EntryState.Modified));                   
 
                         modifiedEntity?.Patch(originalEntity);
 
