@@ -6,12 +6,12 @@
     <IsPackable>True</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.0.1" />
-    <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.0.1" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.0.1" />
-    <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.0.1" />
-    <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.0.1" />
-    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0-rc5" />
-    <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.0.1" />
+    <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0" />
+    <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.1.0" />
   </ItemGroup>
 </Project>
