@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table-item" ng-repeat="data in blade.orderItems" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
+                        <tr class="table-item" ng-repeat="data in items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
                             <td class="table-col">
                                 <label class="form-control __checkbox">
                                     <input type="checkbox" ng-model="data.selected">
@@ -38,12 +38,12 @@
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
                                     <div class="form-input __mini __number">
-                                        <input smart-float num-type="integer" required ng-model="data.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
+                                        <input smart-float num-type="integer" required ng-model="data.quantityOnShipment" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
                                     </div>
                                 </div>
                             </td>
                             <td class="table-col">
-                                <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
+                                <span ng-class="{'error': data.avail <= 0}">{{(data.quantity || 0) | number:0}}</span>
                             </td>
                            
                         </tr>

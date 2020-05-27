@@ -16,9 +16,13 @@ angular.module('virtoCommerce.orderModule')
     }, blade.options);
 
     blade.refresh = function () {
-        $scope.items = blade.orderItems;
+        $scope.items = angular.copy(blade.orderItems);
+        _.each($scope.items, function (item) {
+            item.quantityOnShipment = item.quantity;
+        });
+        
         if ($scope.options.onItemsLoaded) {
-            $scope.options.onItemsLoaded(blade.orderItems);
+            $scope.options.onItemsLoaded($scope.items);
         }
 
         blade.isLoading = false;
@@ -28,8 +32,8 @@ angular.module('virtoCommerce.orderModule')
         {
             name: "orders.commands.add-item", icon: 'fa fa-plus',
             executeMethod: function (blade) {
-                var selectedItems = _.map(_.where(blade.orderItems, {selected: true}), function(item) {
-                    return { lineItemId: item.id, lineItem: item, quantity: item.quantity };
+                var selectedItems = _.map(_.where($scope.items, {selected: true}), function(item) {
+                    return { lineItemId: item.id, lineItem: item, quantity: item.quantityOnShipment };
                 });
                 _.each(selectedItems, function (item) {
                     blade.currentEntity.items.push(item);
@@ -38,7 +42,7 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.closeBlade(blade);
             },
             canExecuteMethod: function () {
-                return _.any(blade.orderItems, function (x) { return x.selected; });
+                return _.any($scope.items, function (x) { return x.selected; });
             },
             permission: blade.updatePermission
         },

@@ -150,6 +150,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 return property;
             }).ToArray();
 
+            //Link shipment item with order lineItem 
+            foreach (var shipmentItem in order.Shipments.SelectMany(x => x.Items))
+            {
+                shipmentItem.LineItem = order.Items.FirstOrDefault(x => x.Id == shipmentItem.LineItemId);
+            }
+
             base.ToModel(order);
 
             Sum = order.Total;

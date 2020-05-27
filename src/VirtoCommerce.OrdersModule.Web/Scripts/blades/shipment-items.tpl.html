@@ -21,7 +21,6 @@
                             <th class="table-col"></th>
                             <th class="table-col">{{ 'orders.blades.shipment-items.labels.quantity' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.shipment-items.labels.price' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.shipment-items.labels.total' | translate }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,16 +41,13 @@
                             <td class="table-col">{{data.lineItem.name}}</td>
                             <td class="table-col">
                                 <div class="__mini __number">
-                                    {{data.quantity | number:9}}
+                                    {{data.quantity | number:0}}
                                 </div>
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini">
                                     {{data.lineItem.price | currency:data.lineItem.currency | showPrice:blade.isVisiblePrices}}
                                 </div>
-                            </td>
-                            <td class="table-col __total">
-                                <span>{{data._total | currency:data.lineItem.currency | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                         </tr>                        
                     </tbody>

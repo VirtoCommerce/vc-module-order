@@ -47,6 +47,13 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipmentItem.BarCode = BarCode;
             shipmentItem.Quantity = Quantity;
 
+            shipmentItem.LineItemId = LineItemId;
+
+            if (ModelLineItem != null)
+            {
+                shipmentItem.LineItem = ModelLineItem;
+            }
+
             return shipmentItem;
         }
 
