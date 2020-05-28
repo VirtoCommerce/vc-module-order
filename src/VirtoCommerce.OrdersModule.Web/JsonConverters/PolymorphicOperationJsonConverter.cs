@@ -19,7 +19,7 @@ namespace VirtoCommerce.OrdersModule.Web.JsonConverters
         {
             typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria), typeof(PaymentSearchCriteria),
             typeof(PaymentMethod), typeof(ShippingMethod),
-            typeof(AdjustInventoryOrderChangedEventHandler.ProductInventoryChange)
+            typeof(ProductInventoryChange)
         };
 
         public override bool CanWrite => false;
