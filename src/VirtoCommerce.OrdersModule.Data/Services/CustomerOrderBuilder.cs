@@ -290,7 +290,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return retVal;
         }
 
-        protected DynamicObjectProperty ToOrderModel(DynamicObjectProperty item)
+        protected virtual DynamicObjectProperty ToOrderModel(DynamicObjectProperty item)
         {
             return new DynamicObjectProperty
             {
