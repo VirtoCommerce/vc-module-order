@@ -8,6 +8,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 using LineItem = VirtoCommerce.OrdersModule.Core.Model.LineItem;
 using Shipment = VirtoCommerce.OrdersModule.Core.Model.Shipment;
@@ -113,6 +114,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
             }
 
+            if (cart.DynamicProperties != null)
+            {
+                retVal.DynamicProperties = cart.DynamicProperties.Select(ToOrderModel).ToList();
+            }
+
             //Save only disctinct addresses for order
             retVal.Addresses = retVal.Addresses.Distinct().ToList();
             foreach (var address in retVal.Addresses)
@@ -121,6 +127,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 address.Key = null;
             }
             retVal.TaxDetails = cart.TaxDetails;
+
             return retVal;
         }
 
@@ -158,7 +165,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Price = lineItem.ListPrice;
 
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
-            retVal.DynamicProperties = null; //to prevent copy dynamic properties from ShoppingCart LineItem to Order LineItem
+
+            if (lineItem.DynamicProperties != null)
+            {
+                retVal.DynamicProperties = lineItem.DynamicProperties.Select(ToOrderModel).ToList();
+            }
+
             if (lineItem.Discounts != null)
             {
                 retVal.Discounts = lineItem.Discounts.Select(ToOrderModel).ToList();
@@ -276,6 +288,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.AddressType = address.AddressType;
 
             return retVal;
+        }
+
+        protected DynamicObjectProperty ToOrderModel(DynamicObjectProperty item)
+        {
+            return new DynamicObjectProperty
+            {
+                Name = item.Name,
+                IsDictionary = item.IsDictionary,
+                ValueType = item.ValueType,
+                Values = item.Values
+            };
         }
     }
 }
