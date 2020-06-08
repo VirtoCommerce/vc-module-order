@@ -6,8 +6,12 @@ angular.module('virtoCommerce.orderModule')
 
 	//pagination settings
 	$scope.pageSettings = {};
-	$scope.totals = {};
-	$scope.pageSettings.totalItems = blade.currentEntity.items.length;
+    $scope.totals = {};
+    if (blade.currentEntity.items) {
+        $scope.pageSettings.totalItems = blade.currentEntity.items.length;
+    } else {
+        blade.currentEntity.items = [];
+    }
 	$scope.pageSettings.currentPage = 1;
 	$scope.pageSettings.numPages = 5;
 	$scope.pageSettings.itemsPerPageCount = 4;
