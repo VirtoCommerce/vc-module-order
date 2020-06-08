@@ -70,19 +70,19 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(ChangedOrder, InitialOrder, EntryState.Modified),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = 3
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt-new",
                         QuantityDelta = 1
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -95,13 +95,13 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(InitialOrder, InitialOrder, EntryState.Added),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = 2
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -114,13 +114,13 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(InitialOrder, InitialOrder, EntryState.Deleted),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = -2
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -133,7 +133,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         [Theory]
         [MemberData(nameof(TestData))]
         public async Task AdjustInventoryHandler_GetProductInventoryChanges_ForOrderChanges(GenericChangedEntry<CustomerOrder> orderChangedEntry,
-            IEnumerable<AdjustInventoryOrderChangedEventHandler.ProductInventoryChange> expectedChanges)
+            IEnumerable<ProductInventoryChange> expectedChanges)
         {
             // Arrange
             var inventoryServiceMock = new Mock<IInventoryService>();
@@ -150,7 +150,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var actualChanges = await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
 
             // Assert
-            var equalityComparer = AnonymousComparer.Create((AdjustInventoryOrderChangedEventHandler.ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
+            var equalityComparer = AnonymousComparer.Create((ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
             Assert.Equal(expectedChanges, actualChanges, equalityComparer);
         }
     }

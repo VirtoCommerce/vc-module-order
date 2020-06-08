@@ -18,18 +18,20 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
+    public class ProductInventoryChange
+    {
+        public string ProductId { get; set; }
+        public string FulfillmentCenterId { get; set; }
+        public int QuantityDelta { get; set; }
+    }
+
+
     /// <summary>
     /// Adjust inventory for ordered items 
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        public class ProductInventoryChange
-        {
-            public string ProductId { get; set; }
-            public string FulfillmentCenterId { get; set; }
-            public int QuantityDelta { get; set; }
-        }
-
+     
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
