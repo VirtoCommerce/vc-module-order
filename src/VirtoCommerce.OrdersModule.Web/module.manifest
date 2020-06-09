@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
   <version>3.2.0</version>
@@ -14,6 +14,7 @@
     <dependency id="VirtoCommerce.Shipping" version="3.0.0" />
     <dependency id="VirtoCommerce.Notifications" version="3.0.0" />
     <dependency id="VirtoCommerce.Cart" version="3.0.0" />
+    <dependency id="VirtoCommerce.Inventory" version="3.0.0" />
   </dependencies>
   <title>Orders module</title>
   <description>Document based flexible orders management system</description>
