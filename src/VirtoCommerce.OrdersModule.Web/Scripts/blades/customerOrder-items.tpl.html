@@ -79,10 +79,10 @@
                            
                         </tr>
                         <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
-                            <td class="table-head" colspan="5" ng-click="openItemDetail(data)">
+                            <td class="table-head" colspan="{{ data.comment ? 5 : 10 }}" ng-click="openItemDetail(data)">
                                 {{data.name}}
                             </td>
-                            <td class="table-head" colspan="5">
+                            <td class="table-head" colspan="5" ng-if="data.comment">
                                 {{ data.comment }}
                             </td>
                         </tr>
