@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -11,7 +11,7 @@
     <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.1.0" />
     <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.1.0" />
     <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.1.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.0.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.2.0" />
     <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.1.0" />
   </ItemGroup>
 </Project>

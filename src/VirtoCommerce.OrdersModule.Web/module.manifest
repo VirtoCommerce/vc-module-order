@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.2.0</version>
+  <version>3.3.0</version>
   <version-tag>
   </version-tag>
-  <platformVersion>3.0.0</platformVersion>
+  <platformVersion>3.2.0</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Core" version="3.0.0" />
     <dependency id="VirtoCommerce.Pricing" version="3.0.0" />
