@@ -1,0 +1,55 @@
+<div class="blade-content __xlarge-wide">
+    <div class="blade-inner">
+        <div class="inner-block">
+            <form name="orderForm" novalidate></form>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="table-col __product-control">
+                                <label class="form-control __checkbox">
+                                    <input type="checkbox" ng-model="blade.selectedAll" ng-change="checkAll(blade.selectedAll)" />
+                                    <span class="check"></span>
+                                </label>
+                            </th>
+                            <th class="table-col __proudct-img"></th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.item' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.quantity' | translate }}</th>
+                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.available' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-item" ng-repeat="data in items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
+                            <td class="table-col">
+                                <label class="form-control __checkbox">
+                                    <input type="checkbox" ng-model="data.selected">
+                                    <span class="check"></span>
+                                </label>
+                            </td>
+                            <td class="table-col">
+                                <div class="product-img">
+                                    <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl" ng-click="openItemDetail(data)"></div>
+                                    <i class="table-ico fa fa-image" ng-if="!data.imageUrl" />
+                                </div>
+                            </td>
+                            <td class="table-col">
+                                <span ng-class="{'error': data.avail <= 0}">{{data.name}}</span>
+                            </td>
+                            <td class="table-col">
+                                <div class="form-input __mini __inline">
+                                    <div class="form-input __mini __number">
+                                        <input smart-float num-type="integer" required ng-model="data.quantityOnShipment" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="table-col">
+                                <span ng-class="{'error': data.avail <= 0}">{{(data.quantity || 0) | number:0}}</span>
+                            </td>
+                           
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
