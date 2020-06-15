@@ -45,19 +45,6 @@ angular.module('virtoCommerce.orderModule')
                 return _.any($scope.items, function (x) { return x.selected; });
             },
             permission: blade.updatePermission
-        },
-        {
-            name: "platform.commands.remove", icon: 'fa fa-trash-o',
-            executeMethod: function () {
-                var lineItems = blade.currentEntity.items;
-                blade.currentEntity.items = _.difference(lineItems, _.filter(lineItems, function (x) { return x.selected }));
-                blade.recalculateFn();
-                $scope.pageSettings.totalItems = blade.currentEntity.items.length;
-            },
-            canExecuteMethod: function () {
-                return _.any(blade.currentEntity.items, function (x) { return x.selected; });
-            },
-            permission: blade.updatePermission
         }
     ];
 
