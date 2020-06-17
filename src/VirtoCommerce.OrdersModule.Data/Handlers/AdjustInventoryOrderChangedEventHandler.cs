@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
@@ -35,6 +37,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
+        private readonly IItemService _itemService;
 
         /// <summary>
         /// Constructor.
@@ -42,11 +45,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager)
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
         {
             _inventoryService = inventoryService;
             _settingsManager = settingsManager;
             _storeService = storeService;
+            _itemService = itemService;
         }
 
         /// <summary>
@@ -136,12 +140,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var inventoryAdjustments = new HashSet<InventoryInfo>();
             //Load all inventories records for all changes and old order items
             var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
+            var products = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
             var inventoryInfos = await _inventoryService.GetProductsInventoryInfosAsync(productIds);
             foreach (var productInventoryChange in productInventoryChanges)
             {
                 var inventoryInfo = inventoryInfos.Where(x => x.FulfillmentCenterId == (productInventoryChange.FulfillmentCenterId ?? x.FulfillmentCenterId))
                     .FirstOrDefault(x => x.ProductId.EqualsInvariant(productInventoryChange.ProductId));
-                if (inventoryInfo != null)
+                var product = products.FirstOrDefault(x => x.Id.EqualsInvariant(productInventoryChange.ProductId));
+                if (inventoryInfo != null && (product?.TrackInventory ?? false))
                 {
                     inventoryAdjustments.Add(inventoryInfo);
 

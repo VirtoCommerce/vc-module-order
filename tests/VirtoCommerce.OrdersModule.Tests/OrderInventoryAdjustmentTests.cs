@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Handlers;
@@ -138,13 +139,14 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Arrange
             var inventoryServiceMock = new Mock<IInventoryService>();
             var settingsManagerMock = new Mock<ISettingsManager>();
+            var itemServiceMock = new Mock<IItemService>();
 
             var storeServiceMock = new Mock<IStoreService>();
             storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, null))
                 .ReturnsAsync(new Store { MainFulfillmentCenterId = TestFulfillmentCenterId });
 
             var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                storeServiceMock.Object, settingsManagerMock.Object);
+                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
             var actualChanges = await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
