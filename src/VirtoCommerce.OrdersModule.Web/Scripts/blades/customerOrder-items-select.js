@@ -48,6 +48,12 @@ angular.module('virtoCommerce.orderModule')
         }
     ];
 
+    $scope.checkAll = function (selected) {
+        angular.forEach($scope.items, function (item) {
+            item.selected = selected;
+        });
+    };
+
     blade.refresh();
     
 }]);
