@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.CatalogModule.Core.Model;
@@ -33,7 +31,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-     
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
@@ -71,24 +68,23 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                         var itemChanges = await GetProductInventoryChangesFor(changedEntry);
                         if (itemChanges.Any())
                         {
-                            
                             //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
                             BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
                         }
                     }
                 }
             }
-          }
+        }
 
         [DisableConcurrentExecution(10)]
         // "DisableConcurrentExecutionAttribute" prevents to start simultaneous job payloads.
-	// Should have short timeout, because this attribute implemented by following manner: newly started job falls into "processing" state immediately.
+        // Should have short timeout, because this attribute implemented by following manner: newly started job falls into "processing" state immediately.
         // Then it tries to receive job lock during timeout. If the lock received, the job starts payload.
         // When the job is awaiting desired timeout for lock release, it stucks in "processing" anyway. (Therefore, you should not to set long timeouts (like 24*60*60), this will cause a lot of stucked jobs and performance degradation.)
         // Then, if timeout is over and the lock NOT acquired, the job falls into "scheduled" state (this is default fail-retry scenario).
-	// Failed job goes to "Failed" state (by default) after retries exhausted.
+        // Failed job goes to "Failed" state (by default) after retries exhausted.
         public async Task TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
-        {            
+        {
             await TryAdjustOrderInventory(productInventoryChanges);
         }
 
