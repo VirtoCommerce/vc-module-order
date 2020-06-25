@@ -135,27 +135,38 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         protected virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
         {
             var inventoryAdjustments = new HashSet<InventoryInfo>();
-            //Load all inventories records for all changes and old order items
-            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
-            var products = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
-            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(productIds)).ToArray();
-            foreach (var productInventoryChange in productInventoryChanges)
-            {
-                var inventoryInfo = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == (productInventoryChange.FulfillmentCenterId ?? x.FulfillmentCenterId)
-                    && x.ProductId.EqualsInvariant(productInventoryChange.ProductId));
-                var product = products.FirstOrDefault(x => x.Id.EqualsInvariant(productInventoryChange.ProductId));
-                if (inventoryInfo != null && (product?.TrackInventory ?? false))
-                {
-                    inventoryAdjustments.Add(inventoryInfo);
 
-                    // NOTE: productInventoryChange.QuantityDelta keeps the count of additional items that should be taken from the inventory.
-                    //       That's why we subtract it from the current in-stock quantity instead of adding it.
-                    inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - productInventoryChange.QuantityDelta);
+            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
+            var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
+            var getProductInventoryInfoTask = await _inventoryService.GetProductsInventoryInfosAsync(productIds);
+            var inventoryInfos = getProductInventoryInfoTask.ToList();
+
+            foreach (var inventoryChange in productInventoryChanges)
+            {
+                var fulfillmentCenterId = inventoryChange.FulfillmentCenterId;
+                var productId = inventoryChange.ProductId;
+                var quantityDelta = inventoryChange.QuantityDelta;
+
+                var inventoryInfo = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId) && x.ProductId.EqualsInvariant(productId));
+                if (inventoryInfo == null)
+                {
+                    continue;
                 }
+
+                var catalogProduct = catalogProducts.FirstOrDefault(x => x.Id.EqualsInvariant(productId));
+                if (catalogProduct == null || !catalogProduct.TrackInventory.HasValue || !catalogProduct.TrackInventory.Value)
+                {
+                    continue;
+                }
+
+                // "quantityDelta" - the count of additional items that should be taken from the inventory.
+                inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - quantityDelta);
+
+                inventoryAdjustments.Add(inventoryInfo);
             }
+
             if (inventoryAdjustments.Any())
             {
-                //Save inventories adjustments
                 await _inventoryService.SaveChangesAsync(inventoryAdjustments);
             }
         }
