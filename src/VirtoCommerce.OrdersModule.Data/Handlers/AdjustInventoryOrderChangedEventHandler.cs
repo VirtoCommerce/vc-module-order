@@ -42,6 +42,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
+        /// <param name="itemService">Implementation of item service</param>
         public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
         {
             _inventoryService = inventoryService;
