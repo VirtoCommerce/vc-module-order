@@ -9,7 +9,7 @@ namespace VirtoCommerce.OrdersModule.Tests
     public class OrderTotalsCalculationTest
     {
         [Fact]
-        public void Clear_All_Items_Totals_Must_Be_Zeroed()
+        public void CalculateTotals_ClearAllItems_TotalsMustBeZero()
         {
             var item1 = new LineItem { Price = 10.99m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Fee = 0.33m, Quantity = 2 };
             var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5 };
