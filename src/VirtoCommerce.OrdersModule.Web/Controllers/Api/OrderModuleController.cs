@@ -544,13 +544,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 }
 
                 //Load general change log for order
-                var allHasHangesObjects = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
+                var allHasChangesObjects = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
                                           .Distinct().ToArray();
 
                 var criteria = new ChangeLogSearchCriteria
                 {
-                    ObjectIds = allHasHangesObjects.Select(x => x.Id).Distinct().ToArray(),
-                    ObjectTypes = allHasHangesObjects.Select(x => x.GetType().Name).Distinct().ToArray()
+                    ObjectIds = allHasChangesObjects.Select(x => x.Id).Distinct().ToArray(),
+                    ObjectTypes = allHasChangesObjects.Select(x => x.GetType().Name).Distinct().ToArray()
                 };
                 result = (await _changeLogSearchService.SearchAsync(criteria)).Results.ToArray();
 
@@ -558,6 +558,45 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result);
         }
 
+
+        [HttpPost]
+        [Route("searchChanges")]
+        public async Task<ActionResult<ChangeLogSearchResult>> SearchOrderChanges([FromBody] CustomerOrderHistorySearchCriteria historySearchCriteria)
+        {
+            if (historySearchCriteria.OrderId == null)
+            {
+                throw new InvalidOperationException($"Order ID can not be null");
+            }
+
+            var order = await _customerOrderService.GetByIdAsync(historySearchCriteria.OrderId);
+
+            if (order == null)
+            {
+                throw new InvalidOperationException($"Cannot find order with ID {historySearchCriteria.OrderId}");
+            }
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            //Load general change log for order
+            var allHasChangesObjects = order.GetFlatObjectsListWithInterface<IHasChangesHistory>()
+                .Distinct().ToArray();
+
+            var criteria = new ChangeLogSearchCriteria
+            {
+                ObjectIds = allHasChangesObjects.Select(x => x.Id).Distinct().ToArray(),
+                ObjectTypes = allHasChangesObjects.Select(x => x.GetType().Name).Distinct().ToArray(),
+                Skip = historySearchCriteria.Skip,
+                Take = historySearchCriteria.Take,
+                Sort = historySearchCriteria.Sort
+            };
+
+            var result = await _changeLogSearchService.SearchAsync(criteria);
+            return Ok(result);
+        }
 
         private byte[] GeneratePdf(string htmlContent)
         {
