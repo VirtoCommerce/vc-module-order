@@ -77,5 +77,4 @@ angular.module('virtoCommerce.orderModule')
             $timeout(function () { blade.refresh(); });
         };
 
-        blade.refresh();
 }]);
