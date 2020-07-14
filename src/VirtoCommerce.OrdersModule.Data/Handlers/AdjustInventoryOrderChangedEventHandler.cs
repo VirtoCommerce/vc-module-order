@@ -132,14 +132,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
 
-        protected virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
+        public virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
         {
             var inventoryAdjustments = new HashSet<InventoryInfo>();
 
             var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
             var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
-            var getProductInventoryInfoTask = await _inventoryService.GetProductsInventoryInfosAsync(productIds);
-            var inventoryInfos = getProductInventoryInfoTask.ToList();
+            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(productIds)).ToList();            
 
             foreach (var inventoryChange in productInventoryChanges)
             {
