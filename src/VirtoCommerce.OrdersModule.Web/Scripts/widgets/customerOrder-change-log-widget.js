@@ -8,6 +8,7 @@ angular.module('virtoCommerce.orderModule')
                 orderId: blade.customerOrder.id,
                 headIcon: blade.headIcon,
                 title: blade.title,
+                titleValues: { customer: blade.customerOrder.customerName },
                 subtitle: 'platform.widgets.operations.blade-subtitle',
                 isExpandable: true,
                 controller: 'virtoCommerce.orderModule.customerOrderChangeLogController',

@@ -60,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.SubTotalDiscountWithTax = 0m;
             order.FeeTotalWithTax = 0m;
 
-            if (!order.Items.IsNullOrEmpty())
+            if (order.Items != null)
             {
                 order.SubTotal = order.Items.Sum(x => x.Price * x.Quantity);
                 order.SubTotalWithTax = order.Items.Sum(x => x.PriceWithTax * x.Quantity);
@@ -81,7 +81,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.ShippingDiscountTotal = 0m;
             order.ShippingDiscountTotalWithTax = 0m;
 
-            if (!order.Shipments.IsNullOrEmpty())
+            if (order.Shipments != null)
             {
                 order.ShippingTotal = order.Shipments.Sum(x => x.Total);
                 order.ShippingTotalWithTax = order.Shipments.Sum(x => x.TotalWithTax);
@@ -103,7 +103,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.PaymentDiscountTotal = 0m;
             order.PaymentDiscountTotalWithTax = 0m;
 
-            if (!order.InPayments.IsNullOrEmpty())
+            if (order.InPayments != null)
             {
                 order.PaymentTotal = order.InPayments.Sum(x => x.Total);
                 order.PaymentTotalWithTax = order.InPayments.Sum(x => x.TotalWithTax);
