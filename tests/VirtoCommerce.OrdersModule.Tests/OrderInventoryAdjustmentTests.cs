@@ -11,9 +11,9 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
-using Bogus;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Model;
+using System;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -160,109 +160,46 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
         [Theory]
-        [InlineData(10, 5, 5)]
-        [InlineData(100, 99, 1)]
-        [InlineData(10, 11, 0)]
-        [InlineData(0, 5, 0)]        
-        public async Task TryAdjustOrderInventory_TrackInventoryTrue(long inStockQty, int quantityDelta, long resultInStockQty)
+        [InlineData(10, 5, 5, true)]
+        [InlineData(100, 99, 1, true)]
+        [InlineData(10, 11, 0, true)]
+        [InlineData(0, 5, 0, true)]
+        [InlineData(10, 5, 10, false)]
+        [InlineData(100, 99, 100, false)]
+        [InlineData(10, 11, 10, false)]
+        [InlineData(0, 5, 0, false)]
+        public async Task TryAdjustOrderInventory_TrackInventory_InStockQtyShouldBeEqualExpectedInStockQty(long inStockQty, int quantityDelta, long expectedInStockQty, bool trackInventory)
         {
             // Arrange
-
-            var testPproducts = new Faker<CatalogProduct>()
-                .RuleFor(i => i.Id, f => f.Random.Guid().ToString())
-                .RuleFor(i => i.TrackInventory, f => true);
-
-            var product = testPproducts.Generate();
-
-            var inventoryInfo = new InventoryInfo()
-            {
-                ProductId = product.Id,
-                FulfillmentCenterId = TestFulfillmentCenterId,
-                InStockQuantity = inStockQty
-            };
-
-            var productInventoryChange = new ProductInventoryChange()
-            {
-                ProductId = product.Id,
-                FulfillmentCenterId = TestFulfillmentCenterId,
-                QuantityDelta = quantityDelta
-            };
-
-
+            var productId = Guid.NewGuid().ToString();
+            var responseGroup = ItemResponseGroup.None.ToString();
             var inventoryServiceMock = new Mock<IInventoryService>();
-            inventoryServiceMock.Setup(x => x.GetProductsInventoryInfosAsync(new[] { product.Id }, null))
-                .ReturnsAsync(new[] { inventoryInfo });
-                
-            var settingsManagerMock = new Mock<ISettingsManager>();
             var itemServiceMock = new Mock<IItemService>();
-            itemServiceMock.Setup(x => x.GetByIdsAsync(new[] { product.Id }, ItemResponseGroup.None.ToString(), null))
-                .ReturnsAsync(new[] { product });
 
-            var storeServiceMock = new Mock<IStoreService>();
-            storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, null))
-                .ReturnsAsync(new Store { MainFulfillmentCenterId = TestFulfillmentCenterId });
+            var product = Mock.Of<CatalogProduct>(t => t.Id == productId && t.TrackInventory == trackInventory);
+            var inventoryInfo = Mock.Of<InventoryInfo>(
+                x => x.ProductId == productId && x.FulfillmentCenterId == TestFulfillmentCenterId
+                                              && x.InStockQuantity == inStockQty);
+            var productInventoryChange = Mock.Of<ProductInventoryChange>(
+                x => x.ProductId == productId && x.FulfillmentCenterId == TestFulfillmentCenterId
+                                              && x.QuantityDelta == quantityDelta);
 
-            var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
-
-            // Act
-            await targetHandler.TryAdjustOrderInventory(new[] { productInventoryChange });
-
-            // Assert           
-            Assert.Equal(resultInStockQty, inventoryInfo.InStockQuantity);
-        }
-
-        [Theory]
-        [InlineData(10, 5, 10)]
-        [InlineData(100, 99, 100)]
-        [InlineData(10, 11, 10)]
-        [InlineData(0, 5, 0)]
-        public async Task TryAdjustOrderInventory_TrackInventoryFalse(long inStockQty, int quantityDelta, long resultInStockQty)
-        {
-            // Arrange
-
-            var testPproducts = new Faker<CatalogProduct>()
-                .RuleFor(i => i.Id, f => f.Random.Guid().ToString())
-                .RuleFor(i => i.TrackInventory, f => false);
-
-            var product = testPproducts.Generate();
-
-            var inventoryInfo = new InventoryInfo()
-            {
-                ProductId = product.Id,
-                FulfillmentCenterId = TestFulfillmentCenterId,
-                InStockQuantity = inStockQty
-            };
-
-            var productInventoryChange = new ProductInventoryChange()
-            {
-                ProductId = product.Id,
-                FulfillmentCenterId = TestFulfillmentCenterId,
-                QuantityDelta = quantityDelta
-            };
-
-
-            var inventoryServiceMock = new Mock<IInventoryService>();
-            inventoryServiceMock.Setup(x => x.GetProductsInventoryInfosAsync(new[] { product.Id }, null))
+            inventoryServiceMock.Setup(x => x.GetProductsInventoryInfosAsync(new[] { productId }, null))
                 .ReturnsAsync(new[] { inventoryInfo });
 
-            var settingsManagerMock = new Mock<ISettingsManager>();
-            var itemServiceMock = new Mock<IItemService>();
-            itemServiceMock.Setup(x => x.GetByIdsAsync(new[] { product.Id }, ItemResponseGroup.None.ToString(), null))
+            itemServiceMock.Setup(x => x.GetByIdsAsync(new[] { productId }, responseGroup, null))
                 .ReturnsAsync(new[] { product });
 
-            var storeServiceMock = new Mock<IStoreService>();
-            storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, null))
-                .ReturnsAsync(new Store { MainFulfillmentCenterId = TestFulfillmentCenterId });
-
-            var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
+            var handler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
+                Mock.Of<IStoreService>(), Mock.Of<ISettingsManager>(), itemServiceMock.Object);
 
             // Act
-            await targetHandler.TryAdjustOrderInventory(new[] { productInventoryChange });
+            await handler.TryAdjustOrderInventory(new[] { productInventoryChange });
 
-            // Assert           
-            Assert.Equal(resultInStockQty, inventoryInfo.InStockQuantity);
+            // Assert
+            inventoryServiceMock.VerifyAll();
+            itemServiceMock.VerifyAll();
+            Assert.Equal(expectedInStockQty, inventoryInfo.InStockQuantity);
         }
 
     }
