@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
@@ -31,10 +31,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-     
         private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
+        private readonly IItemService _itemService;
 
         /// <summary>
         /// Constructor.
@@ -42,11 +42,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager)
+        /// <param name="itemService">Implementation of item service</param>
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
         {
             _inventoryService = inventoryService;
             _settingsManager = settingsManager;
             _storeService = storeService;
+            _itemService = itemService;
         }
 
         /// <summary>
@@ -67,24 +69,23 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                         var itemChanges = await GetProductInventoryChangesFor(changedEntry);
                         if (itemChanges.Any())
                         {
-                            
                             //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
                             BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
                         }
                     }
                 }
             }
-          }
+        }
 
         [DisableConcurrentExecution(10)]
         // "DisableConcurrentExecutionAttribute" prevents to start simultaneous job payloads.
-	// Should have short timeout, because this attribute implemented by following manner: newly started job falls into "processing" state immediately.
+        // Should have short timeout, because this attribute implemented by following manner: newly started job falls into "processing" state immediately.
         // Then it tries to receive job lock during timeout. If the lock received, the job starts payload.
         // When the job is awaiting desired timeout for lock release, it stucks in "processing" anyway. (Therefore, you should not to set long timeouts (like 24*60*60), this will cause a lot of stucked jobs and performance degradation.)
         // Then, if timeout is over and the lock NOT acquired, the job falls into "scheduled" state (this is default fail-retry scenario).
-	// Failed job goes to "Failed" state (by default) after retries exhausted.
+        // Failed job goes to "Failed" state (by default) after retries exhausted.
         public async Task TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
-        {            
+        {
             await TryAdjustOrderInventory(productInventoryChanges);
         }
 
@@ -131,28 +132,40 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
 
-        protected virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
+        public virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
         {
             var inventoryAdjustments = new HashSet<InventoryInfo>();
-            //Load all inventories records for all changes and old order items
-            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
-            var inventoryInfos = await _inventoryService.GetProductsInventoryInfosAsync(productIds);
-            foreach (var productInventoryChange in productInventoryChanges)
-            {
-                var inventoryInfo = inventoryInfos.Where(x => x.FulfillmentCenterId == (productInventoryChange.FulfillmentCenterId ?? x.FulfillmentCenterId))
-                    .FirstOrDefault(x => x.ProductId.EqualsInvariant(productInventoryChange.ProductId));
-                if (inventoryInfo != null)
-                {
-                    inventoryAdjustments.Add(inventoryInfo);
 
-                    // NOTE: itemChange.QuantityDelta keeps the count of additional items that should be taken from the inventory.
-                    //       That's why we subtract it from the current in-stock quantity instead of adding it.
-                    inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - productInventoryChange.QuantityDelta);
+            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
+            var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
+            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(productIds)).ToList();            
+
+            foreach (var inventoryChange in productInventoryChanges)
+            {
+                var fulfillmentCenterId = inventoryChange.FulfillmentCenterId;
+                var productId = inventoryChange.ProductId;
+                var quantityDelta = inventoryChange.QuantityDelta;
+
+                var inventoryInfo = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId) && x.ProductId.EqualsInvariant(productId));
+                if (inventoryInfo == null)
+                {
+                    continue;
                 }
+
+                var catalogProduct = catalogProducts.FirstOrDefault(x => x.Id.EqualsInvariant(productId));
+                if (catalogProduct == null || !catalogProduct.TrackInventory.HasValue || !catalogProduct.TrackInventory.Value)
+                {
+                    continue;
+                }
+
+                // "quantityDelta" - the count of additional items that should be taken from the inventory.
+                inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - quantityDelta);
+
+                inventoryAdjustments.Add(inventoryInfo);
             }
+
             if (inventoryAdjustments.Any())
             {
-                //Save inventories adjustments
                 await _inventoryService.SaveChangesAsync(inventoryAdjustments);
             }
         }
