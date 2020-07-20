@@ -97,6 +97,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             }
 
             shipment.Id = Id;
+            shipment.CustomerOrderId = CustomerOrderId;
             shipment.CreatedDate = CreatedDate;
             shipment.CreatedBy = CreatedBy;
             shipment.ModifiedDate = ModifiedDate;

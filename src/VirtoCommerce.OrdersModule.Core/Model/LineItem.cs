@@ -92,6 +92,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string FulfillmentCenterName { get; set; }
 
         public string OuterId { get; set; }
+        public string OrderId { get; set; }
 
         #region IHaveDimension Members
 

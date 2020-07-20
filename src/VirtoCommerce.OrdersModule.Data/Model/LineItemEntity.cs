@@ -108,6 +108,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentNullException(nameof(lineItem));
 
             lineItem.Id = Id;
+            lineItem.OrderId = CustomerOrderId;
             lineItem.CreatedDate = CreatedDate;
             lineItem.CreatedBy = CreatedBy;
             lineItem.ModifiedDate = ModifiedDate;
