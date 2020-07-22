@@ -128,6 +128,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.TaxTotal = TaxTotal;
             shipment.Total = Total;
             shipment.TotalWithTax = TotalWithTax;
+            shipment.CustomerOrderId = CustomerOrderId;
 
             shipment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             shipment.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
