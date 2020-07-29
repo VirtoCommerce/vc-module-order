@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.Platform.Core.ChangeLog;
@@ -31,6 +30,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         [Auditable]
         public string OuterId { get; set; }
 
+        [SwaggerIgnore]
         public IEnumerable<IOperation> ChildrenOperations { get; set; }
 
         #region ISupportCancelation Members
@@ -57,7 +57,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual object Clone()
         {
             var result = MemberwiseClone() as OrderOperation;
-            
+
             result.DynamicProperties = DynamicProperties?.Select(x => x.Clone()).OfType<DynamicObjectProperty>().ToList();
             result.OperationsLog = OperationsLog?.Select(x => x.Clone()).OfType<OperationLog>().ToList();
 

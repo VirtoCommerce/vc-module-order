@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Moq;
+using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Handlers;
@@ -10,6 +11,9 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.InventoryModule.Core.Model;
+using System;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -70,19 +74,19 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(ChangedOrder, InitialOrder, EntryState.Modified),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = 3
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt-new",
                         QuantityDelta = 1
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -95,13 +99,13 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(InitialOrder, InitialOrder, EntryState.Added),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = 2
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -114,13 +118,13 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new GenericChangedEntry<CustomerOrder>(InitialOrder, InitialOrder, EntryState.Deleted),
                 new[]
                 {
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "shoes",
                         QuantityDelta = -2
                     },
-                    new AdjustInventoryOrderChangedEventHandler.ProductInventoryChange
+                    new ProductInventoryChange
                     {
                         FulfillmentCenterId = TestFulfillmentCenterId,
                         ProductId = "t-shirt",
@@ -133,25 +137,70 @@ namespace VirtoCommerce.OrdersModule.Tests
         [Theory]
         [MemberData(nameof(TestData))]
         public async Task AdjustInventoryHandler_GetProductInventoryChanges_ForOrderChanges(GenericChangedEntry<CustomerOrder> orderChangedEntry,
-            IEnumerable<AdjustInventoryOrderChangedEventHandler.ProductInventoryChange> expectedChanges)
+            IEnumerable<ProductInventoryChange> expectedChanges)
         {
             // Arrange
             var inventoryServiceMock = new Mock<IInventoryService>();
             var settingsManagerMock = new Mock<ISettingsManager>();
+            var itemServiceMock = new Mock<IItemService>();
 
             var storeServiceMock = new Mock<IStoreService>();
             storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, null))
                 .ReturnsAsync(new Store { MainFulfillmentCenterId = TestFulfillmentCenterId });
 
             var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                storeServiceMock.Object, settingsManagerMock.Object);
+                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
             var actualChanges = await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
 
             // Assert
-            var equalityComparer = AnonymousComparer.Create((AdjustInventoryOrderChangedEventHandler.ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
+            var equalityComparer = AnonymousComparer.Create((ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
             Assert.Equal(expectedChanges, actualChanges, equalityComparer);
         }
+
+        [Theory]
+        [InlineData(10, 5, 5, true)]
+        [InlineData(100, 99, 1, true)]
+        [InlineData(10, 11, 0, true)]
+        [InlineData(0, 5, 0, true)]
+        [InlineData(10, 5, 10, false)]
+        [InlineData(100, 99, 100, false)]
+        [InlineData(10, 11, 10, false)]
+        [InlineData(0, 5, 0, false)]
+        public async Task TryAdjustOrderInventory_TrackInventory_InStockQtyShouldBeEqualExpectedInStockQty(long inStockQty, int quantityDelta, long expectedInStockQty, bool trackInventory)
+        {
+            // Arrange
+            var productId = Guid.NewGuid().ToString();
+            var responseGroup = ItemResponseGroup.None.ToString();
+            var inventoryServiceMock = new Mock<IInventoryService>();
+            var itemServiceMock = new Mock<IItemService>();
+
+            var product = Mock.Of<CatalogProduct>(t => t.Id == productId && t.TrackInventory == trackInventory);
+            var inventoryInfo = Mock.Of<InventoryInfo>(
+                x => x.ProductId == productId && x.FulfillmentCenterId == TestFulfillmentCenterId
+                                              && x.InStockQuantity == inStockQty);
+            var productInventoryChange = Mock.Of<ProductInventoryChange>(
+                x => x.ProductId == productId && x.FulfillmentCenterId == TestFulfillmentCenterId
+                                              && x.QuantityDelta == quantityDelta);
+
+            inventoryServiceMock.Setup(x => x.GetProductsInventoryInfosAsync(new[] { productId }, null))
+                .ReturnsAsync(new[] { inventoryInfo });
+
+            itemServiceMock.Setup(x => x.GetByIdsAsync(new[] { productId }, responseGroup, null))
+                .ReturnsAsync(new[] { product });
+
+            var handler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
+                Mock.Of<IStoreService>(), Mock.Of<ISettingsManager>(), itemServiceMock.Object);
+
+            // Act
+            await handler.TryAdjustOrderInventory(new[] { productInventoryChange });
+
+            // Assert
+            inventoryServiceMock.VerifyAll();
+            itemServiceMock.VerifyAll();
+            Assert.Equal(expectedInStockQty, inventoryInfo.InStockQuantity);
+        }
+
     }
 }

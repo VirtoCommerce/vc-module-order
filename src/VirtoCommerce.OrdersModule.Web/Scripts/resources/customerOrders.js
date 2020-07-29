@@ -7,6 +7,7 @@ angular.module('virtoCommerce.orderModule')
         recalculate: { method: 'PUT', url: 'api/order/customerOrders/recalculate' },
         update: { method: 'PUT', url: 'api/order/customerOrders' },
         getDashboardStatistics: { url: 'api/order/dashboardStatistics' },
-        getOrderChanges: { method: 'GET', url: 'api/order/customerOrders/:id/changes', isArray: true }
+        getOrderChanges: { method: 'GET', url: 'api/order/customerOrders/:id/changes', isArray: true },
+        searchOrderChanges: { method: 'POST', url: 'api/order/customerOrders/searchChanges'}
     });
 }]);
