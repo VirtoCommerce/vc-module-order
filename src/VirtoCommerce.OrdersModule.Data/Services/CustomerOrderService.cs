@@ -39,7 +39,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public CustomerOrderService(
             Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator
-            , IStoreService storeService, IChangeLogService changeLogService
+            , IStoreService storeService
             , IEventPublisher eventPublisher, ICustomerOrderTotalsCalculator totalsCalculator
             , IShippingMethodsSearchService shippingMethodsSearchService, IPaymentMethodsSearchService paymentMethodSearchService,
             IPlatformMemoryCache platformMemoryCache)
@@ -59,7 +59,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CustomerOrder[]> GetByIdsAsync(string[] orderIds, string responseGroup = null)
         {
-            var cacheKey = CacheKey.With(GetType(), "GetByIdsAsync", string.Join("-", orderIds), responseGroup);
+            var cacheKey = CacheKey.With(GetType(), nameof(GetByIdsAsync), string.Join("-", orderIds), responseGroup);
             return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
             {
                 var retVal = new List<CustomerOrder>();
@@ -68,6 +68,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 using (var repository = _repositoryFactory())
                 {
                     repository.DisableChangesTracking();
+
+                    //It is so important to generate change tokens for all ids even for not existing objects to prevent an issue
+                    //with caching of empty results for non - existing objects that have the infinitive lifetime in the cache
+                    //and future unavailability to create objects with these ids.
+                    cacheEntry.AddExpirationToken(OrderCacheRegion.CreateChangeToken(orderIds));
 
                     var orderEntities = await repository.GetCustomerOrdersByIdsAsync(orderIds, responseGroup);
                     foreach (var orderEntity in orderEntities)
@@ -87,7 +92,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                             customerOrder.ReduceDetails(responseGroup);
 
                             retVal.Add(customerOrder);
-                            cacheEntry.AddExpirationToken(OrderCacheRegion.CreateChangeToken(customerOrder));
+                            
                         }
                     }
                 }
