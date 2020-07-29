@@ -13,7 +13,7 @@ namespace VirtoCommerce.OrdersModule.Data.Caching
             {
                 throw new ArgumentNullException(nameof(order));
             }
-            return new CompositeChangeToken(new[] { CreateChangeToken(), CreateChangeTokenForKey(order.Id) });
+            return CreateChangeTokenForKey(order.Id);
         }
 
         public static void ExpireOrder(CustomerOrder order)
