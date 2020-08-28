@@ -79,6 +79,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string ShoppingCartId { get; set; }
 
+        [StringLength(128)]
+        public string PurchaseOrderNumber { get; set; }
+
         #region Navigation Properties
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
@@ -131,6 +134,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             order.IsPrototype = IsPrototype;
             order.SubscriptionNumber = SubscriptionNumber;
             order.SubscriptionId = SubscriptionId;
+            order.PurchaseOrderNumber = PurchaseOrderNumber;
             order.LanguageCode = LanguageCode;
             order.TaxPercentRate = TaxPercentRate;
 
@@ -198,6 +202,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             IsPrototype = order.IsPrototype;
             SubscriptionNumber = order.SubscriptionNumber;
             SubscriptionId = order.SubscriptionId;
+            PurchaseOrderNumber = order.PurchaseOrderNumber;
             LanguageCode = order.LanguageCode;
             TaxPercentRate = order.TaxPercentRate;
 
@@ -276,6 +281,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.IsPrototype = IsPrototype;
             target.SubscriptionNumber = SubscriptionNumber;
             target.SubscriptionId = SubscriptionId;
+            target.PurchaseOrderNumber = PurchaseOrderNumber;
             target.LanguageCode = LanguageCode;
 
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
