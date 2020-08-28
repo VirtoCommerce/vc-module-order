@@ -6,6 +6,10 @@
     <IsPackable>True</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Migrations\20200828064030_PurchaseOrderNumber.cs" />
+    <Compile Remove="Migrations\20200828064030_PurchaseOrderNumber.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
     <PackageReference Include="Hangfire" Version="1.7.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />

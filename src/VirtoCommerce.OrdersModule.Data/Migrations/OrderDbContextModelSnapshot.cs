@@ -220,8 +220,7 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                         .HasColumnType("Money");
 
                     b.Property<string>("PurchaseOrderNumber")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("ShippingTotal")
                         .HasColumnType("Money");
