@@ -9,6 +9,7 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "PurchaseOrderNumber",
                 table: "CustomerOrder",
+                maxLength: 128,
                 nullable: true);
         }
 

@@ -79,6 +79,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string ShoppingCartId { get; set; }
 
+        [StringLength(128)]
         public string PurchaseOrderNumber { get; set; }
 
         #region Navigation Properties

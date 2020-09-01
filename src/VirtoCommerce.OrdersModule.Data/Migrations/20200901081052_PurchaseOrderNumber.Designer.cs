@@ -10,7 +10,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20200828064321_PurchaseOrderNumber")]
+    [Migration("20200901081052_PurchaseOrderNumber")]
     partial class PurchaseOrderNumber
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -222,7 +222,8 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                         .HasColumnType("Money");
 
                     b.Property<string>("PurchaseOrderNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<decimal>("ShippingTotal")
                         .HasColumnType("Money");
