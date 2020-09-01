@@ -29,7 +29,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public decimal Sum { get; set; }
         [Auditable]
         public string OuterId { get; set; }
-        public string PurchaseOrderNumber { get; set; }
 
         [SwaggerIgnore]
         public IEnumerable<IOperation> ChildrenOperations { get; set; }
