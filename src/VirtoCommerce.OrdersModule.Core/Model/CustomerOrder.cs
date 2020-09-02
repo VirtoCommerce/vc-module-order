@@ -32,6 +32,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// </summary>
         public bool IsPrototype { get; set; }
         /// <summary>
+        /// Internal number of order provided by customer
+        /// </summary>
+        public string PurchaseOrderNumber { get; set; }
+        /// <summary>
         /// Number for subscription  associated with this order
         /// </summary>
         public string SubscriptionNumber { get; set; }
