@@ -1,7 +1,7 @@
 # Order Details  
 
 Once the order is created by customer on client side, the details will immediately appear on admin side.
-![Fig.Customer Orders](/docs/media/screen-order-details.png)
+![Fig.Customer Orders](media/screen-order-details.png)
 
 The admin side displays the following order details:
 
@@ -11,7 +11,7 @@ The admin side displays the following order details:
     1. The user navigates to settings->Orders->General 
     1. The system opens the General Settings screen
     1. The user specifies the Order number template
-![Fig.Customer Orders](/docs/media/screen-order-number-template.png)
+![Fig.Customer Orders](media/screen-order-number-template.png)
 1. From – date of creation
 1. Status
 1. Customer Name

@@ -6,13 +6,13 @@ Order documents are created by the system to store additional order details. The
 1. **Shipment document**
 
 The user can access the order documents by selecting a specific order. Order documents are displayed on order details screen.
-![Fig.Customer Orders](/docs/media/screen-order-documents1.png)
+![Fig.Customer Orders](media/screen-order-documents1.png)
 
 ## Order Payment Document
 
 The user can view the payment details by clicking on the Order Payment Document.
 
-![Fig.Customer Orders](/docs/media/screen-payment-document-details.png)
+![Fig.Customer Orders](media/screen-payment-document-details.png)
 
 The  Payment document contains the following fields:
 
@@ -21,7 +21,7 @@ The  Payment document contains the following fields:
          1. The user navigates to Settings->Orders->General;
          1. The system opens the General Settings screen;
          1. The user specifies the Order payment number template.
-![Fig.Customer Orders](/docs/media/screen-order-payment-number-template.png)
+![Fig.Customer Orders](media/screen-order-payment-number-template.png)
 1. **From** label displays the order creation date.
 1. **Payment** fees input field with currency as a label.
 1. **Payment fees incl. taxes** input field with currency as a label.
@@ -31,7 +31,7 @@ The  Payment document contains the following fields:
 
 The order payment document screen contains the following **widgets**:
 
-![Fig.Customer Orders](/docs/media/screen-payment-document-widgets.png)
+![Fig.Customer Orders](media/screen-payment-document-widgets.png)
 
 1. **Comments** – contains all comments related to order payments.
 1. **Payment address** widget displays the billing address details:
@@ -62,13 +62,13 @@ The user can access the Shipment document details by clicking  the ‘Shipment�
 
 The Order shipment document screen displays the following fields:
 
-![Fig.Customer Orders](/docs/media/screen-shipment-details.png)
+![Fig.Customer Orders](media/screen-shipment-details.png)
 
 1. **Order Shipment number** generated automatically by the system. The order shipment number template can be specified by user:
      1. The user navigates to settings->Orders->General;
      1. The system opens the General Settings screen;
      1. The user specifies the Order shipment number template.
-![Fig.Customer Orders](/docs/media/screen-order-shipment-number-template.png)
+![Fig.Customer Orders](media/screen-order-shipment-number-template.png)
 1. **From** (label) displays the order creation date.
 1. **Status** drop down displays the shipment status.
 1. **Assigned to** drop down displays the name of the person responsible for the shipment processing.
@@ -78,7 +78,7 @@ The Order shipment document screen displays the following fields:
 
 The order shipment document screen contains the following **widgets**:
 
-![Fig.Customer Orders](/docs/media/screen-order-shipment-document-widgets.png)
+![Fig.Customer Orders](media/screen-order-shipment-document-widgets.png)
 
 1. Shipment items widget displays the list of items for shipping.
 1. Changes widget displays the shipment changes history (logs).

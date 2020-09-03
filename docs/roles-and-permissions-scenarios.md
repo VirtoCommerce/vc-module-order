@@ -4,7 +4,7 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
 
 ## Add Role and Permissions
 
-![Fig.Customer Orders](/docs/media/diagram-add-roles-and-permissions.png)
+![Fig.Customer Orders](media/diagram-add-roles-and-permissions.png)
 
 1. The admin navigates to browse->Security->Roles.
 1. The system displays the ‘Roles’ screen.
@@ -15,8 +15,8 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
      1. List of permissions. Each set of permissions contains:
          1. Permission name;
          1. Sectable list of permissions.
-![Fig.Customer Orders](/docs/media/screen-permission-name.png)
-![Fig.Customer Orders](/docs/media/screen-assign-permissions.png)
+![Fig.Customer Orders](media/screen-permission-name.png)
+![Fig.Customer Orders](media/screen-assign-permissions.png)
 
 1. The admin fills out the fields, assigns permissions to the new role and clicks the ‘Create’ button.
 1. The new role with permissions is created.
@@ -25,7 +25,7 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
 
 ## Assign Order Role to User
 
-![Fig.Customer Orders](/docs/media/diagram-assign-role-with-permissions.png)
+![Fig.Customer Orders](media/diagram-assign-role-with-permissions.png)
 
 1. The admin navigates to Browse->Security->Users and selects a user.
 1. The system displays the user details.
@@ -54,13 +54,13 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
 1. The admin enters the order manager name, description and selects the permission(s) that will be assigned to the role.
 1. The assigned permissions will be applied to the 'order manager' role.
 
-![Fig.Customer Orders](/docs/media/screen-assign-permissions-to-order-manager.png)
+![Fig.Customer Orders](media/screen-assign-permissions-to-order-manager.png)
 
 ## Assign bounded scope to 'order manager' role
 
 1. The admin selects the permission(s) assigned to the 'order manager' role.
 1. The system will open the next blade - 'View order data' and prompt the user to configure permissions scope.
-![Fig.Customer Orders](/docs/media/screen-select-bounded-scope.png)
+![Fig.Customer Orders](media/screen-select-bounded-scope.png)
 
 1. The admin selects one of the following options or both:
 
@@ -68,6 +68,6 @@ In order to view and manage Orders in the ‘Orders Module’ the user shall be 
     1. Only for order responsible.
 
 1. If 'Only for orders in selects stores' option is selected, the system will open the next blade and prompt the admin to choose the store(s).
-![Fig.Customer Orders](/docs/media/screen-select-stores.png)
+![Fig.Customer Orders](media/screen-select-stores.png)
 1. The admin selects the store(s) and confirms selection by clicking the 'OK' button.
 1. The assigned permissions and bounded scope will be applied to the 'order manager' role.
