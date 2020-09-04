@@ -107,7 +107,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
-        public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrder([FromBody]CustomerOrderSearchCriteria criteria)
+        public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrder([FromBody] CustomerOrderSearchCriteria criteria)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
@@ -174,7 +174,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="order">Customer order</param>
         [HttpPut]
         [Route("recalculate")]
-        public ActionResult<CustomerOrder> CalculateTotals([FromBody]CustomerOrder order)
+        public ActionResult<CustomerOrder> CalculateTotals([FromBody] CustomerOrder order)
         {
             _totalsCalculator.CalculateTotals(order);
 
@@ -295,7 +295,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("")]
         [Authorize(ModuleConstants.Security.Permissions.Create)]
-        public async Task<ActionResult<CustomerOrder>> CreateOrder([FromBody]CustomerOrder customerOrder)
+        public async Task<ActionResult<CustomerOrder>> CreateOrder([FromBody] CustomerOrder customerOrder)
         {
             await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
             return Ok(customerOrder);
@@ -308,7 +308,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPut]
         [Route("")]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
-        public async Task<ActionResult> UpdateOrder([FromBody]CustomerOrder customerOrder)
+        public async Task<ActionResult> UpdateOrder([FromBody] CustomerOrder customerOrder)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
@@ -407,7 +407,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="end">end interval date</param>
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
-        public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery]DateTime? start = null, [FromQuery]DateTime? end = null)
+        public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
             start ??= DateTime.UtcNow.AddYears(-1);
             end ??= DateTime.UtcNow;
@@ -432,7 +432,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="callback">payment callback parameters</param>
         [HttpPost]
         [Route("~/api/paymentcallback")]
-        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody]PaymentCallbackParameters callback)
+        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
             var parameters = new NameValueCollection();
             foreach (var param in callback?.Parameters ?? Array.Empty<KeyValuePair>())
@@ -520,11 +520,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var notification = await _notificationSearchService.GetNotificationAsync<InvoiceEmailNotification>(new TenantIdentity(order.StoreId, nameof(Store)));
             notification.CustomerOrder = order;
-            var message = AbstractTypeFactory<NotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
+            var message = AbstractTypeFactory<EmailNotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
             message.LanguageCode = order.LanguageCode;
             await notification.ToMessageAsync(message, _notificationTemplateRenderer);
 
-            byte[] result = GeneratePdf(((EmailNotificationMessage)message).Body);
+            if (message.Body.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException($"Document could not be rendered because InvoiceEmailNotification template is empty.");
+            }
+
+            byte[] result = GeneratePdf(message.Body);
 
             return new FileContentResult(result, "application/pdf");
         }
