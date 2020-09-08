@@ -9,8 +9,8 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
             migrationBuilder.Sql(@"IF (EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '__MigrationHistory'))
                 IF (EXISTS (SELECT * FROM __MigrationHistory WHERE ContextKey = 'VirtoCommerce.OrderModule.Data.Migrations.Configuration'))
                     BEGIN
-                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20190530163834_InitialOrders', '3.1.2')
-                        INSERT INTO [dbo].[__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200409175753_AddOrderAddressName', '3.1.2')
+                        INSERT INTO [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20190530163834_InitialOrders', '3.1.2')
+                        INSERT INTO [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES ('20200409175753_AddOrderAddressName', '3.1.2')
 
 	                    BEGIN
                             ALTER TABLE [CustomerOrder] ADD [Status] nvarchar(64) NULL
@@ -77,9 +77,9 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                                     FROM [OrderPaymentIn] co INNER JOIN OrderOperation oo ON co.Id = oo.Id')
 	                    END
                         BEGIN
-                             ALTER TABLE [dbo].[CustomerOrder] DROP CONSTRAINT [FK_dbo.CustomerOrder_dbo.OrderOperation_Id]
-                             ALTER TABLE [dbo].[OrderPaymentIn] DROP CONSTRAINT [FK_dbo.OrderPaymentIn_dbo.OrderOperation_Id]
-                             ALTER TABLE [dbo].[OrderShipment] DROP CONSTRAINT [FK_dbo.OrderShipment_dbo.OrderOperation_Id]
+                             ALTER TABLE [CustomerOrder] DROP CONSTRAINT [FK_dbo.CustomerOrder_dbo.OrderOperation_Id]
+                             ALTER TABLE [OrderPaymentIn] DROP CONSTRAINT [FK_dbo.OrderPaymentIn_dbo.OrderOperation_Id]
+                             ALTER TABLE [OrderShipment] DROP CONSTRAINT [FK_dbo.OrderShipment_dbo.OrderOperation_Id]
                         END
 
                         BEGIN
