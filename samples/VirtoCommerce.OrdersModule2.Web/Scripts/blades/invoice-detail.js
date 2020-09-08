@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.ordersModule2')
+angular.module('virtoCommerce.ordersModule2')
 .controller('virtoCommerce.ordersModule2.invoiceDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members',
     function ($scope, bladeNavigationService, dialogService, settings, members) {
         var blade = $scope.blade;
@@ -8,7 +8,7 @@
 
             var foundField = _.findWhere(blade.metaFields, { name: 'createdDate' });
             if (foundField) {
-                foundField.isReadonly = false;
+                foundField.isReadOnly = false;
             }
 
             blade.initialize({

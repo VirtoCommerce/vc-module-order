@@ -16,17 +16,6 @@
     </div>
 </div>
 
-<script type="text/ng-template" id="createdDate.html">
-    <div class="form-input __calendar">
-        <input ng-model="blade.customerOrder.createdDate"
-               datepicker-popup="medium"
-               disabled="disabled">
-        <button type="button" class="btn" disabled="disabled">
-            <i class="btn-ico fa fa-calendar"></i>
-        </button>
-    </div>
-</script>
-
 <script type="text/ng-template" id="order-employeeSelector.html">
     <div class="form-input">
         <ui-select ng-model="blade.customerOrder.employeeId" ng-change="blade.customerOrder.employeeName = $select.selected ? $select.selected.fullName : undefined" ng-disabled="blade.isLocked">
