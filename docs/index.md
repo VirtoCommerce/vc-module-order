@@ -1,4 +1,3 @@
-
 # Overview
 
 The Orders Module in VirtoCommerce is a document based flexible orders management system with possibility to add unlimited number of documents related to customer order.
@@ -38,30 +37,35 @@ VirtoCommerce Orders Module supports the following functionalities:
     1. Manage order delivery (status, delivery details);
     1. Repeated order creation (order cloning) with possibility to specify the frequency of order re-creation.
 
-## Documentation
+## Orders Module Structure
 
-* [Order Module Document](/docs/index.md)
-* [View on GitHub](https://github.com/VirtoCommerce/vc-module-order/tree/dev)
+ ![Fig. Order Structure](media/diagram-order-module-structure.png)
 
-## References
+## Customer orders
 
-* Deploy: https://virtocommerce.com/docs/latest/developer-guide/deploy-module-from-source-code/
-* Installation: https://www.virtocommerce.com/docs/latest/user-guide/modules/
-Home: https://virtocommerce.com
-* Community: https://www.virtocommerce.org
-* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-order/releases/)
+ The Customer orders screen can be accessed by navigating to Browse->Orders. The system displays the list of Customer orders. The user can select a Customer order from the list to view its details.
 
-## License
+ ![Fig.Customer Orders](media/screen-customer-orders.png)
 
-Copyright (c) Virto Solutions LTD.  All rights reserved.
+1. [Order Details](order-details.md)
 
-Licensed under the Virto Commerce Open Software License (the "License"); you
-may not use this file except in compliance with the License. You may
-obtain a copy of the License at
+1. [Widgets](/docs/widgets.md)
+1. [Order Documents](order-documents.md)
 
-http://virtocommerce.com/opensourcelicense
+## Roles and Permissions
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
-implied.
+In order to manage Virto Commerce functionality each user must be assigned to at least one role. Each role provides the user with certain access permissions. These permissions allow or restrict the user's access to functionalities within the Virto Commerce client application.
+Permissions are controlled by assigning Roles to users. A Role is a collection of permissions. A Role can be assigned to multiple users. Each user can have more than one assigned Role.
+Through the combination of assigned Roles, you can ensure that users only have access to the information and functionality they need.
+
+[Scenarios](/docs/roles-and-permissions-scenarios.md)
+
+## Notification Templates
+
+Each notification has its own template (NotificationTemplate) which is responsible for notification contents and consists of a view template with placeholders.
+
+[Order Module Notification Types](/docs/order-module-notification-types.md)
+
+## Database Model
+
+![Fig.db-model](media/diagram-db-model.png)
