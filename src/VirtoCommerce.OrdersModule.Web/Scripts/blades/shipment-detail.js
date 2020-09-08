@@ -9,7 +9,7 @@ angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModul
 
             var foundField = _.findWhere(blade.metaFields, { name: 'createdDate' });
             if (foundField) {
-                foundField.isReadonly = false;
+                foundField.isReadOnly = false;
             }
 
             customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);

@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule2.Web.Migrations
         {
             migrationBuilder.DropColumn("NewField", "CustomerOrder");
             migrationBuilder.DropColumn("Discriminator", "CustomerOrder");
-            migrationBuilder.DropTable("dbo.OrderInvoice");
+            migrationBuilder.DropTable("OrderInvoice");
         }
     }
 }

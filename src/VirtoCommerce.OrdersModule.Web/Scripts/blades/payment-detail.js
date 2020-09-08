@@ -10,7 +10,7 @@ angular.module('virtoCommerce.orderModule')
 
             var foundField = _.findWhere(blade.metaFields, { name: 'createdDate' });
             if (foundField) {
-                foundField.isReadonly = false;
+                foundField.isReadOnly = false;
             }
 
             customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);

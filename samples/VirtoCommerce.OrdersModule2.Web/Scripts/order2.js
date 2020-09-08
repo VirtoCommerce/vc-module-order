@@ -8,27 +8,27 @@ if (AppDependencies != undefined) {
 angular.module(moduleName, [])
 .run(
   ['virtoCommerce.orderModule.knownOperations', '$http', '$compile',
-	function (knownOperations, $http, $compile) {
+    function (knownOperations, $http, $compile) {
 
-	    var foundTemplate = knownOperations.getOperation('CustomerOrder');
-	    if (foundTemplate) {
-	        foundTemplate.detailBlade.metaFields.push(
+        var foundTemplate = knownOperations.getOperation('CustomerOrder');
+        if (foundTemplate) {
+            foundTemplate.detailBlade.metaFields.push(
                 {
                     name: 'newField',
                     title: "New field",
                     valueType: "ShortText"
                 });
 
-	        foundTemplate.detailBlade.knownChildrenOperations.push('Invoice');
-	    }
+            foundTemplate.detailBlade.knownChildrenOperations.push('Invoice');
+        }
 
-	    var invoiceOperation = {
-	        type: 'Invoice',
-	        description: 'Sample Invoice document',
-	        treeTemplateUrl: 'invoiceOperation.tpl.html',
-	        detailBlade: {
-	            template: 'Modules/$(virtoCommerce.orders2)/Scripts/blades/invoice-detail.tpl.html',
-	            metaFields: [
+        var invoiceOperation = {
+            type: 'Invoice',
+            description: 'Sample Invoice document',
+            treeTemplateUrl: 'invoiceOperation.tpl.html',
+            detailBlade: {
+                template: 'Modules/$(virtoCommerce.orders2)/Scripts/blades/invoice-detail.tpl.html',
+                metaFields: [
                     {
                         name: 'number',
                         isRequired: true,
@@ -37,22 +37,22 @@ angular.module(moduleName, [])
                     },
                     {
                         name: 'createdDate',
-                        isReadonly: true,
+                        isReadOnly: true,
                         title: "created",
                         valueType: "DateTime"
                     },
-	                {
-	                    name: 'customerId',
-	                    title: "Customer",
-	                    templateUrl: 'customerSelector.html'
-	                }
-	            ]
-	        }
-	    };
-	    knownOperations.registerOperation(invoiceOperation);
+                    {
+                        name: 'customerId',
+                        title: "Customer",
+                        templateUrl: 'customerSelector.html'
+                    }
+                ]
+            }
+        };
+        knownOperations.registerOperation(invoiceOperation);
 
-	    $http.get('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html').then(function (response) {
-	        // compile the response, which will put stuff into the cache
-	        $compile(response.data);
-	    });
-	}]);
+        $http.get('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html').then(function (response) {
+            // compile the response, which will put stuff into the cache
+            $compile(response.data);
+        });
+    }]);

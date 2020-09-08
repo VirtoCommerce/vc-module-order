@@ -15,8 +15,8 @@ namespace VirtoCommerce.OrdersModule.Tests
         public static void Initialize(TestContext context)
         {
             const string sql =
-                @"IF OBJECT_ID('dbo.UniqueSequence', 'U') IS NULL
-                    CREATE TABLE [dbo].[UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
+                @"IF OBJECT_ID('UniqueSequence', 'U') IS NULL
+                    CREATE TABLE [UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
                     WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON))";
             var repository = new CommerceRepositoryImpl("VirtoCommerce");
             repository.Database.ExecuteSqlCommand(sql);
@@ -26,8 +26,8 @@ namespace VirtoCommerce.OrdersModule.Tests
         public static void Cleanup()
         {
             const string sql =
-                @"IF OBJECT_ID('dbo.UniqueSequence', 'U') IS NOT NULL
-                    DROP TABLE [dbo].[UniqueSequence]";
+                @"IF OBJECT_ID('UniqueSequence', 'U') IS NOT NULL
+                    DROP TABLE [UniqueSequence]";
             var repository = new CommerceRepositoryImpl("VirtoCommerce");
             repository.Database.ExecuteSqlCommand(sql);
 
@@ -72,8 +72,8 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         //    /*
         //    const string sql =
-        //        @"IF OBJECT_ID('dbo.UniqueSequence', 'U') IS NULL
-        //            CREATE TABLE [dbo].[UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
+        //        @"IF OBJECT_ID('UniqueSequence', 'U') IS NULL
+        //            CREATE TABLE [UniqueSequence]([Sequence] [nvarchar](255) NOT NULL,CONSTRAINT [PK_UniqueSequence] PRIMARY KEY CLUSTERED ([Sequence] ASC)
         //            WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON))";
 
         //    repository.Database.ExecuteSqlCommand(sql);

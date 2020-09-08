@@ -101,8 +101,9 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                     },
                     {
                         name: 'createdDate',
+                        isReadOnly: true,
                         title: "orders.blades.customerOrder-detail.labels.from",
-                        templateUrl: 'createdDate.html'
+                        valueType: "DateTime"
                     },
                     {
                         name: 'status',
@@ -142,8 +143,9 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                     },
                     {
                         name: 'createdDate',
+                        isReadOnly: true,
                         title: "orders.blades.payment-detail.labels.from",
-                        templateUrl: 'createdDate.html'
+                        valueType: "DateTime"
                     },
                     {
                         name: 'price',
@@ -174,8 +176,9 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                     },
                     {
                         name: 'createdDate',
+                        isReadOnly: true,
                         title: "orders.blades.shipment-detail.labels.from",
-                        templateUrl: 'createdDate.html'
+                        valueType: "DateTime"
                     },
                     {
                         name: 'status',

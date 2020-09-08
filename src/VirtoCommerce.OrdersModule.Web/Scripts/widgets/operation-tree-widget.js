@@ -14,6 +14,11 @@
 
     function buildOperationsTree(op, tree) {
         var foundTemplate = knownOperations.getOperation(op.operationType);
+        if(!foundTemplate)
+        {
+            console.log("Could not find template for:" + op.operationType)
+            return;
+        }
         var nodeTemplate = angular.copy(foundTemplate);
         nodeTemplate.operation = op;
         tree.childrenNodes = tree.childrenNodes || [];
