@@ -54,6 +54,7 @@ VirtoCommerce Orders Module supports the following functionalities:
 1. [Order Details](/docs/order-details.md)
 
 1. [Widgets](/docs/widgets.md)
+
 1. [Order Documents](/docs/order-documents.md)
 
 ## Roles and Permissions
