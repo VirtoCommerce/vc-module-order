@@ -74,7 +74,7 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                                     CreatedBy = oo.CreatedBy, ModifiedBy = oo.ModifiedBy, Number = oo.Number, IsApproved = oo.IsApproved,
                                     Comment = oo.Comment, Currency = oo.Currency, [Sum] = oo.[Sum], IsCancelled = oo.IsCancelled, 
 	                                CancelledDate = oo.CancelledDate, CancelReason = oo.CancelReason
-                                    FROM [OrderPaymentIn] co INNER JOIN OrderOperation oo ON co.Id = oo.Id')
+                                    FROM [OrderShipment] co INNER JOIN OrderOperation oo ON co.Id = oo.Id')
 	                    END
                         BEGIN
                              ALTER TABLE [CustomerOrder] DROP CONSTRAINT [FK_dbo.CustomerOrder_dbo.OrderOperation_Id]
