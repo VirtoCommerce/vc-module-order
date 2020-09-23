@@ -187,6 +187,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 Addresses = new ObservableCollection<AddressEntity>(new[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
             }
+            else
+            {
+                Addresses = new ObservableCollection<AddressEntity>();
+            }
 
             if (payment.TaxDetails != null)
             {
@@ -304,6 +308,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return Price;
             yield return DiscountAmount;
             yield return Sum;
-        }        
+        }
     }
 }
