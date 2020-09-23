@@ -110,6 +110,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.CancelledDate = CancelledDate;
             target.CancelReason = CancelReason;
             target.IsApproved = IsApproved;
+            target.OuterId = OuterId;
 
             if (NeedPatchSum)
             {
