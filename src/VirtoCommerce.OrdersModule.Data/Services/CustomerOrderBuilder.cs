@@ -287,6 +287,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Line1 = address.Line1;
             retVal.Line2 = address.Line2;
             retVal.AddressType = address.AddressType;
+            retVal.Organization = address.Organization;
 
             return retVal;
         }
