@@ -75,6 +75,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             address.LastName = LastName;
             address.Line1 = Line1;
             address.Line2 = Line2;
+            address.Organization = Organization;
             address.AddressType = EnumUtility.SafeParseFlags(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping);
             
             return address;
@@ -100,6 +101,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             LastName = address.LastName;
             Line1 = address.Line1;
             Line2 = address.Line2;
+            Organization = address.Organization;
             AddressType = address.AddressType.ToString();
             return this;
         }
@@ -121,6 +123,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.LastName = LastName;
             target.Line1 = Line1;
             target.Line2 = Line2;
+            target.Organization = Organization;
         }
 
         public override bool Equals(object obj)
