@@ -52,7 +52,7 @@
                         </tr>                        
                     </tbody>
                 </table>
-                <ng-include src="'pagerTemplate.html'"></ng-include>
+                <ng-include ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" src="'pagerTemplate.html'"></ng-include>
             </div>
         </div>
     </div>
