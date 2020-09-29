@@ -87,6 +87,9 @@ namespace VirtoCommerce.OrderModule.Data.Model
                 payment.BillingAddress = Addresses.First().ToModel(AbstractTypeFactory<Address>.TryCreateInstance());
             }
 
+            payment.OrderId = CustomerOrderId;
+            payment.ShipmentId = ShipmentId;
+
             payment.Transactions = Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
             payment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             payment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
@@ -107,6 +110,10 @@ namespace VirtoCommerce.OrderModule.Data.Model
             }
 
             base.FromModel(payment, pkMap);
+
+
+            CustomerOrderId = payment.OrderId;
+            ShipmentId = payment.ShipmentId;
 
             if (payment.PaymentMethod != null)
             {
