@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Specialized;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
@@ -333,7 +332,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
-
+                retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.Status = "New";
 
@@ -371,6 +370,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+                retVal.Id = Guid.NewGuid().ToString();
                 retVal.Currency = order.Currency;
                 retVal.CustomerId = order.CustomerId;
                 retVal.Status = retVal.PaymentStatus.ToString();
