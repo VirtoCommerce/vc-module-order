@@ -1,16 +1,8 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.pricingModule.prices', '$translate', 'platformWebApp.authService', function ($scope, bladeNavigationService, dialogService, items, prices, $translate, authService) {
+    .controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.pricingModule.prices', '$translate', 'platformWebApp.authService', function ($scope, bladeNavigationService, items, prices, $translate, authService) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
     blade.isVisiblePrices = authService.checkPermission('order:read_prices');
-
-    //pagination settings
-    $scope.pageSettings = {};
-    $scope.totals = {};
-    $scope.pageSettings.totalItems = blade.currentEntity.items.length;
-    $scope.pageSettings.currentPage = 1;
-    $scope.pageSettings.numPages = 5;
-    $scope.pageSettings.itemsPerPageCount = 4;
 
     var selectedProducts = [];
 
@@ -29,10 +21,10 @@ angular.module('virtoCommerce.orderModule')
         angular.forEach(products, function (product) {
             items.get({ id: product.id }, function (data) {
                 prices.getProductPrices({ id: product.id }, function (prices) {
-                    var price = _.find(prices, function (x) { return x.currency == blade.currentEntity.currency });
+                    var price = _.find(prices, function (x) { return x.currency === blade.currentEntity.currency });
 
                     var newLineItem =
-					{
+                    {
                         productId: data.id,
                         catalogId: data.catalogId,
                         categoryId: data.categoryId,
@@ -43,10 +35,9 @@ angular.module('virtoCommerce.orderModule')
                         price: price && price.list ? price.list : 0,
                         discountAmount: price && price.list && price.sale ? price.list - price.sale : 0,
                         currency: blade.currentEntity.currency
-					};
+                    };
                     blade.currentEntity.items.push(newLineItem);
                     blade.recalculateFn();
-                    $scope.pageSettings.totalItems = blade.currentEntity.items.length;
                 });
             });
         });
@@ -77,12 +68,12 @@ angular.module('virtoCommerce.orderModule')
         var options = {
             checkItemFn: function (listItem, isSelected) {
                 if (isSelected) {
-                    if (_.all(selectedProducts, function (x) { return x.id != listItem.id; })) {
+                    if (_.all(selectedProducts, function (x) { return x.id !== listItem.id; })) {
                         selectedProducts.push(listItem);
                     }
                 }
                 else {
-                    selectedProducts = _.reject(selectedProducts, function (x) { return x.id == listItem.id; });
+                    selectedProducts = _.reject(selectedProducts, function (x) { return x.id === listItem.id; });
                 }
             }
         };
@@ -127,7 +118,6 @@ angular.module('virtoCommerce.orderModule')
                 var lineItems = blade.currentEntity.items;
                 blade.currentEntity.items = _.difference(lineItems, _.filter(lineItems, function (x) { return x.selected }));
                 blade.recalculateFn();
-                $scope.pageSettings.totalItems = blade.currentEntity.items.length;
             },
             canExecuteMethod: function () {
                 return _.any(blade.currentEntity.items, function (x) { return x.selected; });
@@ -135,10 +125,6 @@ angular.module('virtoCommerce.orderModule')
             permission: blade.updatePermission
         }
     ];
-
-    //$scope.$watch('pageSettings.currentPage', function (newPage) {
-    //    blade.refresh();
-    //});
 
     $scope.checkAll = function (selected) {
         angular.forEach(blade.currentEntity.items, function (item) {
