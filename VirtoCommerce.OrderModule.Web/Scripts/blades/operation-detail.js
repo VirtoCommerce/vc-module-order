@@ -87,6 +87,7 @@
                     blade.isNew = false;
                     blade.refresh();
                     blade.parentBlade.refresh();
+                    bladeNavigationService.closeChildrenBlades(blade);
                 });
             }
         };
