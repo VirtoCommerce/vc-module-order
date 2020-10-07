@@ -4,9 +4,10 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
+    
+    $scope.getPricesVisibility = () => authService.checkPermission('order:read_prices');
 
     $scope.getGridOptions = () => {
-        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         return {
         useExternalSorting: true,
         data: 'objects',
@@ -16,7 +17,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                    { name: 'number', displayName: $translate.instant('orders.blades.customerOrder-list.labels.number'), width: '***', displayAlways: true },
                    { name: 'customerName', displayName: $translate.instant('orders.blades.customerOrder-list.labels.customer'), width: '***' },
                    { name: 'storeId', displayName: $translate.instant('orders.blades.customerOrder-list.labels.store'), width: '**' },
-                   { name: 'total', displayName: $translate.instant('orders.blades.customerOrder-list.labels.total'), cellFilter: 'currency | showPrice:' + blade.isVisiblePrices, width: '**' },
+                   { name: 'total', displayName: $translate.instant('orders.blades.customerOrder-list.labels.total'), cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
                    { name: 'currency', displayName: $translate.instant('orders.blades.customerOrder-list.labels.currency'), width: '*' },
                    { name: 'isApproved', displayName: $translate.instant('orders.blades.customerOrder-list.labels.confirmed'), width: '*', cellClass: '__blue' },
                    { name: 'status', displayName: $translate.instant('orders.blades.customerOrder-list.labels.status'), cellFilter: 'statusTranslate:row.entity', width: '*' },
@@ -191,7 +192,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency | showPrice:" + blade.isVisiblePrices, visible: false };
+            return { name: name, cellFilter: "currency | showPrice:" + $scope.getPricesVisibility(), visible: false };
         }));
 
         $scope.gridOptions = gridOptions;
