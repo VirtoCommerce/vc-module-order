@@ -155,9 +155,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 await repository.UnitOfWork.CommitAsync();
                 pkMap.ResolvePrimaryKeys();
+                ClearCache(orders);
             }
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
-            ClearCache(orders);
         }
 
         public virtual async Task DeleteAsync(string[] ids)
@@ -172,10 +172,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 await repository.RemoveOrdersByIdsAsync(ids);
 
                 await repository.UnitOfWork.CommitAsync();
+                ClearCache(orders);
                 //Raise domain events after deletion
                 await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
             }
-            ClearCache(orders);
         }
 
         #endregion

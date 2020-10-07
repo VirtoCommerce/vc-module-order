@@ -94,7 +94,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-              
+
 
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
@@ -116,8 +116,9 @@ namespace VirtoCommerce.OrdersModule.Core
             {
                 get
                 {
-                    yield return  General.OrderCustomerOrderNewNumberTemplate;
+                    yield return General.OrderCustomerOrderNewNumberTemplate;
                     yield return General.OrderPaymentInNewNumberTemplate;
+                    yield return General.OrderShipmentNewNumberTemplate;
                 }
             }
         }
