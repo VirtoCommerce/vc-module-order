@@ -184,7 +184,6 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
 
     // ui-grid
     $scope.setGridOptions = function (gridId, gridOptions) {
-        
         // add currency filter for properties that need it
         Array.prototype.push.apply(gridOptions.columnDefs, _.map([
             "discountAmount", "subTotal", "subTotalWithTax", "subTotalDiscount", "subTotalDiscountWithTax", "subTotalTaxTotal",
