@@ -1,10 +1,36 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderListController', ['$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', 
-function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations) {
+    .controller('virtoCommerce.orderModule.customerOrderListController', ['$rootScope','$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', '$translate', 
+function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, $translate) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
-    blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+    
+    $scope.getPricesVisibility = () => authService.checkPermission('order:read_prices');
+
+    $scope.getGridOptions = () => {
+        return {
+        useExternalSorting: true,
+        data: 'objects',
+        rowTemplate: 'order-list.row.html',
+        columnDefs: [
+                   { name: 'actions', displayName: '', enableColumnResizing: false, enableSorting: false, width: 30, cellTemplate: 'list-actions.cell.html', pinnedLeft: true, displayAlways: true },
+                   { name: 'number', displayName: $translate.instant('orders.blades.customerOrder-list.labels.number'), width: '***', displayAlways: true },
+                   { name: 'customerName', displayName: $translate.instant('orders.blades.customerOrder-list.labels.customer'), width: '***' },
+                   { name: 'storeId', displayName: $translate.instant('orders.blades.customerOrder-list.labels.store'), width: '**' },
+                   { name: 'total', displayName: $translate.instant('orders.blades.customerOrder-list.labels.total'), cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
+                   { name: 'currency', displayName: $translate.instant('orders.blades.customerOrder-list.labels.currency'), width: '*' },
+                   { name: 'isApproved', displayName: $translate.instant('orders.blades.customerOrder-list.labels.confirmed'), width: '*', cellClass: '__blue' },
+                   { name: 'status', displayName: $translate.instant('orders.blades.customerOrder-list.labels.status'), cellFilter: 'statusTranslate:row.entity', width: '*' },
+                   { name: 'createdDate', displayName: $translate.instant('orders.blades.customerOrder-list.labels.created'), width: '**', sort: { direction: uiGridConstants.DESC } }
+       ]}
+    }
+
+    $rootScope.$on('loginStatusChanged', (securityScopes) => {
+        $translate.refresh().then(() => {
+            let gridOptions = $scope.getGridOptions();
+            $scope.setGridOptions("customerOrder-list-grid", gridOptions);
+        });
+    });
 
     blade.refresh = function () {
         if (blade.preloadedOrders) {
@@ -166,7 +192,7 @@ function ($scope, $localStorage, customerOrders, bladeUtils, dialogService, auth
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency | showPrice:" + blade.isVisiblePrices, visible: false };
+            return { name: name, cellFilter: "currency | showPrice:" + $scope.getPricesVisibility(), visible: false };
         }));
 
         $scope.gridOptions = gridOptions;
