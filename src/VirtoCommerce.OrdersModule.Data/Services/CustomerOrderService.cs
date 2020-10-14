@@ -13,7 +13,6 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Caching;
-using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Settings;
@@ -92,7 +91,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                             customerOrder.ReduceDetails(responseGroup);
 
                             retVal.Add(customerOrder);
-                            
+
                         }
                     }
                 }
@@ -110,6 +109,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
+            var changedEntities = new List<CustomerOrderEntity>();
+
             using (var repository = _repositoryFactory())
             {
                 var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
@@ -141,6 +142,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
                         newModifiedEntity?.Patch(originalEntity);
+                        changedEntities.Add(originalEntity);
                     }
                     else
                     {
@@ -149,6 +151,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                                                              .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
+                        changedEntities.Add(modifiedEntity);
                     }
                 }
                 //Raise domain events
@@ -157,6 +160,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 pkMap.ResolvePrimaryKeys();
                 ClearCache(orders);
             }
+
+            // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled after commit)
+            changedEntries = changedEntries.Zip(changedEntities)
+                .Select(x =>
+                {
+                    x.First.NewEntry = (CustomerOrder)x.Second.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                    return x.First;
+                })
+                .ToList();
+
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
