@@ -95,6 +95,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         }
                     }
                 }
+
                 return retVal.ToArray();
             });
         }
@@ -109,7 +110,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
-            var changedEntities = new List<CustomerOrderEntity>();
+            var changedEntitiesMap = new Dictionary<CustomerOrder, CustomerOrderEntity>();
 
             using (var repository = _repositoryFactory())
             {
@@ -142,7 +143,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
                         newModifiedEntity?.Patch(originalEntity);
-                        changedEntities.Add(originalEntity);
+                        changedEntitiesMap.Add(modifiedOrder, originalEntity);
                     }
                     else
                     {
@@ -151,9 +152,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                                                              .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
-                        changedEntities.Add(modifiedEntity);
+                        changedEntitiesMap.Add(modifiedOrder, modifiedEntity);
                     }
                 }
+
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 await repository.UnitOfWork.CommitAsync();
@@ -161,14 +163,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 ClearCache(orders);
             }
 
-            // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled after commit)
-            changedEntries = changedEntries.Zip(changedEntities)
-                .Select(x =>
-                {
-                    x.First.NewEntry = (CustomerOrder)x.Second.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
-                    return x.First;
-                })
-                .ToList();
+            // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
+            foreach (var changedEntry in changedEntries)
+            {
+                // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
+                changedEntry.NewEntry = (CustomerOrder)changedEntitiesMap
+                    .First(x => x.Key.Equals(changedEntry.OldEntry))
+                    .Value
+                    .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+            }
 
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
