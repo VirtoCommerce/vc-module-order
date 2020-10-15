@@ -13,7 +13,6 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Caching;
-using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Settings;
@@ -92,10 +91,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                             customerOrder.ReduceDetails(responseGroup);
 
                             retVal.Add(customerOrder);
-                            
+
                         }
                     }
                 }
+
                 return retVal.ToArray();
             });
         }
@@ -110,6 +110,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
+            var changedEntitiesMap = new Dictionary<CustomerOrder, CustomerOrderEntity>();
+
             using (var repository = _repositoryFactory())
             {
                 var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
@@ -141,6 +143,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
                         newModifiedEntity?.Patch(originalEntity);
+                        changedEntitiesMap.Add(modifiedOrder, originalEntity);
                     }
                     else
                     {
@@ -149,14 +152,27 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                                                              .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
+                        changedEntitiesMap.Add(modifiedOrder, modifiedEntity);
                     }
                 }
+
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 await repository.UnitOfWork.CommitAsync();
                 pkMap.ResolvePrimaryKeys();
                 ClearCache(orders);
             }
+
+            // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
+            foreach (var changedEntry in changedEntries)
+            {
+                // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
+                changedEntry.NewEntry = (CustomerOrder)changedEntitiesMap
+                    .First(x => x.Key.Equals(changedEntry.OldEntry))
+                    .Value
+                    .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+            }
+
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
