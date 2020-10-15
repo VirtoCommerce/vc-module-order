@@ -13,6 +13,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         /// </summary>
         public string OrderNumber { get; set; }
 
+        /// <summary>
+        /// Filter payments by customer 
+        /// </summary>
+        public string CustomerId { get; set; }
+
         public DateTime? CapturedStartDate { get; set; }
         public DateTime? CapturedEndDate { get; set; }
 
