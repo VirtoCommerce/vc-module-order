@@ -520,8 +520,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var notification = await _notificationSearchService.GetNotificationAsync<InvoiceEmailNotification>(new TenantIdentity(order.StoreId, nameof(Store)));
             notification.CustomerOrder = order;
+            notification.LanguageCode = order.LanguageCode;
             var message = AbstractTypeFactory<EmailNotificationMessage>.TryCreateInstance($"{notification.Kind}Message");
-            message.LanguageCode = order.LanguageCode;
             await notification.ToMessageAsync(message, _notificationTemplateRenderer);
 
             if (message.Body.IsNullOrEmpty())
