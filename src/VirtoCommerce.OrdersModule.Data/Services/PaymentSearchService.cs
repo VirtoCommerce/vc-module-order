@@ -90,6 +90,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Statuses.Contains(x.Status));
             }
 
+            if (!criteria.CustomerId.IsNullOrEmpty())
+            {
+                query = query.Where(x => x.CustomerId == criteria.CustomerId);
+            }
+
             if (criteria.StartDate != null)
             {
                 query = query.Where(x => x.CreatedDate >= criteria.StartDate);
