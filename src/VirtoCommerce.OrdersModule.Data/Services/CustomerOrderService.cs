@@ -167,10 +167,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             foreach (var changedEntry in changedEntries)
             {
                 // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
-                changedEntry.NewEntry = (CustomerOrder)changedEntitiesMap
+                var changedModel = (CustomerOrder)changedEntitiesMap
                     .First(x => x.Key.Equals(changedEntry.OldEntry))
                     .Value
                     .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+
+                // We need to CalculateTotals for the new Order, because it is empty after entity.ToModel creation
+                _totalsCalculator.CalculateTotals(changedModel);
+
+                changedEntry.NewEntry = changedModel;
             }
 
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
