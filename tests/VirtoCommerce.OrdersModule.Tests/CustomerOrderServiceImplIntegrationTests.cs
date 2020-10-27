@@ -79,7 +79,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _platformMemoryCache = new PlatformMemoryCache(memoryCache, cachingOptions, _logMock.Object);
 
             var container = new ServiceCollection();
-            container.AddDbContext<OrderDbContext>(options => options.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30"));
+            container.AddDbContext<OrderDbContext>(options => options.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3_orderTest;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30"));
             container.AddScoped<IOrderRepository, OrderRepository>();
             container.AddScoped<ICustomerOrderService, CustomerOrderService>();
             container.AddScoped<ICustomerOrderSearchService, CustomerOrderSearchService>();
