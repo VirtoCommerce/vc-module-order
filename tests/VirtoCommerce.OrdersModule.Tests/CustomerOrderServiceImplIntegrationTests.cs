@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
 using VirtoCommerce.CoreModule.Core.Common;
@@ -16,6 +19,7 @@ using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
@@ -32,7 +36,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 {
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "CI")]
-    public class CustomerOrderServiceImplIntegrationTests //: FunctionalTestBase
+    public class CustomerOrderServiceImplIntegrationTests
     {
         private readonly Mock<IStoreService> _storeServiceMock;
         private readonly Mock<IShippingMethodsRegistrar> _shippingMethodRegistrarMock;
@@ -42,12 +46,13 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<ICustomerOrderTotalsCalculator> _customerOrderTotalsCalculatorMock;
         private readonly Mock<IUniqueNumberGenerator> _uniqueNumberGeneratorMock;
         private readonly Mock<IDynamicPropertyService> _dynamicPropertyServiceMock;
-        private readonly Mock<IPlatformMemoryCache> _platformMemoryCacheMock;
+        private readonly IPlatformMemoryCache _platformMemoryCache;
         private readonly Mock<IChangeLogService> _changeLogServiceMock;
         private readonly Mock<ICacheEntry> _cacheEntryMock;
         private readonly Mock<IEventPublisher> _eventPublisherMock;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ICustomerOrderSearchService _customerOrderSearchService;
+        private readonly Mock<ILogger<PlatformMemoryCache>> _logMock;
 
         public CustomerOrderServiceImplIntegrationTests()
         {
@@ -62,13 +67,19 @@ namespace VirtoCommerce.OrdersModule.Tests
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
             _eventPublisherMock = new Mock<IEventPublisher>();
             _dynamicPropertyServiceMock = new Mock<IDynamicPropertyService>();
-            _platformMemoryCacheMock = new Mock<IPlatformMemoryCache>();
             _cacheEntryMock = new Mock<ICacheEntry>();
             _cacheEntryMock.SetupGet(c => c.ExpirationTokens).Returns(new List<IChangeToken>());
             _changeLogServiceMock = new Mock<IChangeLogService>();
+            _logMock = new Mock<ILogger<PlatformMemoryCache>>();
+            var cachingOptions = new OptionsWrapper<CachingOptions>(new CachingOptions { CacheEnabled = true });
+            var memoryCache = new MemoryCache(new MemoryCacheOptions()
+            {
+                Clock = new SystemClock(),
+            });
+            _platformMemoryCache = new PlatformMemoryCache(memoryCache, cachingOptions, _logMock.Object);
 
             var container = new ServiceCollection();
-            container.AddDbContext<OrderDbContext>(options => options.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30"));
+            container.AddDbContext<OrderDbContext>(options => options.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3_orderTest;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30"));
             container.AddScoped<IOrderRepository, OrderRepository>();
             container.AddScoped<ICustomerOrderService, CustomerOrderService>();
             container.AddScoped<ICustomerOrderSearchService, CustomerOrderSearchService>();
@@ -82,7 +93,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _shippingMethodsSearchServiceMock.Object);
             container.AddSingleton(x => _paymentMethodRegistrarMock.Object);
             container.AddSingleton(x => _paymentMethodsSearchService.Object);
-            container.AddSingleton(x => _platformMemoryCacheMock.Object);
+            container.AddSingleton(x => _platformMemoryCache);
             container.AddSingleton(x => _changeLogServiceMock.Object);
 
             var serviceProvider = container.BuildServiceProvider();
@@ -95,8 +106,6 @@ namespace VirtoCommerce.OrdersModule.Tests
         {
             //Arrange
             var order = GetTestOrder($"order{DateTime.Now:O}");
-            var cacheKey = CacheKey.With(_customerOrderService.GetType(), "GetByIdsAsync", string.Join("-", order.Id), null);
-            _platformMemoryCacheMock.Setup(pmc => pmc.CreateEntry(cacheKey)).Returns(_cacheEntryMock.Object);
 
             //Act
             await _customerOrderService.SaveChangesAsync(new[] { order });
@@ -110,16 +119,17 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
         [Fact]
-        public async Task SaveChangesAsync_UpdateOrder()
+        public async Task SaveChangesAsync_CreateNewOrderAndUpdateOrderState()
         {
             //Arrange
-            var criteria = new CustomerOrderSearchCriteria() { Take = 1, Status = "Pending" };
-            var cacheKeySearch = CacheKey.With(_customerOrderSearchService.GetType(), "SearchCustomerOrdersAsync", criteria.GetCacheKey());
-            _platformMemoryCacheMock.Setup(pmc => pmc.CreateEntry(cacheKeySearch)).Returns(_cacheEntryMock.Object);
+            var orderId = $"order{DateTime.Now:O}";
+            var order = GetTestOrder(orderId);
+            await _customerOrderService.SaveChangesAsync(new[] { order });
+
+            var criteria = new CustomerOrderSearchCriteria() { Take = 1, Ids = new[] { orderId } };
             var orders = await _customerOrderSearchService.SearchCustomerOrdersAsync(criteria);
-            var order = orders.Results.FirstOrDefault();
-            var cacheKey = CacheKey.With(_customerOrderService.GetType(), "GetByIdsAsync", string.Join("-", order.Id), null);
-            _platformMemoryCacheMock.Setup(pmc => pmc.CreateEntry(cacheKey)).Returns(_cacheEntryMock.Object);
+            order = orders.Results.FirstOrDefault();
+
             order.Status = "Authorized";
 
             //Act

@@ -1,12 +1,13 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Primitives;
 using Moq;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
@@ -60,8 +61,8 @@ namespace VirtoCommerce.OrdersModule.Tests
             _orderRepositoryMock.Setup(x => x.Add(newOrderEntity))
                 .Callback(() =>
                 {
-                    _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] {id}, null))
-                        .ReturnsAsync(new[] {newOrderEntity});
+                    _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] { id }, null))
+                        .ReturnsAsync(new[] { newOrderEntity });
                 });
 
             //Act
@@ -73,7 +74,72 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.NotEqual(nullOrder, order);
         }
 
-        
+        [Fact]
+        public async Task SaveChangesAsync_SaveNewOrder_TotalsCalculated()
+        {
+            //Arrange
+            var id = Guid.NewGuid().ToString();
+            var newOrder = new CustomerOrder
+            {
+                Id = id
+            };
+            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
+            var service = GetCustomerOrderServiceWithPlatformMemoryCache();
+            _orderRepositoryMock.Setup(x => x.Add(newOrderEntity))
+                .Callback(() =>
+                {
+                    _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] { id }, null))
+                        .ReturnsAsync(new[] { newOrderEntity });
+                });
+
+            // Mock totals creation to verify it was called for change OrderChangeEvent.NewEntry
+            // PaymentDiscountTotalWithTax property is ot stored in entity and filled only buy Totals calculator
+            _customerOrderTotalsCalculatorMock.Setup(x => x.CalculateTotals(It.IsAny<CustomerOrder>()))
+                .Callback<CustomerOrder>(x => x.PaymentDiscountTotalWithTax = 10);
+
+            //Act
+            await service.SaveChangesAsync(new[] { newOrder });
+
+            //Assert
+            _customerOrderTotalsCalculatorMock.Verify(x => x.CalculateTotals(It.Is<CustomerOrder>(order => order == newOrder)), Times.Exactly(2));
+            // Here we are ensuring that totals calculation was done for OrderChangeEvent.NewEntry
+            _eventPublisherMock.Verify(x => x.Publish(
+                It.Is<OrderChangeEvent>(changedEvent => changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10), It.IsAny<CancellationToken>())
+            , Times.Once);
+        }
+
+        [Fact]
+        public async Task SaveChangesAsync_UpdatingExistingOrder_TotalsCalculated()
+        {
+            //Arrange
+            var id = Guid.NewGuid().ToString();
+            var newOrder = new CustomerOrder
+            {
+                Id = id
+            };
+            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
+            var service = GetCustomerOrderServiceWithPlatformMemoryCache();
+
+            _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] { id }, It.IsAny<string>()))
+                .ReturnsAsync(new[] { newOrderEntity });
+
+            // Mock totals creation to verify it was called for change OrderChangeEvent.NewEntry
+            // PaymentDiscountTotalWithTax property is ot stored in entity and filled only buy Totals calculator
+            _customerOrderTotalsCalculatorMock.Setup(x => x.CalculateTotals(It.IsAny<CustomerOrder>()))
+                .Callback<CustomerOrder>(x => x.PaymentDiscountTotalWithTax = 10);
+
+            //Act
+            await service.SaveChangesAsync(new[] { newOrder });
+
+            //Assert
+            _customerOrderTotalsCalculatorMock.Verify(x => x.CalculateTotals(It.Is<CustomerOrder>(order => order == newOrder)), Times.Exactly(2));
+            // Here we are ensuring that totals calculation was done for OrderChangeEvent.NewEntry
+            _eventPublisherMock.Verify(x => x.Publish(
+                It.Is<OrderChangeEvent>(changedEvent => changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10), It.IsAny<CancellationToken>())
+            , Times.Once);
+        }
+
+
         private CustomerOrderService GetCustomerOrderServiceWithPlatformMemoryCache()
         {
             var memoryCache = new MemoryCache(Options.Create(new MemoryCacheOptions()));
@@ -92,7 +158,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _paymentMethodsSearchServiceMock
                 .Setup(x => x.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>()))
                 .ReturnsAsync(new PaymentMethodsSearchResult());
-            
+
             return new CustomerOrderService(() => orderRepository,
                 _uniqueNumberGeneratorMock.Object,
                 _storeServiceMock.Object,
