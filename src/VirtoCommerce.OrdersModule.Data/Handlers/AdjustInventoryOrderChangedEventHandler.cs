@@ -268,23 +268,28 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 result = shipment?.FulfillmentCenterId;
             }
 
-            //Use a default fulfillment center defined for store
-            if (string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(result))
             {
-                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
-                if (store != null)
-                {
-                    var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
-                    result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
-
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        var ffcIds = inventoryInfos.Where(x=>x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
-                        result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x=> ffcIds.Contains(x));
-                    }
-                }
+                return result;
             }
 
+            //Use a default fulfillment center defined for store
+            var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
+            if (store == null)
+            {
+                return result;
+            }
+
+            // Use ffc with in stock quantity > 0
+            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
+            result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
+
+            if (string.IsNullOrEmpty(result))
+            {
+                var ffcIds = inventoryInfos.Where(x=>x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
+                result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x=> ffcIds.Contains(x));
+            }
+            
             return result;
         }
     }
