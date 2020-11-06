@@ -271,9 +271,20 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             //Use a default fulfillment center defined for store
             if (string.IsNullOrEmpty(result))
             {
-                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreInfo.ToString());
-                result = store?.MainFulfillmentCenterId;
+                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] {lineItem.ProductId})).ToList();
+                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
+                if (store != null)
+                {
+                    result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
+
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        var ffcIds = inventoryInfos.Where(x=>x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
+                        result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x=> ffcIds.Contains(x));
+                    }
+                }
             }
+
             return result;
         }
     }
