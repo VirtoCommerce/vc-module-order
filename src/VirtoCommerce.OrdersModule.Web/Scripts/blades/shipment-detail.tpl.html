@@ -57,7 +57,17 @@
                             </div>
                         </div>
                         <div class="column">
-                            <div style="height:60px">&nbsp;</div>
+                            <div ng-if="blade.isNew" style="height:60px">&nbsp;</div>
+                            <div ng-if="!blade.isNew" class="form-group">
+                                <label class="form-label">
+                                    {{ 'orders.blades.shipment-detail.labels.shipment-method-option' | translate }}
+                                </label>
+                                <div class="form-input">
+                                    <input ng-readonly="true"
+                                           ng-model="blade.currentEntity.shipmentMethodOption"
+                                           placeholder="{{ 'orders.blades.shipment-detail.placeholders.shipment-method-option' | translate}}">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </fieldset>

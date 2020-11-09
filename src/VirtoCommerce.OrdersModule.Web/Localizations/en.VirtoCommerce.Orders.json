@@ -119,12 +119,14 @@
           "from": "From",
           "employee": "Assigned to",
           "price": "Shipment amount",
-          "price-with-tax": "Shipment amount with tax"
+          "price-with-tax": "Shipment amount with tax",
+          "shipment-method-option": "Shipment method option"
         },
         "placeholders": {
           "status": "Select...",
           "shipment-method": "Select...",
-          "fulfillment-center": "Select or search a center..."
+          "fulfillment-center": "Select or search a center...",
+          "shipment-method-option": "Default shipment method option"
         }
       },
       "shipment-items": {
