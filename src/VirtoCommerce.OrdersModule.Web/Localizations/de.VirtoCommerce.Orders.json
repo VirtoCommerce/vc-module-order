@@ -1,6 +1,6 @@
 {
   "orders": {
-	"main-menu-title": "Bestellungen",
+    "main-menu-title": "Bestellungen",
     "blades": {
       "customerOrder-detail": {
         "title": "Bestellung von {{customer}}",
@@ -119,12 +119,14 @@
           "from": "Von",
           "employee": "Zugewiesen zu",
           "price": "Versandmenge",
-          "price-with-tax": "Versandbetrag mit Steuer"
+          "price-with-tax": "Versandbetrag mit Steuer",
+          "shipment-method-option": "Verzendmethode optie"
         },
         "placeholders": {
           "status": "Wählen Sie aus...",
           "shipment-method": "Wählen Sie aus...",
-          "fulfillment-center": "Wählen Sie Oder suchen Sie ein Zentrum..."
+          "fulfillment-center": "Wählen Sie Oder suchen Sie ein Zentrum...",
+          "shipment-method-option": "Standaard verzendmethode"
         }
       },
       "shipment-items": {
