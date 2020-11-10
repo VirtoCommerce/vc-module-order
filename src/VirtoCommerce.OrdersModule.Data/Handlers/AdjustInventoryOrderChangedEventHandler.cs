@@ -45,6 +45,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
         /// <param name="itemService">Implementation of item service</param>
+        /// <param name="inventorySearchService"></param>
         public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService, IInventorySearchService inventorySearchService)
         {
             _inventoryService = inventoryService;
@@ -287,12 +288,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var storeFfcIds = new List<string> {store.MainFulfillmentCenterId};
             storeFfcIds.AddRange(store.AdditionalFulfillmentCenterIds);
 
-            var inventoryInfos = (await _inventorySearchService.SearchInventoriesAsync(new InventorySearchCriteria
+            var inventoryInfoSearchResult = await _inventorySearchService.SearchInventoriesAsync(new InventorySearchCriteria
             {
                 FulfillmentCenterIds = storeFfcIds,
                 ProductIds = new List<string> { lineItem.ProductId },
-                
-            })).Results
+            });
+
+            var inventoryInfos = inventoryInfoSearchResult.Results
                 .Where(x=>x.InStockQuantity > 0)
                 .Select(x=>x.FulfillmentCenterId).
                 ToList();
