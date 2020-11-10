@@ -14,6 +14,7 @@ using Xunit;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Model;
 using System;
+using VirtoCommerce.InventoryModule.Core.Model.Search;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -143,13 +144,14 @@ namespace VirtoCommerce.OrdersModule.Tests
             var inventoryServiceMock = new Mock<IInventoryService>();
             var settingsManagerMock = new Mock<ISettingsManager>();
             var itemServiceMock = new Mock<IItemService>();
+            var inventorySearchService = new Mock<IInventorySearchService>();
 
             var storeServiceMock = new Mock<IStoreService>();
             storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, null))
                 .ReturnsAsync(new Store { MainFulfillmentCenterId = TestFulfillmentCenterId });
 
             var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
+                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object, inventorySearchService.Object);
 
             // Act
             var actualChanges = await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
@@ -175,6 +177,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var responseGroup = ItemResponseGroup.None.ToString();
             var inventoryServiceMock = new Mock<IInventoryService>();
             var itemServiceMock = new Mock<IItemService>();
+            var inventorySearchService = new Mock<IInventorySearchService>();
 
             var product = Mock.Of<CatalogProduct>(t => t.Id == productId && t.TrackInventory == trackInventory);
             var inventoryInfo = Mock.Of<InventoryInfo>(
@@ -191,7 +194,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 .ReturnsAsync(new[] { product });
 
             var handler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
-                Mock.Of<IStoreService>(), Mock.Of<ISettingsManager>(), itemServiceMock.Object);
+                Mock.Of<IStoreService>(), Mock.Of<ISettingsManager>(), itemServiceMock.Object, inventorySearchService.Object);
 
             // Act
             await handler.TryAdjustOrderInventory(new[] { productInventoryChange });

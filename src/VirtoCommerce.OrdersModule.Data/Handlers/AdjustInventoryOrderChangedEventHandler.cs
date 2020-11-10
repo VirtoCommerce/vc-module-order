@@ -6,6 +6,7 @@ using Hangfire;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Model;
+using VirtoCommerce.InventoryModule.Core.Model.Search;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -35,6 +36,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
         private readonly IItemService _itemService;
+        private readonly IInventorySearchService _inventorySearchService;
 
         /// <summary>
         /// Constructor.
@@ -43,12 +45,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
         /// <param name="itemService">Implementation of item service</param>
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService, IInventorySearchService inventorySearchService)
         {
             _inventoryService = inventoryService;
             _settingsManager = settingsManager;
             _storeService = storeService;
             _itemService = itemService;
+            _inventorySearchService = inventorySearchService;
         }
 
         /// <summary>
@@ -281,15 +284,21 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
 
             // Use ffc with in stock quantity > 0
-            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
-            result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
+            var storeFfcIds = new List<string> {store.MainFulfillmentCenterId};
+            storeFfcIds.AddRange(store.AdditionalFulfillmentCenterIds);
 
-            if (string.IsNullOrEmpty(result))
+            var inventoryInfos = (await _inventorySearchService.SearchInventoriesAsync(new InventorySearchCriteria
             {
-                var ffcIds = inventoryInfos.Where(x=>x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
-                result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x=> ffcIds.Contains(x));
-            }
-            
+                FulfillmentCenterIds = storeFfcIds,
+                ProductIds = new List<string> { lineItem.ProductId },
+                
+            })).Results
+                .Where(x=>x.InStockQuantity > 0)
+                .Select(x=>x.FulfillmentCenterId).
+                ToList();
+
+            result = inventoryInfos.FirstOrDefault(x => x == store.MainFulfillmentCenterId) ?? inventoryInfos.FirstOrDefault();
+
             return result;
         }
     }
