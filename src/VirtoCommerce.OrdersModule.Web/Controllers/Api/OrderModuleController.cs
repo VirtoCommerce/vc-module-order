@@ -26,6 +26,7 @@ using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
+using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Assets;
@@ -260,6 +261,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (result.OuterId != null)
             {
                 inPayment.OuterId = result.OuterId;
+            }
+
+            // Exclusive status set for DefaultManualPaymentMethod, otherwise the order be stuck in the "New" state.
+            // Current payment flow suggests payment processing by payment method code,
+            // but, unfortunately, there is no way to do set status directly in DefaultManualPaymentMethod, because it will produce cyclical references between order and payment modules.
+            // One day, we should change the flow to commonly divide payment and order processing, but now it isn't.
+            if (inPayment.PaymentMethod is DefaultManualPaymentMethod)
+            {
+                order.Status = result.NewPaymentStatus.ToString();
             }
 
             await _customerOrderService.SaveChangesAsync(new[] { order });
