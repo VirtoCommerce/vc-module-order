@@ -36,7 +36,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly ISettingsManager _settingsManager;
         private readonly IStoreService _storeService;
         private readonly IItemService _itemService;
-        private readonly IInventorySearchService _inventorySearchService;
 
         /// <summary>
         /// Constructor.
@@ -51,7 +50,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _settingsManager = settingsManager;
             _storeService = storeService;
             _itemService = itemService;
-            _inventorySearchService = inventorySearchService;
         }
 
         /// <summary>
