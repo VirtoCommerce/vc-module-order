@@ -14,6 +14,9 @@ using Xunit;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Model;
 using System;
+using System.Linq;
+using FluentAssertions;
+using VirtoCommerce.InventoryModule.Core.Model.Search;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -201,6 +204,47 @@ namespace VirtoCommerce.OrdersModule.Tests
             itemServiceMock.VerifyAll();
             Assert.Equal(expectedInStockQty, inventoryInfo.InStockQuantity);
         }
+
+        [Fact]
+        public async Task GetFullfilmentCenterForLineItemAsync_GetAdditionalFfc_FfcFound()
+        {
+            // Arrange
+            var mainFulfillmentCenterId = "MainFulfillmentCenterId";
+            var additionalFulfillmentCenterId = "additionalFulfillmentCenterId";
+            var changedOrder = new CustomerOrder
+            {
+                StoreId = TestStoreId,
+                Items = new List<LineItem> { new LineItem  { Id = "{01234567-89ab-cdef-0123-456789abcdef}",  ProductId = "shoes", Quantity = 1 }}
+            };
+            var changedEntry = new GenericChangedEntry<CustomerOrder>(changedOrder, changedOrder, EntryState.Added);
+
+            var inventoryServiceMock = new Mock<IInventoryService>();
+            var settingsManagerMock = new Mock<ISettingsManager>();
+            var itemServiceMock = new Mock<IItemService>();
+
+            var storeServiceMock = new Mock<IStoreService>();
+            storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, It.IsAny<string>()))
+                .ReturnsAsync(new Store { MainFulfillmentCenterId = mainFulfillmentCenterId, AdditionalFulfillmentCenterIds = new List<string>() {additionalFulfillmentCenterId}});
+
+            inventoryServiceMock.Setup(x=>x.GetProductsInventoryInfosAsync(It.IsAny<IEnumerable<string>>(), null))
+                .ReturnsAsync( new List<InventoryInfo>()
+                {
+                    new InventoryInfo() { InStockQuantity = 0, FulfillmentCenterId = mainFulfillmentCenterId},
+                    new InventoryInfo() { InStockQuantity = 10, FulfillmentCenterId = additionalFulfillmentCenterId}
+                });
+
+            var targetHandler = new AdjustInventoryOrderChangedEventHandler(inventoryServiceMock.Object,
+                storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
+
+            // Act
+            var actualChanges = await targetHandler.GetProductInventoryChangesFor(changedEntry);
+
+            // Assert
+            actualChanges.Should().HaveCount(1);
+            actualChanges.First().FulfillmentCenterId.Should().Be(additionalFulfillmentCenterId);
+
+        }
+
 
     }
 }
