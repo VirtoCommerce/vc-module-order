@@ -45,8 +45,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
         /// <param name="itemService">Implementation of item service</param>
-        /// <param name="inventorySearchService"></param>
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService, IInventorySearchService inventorySearchService)
+        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
         {
             _inventoryService = inventoryService;
             _settingsManager = settingsManager;
@@ -272,34 +271,22 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 result = shipment?.FulfillmentCenterId;
             }
 
-            if (!string.IsNullOrEmpty(result))
-            {
-                return result;
-            }
-
             //Use a default fulfillment center defined for store
-            var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
-            if (store == null)
+            if (string.IsNullOrEmpty(result))
             {
-                return result;
+                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] {lineItem.ProductId})).ToList();
+                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
+                if (store != null)
+                {
+                    result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
+
+                    if (string.IsNullOrEmpty(result))
+                    {
+                        var ffcIds = inventoryInfos.Where(x=>x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
+                        result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x=> ffcIds.Contains(x));
+                    }
+                }
             }
-
-            // Use ffc with in stock quantity > 0
-            var storeFfcIds = new List<string> {store.MainFulfillmentCenterId};
-            storeFfcIds.AddRange(store.AdditionalFulfillmentCenterIds);
-
-            var inventoryInfoSearchResult = await _inventorySearchService.SearchInventoriesAsync(new InventorySearchCriteria
-            {
-                FulfillmentCenterIds = storeFfcIds,
-                ProductIds = new List<string> { lineItem.ProductId },
-            });
-
-            var inventoryInfos = inventoryInfoSearchResult.Results
-                .Where(x=>x.InStockQuantity > 0)
-                .Select(x=>x.FulfillmentCenterId).
-                ToList();
-
-            result = inventoryInfos.FirstOrDefault(x => x == store.MainFulfillmentCenterId) ?? inventoryInfos.FirstOrDefault();
 
             return result;
         }
