@@ -118,18 +118,20 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                 canExecuteMethod: function () {
                     return true;
                 }
-            },
-            {
-                name: "platform.commands.delete", icon: 'fa fa-trash-o',
-                executeMethod: function () {
-                    $scope.deleteList($scope.gridApi.selection.getSelectedRows());
-                },
-                canExecuteMethod: function () {
-                    return $scope.gridApi && _.any($scope.gridApi.selection.getSelectedRows());
-                },
-                permission: 'order:delete'
             }
     ];
+    if (!blade.hideDelete) {
+        blade.toolbarCommands.push({
+            name: "platform.commands.delete", icon: 'fa fa-trash-o',
+            executeMethod: function () {
+                $scope.deleteList($scope.gridApi.selection.getSelectedRows());
+            },
+            canExecuteMethod: function () {
+                return $scope.gridApi && _.any($scope.gridApi.selection.getSelectedRows());
+            },
+            permission: 'order:delete'
+        });
+    }
 
     // simple and advanced filtering
     var filter = blade.filter = $scope.filter = {};
