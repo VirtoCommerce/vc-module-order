@@ -31,16 +31,17 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
         public virtual Task Handle(OrderChangedEvent @event)
-        {         
+        {
             if (@event.ChangedEntries.Any())
             {
                 BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(@event));
-            }          
+            }
             return Task.CompletedTask;
         }
 
-        public async Task TryToLogChangesBackgroundJob(OrderChangedEvent @event)
-        {           
+        // (!) Do not make this method async, it causes improper user recorded into the log! It happens because the user stored in the current thread. If the thread switched, the user info will lost.
+        public void TryToLogChangesBackgroundJob(OrderChangedEvent @event)
+        {
             var operationLogs = new List<OperationLog>();
             foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
@@ -52,7 +53,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
             if (!operationLogs.IsNullOrEmpty())
             {
-                await _changeLogService.SaveChangesAsync(operationLogs.ToArray());
+                _changeLogService.SaveChangesAsync(operationLogs.ToArray()).GetAwaiter().GetResult();
             }
         }
 
@@ -68,7 +69,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 if (changedEntry.OldEntry is Shipment shipment)
                 {
                     result.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
-                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));                   
+                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
                 }
                 else if (changedEntry.OldEntry is PaymentIn payment)
                 {
