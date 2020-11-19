@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
 
                 modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
-                                                     (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogsAsync(new GenericChangedEntry<IOperation>(modified, original, state)).GetAwaiter().GetResult()));
+                                                     (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
             }
             if (!operationLogs.IsNullOrEmpty())
             {
@@ -57,7 +57,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
         }
 
-        protected virtual async Task<IEnumerable<OperationLog>> GetChangedEntryOperationLogsAsync(GenericChangedEntry<IOperation> changedEntry)
+        protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)
         {
             var result = new List<string>();
 
@@ -78,7 +78,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
                 else if (changedEntry.OldEntry is CustomerOrder order)
                 {
-                    result.AddRange(await GetCustomerOrderChangesAsync(order, changedEntry.NewEntry as CustomerOrder));
+                    result.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
                     diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
                 }
 
@@ -112,7 +112,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return result.Select(x => GetLogRecord(changedEntry.NewEntry, x));
         }
 
-        protected virtual async Task<IEnumerable<string>> GetCustomerOrderChangesAsync(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
+        protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
         {
             var result = new List<string>();
             if (originalOrder.EmployeeId != modifiedOrder.EmployeeId)
@@ -120,7 +120,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var employeeName = "none";
                 if (!string.IsNullOrEmpty(modifiedOrder.EmployeeId))
                 {
-                    var employee = await _memberService.GetByIdAsync(modifiedOrder.EmployeeId) as Employee;
+                    var employee = _memberService.GetByIdAsync(modifiedOrder.EmployeeId).GetAwaiter().GetResult() as Employee;
                     employeeName = employee != null ? employee.FullName : employeeName;
                 }
                 result.Add($"Order employee was changed  to '{employeeName}'");
