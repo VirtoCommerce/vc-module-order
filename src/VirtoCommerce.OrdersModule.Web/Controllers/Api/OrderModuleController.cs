@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using VirtoCommerce.CartModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -55,13 +56,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private readonly INotificationSearchService _notificationSearchService;
         private readonly IAuthorizationService _authorizationService;
-
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
-        private readonly PlatformOptions _platformOptions;
-        private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IConverter _converter;
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
+        private readonly MvcNewtonsoftJsonOptions _jsonOptions;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -77,10 +76,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , INotificationSearchService notificationSearchService
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
-            , IOptions<PlatformOptions> platformOptions
-            , IBlobStorageProvider blobStorageProvider
             , IConverter converter
-            , IOptions<HtmlToPdfOptions> htmlToPdfOptions)
+            , IOptions<HtmlToPdfOptions> htmlToPdfOptions
+            , IOptions<MvcNewtonsoftJsonOptions> jsonOptionsAccessor)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -95,10 +93,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _notificationSearchService = notificationSearchService;
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
-            _platformOptions = platformOptions.Value;
-            _blobStorageProvider = blobStorageProvider;
             _htmlToPdfOptions = htmlToPdfOptions.Value;
             _converter = converter;
+            _jsonOptions = jsonOptionsAccessor.Value;
         }
 
         /// <summary>
@@ -116,8 +113,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
 
             var result = await _searchService.SearchCustomerOrdersAsync(criteria);
-
-            return Ok(result);
+            //It is a important to return serialized data by such way. Instead you have a slow response time for large outputs 
+            //https://github.com/dotnet/aspnetcore/issues/19646
+            return Content(JsonConvert.SerializeObject(result, _jsonOptions.SerializerSettings), "application/json");
         }
 
         /// <summary>
