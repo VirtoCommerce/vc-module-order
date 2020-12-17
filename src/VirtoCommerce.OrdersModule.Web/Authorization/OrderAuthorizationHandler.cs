@@ -1,8 +1,7 @@
-using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core;
@@ -24,14 +23,15 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
 
     public sealed class OrderAuthorizationHandler : PermissionAuthorizationHandlerBase<OrderAuthorizationRequirement>
     {
+        //VP-6222 Fix permission scope "Only for order responsible"
+        //Copy of PlatformConstants.Security.Claims.MemberIdClaimType. Copied to reduce platform version dependency
+        public const string MemberIdClaimType = "memberId";
+
         private readonly MvcNewtonsoftJsonOptions _jsonOptions;
 
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public OrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOptions, Func<UserManager<ApplicationUser>> userManager)
+        public OrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOptions)
         {
             _jsonOptions = jsonOptions.Value;
-            _userManager = userManager();
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
@@ -53,11 +53,13 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                         if (onlyResponsibleScope != null)
                         {
                             var identityName = context.User.Identity.Name;
-                            var user = await _userManager.GetUserAsync(context.User);
-                            criteria.EmployeeId = user != null ? user.MemberId : identityName;
+                            var memberId = context.User.FindFirstValue(MemberIdClaimType);
+                            criteria.EmployeeId = memberId ?? identityName;
                         }
+
                         context.Succeed(requirement);
                     }
+
                     if (context.Resource is CustomerOrder order)
                     {
                         if (allowedStoreIds.Contains(order.StoreId) || (onlyResponsibleScope != null && order.EmployeeId.EqualsInvariant(context.User.Identity.Name)))
@@ -77,14 +79,17 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                     {
                         criteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
                     }
+
                     criteria.ResponseGroup = EnumUtility.SafeRemoveFlagFromEnumString(criteria.ResponseGroup, CustomerOrderResponseGroup.WithPrices);
                     //Do not allow pass empty response group into services because that can leads to use default response group CustomerOrderResponseGroup.Full
                     if (string.IsNullOrEmpty(criteria.ResponseGroup))
                     {
                         criteria.ResponseGroup = CustomerOrderResponseGroup.Default.ToString();
                     }
+
                     context.Succeed(requirement);
                 }
+
                 if (context.Resource is CustomerOrder order)
                 {
                     order.ReduceDetails((CustomerOrderResponseGroup.Full & ~CustomerOrderResponseGroup.WithPrices).ToString());
