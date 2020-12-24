@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
-using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
@@ -150,12 +149,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
             order.Sum = order.Total;
-
-            if (order.ChildrenOperations.IsNullOrEmpty())
-            {
-                order.FillAllChildOperations();
-            }
-            
         }
 
         protected virtual void CalculatePaymentTotals(PaymentIn payment)
