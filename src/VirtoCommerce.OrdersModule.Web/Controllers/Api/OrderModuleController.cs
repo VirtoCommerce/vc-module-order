@@ -21,6 +21,7 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Notifications;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Caching;
+using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
@@ -29,8 +30,6 @@ using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
-using VirtoCommerce.Platform.Core;
-using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
@@ -175,9 +174,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public ActionResult<CustomerOrder> CalculateTotals([FromBody] CustomerOrder order)
         {
             _totalsCalculator.CalculateTotals(order);
+            order.FillAllChildOperations();
 
             return Ok(order);
-
         }
 
         /// <summary>
