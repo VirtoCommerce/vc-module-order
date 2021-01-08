@@ -10,6 +10,7 @@ using VirtoCommerce.OrdersModule2.Web.Model;
 using VirtoCommerce.OrdersModule2.Web.Repositories;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule2.Web
 {
@@ -27,6 +28,9 @@ namespace VirtoCommerce.OrdersModule2.Web
 
         public void PostInitialize(IApplicationBuilder appBuilder)
         {
+            var settingsRegistrar = appBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
+            settingsRegistrar.RegisterSettings(ModuleConstants.Settings.General.AllSettings, ModuleInfo.Id);
+
             AbstractTypeFactory<IOperation>.OverrideType<CustomerOrder, CustomerOrder2>();
             AbstractTypeFactory<CustomerOrderEntity>.OverrideType<CustomerOrderEntity, CustomerOrder2Entity>();
             AbstractTypeFactory<CustomerOrder>.OverrideType<CustomerOrder, CustomerOrder2>()

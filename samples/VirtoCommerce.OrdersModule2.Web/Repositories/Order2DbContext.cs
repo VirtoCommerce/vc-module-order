@@ -17,7 +17,8 @@ namespace VirtoCommerce.OrdersModule2.Web.Repositories
             #endregion
 
             #region OrderInvoice
-            modelBuilder.Entity<InvoiceEntity>().ToTable("OrderInvoice");
+            modelBuilder.Entity<InvoiceEntity>().ToTable("OrderInvoice").HasKey(x => x.Id);
+            modelBuilder.Entity<InvoiceEntity>().Property(x => x.Id).HasMaxLength(128).ValueGeneratedOnAdd();
 
             modelBuilder.Entity<InvoiceEntity>().HasOne(m => m.CustomerOrder2).WithMany(m => m.Invoices)
                 .HasForeignKey(m => m.CustomerOrder2Id).OnDelete(DeleteBehavior.Cascade);

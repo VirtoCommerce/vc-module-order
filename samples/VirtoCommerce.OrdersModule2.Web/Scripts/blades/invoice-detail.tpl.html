@@ -1,7 +1,7 @@
-﻿<div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
+<div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
 <div class="blade-content __medium-wide">
     <div class="blade-inner">
-        <div class="inner-block" ng-controller="virtoCommerce.orderModule.invoiceDetailController">
+        <div class="inner-block" ng-controller="virtoCommerce.ordersModule2.invoiceDetailController">
             <div class="order-status canceled" ng-if="blade.currentEntity.status">
                 <div class="status" ng-bind="blade.currentEntity.status"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
@@ -12,11 +12,10 @@
                     <div class="form-input">
                         <ui-select ng-model="blade.currentEntity.paymentMethod" required>
                             <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.payment-gateway' | translate }}">{{$select.selected.name}}</ui-select-match>
-                            <ui-select-choices repeat="x in blade.currentStore.paymentMethods | filter: { name: $select.search }">
+                            <ui-select-choices repeat="x in blade.paymentMethods | filter: { name: $select.search }">
                                 <span ng-bind-html="x.name | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
-
                     </div>
                 </div>
                 <div class="form-group" ng-init="setForm(detailForm)">
