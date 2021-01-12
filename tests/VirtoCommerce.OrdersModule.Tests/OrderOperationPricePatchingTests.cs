@@ -96,5 +96,50 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Assert
             patchedOperation.Price.Should().Be(patchedPrice);
         }
+
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(1, 1)]
+        [InlineData(5, 1)]
+        public void PatchPrices_LineItem_Needed(decimal sourcePrice, decimal patchedPrice)
+        {
+            // Arrange
+            var sourceOperation = new LineItemEntity()
+            {
+                Price = sourcePrice,
+            };
+            var patchedOperation = new LineItemEntity()
+            {
+                Price = patchedPrice,
+            };
+
+            // Act
+            sourceOperation.Patch(patchedOperation);
+
+            // Assert
+            patchedOperation.Price.Should().Be(sourcePrice);
+        }
+
+        [Theory]
+        [InlineData(0, 1)]
+        [InlineData(0, 0)]
+        public void PatchPrices_LineItem_NotNeeded(decimal sourcePrice, decimal patchedPrice)
+        {
+            // Arrange
+            var sourceOperation = new LineItemEntity()
+            {
+                Price = sourcePrice,
+            };
+            var patchedOperation = new LineItemEntity()
+            {
+                Price = patchedPrice,
+            };
+
+            // Act
+            sourceOperation.Patch(patchedOperation);
+
+            // Assert
+            patchedOperation.Price.Should().Be(patchedPrice);
+        }
     }
 }

@@ -251,7 +251,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.CancelReason = CancelReason;
             target.Comment = Comment;
 
-            if (!(GetNonCalculatablePrices().All(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m)))
+            // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
+            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
+
+            if (isNeedPatch)
             {
                 target.TaxPercentRate = TaxPercentRate;
                 target.Price = Price;
