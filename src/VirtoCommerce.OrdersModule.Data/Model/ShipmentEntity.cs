@@ -251,7 +251,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
             }
 
-            var isNeedPatch = !(GetNonCalculatablePrices().Any(x => x == 0m) && target.GetNonCalculatablePrices().Any(x => x != 0m));
+            // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
+            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
 
             base.NeedPatchSum = isNeedPatch;
             base.Patch(operation);
@@ -342,6 +343,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
-        }        
+        }
     }
 }
