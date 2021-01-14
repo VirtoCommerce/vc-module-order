@@ -2,14 +2,14 @@
 <module>
     <id>VirtoCommerce.Orders2</id>
     <version>3.0.0</version>
-    <version-tag />
+    <version-tag>demo</version-tag>
     <platformVersion>3.0.0</platformVersion>
     <dependencies>
         <dependency id="VirtoCommerce.Orders" version="3.0.0" />
     </dependencies>
 
     <title>Order extension sample module</title>
-    <description>Demo</description>
+    <description>Extension with simple property and complex children collection property added.</description>
     <authors>
         <author>eugeney tatarincev</author>
     </authors>
