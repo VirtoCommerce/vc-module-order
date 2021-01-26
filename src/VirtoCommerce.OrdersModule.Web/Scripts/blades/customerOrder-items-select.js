@@ -30,7 +30,7 @@ angular.module('virtoCommerce.orderModule')
 
     blade.toolbarCommands = [
         {
-            name: "orders.commands.add-item", icon: 'fa fa-plus',
+            name: "orders.commands.add-item", icon: 'fas fa-plus',
             executeMethod: function (blade) {
                 var selectedItems = _.map(_.where($scope.items, {selected: true}), function(item) {
                     return { lineItemId: item.id, lineItem: item, quantity: item.quantityOnShipment };
