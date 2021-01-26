@@ -94,7 +94,7 @@
 
         blade.toolbarCommands = [
         {
-            name: "orders.commands.new-document", icon: 'fa fa-plus',
+            name: "orders.commands.new-document", icon: 'fas fa-plus',
             executeMethod: function () {
                 var newBlade = {
                     id: "newOperationWizard",
@@ -115,7 +115,7 @@
             permission: blade.updatePermission
         },
         {
-            name: "platform.commands.save", icon: 'fa fa-save',
+            name: "platform.commands.save", icon: 'fas fa-save',
             executeMethod: $scope.saveChanges,
             canExecuteMethod: canSave,
             permission: blade.updatePermission
@@ -129,7 +129,7 @@
             permission: blade.updatePermission
         },
         {
-            name: "platform.commands.delete", icon: 'fa fa-trash-o',
+            name: "platform.commands.delete", icon: 'fas fa-trash-alt',
             executeMethod: function () {
                 var dialog = {
                     id: "confirmDeleteItem",
