@@ -66,7 +66,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     //Do not process prototypes
                     if (!customerOrder.IsPrototype)
                     {
-                        var itemChanges = await GetProductInventoryChangesFor(changedEntry);
+                        var itemChanges = GetProductInventoryChangesFor(changedEntry);
                         if (itemChanges.Any())
                         {
                             //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
@@ -95,7 +95,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// </summary>
         /// <param name="changedEntry">The entry that describes changes made to order.</param>
         /// <returns>Array of required product inventory changes.</returns>
-        public virtual async Task<ProductInventoryChange[]> GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
+        public virtual ProductInventoryChange[] GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.NewEntry;
             var customerOrderShipments = customerOrder.Shipments?.ToArray();
@@ -104,7 +104,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
             var itemChanges = new List<ProductInventoryChange>();
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, async (state, changedItem, originalItem) =>
+            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default,  (state, changedItem, originalItem) =>
             {
                 var newQuantity = changedItem.Quantity;
                 var oldQuantity = originalItem.Quantity;
@@ -123,14 +123,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments);
+                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments).GetAwaiter().GetResult();
                     itemChanges.Add(itemChange);
                 }
             });
-            //Do not return unchanged records
-            return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
-        }
 
+            //Do not return unchanged records
+            return itemChanges.Where(x => x.QuantityDelta != 0).ToArray();
+        }
 
         public virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
         {
@@ -272,7 +272,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             //Use a default fulfillment center defined for store
             if (string.IsNullOrEmpty(result))
             {
-                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] {lineItem.ProductId})).ToList();
+                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
                 var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
                 if (store != null)
                 {

@@ -16,7 +16,6 @@ using VirtoCommerce.InventoryModule.Core.Model;
 using System;
 using System.Linq;
 using FluentAssertions;
-using VirtoCommerce.InventoryModule.Core.Model.Search;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -155,7 +154,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
-            var actualChanges = await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
+            var actualChanges = targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
 
             // Assert
             var equalityComparer = AnonymousComparer.Create((ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
@@ -237,7 +236,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
-            var actualChanges = await targetHandler.GetProductInventoryChangesFor(changedEntry);
+            var actualChanges = targetHandler.GetProductInventoryChangesFor(changedEntry);
 
             // Assert
             actualChanges.Should().HaveCount(1);
