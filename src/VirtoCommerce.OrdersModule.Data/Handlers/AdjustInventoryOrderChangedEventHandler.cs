@@ -105,12 +105,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             var itemChanges = new List<ProductInventoryChange>();
 
-
             var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(newLineItems.Select(x=>x.ProductId))).ToList();
             var store = await _storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
 
-
-            // The action should start synchronously. If make the action async it is run after itemChanges returned from this function 
             newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default,  (state, changedItem, originalItem) =>
             {
                 var newQuantity = changedItem.Quantity;
@@ -130,7 +127,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(changedItem, customerOrderShipments, inventoryInfos, store);
+                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItem(changedItem, customerOrderShipments, inventoryInfos, store);
                     itemChanges.Add(itemChange);
                 }
             });
@@ -221,7 +218,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var inventoryInfos = inventories.ToList();
             var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
 
-            var fulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(origLineItem,  order.Shipments?.ToArray(), inventoryInfos, store);
+            var fulfillmentCenterId = GetFullfilmentCenterForLineItem(origLineItem,  order.Shipments?.ToArray(), inventoryInfos, store);
             var inventoryInfo = inventoryInfos.Where(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId))
                 .FirstOrDefault(x => x.ProductId.EqualsInvariant(origLineItem.ProductId));
             if (inventoryInfo != null)
@@ -258,7 +255,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="inventoryInfos"></param>
         /// <param name="store"></param>
         /// <returns></returns>
-        protected virtual string GetFullfilmentCenterForLineItemAsync(LineItem lineItem, Shipment[] orderShipments, List<InventoryInfo> inventoryInfos, Store store)
+        protected virtual string GetFullfilmentCenterForLineItem(LineItem lineItem, Shipment[] orderShipments, List<InventoryInfo> inventoryInfos, Store store)
         {
             if (lineItem == null)
             {
