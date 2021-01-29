@@ -104,6 +104,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
             var itemChanges = new List<ProductInventoryChange>();
+
+
+            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(newLineItems.Select(x=>x.ProductId))).ToList();
+            var store = await _storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
+
+
             // The action should start synchronously. If make the action async it is run after itemChanges returned from this function 
             newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default,  (state, changedItem, originalItem) =>
             {
@@ -124,7 +130,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments).GetAwaiter().GetResult();
+                    itemChange.FulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(changedItem, customerOrderShipments, inventoryInfos, store);
                     itemChanges.Add(itemChange);
                 }
             });
@@ -212,8 +218,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual async Task AdjustInventory(IEnumerable<InventoryInfo> inventories, HashSet<InventoryInfo> changedInventories, CustomerOrder order, EntryState action, LineItem changedLineItem, LineItem origLineItem)
         {
-            var fulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(origLineItem, order.StoreId, order.Shipments?.ToArray());
-            var inventoryInfo = inventories.Where(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId))
+            var inventoryInfos = inventories.ToList();
+            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
+
+            var fulfillmentCenterId = GetFullfilmentCenterForLineItemAsync(origLineItem,  order.Shipments?.ToArray(), inventoryInfos, store);
+            var inventoryInfo = inventoryInfos.Where(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId))
                 .FirstOrDefault(x => x.ProductId.EqualsInvariant(origLineItem.ProductId));
             if (inventoryInfo != null)
             {
@@ -245,10 +254,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// Returns a fulfillment center identifier much suitable for given order line item
         /// </summary>
         /// <param name="lineItem"></param>
-        /// <param name="orderStoreId"></param>
         /// <param name="orderShipments"></param>
+        /// <param name="inventoryInfos"></param>
+        /// <param name="store"></param>
         /// <returns></returns>
-        protected virtual async Task<string> GetFullfilmentCenterForLineItemAsync(LineItem lineItem, string orderStoreId, Shipment[] orderShipments)
+        protected virtual string GetFullfilmentCenterForLineItemAsync(LineItem lineItem, Shipment[] orderShipments, List<InventoryInfo> inventoryInfos, Store store)
         {
             if (lineItem == null)
             {
@@ -271,19 +281,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
 
             //Use a default fulfillment center defined for store
-            if (string.IsNullOrEmpty(result))
+            if (string.IsNullOrEmpty(result) && store != null)
             {
-                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
-                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
-                if (store != null)
-                {
-                    result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
+                result = inventoryInfos.FirstOrDefault(x => x.ProductId == lineItem.ProductId  &&  x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
 
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        var ffcIds = inventoryInfos.Where(x => x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
-                        result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x => ffcIds.Contains(x));
-                    }
+                if (string.IsNullOrEmpty(result))
+                {
+                    var ffcIds = inventoryInfos.Where(x => x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
+                    result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x => ffcIds.Contains(x));
                 }
             }
 
