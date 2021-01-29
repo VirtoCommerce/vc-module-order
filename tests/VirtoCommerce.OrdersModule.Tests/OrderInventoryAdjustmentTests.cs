@@ -154,7 +154,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
-            var actualChanges = targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
+            var actualChanges =  await targetHandler.GetProductInventoryChangesFor(orderChangedEntry);
 
             // Assert
             var equalityComparer = AnonymousComparer.Create((ProductInventoryChange x) => $"{x.FulfillmentCenterId} {x.ProductId} {x.QuantityDelta}");
@@ -236,7 +236,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 storeServiceMock.Object, settingsManagerMock.Object, itemServiceMock.Object);
 
             // Act
-            var actualChanges = targetHandler.GetProductInventoryChangesFor(changedEntry);
+            var actualChanges = await targetHandler.GetProductInventoryChangesFor(changedEntry);
 
             // Assert
             actualChanges.Should().HaveCount(1);

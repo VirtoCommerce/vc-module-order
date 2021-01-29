@@ -66,7 +66,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     //Do not process prototypes
                     if (!customerOrder.IsPrototype)
                     {
-                        var itemChanges = GetProductInventoryChangesFor(changedEntry);
+                        var itemChanges = await GetProductInventoryChangesFor(changedEntry);
                         if (itemChanges.Any())
                         {
                             //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
@@ -95,7 +95,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// </summary>
         /// <param name="changedEntry">The entry that describes changes made to order.</param>
         /// <returns>Array of required product inventory changes.</returns>
-        public virtual ProductInventoryChange[] GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
+        public virtual async Task<ProductInventoryChange[]> GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var customerOrder = changedEntry.NewEntry;
             var customerOrderShipments = customerOrder.Shipments?.ToArray();
@@ -104,6 +104,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
             var itemChanges = new List<ProductInventoryChange>();
+            // The action should start synchronously. If make the action async it is run after itemChanges returned from this function 
             newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default,  (state, changedItem, originalItem) =>
             {
                 var newQuantity = changedItem.Quantity;
@@ -129,7 +130,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             });
 
             //Do not return unchanged records
-            return itemChanges.Where(x => x.QuantityDelta != 0).ToArray();
+            return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
         }
 
         public virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
