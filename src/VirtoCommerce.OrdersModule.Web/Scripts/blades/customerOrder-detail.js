@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.orderModule.order_res_stores', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.authService',
-        function ($scope, $window, bladeNavigationService, dialogService, order_res_stores, settings, members, memberTypesResolverService, statusTranslationService, securityAccounts, authService) {
+    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.authService',
+        function ($scope, $window, bladeNavigationService, dialogService, settings, members, memberTypesResolverService, statusTranslationService, securityAccounts, authService) {
             var blade = $scope.blade;
 
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
@@ -23,7 +23,6 @@ angular.module('virtoCommerce.orderModule')
                 }
             });
 
-            blade.stores = order_res_stores.query();
             settings.getValues({ id: 'Order.Status' }, translateBladeStatuses);
             blade.openStatusSettingManagement = function () {
                 var newBlade = {

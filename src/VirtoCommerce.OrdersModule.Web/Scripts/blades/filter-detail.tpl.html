@@ -1,4 +1,4 @@
-﻿<div class="blade-content">
+<div class="blade-content">
     <div class="blade-inner">
         <div class="inner-block clearfix">
             <form class="form" name="formScope">
@@ -30,12 +30,7 @@
 
 <script type="text/ng-template" id="storeSelector.html">
     <div class="form-input">
-        <ui-select multiple ng-model="blade.currentEntity.storeIds">
-            <ui-select-match placeholder="{{ 'orders.blades.filter-detail.placeholders.all' | translate }}">{{$item.name}}</ui-select-match>
-            <ui-select-choices repeat="store.id as store in blade.stores | filter: { name: $select.search }">
-                <span ng-bind-html="store.name | highlight: $select.search"></span>
-            </ui-select-choices>
-        </ui-select>
+        <va-store-selector multiple ng-model="blade.currentEntity.storeIds" placeholder="'orders.blades.filter-detail.placeholders.all'"></va-store-selector>
     </div>
 </script>
 
