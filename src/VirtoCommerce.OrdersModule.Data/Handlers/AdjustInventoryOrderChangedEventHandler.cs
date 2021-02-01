@@ -123,10 +123,19 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments);
                     itemChanges.Add(itemChange);
                 }
             });
+
+            foreach (var item in itemChanges)
+            {
+                var lineItem = newLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if (lineItem != null)
+                {
+                    item.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(lineItem, customerOrder.StoreId, customerOrderShipments);
+                }
+                
+            }
             //Do not return unchanged records
             return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
         }
