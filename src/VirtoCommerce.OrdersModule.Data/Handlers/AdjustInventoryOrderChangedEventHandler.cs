@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.CatalogModule.Core.Model;
@@ -105,7 +104,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
             var itemChanges = new List<ProductInventoryChange>();
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, async (state, changedItem, originalItem) =>
+            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
             {
                 var newQuantity = changedItem.Quantity;
                 var oldQuantity = originalItem.Quantity;
