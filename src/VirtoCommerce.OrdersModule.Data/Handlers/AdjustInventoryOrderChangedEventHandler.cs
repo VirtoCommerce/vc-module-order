@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.CatalogModule.Core.Model;
@@ -127,10 +128,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             });
 
+
+            var allLineItems = newLineItems.Concat(oldLineItems).ToList();
             foreach (var item in itemChanges)
             {
-                var lineItem = newLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
-                if (lineItem != null)
+                var lineItem = allLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if(lineItem != null)
                 {
                     item.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(lineItem, customerOrder.StoreId, customerOrderShipments);
                 }
