@@ -41,10 +41,12 @@ namespace VirtoCommerce.OrdersModule.Web
         private IApplicationBuilder _appBuilder;
         public void Initialize(IServiceCollection serviceCollection)
         {
-            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce"));
+            });
             serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
-            var connectionString = configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce");
-            serviceCollection.AddDbContext<OrderDbContext>(options => options.UseSqlServer(connectionString));
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
@@ -63,6 +65,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
             serviceCollection.AddOptions<HtmlToPdfOptions>().Bind(configuration.GetSection("HtmlToPdf")).ValidateDataAnnotations();
         }
 

@@ -19,11 +19,12 @@ namespace VirtoCommerce.OrdersModule2.Web
         public ManifestModuleInfo ModuleInfo { get; set; }
         public void Initialize(IServiceCollection serviceCollection)
         {
-            var snapshot = serviceCollection.BuildServiceProvider();
-            var configuration = snapshot.GetService<IConfiguration>();
-            serviceCollection.AddDbContext<Order2DbContext>(options => options.UseSqlServer(configuration.GetConnectionString("VirtoCommerce")));
+            serviceCollection.AddDbContext<Order2DbContext>((provider, options) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce"));
+            });
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
-
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
