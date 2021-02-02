@@ -22,7 +22,7 @@ namespace VirtoCommerce.OrdersModule2.Web
             serviceCollection.AddDbContext<Order2DbContext>((provider, options) =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce"));
+                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce"));
             });
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
         }
