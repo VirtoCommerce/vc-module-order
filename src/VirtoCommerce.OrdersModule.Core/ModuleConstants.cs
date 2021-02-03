@@ -58,7 +58,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 {
                     Name = "Order.CustomerOrderNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
-                    GroupName = "Orders|General",
+                    GroupName = "Orders|Orders",
                     DefaultValue = "CO{0:yyMMdd}-{1:D5}"
                 };
 
@@ -66,7 +66,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 {
                     Name = "Order.ShipmentNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
-                    GroupName = "Orders|General",
+                    GroupName = "Orders|Orders",
                     DefaultValue = "SH{0:yyMMdd}-{1:D5}"
                 };
 
@@ -74,7 +74,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 {
                     Name = "Order.PaymentInNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
-                    GroupName = "Orders|General",
+                    GroupName = "Orders|Orders",
                     DefaultValue = "PI{0:yyMMdd}-{1:D5}"
                 };
 
