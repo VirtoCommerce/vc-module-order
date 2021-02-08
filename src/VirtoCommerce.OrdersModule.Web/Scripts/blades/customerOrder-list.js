@@ -109,7 +109,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         });
     }
 
-    blade.headIcon = 'fa-file-text';
+    blade.headIcon = 'fa fa-file-text';
 
     blade.toolbarCommands = [
             {
