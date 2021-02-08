@@ -23,6 +23,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
+using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -41,10 +42,12 @@ namespace VirtoCommerce.OrdersModule.Web
         private IApplicationBuilder _appBuilder;
         public void Initialize(IServiceCollection serviceCollection)
         {
-            var configuration = serviceCollection.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+            });
             serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
-            var connectionString = configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce");
-            serviceCollection.AddDbContext<OrderDbContext>(options => options.UseSqlServer(connectionString));
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
@@ -63,7 +66,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-            serviceCollection.AddOptions<HtmlToPdfOptions>().Bind(configuration.GetSection("HtmlToPdf")).ValidateDataAnnotations();
+            serviceCollection.AddSingleton<IConfigureOptions<HtmlToPdfOptions>, ConfigureHtmlToPdfOptions>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
