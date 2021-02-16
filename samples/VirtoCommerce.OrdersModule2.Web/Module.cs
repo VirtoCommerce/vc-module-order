@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,10 +7,12 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
+using VirtoCommerce.OrdersModule2.Web.Authorization;
 using VirtoCommerce.OrdersModule2.Web.Model;
 using VirtoCommerce.OrdersModule2.Web.Repositories;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule2.Web
@@ -25,12 +28,23 @@ namespace VirtoCommerce.OrdersModule2.Web
                 options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce.Orders") ?? configuration.GetConnectionString("VirtoCommerce"));
             });
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
+
+
+            serviceCollection.AddTransient<IAuthorizationHandler, CustomOrderAuthorizationHandler>();
+
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
         {
             var settingsRegistrar = appBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
             settingsRegistrar.RegisterSettings(ModuleConstants.Settings.General.AllSettings, ModuleInfo.Id);
+
+            AbstractTypeFactory<PermissionScope>.RegisterType<OrderSelectedStatusScope>();
+            var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
+            permissionsProvider.WithAvailabeScopesForPermissions(new[] {
+                                                                        OrdersModule.Core.ModuleConstants.Security.Permissions.Read,
+                                                                        }, new OrderSelectedStatusScope());
+
 
             AbstractTypeFactory<IOperation>.OverrideType<CustomerOrder, CustomerOrder2>();
             AbstractTypeFactory<CustomerOrderEntity>.OverrideType<CustomerOrderEntity, CustomerOrder2Entity>();

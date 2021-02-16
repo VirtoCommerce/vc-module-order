@@ -7,20 +7,13 @@ using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
+using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Security.Authorization;
 
 namespace VirtoCommerce.OrdersModule.Web.Authorization
 {
-    public sealed class OrderAuthorizationRequirement : PermissionAuthorizationRequirement
-    {
-        public OrderAuthorizationRequirement(string permission)
-            : base(permission)
-        {
-        }
-    }
-
     public sealed class OrderAuthorizationHandler : PermissionAuthorizationHandlerBase<OrderAuthorizationRequirement>
     {
         //VP-6222 Fix permission scope "Only for order responsible"

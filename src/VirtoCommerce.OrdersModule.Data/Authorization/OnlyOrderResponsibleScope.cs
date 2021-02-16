@@ -1,6 +1,6 @@
 using VirtoCommerce.Platform.Core.Security;
 
-namespace VirtoCommerce.OrdersModule.Web.Authorization
+namespace VirtoCommerce.OrdersModule.Data.Authorization
 {
     /// <summary>
     /// Restrict access rights to orders where user is assigned as responsible
