@@ -9,7 +9,6 @@ angular.module(moduleName, [])
     .run(
         ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService',
             function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService) {
-
                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                 if (foundTemplate) {
                     foundTemplate.detailBlade.metaFields.push(
@@ -75,5 +74,4 @@ angular.module(moduleName, [])
                     }
                 };
                 scopeResolver.register(orderStatusesScope);
-
             }]);
