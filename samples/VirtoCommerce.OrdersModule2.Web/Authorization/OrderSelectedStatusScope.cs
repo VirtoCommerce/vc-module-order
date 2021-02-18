@@ -1,4 +1,3 @@
-using System;
 using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.OrdersModule2.Web.Authorization
