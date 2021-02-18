@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.OrdersModule2.Web.Authorization.Extensions
