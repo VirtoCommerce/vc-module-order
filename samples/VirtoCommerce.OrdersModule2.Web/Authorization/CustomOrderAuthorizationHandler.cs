@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Data.Authorization;
+using VirtoCommerce.OrdersModule2.Web.Authorization.Extensions;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Security.Authorization;
 
@@ -13,7 +14,6 @@ namespace VirtoCommerce.OrdersModule2.Web.Authorization
 {
     public sealed class CustomOrderAuthorizationHandler : PermissionAuthorizationHandlerBase<OrderAuthorizationRequirement>
     {
-
         private readonly MvcNewtonsoftJsonOptions _jsonOptions;
 
         public CustomOrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOptions)
@@ -21,31 +21,32 @@ namespace VirtoCommerce.OrdersModule2.Web.Authorization
             _jsonOptions = jsonOptions.Value;
         }
 
+        /// <summary>
+        /// Сomplementary permission checking for the main authentication handler OrderAuthorizationHandler
+        /// </summary>
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
         {
-            //complementary permission checking for the main authentication handler OrderAuthorizationHandler
-            //only for if previous handler returns success
-            if (context.HasSucceeded)
+            // Go next only if previous handler returns success
+            if (!context.HasSucceeded)
+                return;
+
+            var userPermission = context.User.FindPermission(requirement.Permission, _jsonOptions.SerializerSettings);
+            if (userPermission != null)
             {
-                var userPermission = context.User.FindPermission(requirement.Permission, _jsonOptions.SerializerSettings);
-                if (userPermission != null)
+                var allowedStatuses = userPermission.GetAllowedStatuses<OrderSelectedStatusScope>();
+
+                // TODO: C# 9.0 => Rewrite to switch with 'and pattern' when C# 9.0 is available
+                if (context.Resource is OrderOperationSearchCriteriaBase criteria)
                 {
-                    var selectedStatusesScopes = userPermission.AssignedScopes.OfType<OrderSelectedStatusScope>();
-                    var allowedStatuses = selectedStatusesScopes.Select(x => x.Status).Distinct().ToArray();
+                    criteria.Statuses = criteria.Statuses.Intersect(allowedStatuses).ToArray();
+                    context.Succeed(requirement);
+                }
 
-                    if (context.Resource is OrderOperationSearchCriteriaBase criteria)
-                    {
-                        criteria.Statuses = allowedStatuses;
-                        context.Succeed(requirement);
-                    }
-
-                    if (context.Resource is CustomerOrder order && !allowedStatuses.Contains(order.Status))
-                    {
-                        context.Fail();
-                    }
+                if (context.Resource is CustomerOrder order && !allowedStatuses.Contains(order.Status))
+                {
+                    context.Fail();
                 }
             }
         }
     }
 }
-
