@@ -104,7 +104,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
             var itemChanges = new List<ProductInventoryChange>();
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, async (state, changedItem, originalItem) =>
+            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
             {
                 var newQuantity = changedItem.Quantity;
                 var oldQuantity = originalItem.Quantity;
@@ -123,10 +123,21 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
                     itemChange.ProductId = changedItem.ProductId;
                     itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChange.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(changedItem, customerOrder.StoreId, customerOrderShipments);
                     itemChanges.Add(itemChange);
                 }
             });
+
+
+            var allLineItems = newLineItems.Concat(oldLineItems).ToList();
+            foreach (var item in itemChanges)
+            {
+                var lineItem = allLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if(lineItem != null)
+                {
+                    item.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(lineItem, customerOrder.StoreId, customerOrderShipments);
+                }
+                
+            }
             //Do not return unchanged records
             return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
         }

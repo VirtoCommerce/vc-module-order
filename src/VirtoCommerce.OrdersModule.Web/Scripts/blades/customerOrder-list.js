@@ -109,7 +109,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         });
     }
 
-    blade.headIcon = 'fa-file-text';
+    blade.headIcon = 'fa fa-file-text';
 
     blade.toolbarCommands = [
             {
@@ -122,7 +122,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     ];
     if (!blade.hideDelete) {
         blade.toolbarCommands.push({
-            name: "platform.commands.delete", icon: 'fa fa-trash-o',
+            name: "platform.commands.delete", icon: 'fas fa-trash-alt',
             executeMethod: function () {
                 $scope.deleteList($scope.gridApi.selection.getSelectedRows());
             },

@@ -20,7 +20,6 @@ angular.module('virtoCommerce.orderModule')
             blade.subtitle = 'orders.blades.payment-detail.subtitle';
         }
                 
-        blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
         blade.realOperationsCollection = blade.customerOrder.inPayments;
 
         paymentMethods.search({storeId: blade.customerOrder.storeId}, function (data) {

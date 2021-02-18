@@ -8,7 +8,7 @@ namespace VirtoCommerce.OrdersModule2.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(name: "NewField", table: "CustomerOrder", maxLength: 128, nullable: true);
-            migrationBuilder.AddColumn<string>(name: "Discriminator", table: "CustomerOrder", nullable: false, maxLength: 128, defaultValue: "CustomerOrderEntity");
+            migrationBuilder.AddColumn<string>(name: "Discriminator", table: "CustomerOrder", nullable: false, maxLength: 128, defaultValue: "CustomerOrder2Entity");
 
             migrationBuilder.CreateTable(
                 name: "OrderInvoice",

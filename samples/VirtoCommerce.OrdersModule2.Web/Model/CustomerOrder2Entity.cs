@@ -15,14 +15,13 @@ namespace VirtoCommerce.OrdersModule2.Web.Model
         public string NewField { get; set; }
         public virtual ObservableCollection<InvoiceEntity> Invoices { get; set; }
 
-        
+
         public override OrderOperation ToModel(OrderOperation operation)
         {
-            var order2 = operation as CustomerOrder2;
-
-            if (order2 != null)
+            if (operation is CustomerOrder2 order2)
             {
-                order2.Invoices = this.Invoices.Select(x => x.ToModel(new Invoice())).OfType<Invoice>().ToList();
+                order2.NewField = NewField;
+                order2.Invoices = Invoices.Select(x => x.ToModel(new Invoice())).OfType<Invoice>().ToList();
             }
 
             base.ToModel(operation);
@@ -32,12 +31,13 @@ namespace VirtoCommerce.OrdersModule2.Web.Model
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            var order2 = operation as CustomerOrder2;
-            if (order2 != null)
+            if (operation is CustomerOrder2 order2)
             {
+                NewField = order2.NewField;
+
                 if (order2.Invoices != null)
                 {
-                    this.Invoices = new ObservableCollection<InvoiceEntity>(order2.Invoices.Select(x => new InvoiceEntity().FromModel(x, pkMap)).OfType<InvoiceEntity>());
+                    Invoices = new ObservableCollection<InvoiceEntity>(order2.Invoices.Select(x => new InvoiceEntity().FromModel(x, pkMap)).OfType<InvoiceEntity>());
                 }
             }
 
@@ -48,18 +48,17 @@ namespace VirtoCommerce.OrdersModule2.Web.Model
 
         public override void Patch(OperationEntity operation)
         {
-            var target = operation as CustomerOrder2Entity;
-            if (target != null)
+            if (operation is CustomerOrder2Entity target)
             {
-                target.NewField = this.NewField;
-                if (!this.Invoices.IsNullCollection())
+                target.NewField = NewField;
+
+                if (!Invoices.IsNullCollection())
                 {
-                    this.Invoices.Patch(target.Invoices, (sourceInvoice, targetInvoice) => sourceInvoice.Patch(targetInvoice));
+                    Invoices.Patch(target.Invoices, (sourceInvoice, targetInvoice) => sourceInvoice.Patch(targetInvoice));
                 }
             }
 
             base.Patch(operation);
         }
-
     }
 }

@@ -24,7 +24,6 @@ angular.module('virtoCommerce.ordersModule2')
                 blade.subtitle = 'sample';
             }
 
-            blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
             blade.realOperationsCollection = blade.customerOrder.invoices;
 
             blade.paymentMethods = [];

@@ -17,7 +17,7 @@ angular.module('virtoCommerce.orderModule')
 
         blade.toolbarCommands = [
             {
-                name: "orders.commands.add-item", icon: 'fa fa-plus',
+                name: "orders.commands.add-item", icon: 'fas fa-plus',
                 executeMethod: function () {
                     openAddEntityWizard();
                 },
@@ -27,7 +27,7 @@ angular.module('virtoCommerce.orderModule')
                 permission: blade.updatePermission
             },
             {
-                name: "platform.commands.remove", icon: 'fa fa-trash-o',
+                name: "platform.commands.remove", icon: 'fas fa-trash-alt',
                 executeMethod: function () {
                     var items = blade.currentEntity.items;
                     blade.currentEntity.items = _.difference(items, _.filter(items, function (x) { return x.selected }));
@@ -75,7 +75,7 @@ angular.module('virtoCommerce.orderModule')
                 breadcrumbs: [],
                 toolbarCommands: [
                     {
-                        name: "orders.commands.add-selected", icon: 'fa fa-plus',
+                        name: "orders.commands.add-selected", icon: 'fas fa-plus',
                         executeMethod: function (blade) {
                             //addProductsToOrder(selectedProducts);
                             selectedProducts.length = 0;

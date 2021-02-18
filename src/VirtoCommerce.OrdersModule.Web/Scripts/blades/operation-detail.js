@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus',
     function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus) {
         var blade = $scope.blade;
@@ -94,13 +94,12 @@
 
         blade.toolbarCommands = [
         {
-            name: "orders.commands.new-document", icon: 'fa fa-plus',
+            name: "orders.commands.new-document", icon: 'fas fa-plus',
             executeMethod: function () {
                 var newBlade = {
                     id: "newOperationWizard",
                     customerOrder: blade.customerOrder,
                     currentEntity: blade.currentEntity,
-                    stores: blade.stores,
                     availableTypes: blade.knownChildrenOperations,
                     title: "orders.blades.newOperation-wizard.title",
                     subtitle: 'orders.blades.newOperation-wizard.subtitle',
@@ -115,7 +114,7 @@
             permission: blade.updatePermission
         },
         {
-            name: "platform.commands.save", icon: 'fa fa-save',
+            name: "platform.commands.save", icon: 'fas fa-save',
             executeMethod: $scope.saveChanges,
             canExecuteMethod: canSave,
             permission: blade.updatePermission
@@ -129,7 +128,7 @@
             permission: blade.updatePermission
         },
         {
-            name: "platform.commands.delete", icon: 'fa fa-trash-o',
+            name: "platform.commands.delete", icon: 'fas fa-trash-alt',
             executeMethod: function () {
                 var dialog = {
                     id: "confirmDeleteItem",

@@ -19,7 +19,6 @@ angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModul
             blade.subtitle = 'orders.blades.shipment-detail.subtitle';
         }
 
-        blade.currentStore = _.findWhere(blade.parentBlade.stores, { id: blade.customerOrder.storeId });
         blade.realOperationsCollection = blade.customerOrder.shipments;
 
         shippingMethods.search({ storeId: blade.customerOrder.storeId }, function (data) {
