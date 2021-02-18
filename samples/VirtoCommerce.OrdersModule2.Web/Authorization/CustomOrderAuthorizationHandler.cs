@@ -24,11 +24,11 @@ namespace VirtoCommerce.OrdersModule2.Web.Authorization
         /// <summary>
         /// Сomplementary permission checking for the main authentication handler OrderAuthorizationHandler
         /// </summary>
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
         {
             // Go next only if previous handler returns success
             if (!context.HasSucceeded)
-                return;
+                return Task.CompletedTask;
 
             var userPermission = context.User.FindPermission(requirement.Permission, _jsonOptions.SerializerSettings);
             if (userPermission != null)
@@ -47,6 +47,8 @@ namespace VirtoCommerce.OrdersModule2.Web.Authorization
                     context.Fail();
                 }
             }
+
+            return Task.CompletedTask;
         }
     }
 }
