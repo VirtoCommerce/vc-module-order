@@ -6,53 +6,72 @@ if (AppDependencies != undefined) {
 }
 
 angular.module(moduleName, [])
-.run(
-  ['virtoCommerce.orderModule.knownOperations', '$http', '$compile',
-    function (knownOperations, $http, $compile) {
+    .run(
+        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService',
+            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService) {
+                var foundTemplate = knownOperations.getOperation('CustomerOrder');
+                if (foundTemplate) {
+                    foundTemplate.detailBlade.metaFields.push(
+                        {
+                            name: 'newField',
+                            title: "New field",
+                            valueType: "ShortText"
+                        });
 
-        var foundTemplate = knownOperations.getOperation('CustomerOrder');
-        if (foundTemplate) {
-            foundTemplate.detailBlade.metaFields.push(
-                {
-                    name: 'newField',
-                    title: "New field",
-                    valueType: "ShortText"
+                    foundTemplate.detailBlade.knownChildrenOperations.push('Invoice');
+                }
+
+                var invoiceOperation = {
+                    type: 'Invoice',
+                    description: 'Sample Invoice document',
+                    treeTemplateUrl: 'invoiceOperation.tpl.html',
+                    detailBlade: {
+                        template: 'Modules/$(virtoCommerce.orders2)/Scripts/blades/invoice-detail.tpl.html',
+                        metaFields: [
+                            {
+                                name: 'number',
+                                isRequired: true,
+                                title: "Invoice number",
+                                valueType: "ShortText"
+                            },
+                            {
+                                name: 'createdDate',
+                                isReadOnly: true,
+                                title: "created",
+                                valueType: "DateTime"
+                            },
+                            {
+                                name: 'customerId',
+                                title: "Customer",
+                                templateUrl: 'customerSelector.html'
+                            }
+                        ]
+                    }
+                };
+                knownOperations.registerOperation(invoiceOperation);
+
+                $http.get('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html').then(function (response) {
+                    // compile the response, which will put stuff into the cache
+                    $compile(response.data);
                 });
 
-            foundTemplate.detailBlade.knownChildrenOperations.push('Invoice');
-        }
-
-        var invoiceOperation = {
-            type: 'Invoice',
-            description: 'Sample Invoice document',
-            treeTemplateUrl: 'invoiceOperation.tpl.html',
-            detailBlade: {
-                template: 'Modules/$(virtoCommerce.orders2)/Scripts/blades/invoice-detail.tpl.html',
-                metaFields: [
-                    {
-                        name: 'number',
-                        isRequired: true,
-                        title: "Invoice number",
-                        valueType: "ShortText"
-                    },
-                    {
-                        name: 'createdDate',
-                        isReadOnly: true,
-                        title: "created",
-                        valueType: "DateTime"
-                    },
-                    {
-                        name: 'customerId',
-                        title: "Customer",
-                        templateUrl: 'customerSelector.html'
+                //Register permission scopes templates used for scope bounded definition in role management ui
+                var orderStatusesScope = {
+                    type: 'OrderSelectedStatusScope',
+                    title: 'Only for orders in selected statuses',
+                    selectFn: function (blade, callback) {
+                        var newBlade = {
+                            id: 'store-pick',
+                            title: this.title,
+                            subtitle: 'Select statuses',
+                            currentEntity: this,
+                            onChangesConfirmedFn: callback,
+                            dataPromise: settings.getValues({ id: 'Order.Status' }).$promise.then(arr => _.map(arr, function (value) { return { id: value, name: value } })),
+                            controller: 'platformWebApp.security.scopeValuePickFromSimpleListController',
+                            template: '$(Platform)/Scripts/app/security/blades/common/scope-value-pick-from-simple-list.tpl.html'
+                        };
+                        bladeNavigationService.showBlade(newBlade, blade);
                     }
-                ]
-            }
-        };
-        knownOperations.registerOperation(invoiceOperation);
-
-        $http.get('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html').then(function (response) {
-            // compile the response, which will put stuff into the cache
-            $compile(response.data);
-        });
-    }]);
+                };
+                scopeResolver.register(orderStatusesScope);
+            }]);

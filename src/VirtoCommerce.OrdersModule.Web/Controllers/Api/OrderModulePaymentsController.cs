@@ -6,7 +6,7 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
-using VirtoCommerce.OrdersModule.Web.Authorization;
+using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -19,7 +19,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
         private readonly ICustomerOrderService _customerOrderService;
-
 
         public OrderModulePaymentsController(
               IPaymentSearchService paymentSearchService
@@ -40,7 +39,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="criteria">criteria</param>
         [HttpPost]
         [Route("search")]
-        public async Task<ActionResult<PaymentSearchResult>> SearchOrderPayments([FromBody]PaymentSearchCriteria criteria)
+        public async Task<ActionResult<PaymentSearchResult>> SearchOrderPayments([FromBody] PaymentSearchCriteria criteria)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
@@ -52,7 +51,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             return Ok(result);
         }
-               
+
         /// <summary>
         /// Find  order payment by id
         /// </summary>
@@ -76,14 +75,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result.Results.FirstOrDefault());
         }
 
-
         /// <summary>
         /// Create or update order payment
         /// </summary>
         /// <param name="payment">payment</param>
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<CustomerOrder>> CreatePayment([FromBody]PaymentIn payment)
+        public async Task<ActionResult<CustomerOrder>> CreatePayment([FromBody] PaymentIn payment)
         {
             if (payment == null)
             {
@@ -109,11 +107,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         [HttpPut]
         [Route("")]
-        public Task<ActionResult<CustomerOrder>> UpdatePayment([FromBody]PaymentIn payment)
+        public Task<ActionResult<CustomerOrder>> UpdatePayment([FromBody] PaymentIn payment)
         {
             return CreatePayment(payment);
         }
-
 
         /// <summary>
         ///  Delete an order payment
@@ -138,6 +135,5 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
         }
-
     }
 }
