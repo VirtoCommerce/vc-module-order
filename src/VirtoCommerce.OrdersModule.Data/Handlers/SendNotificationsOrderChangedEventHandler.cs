@@ -184,7 +184,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (notification is EmailNotification emailNotification)
             {
-                emailNotification.From = store.Email;
+                emailNotification.From = store.EmailWithName;
                 emailNotification.To = await GetOrderRecipientEmailAsync(order);
             }
 
