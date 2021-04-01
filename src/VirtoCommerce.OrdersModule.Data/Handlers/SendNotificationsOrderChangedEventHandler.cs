@@ -122,7 +122,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 notification.Customer = customer;
                 notification.LanguageCode = changedEntry.NewEntry.LanguageCode;
                 await SetNotificationParametersAsync(notification, changedEntry);
-                _notificationSender.ScheduleSendNotification(notification);
+                await _notificationSender.ScheduleSendNotificationAsync(notification);
             }
         }
 
