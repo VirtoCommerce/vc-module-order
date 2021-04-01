@@ -12,14 +12,14 @@
   <ItemGroup>
     <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
     <PackageReference Include="Hangfire" Version="1.7.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -29,10 +29,10 @@
     <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.1.0" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.1.0" />
     <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.1.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.5.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.5.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Security" Version="3.5.0" />
-    <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.1.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.47.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.47.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Security" Version="3.47.0" />
+    <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.17.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.OrdersModule.Core\VirtoCommerce.OrdersModule.Core.csproj" />
