@@ -60,9 +60,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         // (!) Do not make this method async, it causes improper user recorded into the log! It happens because the user stored in the current thread. If the thread switched, the user info will lost.
         public void TryToLogChangesBackgroundJob(OperationLog[] operationLogs)
         {
-            {
-                _changeLogService.SaveChangesAsync(operationLogs).GetAwaiter().GetResult();
-            }
+            _changeLogService.SaveChangesAsync(operationLogs).GetAwaiter().GetResult();
         }
 
         protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)
