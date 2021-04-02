@@ -36,7 +36,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            var logOrderChangesEnabled = _settingsManager.GetValue(ModuleConstants.Settings.General.LogOrdersChanges.Name, (bool)ModuleConstants.Settings.General.LogOrdersChanges.DefaultValue);
+            var logOrderChangesEnabled = _settingsManager.GetValue(ModuleConstants.Settings.General.LogOrderChanges.Name, (bool)ModuleConstants.Settings.General.LogOrderChanges.DefaultValue);
 
             if (logOrderChangesEnabled && message.ChangedEntries.Any())
             {

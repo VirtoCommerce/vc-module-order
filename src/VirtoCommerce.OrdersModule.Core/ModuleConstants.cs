@@ -94,9 +94,9 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor LogOrdersChanges { get; } = new SettingDescriptor
+                public static SettingDescriptor LogOrderChanges { get; } = new SettingDescriptor
                 {
-                    Name = "Order.LogOrdersChanges",
+                    Name = "Order.LogOrderChanges",
                     GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = true,
@@ -114,7 +114,7 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return OrderPaymentInNewNumberTemplate;
                         yield return SendOrderNotifications;
                         yield return OrderAdjustInventory;
-                        yield return LogOrdersChanges;
+                        yield return LogOrderChanges;
                     }
                 }
             }
