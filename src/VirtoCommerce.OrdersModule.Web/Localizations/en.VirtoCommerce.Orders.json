@@ -316,6 +316,10 @@
     "Order.AdjustInventory": {
       "description": "Adjust inventory when order state changed.",
       "title": "Adjust inventory for orders"
+    },
+    "Order.LogOrdersChanges": {
+      "title": "Log orders changes",
+      "description": "Log orders changes into the platform operation log."
     }
   },
   "module": {
