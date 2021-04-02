@@ -24,7 +24,6 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
-using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -67,7 +66,10 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
-            serviceCollection.AddSingleton<IConfigureOptions<HtmlToPdfOptions>, ConfigureHtmlToPdfOptions>();
+            serviceCollection.AddOptions<HtmlToPdfOptions>().Configure<IConfiguration>((opts, config) =>
+            {
+                config.GetSection("HtmlToPdf").Bind(opts);
+            });
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
