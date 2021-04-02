@@ -41,6 +41,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             if (logOrderChangesEnabled && message.ChangedEntries.Any())
             {
                 var operationLogs = new List<OperationLog>();
+
                 foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
                 {
                     var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
@@ -49,6 +50,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
                                                          (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
                 }
+
                 if (!operationLogs.IsNullOrEmpty())
                 {
                     BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(operationLogs.ToArray()));
