@@ -9,11 +9,13 @@ using Hangfire;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Settings;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
@@ -22,39 +24,45 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     {
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
+        private readonly ISettingsManager _settingsManager;
         private static ConcurrentDictionary<string, List<string>> _auditablePropertiesListByTypeDict = new ConcurrentDictionary<string, List<string>>();
 
-        public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService)
+        public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService, ISettingsManager settingsManager)
         {
             _changeLogService = changeLogService;
             _memberService = memberService;
+            _settingsManager = settingsManager;
         }
 
-        public virtual Task Handle(OrderChangedEvent @event)
+        public virtual Task Handle(OrderChangedEvent message)
         {
-            if (@event.ChangedEntries.Any())
+            var logOrderChangesEnabled = _settingsManager.GetValue(ModuleConstants.Settings.General.LogOrderChanges.Name, (bool)ModuleConstants.Settings.General.LogOrderChanges.DefaultValue);
+
+            if (logOrderChangesEnabled && message.ChangedEntries.Any())
             {
-                BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(@event));
+                var operationLogs = new List<OperationLog>();
+
+                foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+                {
+                    var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                    var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+
+                    modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
+                                                         (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
+                }
+
+                if (!operationLogs.IsNullOrEmpty())
+                {
+                    BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(operationLogs.ToArray()));
+                }
             }
             return Task.CompletedTask;
         }
 
         // (!) Do not make this method async, it causes improper user recorded into the log! It happens because the user stored in the current thread. If the thread switched, the user info will lost.
-        public void TryToLogChangesBackgroundJob(OrderChangedEvent @event)
+        public void TryToLogChangesBackgroundJob(OperationLog[] operationLogs)
         {
-            var operationLogs = new List<OperationLog>();
-            foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
-            {
-                var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
-                var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
-
-                modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
-                                                     (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
-            }
-            if (!operationLogs.IsNullOrEmpty())
-            {
-                _changeLogService.SaveChangesAsync(operationLogs.ToArray()).GetAwaiter().GetResult();
-            }
+            _changeLogService.SaveChangesAsync(operationLogs).GetAwaiter().GetResult();
         }
 
         protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)

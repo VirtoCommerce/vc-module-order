@@ -15,7 +15,7 @@ namespace VirtoCommerce.OrdersModule.Core.Notifications
         {
 
         }
-
+        public virtual string CustomerOrderId { get; set; }
         public virtual CustomerOrder CustomerOrder { get; set; }
         public virtual Member Customer { get; set; }
     }

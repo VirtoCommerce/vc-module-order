@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +13,7 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Notifications;
+using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
@@ -33,9 +32,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IMemberService _memberService;
         private readonly ISettingsManager _settingsManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICustomerOrderService _orderService;
 
-        public SendNotificationsOrderChangedEventHandler(INotificationSender notificationSender, IStoreService storeService, IMemberService memberService,
-                                                        ISettingsManager settingsManager, UserManager<ApplicationUser> userManager, INotificationSearchService notificationSearchService)
+        public SendNotificationsOrderChangedEventHandler(
+            INotificationSender notificationSender
+            , IStoreService storeService
+            , IMemberService memberService
+            , ISettingsManager settingsManager
+            , UserManager<ApplicationUser> userManager
+            , INotificationSearchService notificationSearchService
+            , ICustomerOrderService orderService)
         {
             _notificationSender = notificationSender;
             _storeService = storeService;
@@ -43,87 +49,93 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _settingsManager = settingsManager;
             _notificationSearchService = notificationSearchService;
             _userManager = userManager;
+            _orderService = orderService;
         }
 
-        public virtual Task Handle(OrderChangedEvent @event)
-        {           
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && @event.ChangedEntries.Any())
+        public virtual Task Handle(OrderChangedEvent message)
+        {
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
             {
-                BackgroundJob.Enqueue(() => TryToSendOrderNotificationsBackgroundJob(@event));
-            }          
+                var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
+                if (jobArguments.Any())
+                {
+                    BackgroundJob.Enqueue(() => TryToSendOrderNotificationsAsync(jobArguments));
+                }
+            }
             return Task.CompletedTask;
         }
 
-        public async Task TryToSendOrderNotificationsBackgroundJob(OrderChangedEvent @event)
+        protected virtual OrderNotificationJobArgument[] GetJobArgumentsForChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            foreach (var changedEntry in @event.ChangedEntries)
-            {
-                await TryToSendOrderNotificationsAsync(changedEntry);
-            }
-        }
-
-        protected virtual async Task TryToSendOrderNotificationsAsync(GenericChangedEntry<CustomerOrder> changedEntry)
-        {
-            // Collection of order notifications
-            var notifications = new List<OrderEmailNotificationBase>();
+            var result = new List<OrderNotificationJobArgument>();
 
             if (IsOrderCanceled(changedEntry))
             {
-                var notification = await _notificationSearchService.GetNotificationAsync<CancelOrderEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
-                if (notification != null)
-                {
-                    notifications.Add(notification);
-                }
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(CancelOrderEmailNotification)));
             }
 
-            if (changedEntry.EntryState == EntryState.Added && !changedEntry.NewEntry.IsPrototype)
+            if (IsNewlyAdded(changedEntry))
             {
-                var notification = await _notificationSearchService.GetNotificationAsync<OrderCreateEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
-                if (notification != null)
-                {
-                    notifications.Add(notification);
-                }
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderCreateEmailNotification)));
             }
 
             if (HasNewStatus(changedEntry))
             {
-                var notification = await _notificationSearchService.GetNotificationAsync<NewOrderStatusEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
-                if (notification != null)
-                {
-                    notification.NewStatus = changedEntry.NewEntry.Status;
-                    notification.OldStatus = changedEntry.OldEntry.Status;
-                    notifications.Add(notification);
-                }
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));
             }
 
             if (IsOrderPaid(changedEntry))
             {
-                var notification = await _notificationSearchService.GetNotificationAsync<OrderPaidEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
-                if (notification != null)
-                {
-                    notifications.Add(notification);
-                }
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderPaidEmailNotification)));
             }
 
             if (IsOrderSent(changedEntry))
             {
-                var notification = await _notificationSearchService.GetNotificationAsync<OrderSentEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderSentEmailNotification)));
+            }
+
+            return result.ToArray();
+        }
+
+        public virtual async Task TryToSendOrderNotificationsAsync(OrderNotificationJobArgument[] jobArguments)
+        {
+            var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
+                                .ToDictionary(x => x.Id)
+                                .WithDefaultValue(null);
+
+            foreach (var jobArgument in jobArguments)
+            {
+                var notification = await _notificationSearchService.GetNotificationAsync(jobArgument.NotificationTypeName, new TenantIdentity(jobArgument.StoreId, nameof(Store)));
                 if (notification != null)
                 {
-                    notifications.Add(notification);
+                    var order = ordersByIdDict[jobArgument.CustomerOrderId];
+
+                    if (order != null && notification is OrderEmailNotificationBase orderNotification)
+                    {
+                        var customer = await GetCustomerAsync(jobArgument.CustomerId);
+
+                        orderNotification.CustomerOrder = order;
+                        orderNotification.Customer = customer;
+                        orderNotification.LanguageCode = order.LanguageCode;
+
+                        await SetNotificationParametersAsync(notification, order);
+
+                        if (notification is NewOrderStatusEmailNotification newStatusNotification)
+                        {
+                            newStatusNotification.OldStatus = jobArgument.OldStatus;
+                            newStatusNotification.NewStatus = jobArgument.NewStatus;
+                        }
+
+                        await _notificationSender.ScheduleSendNotificationAsync(notification);
+                    }
                 }
             }
+        }
 
-            var customer = await GetCustomerAsync(changedEntry.NewEntry.CustomerId);
-
-            foreach (var notification in notifications)
-            {
-                notification.CustomerOrder = changedEntry.NewEntry;
-                notification.Customer = customer;
-                notification.LanguageCode = changedEntry.NewEntry.LanguageCode;
-                await SetNotificationParametersAsync(notification, changedEntry);
-                await _notificationSender.ScheduleSendNotificationAsync(notification);
-            }
+        protected virtual bool IsNewlyAdded(GenericChangedEntry<CustomerOrder> changedEntry)
+        {
+            var result = changedEntry.EntryState == EntryState.Added && !changedEntry.NewEntry.IsPrototype;
+            return result;
         }
 
         /// <summary>
@@ -144,8 +156,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns></returns>
         protected virtual bool HasNewStatus(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var retVal = changedEntry.OldEntry.Status != changedEntry.NewEntry.Status;
-            return retVal;
+            var result = changedEntry.OldEntry.Status != changedEntry.NewEntry.Status;
+            return result;
         }
 
         /// <summary>
@@ -176,10 +188,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// Set base notification parameters (sender, recipient, isActive)
         /// </summary>
         /// <param name="notification"></param>
-        /// <param name="changedEntry"></param>
-        protected virtual async Task SetNotificationParametersAsync(Notification notification, GenericChangedEntry<CustomerOrder> changedEntry)
+        /// <param name="order"></param>
+        protected virtual async Task SetNotificationParametersAsync(Notification notification, CustomerOrder order)
         {
-            var order = changedEntry.NewEntry;
             var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
 
             if (notification is EmailNotification emailNotification)
@@ -244,4 +255,29 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return result;
         }
     }
+
+    public class OrderNotificationJobArgument
+    {
+        public string NotificationTypeName { get; set; }
+        public string CustomerId { get; set; }
+        public string CustomerOrderId { get; set; }
+        public string StoreId { get; set; }
+        public string NewStatus { get; set; }
+        public string OldStatus { get; set; }
+        public static OrderNotificationJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, Type notificationtType)
+        {
+            var result = new OrderNotificationJobArgument
+            {
+                CustomerOrderId = changedEntry.NewEntry?.Id ?? changedEntry.OldEntry?.Id,
+                NotificationTypeName = notificationtType.Name,
+                StoreId = changedEntry.NewEntry.StoreId,
+                CustomerId = changedEntry.NewEntry.CustomerId,
+                NewStatus = changedEntry.NewEntry.Status,
+                OldStatus = changedEntry.OldEntry.Status
+            };
+
+            return result;
+        }
+    }
+
 }
