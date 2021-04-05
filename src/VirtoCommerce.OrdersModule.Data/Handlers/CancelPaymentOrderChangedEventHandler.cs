@@ -35,12 +35,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
 
-        public virtual Task Handle(OrderChangedEvent @event)
+        public virtual Task Handle(OrderChangedEvent message)
         {
-            if (@event.ChangedEntries.Any())
+            if (message.ChangedEntries.Any())
             {
                 // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
-                var canceledOrdersEvent = new OrderChangedEvent(@event.ChangedEntries.Where(x =>
+                var canceledOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x =>
                                 !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
                                 ||
                                 x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */
