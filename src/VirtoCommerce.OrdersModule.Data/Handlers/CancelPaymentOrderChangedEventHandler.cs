@@ -7,131 +7,121 @@ using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
-using VirtoCommerce.PaymentModule.Core.Model.Search;
-using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
     public class CancelPaymentOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        private readonly IStoreService _storeService;
         private readonly ICustomerOrderService _orderService;
-        private readonly IPaymentMethodsSearchService _paymentMethodsSearchService;
 
-        public CancelPaymentOrderChangedEventHandler(
-            IStoreService storeService,
-            ICustomerOrderService customerOrderService,
-            IPaymentMethodsSearchService paymentMethodsSearchService
-            )
-        {
-            _storeService = storeService;
+        public CancelPaymentOrderChangedEventHandler(ICustomerOrderService customerOrderService)
+        { 
             _orderService = customerOrderService;
-            _paymentMethodsSearchService = paymentMethodsSearchService;
         }
-
 
         public virtual Task Handle(OrderChangedEvent message)
         {
             if (message.ChangedEntries.Any())
             {
-                // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
-                var canceledOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x =>
-                                !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
-                                ||
-                                x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */
-                                ));
-                if (canceledOrdersEvent.ChangedEntries.Any())
+                var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
+
+                if (jobArguments.Any())
                 {
-                    BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(canceledOrdersEvent));
+                    BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
                 }
             }
             return Task.CompletedTask;
-        }
+        }   
 
-        public async Task TryToCancelOrderBackgroundJob(OrderChangedEvent @event)
+        public virtual async Task TryToCancelOrderPaymentsAsync(PaymentToCancelJobArgument[] jobArguments)
         {
-            foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+            var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
+                                .ToDictionary(x => x.Id).WithDefaultValue(null);
+            var changedOrders = new List<CustomerOrder>();
+            foreach (var jobArgument in jobArguments)
             {
-                await TryToCancelOrders(changedEntry.NewEntry, changedEntry.OldEntry);
+                var order = ordersByIdDict[jobArgument.CustomerOrderId];
+                if (order != null)
+                {
+                    var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsInvariant(jobArgument.PaymentId));
+                    if(paymentToCancel != null && !paymentToCancel.IsCancelled)
+                    {
+                        CancelPayment(paymentToCancel, order);
+
+                        if(!changedOrders.Contains(order))
+                        {
+                            changedOrders.Add(order);
+                        }
+                    }
+                }               
+            }
+            if (changedOrders.Any())
+            {
+                await _orderService.SaveChangesAsync(changedOrders.ToArray());
             }
         }
 
-        protected virtual async Task TryToCancelOrders(CustomerOrder changedOrder, CustomerOrder oldOrder)
+      
+        protected virtual PaymentToCancelJobArgument[] GetJobArgumentsForChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var store = await _storeService.GetByIdAsync(changedOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
-
-            //Try to load payment methods for payments
-            var gatewayCodes = changedOrder.InPayments.Select(x => x.GatewayCode).ToArray();
-            var paymentMethods = await GetPaymentMethodsAsync(store.Id, gatewayCodes);
-            foreach (var payment in changedOrder.InPayments)
-            {
-                payment.PaymentMethod = paymentMethods.FirstOrDefault(x => x.Code == payment.GatewayCode);
-            }
-
             var toCancelPayments = new List<PaymentIn>();
-            var isOrderCancelled = !oldOrder.IsCancelled && changedOrder.IsCancelled;
+            var isOrderCancelled = !changedEntry.OldEntry.IsCancelled && changedEntry.NewEntry.IsCancelled;
             if (isOrderCancelled)
             {
-                toCancelPayments = changedOrder.InPayments?.ToList();
+                toCancelPayments = changedEntry.NewEntry.InPayments?.ToList();
             }
             else
             {
-                foreach (var canceledPayment in changedOrder?.InPayments.Where(x => x.IsCancelled))
+                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments.Where(x => x.IsCancelled))
                 {
-                    var oldSamePayment = oldOrder?.InPayments.FirstOrDefault(x => x == canceledPayment);
+                    var oldSamePayment = changedEntry.OldEntry?.InPayments.FirstOrDefault(x => x == canceledPayment);
                     if (oldSamePayment != null && !oldSamePayment.IsCancelled)
                     {
                         toCancelPayments.Add(canceledPayment);
                     }
                 }
             }
-            TryToCancelOrderPayments(toCancelPayments, changedOrder);
-            if (!toCancelPayments.IsNullOrEmpty())
-            {
-                await _orderService.SaveChangesAsync(new[] { changedOrder });
-            }
+
+            return toCancelPayments.Select(x => PaymentToCancelJobArgument.FromChangedEntry(changedEntry, x)).ToArray();
         }
 
-        protected virtual void TryToCancelOrderPayments(IEnumerable<PaymentIn> toCancelPayments, CustomerOrder order)
+        protected virtual void CancelPayment(PaymentIn paymentToCancel, CustomerOrder order)
         {
-            foreach (var payment in toCancelPayments ?? Enumerable.Empty<PaymentIn>())
+            if (paymentToCancel.PaymentStatus == PaymentStatus.Authorized)
             {
-                if (payment.PaymentStatus == PaymentStatus.Authorized)
-                {
-                    payment.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order });
-                }
-                else if (payment.PaymentStatus == PaymentStatus.Paid)
-                {
-                    payment.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order });
-                }
-                else
-                {
-                    payment.PaymentStatus = PaymentStatus.Cancelled;
-                    payment.IsCancelled = true;
-                    payment.CancelledDate = DateTime.UtcNow;
-                }
+                paymentToCancel.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+            }
+            else if (paymentToCancel.PaymentStatus == PaymentStatus.Paid)
+            {
+                paymentToCancel.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+            }
+            else
+            {
+                paymentToCancel.PaymentStatus = PaymentStatus.Cancelled;
+                paymentToCancel.IsCancelled = true;
+                paymentToCancel.CancelledDate = DateTime.UtcNow;
             }
         }
+    }
 
-        protected virtual async Task<ICollection<PaymentMethod>> GetPaymentMethodsAsync(string storeId, string[] codes)
+    public class PaymentToCancelJobArgument
+    {
+        public string CustomerOrderId { get; set; }
+        public string PaymentId { get; set; }
+        public string StoreId { get; set; }
+
+        public static PaymentToCancelJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, PaymentIn payment)
         {
-            var criteria = new PaymentMethodsSearchCriteria
+            var result = new PaymentToCancelJobArgument
             {
-                IsActive = true,
-                StoreId = storeId,
-                Codes = codes,
-                Take = int.MaxValue
+                CustomerOrderId = changedEntry?.OldEntry.Id,
+                PaymentId = payment?.Id,
+                StoreId = changedEntry?.NewEntry.StoreId
             };
-
-            var searchResult = await _paymentMethodsSearchService.SearchPaymentMethodsAsync(criteria);
-            var paymentMethod = searchResult.Results;
-
-            return paymentMethod;
+            return result;
         }
     }
 }
