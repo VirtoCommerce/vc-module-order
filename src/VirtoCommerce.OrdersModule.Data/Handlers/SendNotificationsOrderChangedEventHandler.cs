@@ -156,8 +156,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns></returns>
         protected virtual bool HasNewStatus(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var retVal = changedEntry.OldEntry.Status != changedEntry.NewEntry.Status;
-            return retVal;
+            var result = changedEntry.OldEntry.Status != changedEntry.NewEntry.Status;
+            return result;
         }
 
         /// <summary>

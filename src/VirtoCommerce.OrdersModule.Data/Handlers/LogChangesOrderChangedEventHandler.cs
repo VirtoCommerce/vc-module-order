@@ -44,10 +44,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
                 foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
                 {
-                    var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
-                    var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct();
+                    var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                    var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
 
-                    modifiedOperations.ToList().CompareTo(originalOperations.ToList(), EqualityComparer<IOperation>.Default,
+                    modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
                                                          (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
                 }
 
