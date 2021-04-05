@@ -44,16 +44,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && message.ChangedEntries.Any())
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
             {
                 // TODO: TECHDEBT! this terrible filtration should be removed and notification reworked carefully
-                var notificationOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x =>
-                                                IsOrderCanceled(x) ||
-                                                IsNewlyAdded(x) ||
-                                                HasNewStatus(x) ||
-                                                IsOrderPaid(x) ||
-                                                IsOrderSent(x)
-                                                ));
+                var notificationOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x => CanCauseNotifications(x)));
 
                 if (notificationOrdersEvent.ChangedEntries.Any())
                 {
@@ -133,6 +127,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 await SetNotificationParametersAsync(notification, changedEntry);
                 await _notificationSender.ScheduleSendNotificationAsync(notification);
             }
+        }
+
+        protected virtual bool CanCauseNotifications(GenericChangedEntry<CustomerOrder> x)
+        {
+            return IsOrderCanceled(x) ||
+                IsNewlyAdded(x) ||
+                HasNewStatus(x) ||
+                IsOrderPaid(x) ||
+                IsOrderSent(x);
         }
 
         protected virtual bool IsNewlyAdded(GenericChangedEntry<CustomerOrder> changedEntry)

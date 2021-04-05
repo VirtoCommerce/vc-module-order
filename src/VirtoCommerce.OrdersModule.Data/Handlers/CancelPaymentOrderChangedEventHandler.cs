@@ -37,18 +37,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            if (message.ChangedEntries.Any())
+            // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
+            var canceledOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x => CanCauseCancel(x)));
+            if (canceledOrdersEvent.ChangedEntries.Any())
             {
-                // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
-                var canceledOrdersEvent = new OrderChangedEvent(message.ChangedEntries.Where(x =>
-                                !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
-                                ||
-                                x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */
-                                ));
-                if (canceledOrdersEvent.ChangedEntries.Any())
-                {
-                    BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(canceledOrdersEvent));
-                }
+                BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(canceledOrdersEvent));
             }
             return Task.CompletedTask;
         }
@@ -116,6 +109,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     payment.CancelledDate = DateTime.UtcNow;
                 }
             }
+        }
+
+        protected virtual bool CanCauseCancel(GenericChangedEntry<CustomerOrder> x)
+        {
+            return !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
+                ||
+                x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */;
         }
 
         protected virtual async Task<ICollection<PaymentMethod>> GetPaymentMethodsAsync(string storeId, string[] codes)
