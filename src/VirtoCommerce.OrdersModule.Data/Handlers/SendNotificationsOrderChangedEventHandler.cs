@@ -49,7 +49,19 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {           
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && @event.ChangedEntries.Any())
             {
-                BackgroundJob.Enqueue(() => TryToSendOrderNotificationsBackgroundJob(@event));
+                // TODO: TECHDEBT! this terrible filtration should be removed and notification reworked carefully
+                var notificationOrdersEvent = new OrderChangedEvent(@event.ChangedEntries.Where(x =>
+                                                IsOrderCanceled(x) ||
+                                                IsNewlyAdded(x) ||
+                                                HasNewStatus(x) ||
+                                                IsOrderPaid(x) ||
+                                                IsOrderSent(x)
+                                                ));
+
+                if (notificationOrdersEvent.ChangedEntries.Any())
+                {
+                    BackgroundJob.Enqueue(() => TryToSendOrderNotificationsBackgroundJob(notificationOrdersEvent));
+                }
             }          
             return Task.CompletedTask;
         }
@@ -76,7 +88,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             }
 
-            if (changedEntry.EntryState == EntryState.Added && !changedEntry.NewEntry.IsPrototype)
+            if (IsNewlyAdded(changedEntry))
             {
                 var notification = await _notificationSearchService.GetNotificationAsync<OrderCreateEmailNotification>(new TenantIdentity(changedEntry.NewEntry.StoreId, nameof(Store)));
                 if (notification != null)
@@ -124,6 +136,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 await SetNotificationParametersAsync(notification, changedEntry);
                 await _notificationSender.ScheduleSendNotificationAsync(notification);
             }
+        }
+
+        protected virtual bool IsNewlyAdded(GenericChangedEntry<CustomerOrder> changedEntry)
+        {
+            var result = changedEntry.EntryState == EntryState.Added && !changedEntry.NewEntry.IsPrototype;
+            return result;
         }
 
         /// <summary>

@@ -40,14 +40,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             if (@event.ChangedEntries.Any())
             {
                 // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
-                var reallyChangedOrdersEvent = new OrderChangedEvent(@event.ChangedEntries.Where(x =>
+                var canceledOrdersEvent = new OrderChangedEvent(@event.ChangedEntries.Where(x =>
                                 !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
                                 ||
                                 x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */
                                 ));
-                if (reallyChangedOrdersEvent.ChangedEntries.Any())
+                if (canceledOrdersEvent.ChangedEntries.Any())
                 {
-                    BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(reallyChangedOrdersEvent));
+                    BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(canceledOrdersEvent));
                 }
             }
             return Task.CompletedTask;
