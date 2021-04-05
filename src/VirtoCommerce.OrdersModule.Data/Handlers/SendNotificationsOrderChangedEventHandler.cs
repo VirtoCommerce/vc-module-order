@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +43,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
 
         public virtual Task Handle(OrderChangedEvent @event)
-        {           
+        {
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && @event.ChangedEntries.Any())
             {
                 // TODO: TECHDEBT! this terrible filtration should be removed and notification reworked carefully
@@ -62,7 +59,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 {
                     BackgroundJob.Enqueue(() => TryToSendOrderNotificationsBackgroundJob(notificationOrdersEvent));
                 }
-            }          
+            }
             return Task.CompletedTask;
         }
 
