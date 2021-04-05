@@ -54,7 +54,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true) && message.ChangedEntries.Any())
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
             {
                 var jobArgument = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
                 if (jobArgument.Any())

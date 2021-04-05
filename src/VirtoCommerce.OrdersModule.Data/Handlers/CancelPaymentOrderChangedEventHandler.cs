@@ -24,14 +24,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            if (message.ChangedEntries.Any())
-            {
-                var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
+            var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
 
-                if (jobArguments.Any())
-                {
-                    BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
-                }
+            if (jobArguments.Any())
+            {
+                BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
             }
             return Task.CompletedTask;
         }   
