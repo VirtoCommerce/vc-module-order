@@ -18,7 +18,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly ICustomerOrderService _orderService;
 
         public CancelPaymentOrderChangedEventHandler(ICustomerOrderService customerOrderService)
-        { 
+        {
             _orderService = customerOrderService;
         }
 
@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
             }
             return Task.CompletedTask;
-        }   
+        }
 
         public virtual async Task TryToCancelOrderPaymentsAsync(PaymentToCancelJobArgument[] jobArguments)
         {
@@ -44,16 +44,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 if (order != null)
                 {
                     var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsInvariant(jobArgument.PaymentId));
-                    if(paymentToCancel != null && !paymentToCancel.IsCancelled)
+                    if (paymentToCancel != null && !paymentToCancel.IsCancelled)
                     {
                         CancelPayment(paymentToCancel, order);
 
-                        if(!changedOrders.Contains(order))
+                        if (!changedOrders.Contains(order))
                         {
                             changedOrders.Add(order);
                         }
                     }
-                }               
+                }
             }
             if (changedOrders.Any())
             {
@@ -61,7 +61,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
         }
 
-      
+
         protected virtual PaymentToCancelJobArgument[] GetJobArgumentsForChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var toCancelPayments = new List<PaymentIn>();

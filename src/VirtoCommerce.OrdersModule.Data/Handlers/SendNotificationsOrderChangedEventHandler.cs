@@ -76,17 +76,17 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (IsNewlyAdded(changedEntry))
             {
-                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderCreateEmailNotification)));              
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderCreateEmailNotification)));
             }
 
             if (HasNewStatus(changedEntry))
             {
-                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));             
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));
             }
 
             if (IsOrderPaid(changedEntry))
             {
-                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderPaidEmailNotification)));           
+                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderPaidEmailNotification)));
             }
 
             if (IsOrderSent(changedEntry))
@@ -100,17 +100,17 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public virtual async Task TryToSendOrderNotificationsAsync(OrderNotificationJobArgument[] jobArguments)
         {
             var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
-                                .ToDictionary(x=> x.Id)
+                                .ToDictionary(x => x.Id)
                                 .WithDefaultValue(null);
 
             foreach (var jobArgument in jobArguments)
             {
                 var notification = await _notificationSearchService.GetNotificationAsync(jobArgument.NotificationTypeName, new TenantIdentity(jobArgument.StoreId, nameof(Store)));
-                if(notification != null)
+                if (notification != null)
                 {
                     var order = ordersByIdDict[jobArgument.CustomerOrderId];
 
-                    if(order != null && notification is OrderEmailNotificationBase orderNotification)
+                    if (order != null && notification is OrderEmailNotificationBase orderNotification)
                     {
                         var customer = await GetCustomerAsync(jobArgument.CustomerId);
 
@@ -120,7 +120,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
                         await SetNotificationParametersAsync(notification, order);
 
-                        if(notification is NewOrderStatusEmailNotification newStatusNotification)
+                        if (notification is NewOrderStatusEmailNotification newStatusNotification)
                         {
                             newStatusNotification.OldStatus = jobArgument.OldStatus;
                             newStatusNotification.NewStatus = jobArgument.NewStatus;
@@ -129,7 +129,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                         await _notificationSender.ScheduleSendNotificationAsync(notification);
                     }
                 }
-            }          
+            }
         }
 
         protected virtual bool IsNewlyAdded(GenericChangedEntry<CustomerOrder> changedEntry)
