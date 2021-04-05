@@ -56,10 +56,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
             {
-                var jobArgument = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
-                if (jobArgument.Any())
+                var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
+                if (jobArguments.Any())
                 {
-                    BackgroundJob.Enqueue(() => TryToSendOrderNotificationsAsync(jobArgument));
+                    BackgroundJob.Enqueue(() => TryToSendOrderNotificationsAsync(jobArguments));
                 }
             }
             return Task.CompletedTask;
