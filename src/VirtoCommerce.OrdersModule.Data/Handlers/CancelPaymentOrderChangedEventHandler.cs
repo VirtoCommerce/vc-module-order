@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -40,14 +38,23 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public virtual Task Handle(OrderChangedEvent @event)
         {
             if (@event.ChangedEntries.Any())
-            { 
-                BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(@event));
+            {
+                // TODO: TECHDEBT! this terrible filtration should be removed and orders cancellation reworked carefully
+                var reallyChangedOrdersEvent = new OrderChangedEvent(@event.ChangedEntries.Where(x =>
+                                !x.OldEntry.IsCancelled && x.NewEntry.IsCancelled /* Order canceled */
+                                ||
+                                x.NewEntry.InPayments.Any(x => x.IsCancelled) /* One of new order payments canceled */
+                                ));
+                if (reallyChangedOrdersEvent.ChangedEntries.Any())
+                {
+                    BackgroundJob.Enqueue(() => TryToCancelOrderBackgroundJob(reallyChangedOrdersEvent));
+                }
             }
             return Task.CompletedTask;
         }
 
         public async Task TryToCancelOrderBackgroundJob(OrderChangedEvent @event)
-        {        
+        {
             foreach (var changedEntry in @event.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
             {
                 await TryToCancelOrders(changedEntry.NewEntry, changedEntry.OldEntry);
@@ -96,11 +103,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 if (payment.PaymentStatus == PaymentStatus.Authorized)
                 {
-                    payment.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order});
+                    payment.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order });
                 }
                 else if (payment.PaymentStatus == PaymentStatus.Paid)
                 {
-                    payment.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order});
+                    payment.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = payment.Id, OrderId = order.Id, Payment = payment, Order = order });
                 }
                 else
                 {
