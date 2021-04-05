@@ -102,12 +102,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
                                 .ToDictionary(x=> x.Id)
                                 .WithDefaultValue(null);
+
             foreach (var jobArgument in jobArguments)
             {
                 var notification = await _notificationSearchService.GetNotificationAsync(jobArgument.NotificationTypeName, new TenantIdentity(jobArgument.StoreId, nameof(Store)));
                 if(notification != null)
                 {
                     var order = ordersByIdDict[jobArgument.CustomerOrderId];
+
                     if(order != null && notification is OrderEmailNotificationBase orderNotification)
                     {
                         var customer = await GetCustomerAsync(jobArgument.CustomerId);
@@ -115,12 +117,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                         orderNotification.CustomerOrder = order;
                         orderNotification.Customer = customer;
                         orderNotification.LanguageCode = order.LanguageCode;
+
                         await SetNotificationParametersAsync(notification, order);
+
                         if(notification is NewOrderStatusEmailNotification newStatusNotification)
                         {
                             newStatusNotification.OldStatus = jobArgument.OldStatus;
                             newStatusNotification.NewStatus = jobArgument.NewStatus;
-                        }    
+                        }
+
                         await _notificationSender.ScheduleSendNotificationAsync(notification);
                     }
                 }
@@ -261,13 +266,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public string OldStatus { get; set; }
         public static OrderNotificationJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, Type notificationtType)
         {
-            var result = new OrderNotificationJobArgument();
-            result.CustomerOrderId = changedEntry.NewEntry?.Id ?? changedEntry.OldEntry?.Id;
-            result.NotificationTypeName = notificationtType.Name;
-            result.StoreId = changedEntry.NewEntry.StoreId;
-            result.CustomerId = changedEntry.NewEntry.CustomerId;
-            result.NewStatus = changedEntry.NewEntry.Status;
-            result.OldStatus = changedEntry.OldEntry.Status;
+            var result = new OrderNotificationJobArgument
+            {
+                CustomerOrderId = changedEntry.NewEntry?.Id ?? changedEntry.OldEntry?.Id,
+                NotificationTypeName = notificationtType.Name,
+                StoreId = changedEntry.NewEntry.StoreId,
+                CustomerId = changedEntry.NewEntry.CustomerId,
+                NewStatus = changedEntry.NewEntry.Status,
+                OldStatus = changedEntry.OldEntry.Status
+            };
+
             return result;
         }
     }
