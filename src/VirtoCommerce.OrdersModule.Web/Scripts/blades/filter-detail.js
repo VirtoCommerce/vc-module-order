@@ -73,7 +73,7 @@ angular.module('virtoCommerce.orderModule')
             return !angular.equals(blade.currentEntity, blade.origEntity);
         };
 
-        blade.headIcon = 'fa-filter';
+        blade.headIcon = 'fa fa-filter';
 
         blade.toolbarCommands = [
                 {
