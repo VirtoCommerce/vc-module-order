@@ -184,13 +184,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual OperationLog GetLogRecord(IOperation operation, string template)
         {
-            var result = new OperationLog
-            {
-                ObjectId = operation.Id,
-                ObjectType = operation.GetType().Name,
-                OperationType = EntryState.Modified,
-                Detail = template
-            };
+            var result = AbstractTypeFactory<OperationLog>.TryCreateInstance();
+
+            result.ObjectId = operation.Id;
+            result.ObjectType = operation.GetType().Name;
+            result.OperationType = EntryState.Modified;
+            result.Detail = template;
+            
             return result;
 
         }
