@@ -9,25 +9,16 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Data.Handlers;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.JsonConverters;
 using VirtoCommerce.ShippingModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Web.JsonConverters
 {
-    public class PolymorphicOperationJsonConverter : JsonConverter
+    public class PolymorphicOperationJsonConverter : PolymorphJsonConverter
     {
-        private static readonly Type[] _knownTypes =
-        {
-            typeof(IOperation), typeof(LineItem), typeof(CustomerOrderSearchCriteria), typeof(PaymentSearchCriteria),
-            typeof(PaymentMethod), typeof(ShippingMethod),
-            typeof(ProductInventoryChange)
-        };
-
-        public override bool CanWrite => false;
-        public override bool CanRead => true;
-
         public override bool CanConvert(Type objectType)
         {
-            return _knownTypes.Any(x => x.IsAssignableFrom(objectType));
+            return typeof(IOperation).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -35,21 +26,11 @@ namespace VirtoCommerce.OrdersModule.Web.JsonConverters
             object retVal;
             var obj = JObject.Load(reader);
 
-
-            var tryCreateInstance = typeof(AbstractTypeFactory<>).MakeGenericType(objectType).GetMethods().FirstOrDefault(x => x.Name.EqualsInvariant("TryCreateInstance") && x.GetParameters().Length == 0);
-            retVal = tryCreateInstance?.Invoke(null, null);
-
-
             //Reset ChildrenOperations property to prevent polymorphic deserialization  error
-            var operation = retVal as IOperation;
-            if (operation != null)
-            {
-                obj.Remove("childrenOperations");
-                obj.Remove("ChildrenOperations");
-            }
+            obj.Remove("childrenOperations");
+            obj.Remove("ChildrenOperations");
 
-            var payment = operation as PaymentIn;
-            if (payment != null)
+            if (obj.ContainsKey("paymentStatus") || obj.ContainsKey("PaymentStatus"))
             {
                 var paymentStatus = (obj["paymentStatus"] ?? obj["PaymentStatus"]).Value<string>();
                 var hasStatusValue = Enum.IsDefined(typeof(PaymentStatus), paymentStatus);
@@ -59,13 +40,7 @@ namespace VirtoCommerce.OrdersModule.Web.JsonConverters
                 }
             }
 
-            serializer.Populate(obj.CreateReader(), retVal);
-            return retVal;
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
+            return base.ReadJson(obj.CreateReader(), objectType, existingValue, serializer);
         }
     }
 }
