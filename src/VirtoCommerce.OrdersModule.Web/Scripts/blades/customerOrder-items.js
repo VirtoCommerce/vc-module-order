@@ -57,6 +57,7 @@ angular.module('virtoCommerce.orderModule')
         var newBlade = {
             id: "listItemDetail",
             itemId: item.productId,
+            productType: item.productType,
             title: item.name,
             controller: 'virtoCommerce.catalogModule.itemDetailController',
             template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html'
