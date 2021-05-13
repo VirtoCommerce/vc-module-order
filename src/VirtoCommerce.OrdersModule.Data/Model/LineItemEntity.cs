@@ -86,6 +86,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string OuterId { get; set; }
 
+        [StringLength(64)]
+        public string FulfillmentCenterId { get; set; }
+
+        [StringLength(128)]
+        public string FulfillmentCenterName { get; set; }
+
         #region NavigationProperties
 
         public string CustomerOrderId { get; set; }
@@ -145,6 +151,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.CancelReason = CancelReason;
             lineItem.Comment = Comment;
             lineItem.IsGift = IsGift;
+            lineItem.FulfillmentCenterId = FulfillmentCenterId;
+            lineItem.FulfillmentCenterName = FulfillmentCenterName;
+
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
 
@@ -210,6 +219,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             IsGift = lineItem.IsGift ?? false;
 
+            FulfillmentCenterId = lineItem.FulfillmentCenterId;
+            FulfillmentCenterName = lineItem.FulfillmentCenterName;
+
             if (lineItem.Discounts != null)
             {
                 Discounts = new ObservableCollection<DiscountEntity>();
@@ -250,6 +262,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.CancelledDate = CancelledDate;
             target.CancelReason = CancelReason;
             target.Comment = Comment;
+            target.FulfillmentCenterId = FulfillmentCenterId;
+            target.FulfillmentCenterName = FulfillmentCenterName;
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
             var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
