@@ -60,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<PaymentIn>> GetById(string id, [FromRoute] string respGroup = null)
+        public async Task<ActionResult<PaymentIn>> GetById(string id, [SwaggerOptional] [FromQuery] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
             searchCriteria.Ids = new[] { id };
