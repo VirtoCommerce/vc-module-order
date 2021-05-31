@@ -35,13 +35,19 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 return Array.Empty<CustomerOrderEntity>();
             }
 
+            var result = await CustomerOrders.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+
+            if (!result.Any())
+            {
+                return Array.Empty<CustomerOrderEntity>();
+            }
+
+            ids = result.Select(x => x.Id).ToArray();
+
+            await Discounts.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
+            await TaxDetails.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
+
             var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-            var query = CustomerOrders.Where(x => ids.Contains(x.Id))
-                                             .Include(x => x.Discounts)
-                                             .Include(x => x.TaxDetails).AsQueryable();
-
-
-            var result = await query.ToArrayAsync();
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
             {
@@ -55,46 +61,61 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
             {
-                IQueryable<PaymentInEntity> inPaymentsLoadBreakingQuery = InPayments.Where(x => ids.Contains(x.CustomerOrderId))
-                                                 .Include(x => x.Discounts)
-                                                 .Include(x => x.TaxDetails)
-                                                 .Include(x => x.Addresses)
-                                                 .Include(x => x.Transactions);
+                var payments = await InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
 
-                if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                if (payments.Any())
                 {
-                    inPaymentsLoadBreakingQuery = inPaymentsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    var paymentIds = payments.Select(x => x.Id).ToArray();
+
+                    await Discounts.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+                    await TaxDetails.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+                    await Addresses.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+                    await Transactions.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+
+                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                    {
+                        await OrderDynamicPropertyObjectValues.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+                    }
                 }
-                await inPaymentsLoadBreakingQuery.LoadAsync();
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
-                IQueryable<LineItemEntity> itemsLoadBreakingQuery = LineItems.Where(x => ids.Contains(x.CustomerOrderId))
-                                                .Include(x => x.Discounts)
-                                                .Include(x => x.TaxDetails)
-                                                .Include(x => x.DynamicPropertyObjectValues);
-                if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                var lineItems = await LineItems.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
+
+                if (lineItems.Any())
                 {
-                    itemsLoadBreakingQuery = itemsLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    var lineItemIds = lineItems.Select(x => x.Id).ToArray();
+
+                    await Discounts.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
+                    await TaxDetails.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
+
+                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                    {
+                        await OrderDynamicPropertyObjectValues.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
+                    }
                 }
-                await itemsLoadBreakingQuery.LoadAsync();
             }
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
             {
-                IQueryable<ShipmentEntity> shipmentLoadBreakingQuery = Shipments.Where(x => ids.Contains(x.CustomerOrderId))
-                                               .Include(x => x.Discounts)
-                                               .Include(x => x.TaxDetails)
-                                               .Include(x => x.Addresses)
-                                               .Include(x => x.Items)
-                                               .Include(x => x.Packages);
+                var shipments = await Shipments.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
 
-                if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                if (shipments.Any())
                 {
-                    shipmentLoadBreakingQuery = shipmentLoadBreakingQuery.Include(x => x.DynamicPropertyObjectValues);
+                    var shipmentIds = shipments.Select(x => x.Id).ToArray();
+
+                    await Discounts.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    await TaxDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    await Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    await ShipmentItems.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    await ShipmentPackagesPackages.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+
+                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                    {
+                        await OrderDynamicPropertyObjectValues.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    }
                 }
-                await shipmentLoadBreakingQuery.LoadAsync();
             }
 
             if (!customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
@@ -115,12 +136,20 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 return Array.Empty<PaymentInEntity>();
             }
 
-            var result = await InPayments.Where(x => ids.Contains(x.Id))
-                                             .Include(x => x.Discounts)
-                                             .Include(x => x.TaxDetails)
-                                             .Include(x => x.Addresses)
-                                             .Include(x => x.Transactions)
-                                             .Include(x => x.DynamicPropertyObjectValues).ToArrayAsync();
+            var result = await InPayments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+
+            if (!result.Any())
+            {
+                return Array.Empty<PaymentInEntity>();
+            }
+
+            ids = result.Select(x => x.Id).ToArray();
+
+            await Discounts.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+            await TaxDetails.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+            await Addresses.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+            await Transactions.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+            await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
 
             return result;
         }
