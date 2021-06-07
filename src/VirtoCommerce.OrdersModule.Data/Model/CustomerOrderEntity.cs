@@ -230,8 +230,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 {
                     // cannot compare using Entity.Equals here since line items can have Id==null
                     shipmentItemEntity.LineItem =
-                        Items.FirstOrDefault(x => x.ModelLineItem.ProductId == shipmentItemEntity.ModelLineItem.ProductId
-                            && x.ModelLineItem.Quantity == shipmentItemEntity.ModelLineItem.Quantity);
+                        Items.FirstOrDefault(x => x.ModelLineItem?.ProductId == shipmentItemEntity.ModelLineItem?.ProductId
+                            && x.ModelLineItem?.Quantity == shipmentItemEntity.ModelLineItem?.Quantity);
                 }
             }
 
