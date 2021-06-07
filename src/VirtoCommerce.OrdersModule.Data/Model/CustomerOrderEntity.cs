@@ -225,11 +225,13 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 Shipments = new ObservableCollection<ShipmentEntity>(order.Shipments
                     .Select(x => AbstractTypeFactory<ShipmentEntity>.TryCreateInstance().FromModel(x, pkMap))
                     .OfType<ShipmentEntity>());
-                //Link shipment item with order lineItem 
+                //Link shipment item with order lineItem
                 foreach (var shipmentItemEntity in Shipments.SelectMany(x => x.Items))
                 {
+                    // cannot compare using Entity.Equals here since line items can have Id==null
                     shipmentItemEntity.LineItem =
-                        Items.FirstOrDefault(x => x.ModelLineItem == shipmentItemEntity.ModelLineItem);
+                        Items.FirstOrDefault(x => x.ModelLineItem.ProductId == shipmentItemEntity.ModelLineItem.ProductId
+                            && x.ModelLineItem.Quantity == shipmentItemEntity.ModelLineItem.Quantity);
                 }
             }
 
