@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Core
 {
     public class ModuleConstants
     {
+        public static string OrderIndexDocumentType = nameof(CustomerOrder);
+
         public static class Security
         {
             public static class Permissions
@@ -109,7 +112,6 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
-                    RestartRequired = true
                 };
 
                 public static SettingDescriptor CustomerOrderIndexationDate { get; } = new SettingDescriptor

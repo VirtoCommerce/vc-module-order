@@ -67,6 +67,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandler>();
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
+            serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
             //Register as scoped because we use UserManager<> as dependency in this implementation
             serviceCollection.AddScoped<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
@@ -90,7 +91,7 @@ namespace VirtoCommerce.OrdersModule.Web
 
                 serviceCollection.AddSingleton(provider => new IndexDocumentConfiguration
                 {
-                    DocumentType = KnownDocumentTypes.CustomerOrder,
+                    DocumentType = ModuleConstants.OrderIndexDocumentType,
                     DocumentSource = new IndexDocumentSource
                     {
                         ChangesProvider = provider.GetService<CustomerOrderChangesProvider>(),
@@ -148,17 +149,12 @@ namespace VirtoCommerce.OrdersModule.Web
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<CancelPaymentOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<LogChangesOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.CreateScope().ServiceProvider.GetService<SendNotificationsOrderChangedEventHandler>().Handle(message));
+            inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<IndexCustomerOrderChangedEventHandler>().Handle(message));
 
             if (fullTextSearchEnabled)
             {
                 var searchRequestBuilderRegistrar = appBuilder.ApplicationServices.GetService<ISearchRequestBuilderRegistrar>();
-                searchRequestBuilderRegistrar.Register(KnownDocumentTypes.CustomerOrder, appBuilder.ApplicationServices.GetService<CustomerOrderSearchRequestBuilder>);
-
-                var settingsManager = appBuilder.ApplicationServices.GetService<ISettingsManager>();
-                if (settingsManager.GetValue(ModuleConstants.Settings.General.EventBasedIndexation.Name, false))
-                {
-                    inProcessBus.RegisterHandler<OrderChangedEvent>(async (message, token) => await appBuilder.ApplicationServices.GetService<IndexCustomerOrderChangedEventHandler>().Handle(message));
-                }
+                searchRequestBuilderRegistrar.Register(ModuleConstants.OrderIndexDocumentType, appBuilder.ApplicationServices.GetService<CustomerOrderSearchRequestBuilder>);
             }
 
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())

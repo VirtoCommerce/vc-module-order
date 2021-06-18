@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
@@ -29,25 +30,25 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _configuration = configuration;
         }
 
-        public virtual async Task<GenericSearchResult<CustomerOrder>> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
+        public virtual async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
         {
             if (!_configuration.IsOrderFullTextSearchEnabled())
             {
                 throw new SearchException("Indexed order search is disabled. To enable it add 'Search:OrderFullTextSearchEnabled' configuraion key to app settings and set it to true.");
             }
 
-            var requestBuilder = _searchRequestBuilderRegistrar.GetRequestBuilderByDocumentType(KnownDocumentTypes.CustomerOrder);
-            var request = await requestBuilder?.BuildRequestAsync(criteria);
+            var requestBuilder = _searchRequestBuilderRegistrar.GetRequestBuilderByDocumentType(ModuleConstants.OrderIndexDocumentType);
+            var request = await requestBuilder.BuildRequestAsync(criteria);
 
-            var response = await _searchProvider.SearchAsync(KnownDocumentTypes.CustomerOrder, request);
+            var response = await _searchProvider.SearchAsync(ModuleConstants.OrderIndexDocumentType, request);
 
             var result = await ConvertResponseAsync(response, criteria);
             return result;
         }
 
-        protected virtual async Task<GenericSearchResult<CustomerOrder>> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria)
+        protected virtual async Task<CustomerOrderIndexedSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria)
         {
-            var result = AbstractTypeFactory<GenericSearchResult<CustomerOrder>>.TryCreateInstance();
+            var result = AbstractTypeFactory<CustomerOrderIndexedSearchResult>.TryCreateInstance();
 
             if (response != null)
             {

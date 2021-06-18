@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Extenstions;
 using VirtoCommerce.SearchModule.Core.Model;
@@ -10,7 +11,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 {
     public class CustomerOrderSearchRequestBuilder : ISearchRequestBuilder
     {
-        public string DocumentType { get; } = KnownDocumentTypes.CustomerOrder;
+        public string DocumentType { get; } = ModuleConstants.OrderIndexDocumentType;
 
         private readonly ISearchPhraseParser _searchPhraseParser;
 

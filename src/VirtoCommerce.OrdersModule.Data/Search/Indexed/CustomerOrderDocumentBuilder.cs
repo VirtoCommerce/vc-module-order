@@ -171,6 +171,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
         }
 
+        // PT-2573: move to Platform
         private object GetDynamicPropertyDefaultValue(DynamicProperty property)
         {
             object result;
