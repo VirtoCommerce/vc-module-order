@@ -14,13 +14,16 @@ using Microsoft.Extensions.Options;
 using VirtoCommerce.NotificationsModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Notifications;
+using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.ExportImport;
 using VirtoCommerce.OrdersModule.Data.Handlers;
 using VirtoCommerce.OrdersModule.Data.Repositories;
+using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
@@ -32,14 +35,19 @@ using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Data.Extensions;
+using VirtoCommerce.SearchModule.Core.Model;
+using VirtoCommerce.SearchModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Web
 {
-    public class Module : IModule, IExportSupport, IImportSupport
+    public class Module : IModule, IExportSupport, IImportSupport, IHasConfiguration
     {
         public ManifestModuleInfo ModuleInfo { get; set; }
+        public IConfiguration Configuration { get; set; }
+
         private IApplicationBuilder _appBuilder;
+
         public void Initialize(IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
@@ -70,6 +78,26 @@ namespace VirtoCommerce.OrdersModule.Web
             {
                 config.GetSection("HtmlToPdf").Bind(opts);
             });
+
+            serviceCollection.AddTransient<IIndexedCustomerOrderSearchService, IndexedCustomerOrderSearchService>();
+
+            if (Configuration.IsOrderFullTextSearchEnabled())
+            {
+                serviceCollection.AddTransient<CustomerOrderSearchRequestBuilder>();
+
+                serviceCollection.AddSingleton<CustomerOrderChangesProvider>();
+                serviceCollection.AddSingleton<CustomerOrderDocumentBuilder>();
+
+                serviceCollection.AddSingleton(provider => new IndexDocumentConfiguration
+                {
+                    DocumentType = KnownDocumentTypes.CustomerOrder,
+                    DocumentSource = new IndexDocumentSource
+                    {
+                        ChangesProvider = provider.GetService<CustomerOrderChangesProvider>(),
+                        DocumentBuilder = provider.GetService<CustomerOrderDocumentBuilder>(),
+                    },
+                });
+            }
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
@@ -82,8 +110,17 @@ namespace VirtoCommerce.OrdersModule.Web
             dynamicPropertyRegistrar.RegisterType<Shipment>();
             dynamicPropertyRegistrar.RegisterType<LineItem>();
 
+            var fullTextSearchEnabled = Configuration.IsOrderFullTextSearchEnabled();
             var settingsRegistrar = appBuilder.ApplicationServices.GetRequiredService<ISettingsRegistrar>();
-            settingsRegistrar.RegisterSettings(ModuleConstants.Settings.General.AllSettings, ModuleInfo.Id);
+            var settings = ModuleConstants.Settings.General.AllSettings;
+
+            if (fullTextSearchEnabled)
+            {
+                //Register indexation settings
+                settings = settings.Union(ModuleConstants.Settings.IndexationSettings);
+            }
+
+            settingsRegistrar.RegisterSettings(settings, ModuleInfo.Id);
             //Register store level settings
             settingsRegistrar.RegisterSettingsForType(ModuleConstants.Settings.StoreLevelSettings, nameof(Store));
 
@@ -111,6 +148,18 @@ namespace VirtoCommerce.OrdersModule.Web
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<CancelPaymentOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<LogChangesOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.CreateScope().ServiceProvider.GetService<SendNotificationsOrderChangedEventHandler>().Handle(message));
+
+            if (fullTextSearchEnabled)
+            {
+                var searchRequestBuilderRegistrar = appBuilder.ApplicationServices.GetService<ISearchRequestBuilderRegistrar>();
+                searchRequestBuilderRegistrar.Register(KnownDocumentTypes.CustomerOrder, appBuilder.ApplicationServices.GetService<CustomerOrderSearchRequestBuilder>);
+
+                var settingsManager = appBuilder.ApplicationServices.GetService<ISettingsManager>();
+                if (settingsManager.GetValue(ModuleConstants.Settings.General.EventBasedIndexation.Name, false))
+                {
+                    inProcessBus.RegisterHandler<OrderChangedEvent>(async (message, token) => await appBuilder.ApplicationServices.GetService<IndexCustomerOrderChangedEventHandler>().Handle(message));
+                }
+            }
 
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {

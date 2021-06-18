@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using VirtoCommerce.Platform.Core.Settings;
 
@@ -102,6 +103,23 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
+                public static SettingDescriptor EventBasedIndexation { get; } = new SettingDescriptor
+                {
+                    Name = "Order.Search.EventBasedIndexation.Enable",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
+                    RestartRequired = true
+                };
+
+                public static SettingDescriptor CustomerOrderIndexationDate { get; } = new SettingDescriptor
+                {
+                    Name = "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.DateTime,
+                    DefaultValue = default(DateTime),
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -126,6 +144,15 @@ namespace VirtoCommerce.OrdersModule.Core
                     yield return General.OrderCustomerOrderNewNumberTemplate;
                     yield return General.OrderPaymentInNewNumberTemplate;
                     yield return General.OrderShipmentNewNumberTemplate;
+                }
+            }
+
+            public static IEnumerable<SettingDescriptor> IndexationSettings
+            {
+                get
+                {
+                    yield return General.EventBasedIndexation;
+                    yield return General.CustomerOrderIndexationDate;
                 }
             }
         }

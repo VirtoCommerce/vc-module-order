@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using VirtoCommerce.CartModule.Core.Services;
@@ -16,9 +17,11 @@ using VirtoCommerce.NotificationsModule.Core.Extensions;
 using VirtoCommerce.NotificationsModule.Core.Model;
 using VirtoCommerce.NotificationsModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Notifications;
+using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
@@ -58,6 +61,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly INotificationTemplateRenderer _notificationTemplateRenderer;
         private readonly IChangeLogSearchService _changeLogSearchService;
         private readonly IConverter _converter;
+        private readonly IIndexedCustomerOrderSearchService _indexedSearchService;
+        private readonly IConfiguration _configuration;
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
         private readonly MvcNewtonsoftJsonOptions _jsonOptions;
 
@@ -76,6 +81,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ICustomerOrderTotalsCalculator totalsCalculator
             , IAuthorizationService authorizationService
             , IConverter converter
+            , IIndexedCustomerOrderSearchService indexedSearchService
+            , IConfiguration configuration
             , IOptions<HtmlToPdfOptions> htmlToPdfOptions
             , IOptions<MvcNewtonsoftJsonOptions> jsonOptionsAccessor)
         {
@@ -92,8 +99,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _notificationSearchService = notificationSearchService;
             _totalsCalculator = totalsCalculator;
             _authorizationService = authorizationService;
-            _htmlToPdfOptions = htmlToPdfOptions.Value;
             _converter = converter;
+            _indexedSearchService = indexedSearchService;
+            _configuration = configuration;
+            _htmlToPdfOptions = htmlToPdfOptions.Value;
             _jsonOptions = jsonOptionsAccessor.Value;
         }
 
@@ -125,7 +134,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("number/{number}")]
-        public async Task<ActionResult<CustomerOrder>> GetByNumber(string number, [SwaggerOptional] [FromQuery] string respGroup = null)
+        public async Task<ActionResult<CustomerOrder>> GetByNumber(string number, [SwaggerOptional][FromQuery] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = number;
@@ -610,6 +619,22 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("indexed/searchEnabled")]
+        public ActionResult GetOrderFullTextSearchEnabled()
+        {
+            var result = _configuration.IsOrderFullTextSearchEnabled();
+            return Ok(new { Result = result });
+        }
+
+        [HttpPost]
+        [Route("indexed/search")]
+        public async Task<ActionResult<GenericSearchResult<CustomerOrder>>> SearchCustomerOrderIndexed([FromBody] CustomerOrderIndexedSearchCriteria criteria)
+        {
+            var result = await _indexedSearchService.SearchCustomerOrdersAsync(criteria);
+            return Content(JsonConvert.SerializeObject(result, _jsonOptions.SerializerSettings), "application/json");
+        }
+
         private byte[] GeneratePdf(string htmlContent)
         {
             var doc = new HtmlToPdfDocument()
@@ -630,6 +655,5 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             return result;
         }
-
     }
 }
