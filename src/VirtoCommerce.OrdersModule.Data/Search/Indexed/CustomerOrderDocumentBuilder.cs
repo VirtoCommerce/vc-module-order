@@ -106,7 +106,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
         }
 
-        // TODO: PT-2562, handle null values correctly
+        // PT-2562: handle null values correctly
         public static readonly string NoValueString = "__null";
 
         protected virtual async Task IndexDynamicProperties(CustomerOrder order, IndexDocument document)
