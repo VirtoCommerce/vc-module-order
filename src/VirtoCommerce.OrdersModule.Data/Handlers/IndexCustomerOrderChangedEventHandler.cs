@@ -26,14 +26,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 return;
             }
 
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
-            var indexEntries = message.ChangedEntries
+            var indexEntries = message?.ChangedEntries
                 .Select(x => new IndexEntry { Id = x.OldEntry.Id, EntryState = x.EntryState, Type = KnownDocumentTypes.CustomerOrder })
-                .ToArray();
+                .ToArray() ?? Array.Empty<IndexEntry>();
 
             IndexingJobs.EnqueueIndexAndDeleteDocuments(indexEntries);
         }
