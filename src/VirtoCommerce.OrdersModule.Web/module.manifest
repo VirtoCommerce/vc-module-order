@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.Orders</id>
   <version>3.33.0</version>
   <version-tag />
-  <platformVersion>3.51.0</platformVersion>
+  <platformVersion>3.57.0</platformVersion>
   <title>Orders module</title>
   <description>Document based flexible orders management system</description>
   <authors>
@@ -29,6 +29,7 @@
     <dependency id="VirtoCommerce.Notifications" version="3.14.0" />
     <dependency id="VirtoCommerce.Cart" version="3.17.0" />
     <dependency id="VirtoCommerce.Inventory" version="3.0.0" />
+    <dependency id="VirtoCommerce.Search" version="3.13.0" />
   </dependencies>
   <groups>
     <group>commerce</group>

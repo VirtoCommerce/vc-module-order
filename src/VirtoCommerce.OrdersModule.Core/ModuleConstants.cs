@@ -1,10 +1,14 @@
+using System;
 using System.Collections.Generic;
+using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Core
 {
     public class ModuleConstants
     {
+        public static string OrderIndexDocumentType { get; } = nameof(CustomerOrder);
+
         public static class Security
         {
             public static class Permissions
@@ -102,6 +106,22 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
+                public static SettingDescriptor EventBasedIndexation { get; } = new SettingDescriptor
+                {
+                    Name = "Order.Search.EventBasedIndexation.Enable",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
+                };
+
+                public static SettingDescriptor CustomerOrderIndexationDate { get; } = new SettingDescriptor
+                {
+                    Name = "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.DateTime,
+                    DefaultValue = default(DateTime),
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -126,6 +146,15 @@ namespace VirtoCommerce.OrdersModule.Core
                     yield return General.OrderCustomerOrderNewNumberTemplate;
                     yield return General.OrderPaymentInNewNumberTemplate;
                     yield return General.OrderShipmentNewNumberTemplate;
+                }
+            }
+
+            public static IEnumerable<SettingDescriptor> IndexationSettings
+            {
+                get
+                {
+                    yield return General.EventBasedIndexation;
+                    yield return General.CustomerOrderIndexationDate;
                 }
             }
         }

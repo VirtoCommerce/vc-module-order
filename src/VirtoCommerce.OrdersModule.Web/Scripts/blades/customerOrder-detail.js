@@ -2,6 +2,7 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.statusTranslationService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.authService',
         function ($scope, $window, bladeNavigationService, dialogService, settings, members, memberTypesResolverService, statusTranslationService, securityAccounts, authService) {
             var blade = $scope.blade;
+            blade.currentEntityId = blade.customerOrder.id;
 
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
