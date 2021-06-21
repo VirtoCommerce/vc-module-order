@@ -1,0 +1,11 @@
+{
+  "orders": {
+    "blades": {
+      "customerOrder-list": {
+        "labels": {
+          "newField": "Новое поле"
+        }
+      }
+    }
+  }
+}

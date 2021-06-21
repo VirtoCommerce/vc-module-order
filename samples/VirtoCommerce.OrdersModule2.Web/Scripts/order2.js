@@ -7,8 +7,8 @@ if (AppDependencies != undefined) {
 
 angular.module(moduleName, [])
     .run(
-        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService',
-            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService) {
+        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'platformWebApp.ui-grid.extension', '$translate',
+            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService, gridOptionExtension, $translate) {
                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                 if (foundTemplate) {
                     foundTemplate.detailBlade.metaFields.push(
@@ -74,4 +74,12 @@ angular.module(moduleName, [])
                     }
                 };
                 scopeResolver.register(orderStatusesScope);
+
+                gridOptionExtension.registerExtension("customerOrder-list-grid", function (gridOptions) {
+                    var customColumnDefs = [
+                        { name: 'newField', displayName: $translate.instant('orders.blades.customerOrder-list.labels.newField'), width: '***' }
+                    ];
+
+                    gridOptions.columnDefs = _.union(gridOptions.columnDefs, customColumnDefs);
+                });
             }]);
