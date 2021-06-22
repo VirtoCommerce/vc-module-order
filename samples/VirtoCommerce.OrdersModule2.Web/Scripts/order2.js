@@ -7,8 +7,8 @@ if (AppDependencies != undefined) {
 
 angular.module(moduleName, [])
     .run(
-        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'platformWebApp.ui-grid.extension', '$translate',
-            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService, gridOptionExtension, $translate) {
+        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'platformWebApp.ui-grid.extension',
+            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService, gridOptionExtension) {
                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                 if (foundTemplate) {
                     foundTemplate.detailBlade.metaFields.push(
