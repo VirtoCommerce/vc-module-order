@@ -75,6 +75,7 @@ angular.module(moduleName, [])
                 };
                 scopeResolver.register(orderStatusesScope);
 
+                // Register extension to add custom column permanently (data-independent) into the list
                 gridOptionExtension.registerExtension("customerOrder-list-grid", function (gridOptions) {
                     var customColumnDefs = [
                         { name: 'newField', displayName: 'orders.blades.customerOrder-list.labels.newField', width: '***' }
