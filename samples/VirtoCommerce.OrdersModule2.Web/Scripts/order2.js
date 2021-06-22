@@ -77,7 +77,7 @@ angular.module(moduleName, [])
 
                 gridOptionExtension.registerExtension("customerOrder-list-grid", function (gridOptions) {
                     var customColumnDefs = [
-                        { name: 'newField', displayName: $translate.instant('orders.blades.customerOrder-list.labels.newField'), width: '***' }
+                        { name: 'newField', displayName: 'orders.blades.customerOrder-list.labels.newField', width: '***' }
                     ];
 
                     gridOptions.columnDefs = _.union(gridOptions.columnDefs, customColumnDefs);
