@@ -125,6 +125,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
+                        // Workaround to trigger update of auditable fields when only updating navigation properties.
+                        // Otherwise on update trigger is fired only when non navigation properties are updated.
+                        originalEntity.ModifiedDate = DateTime.UtcNow;
+
                         var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
                                                              .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
                         /// This extension is allow to get around breaking changes is introduced in EF Core 3.0 that leads to throw
