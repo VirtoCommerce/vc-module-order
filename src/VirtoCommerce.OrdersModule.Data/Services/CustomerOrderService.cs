@@ -125,8 +125,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
-                        /// Workaround to trigger update of auditable fields when only updating navigation properties.
-                        /// Otherwise on update trigger is fired only when non navigation properties are updated.
+                        // Workaround to trigger update of auditable fields when only updating navigation properties.
+                        // Otherwise on update trigger is fired only when non navigation properties are updated.
                         originalEntity.ModifiedDate = DateTime.UtcNow;
 
                         var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
