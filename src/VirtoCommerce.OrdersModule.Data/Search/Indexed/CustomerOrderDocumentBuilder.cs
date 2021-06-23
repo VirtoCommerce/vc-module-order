@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -9,6 +10,8 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.SearchModule.Core.Extenstions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
+using VirtoCommerce.StoreModule.Core.Model;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 {
@@ -16,11 +19,15 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
     {
         private readonly ICustomerOrderService _customerOrderService;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
+        private readonly IStoreService _storeService;
+        private readonly IFulfillmentCenterService _fulfillmentCenterService;
 
-        public CustomerOrderDocumentBuilder(ICustomerOrderService customerOrderService, IDynamicPropertySearchService dynamicPropertySearchService)
+        public CustomerOrderDocumentBuilder(ICustomerOrderService customerOrderService, IDynamicPropertySearchService dynamicPropertySearchService, IStoreService storeService, IFulfillmentCenterService fulfillmentCenterService)
         {
             _customerOrderService = customerOrderService;
             _dynamicPropertySearchService = dynamicPropertySearchService;
+            _storeService = storeService;
+            _fulfillmentCenterService = fulfillmentCenterService;
         }
 
         public async Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
@@ -58,7 +65,17 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableValue("EmployeeId", order.EmployeeId);
             document.AddFilterableValue("OrganizationId", order.OrganizationId);
             document.AddFilterableValue("StoreId", order.StoreId);
-            document.AddFilterableValue("StoreName", order.StoreName);
+
+            if (!order.StoreName.IsNullOrEmpty())
+            {
+                document.AddFilterableValue("StoreName", order.StoreName);
+            }
+            else if (!order.StoreId.IsNullOrEmpty())
+            {
+                var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                document.AddFilterableValue("StoreName", store?.Name);
+            }
+
             document.AddFilterableValue("OuterId", order.OuterId);
             document.AddFilterableValue("Status", order.Status);
             document.AddFilterableValue("Currency", order.Currency);
@@ -90,7 +107,18 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 IndexAddress(shipment.DeliveryAddress, document);
                 document.AddSearchableValue(shipment.Number);
                 document.AddSearchableValue(shipment.Comment);
-                document.AddSearchableValue(shipment.FulfillmentCenterName);
+
+                if (!shipment.FulfillmentCenterName.IsNullOrEmpty())
+                {
+                    document.AddSearchableValue(shipment.FulfillmentCenterName);
+                }
+                else if (!shipment.FulfillmentCenterId.IsNullOrEmpty())
+                {
+                    var fulfillmentCenter = (await _fulfillmentCenterService.GetByIdsAsync(new[] { shipment.FulfillmentCenterId }))
+                        .FirstOrDefault();
+
+                    document.AddSearchableValue(fulfillmentCenter?.Name);
+                }
             }
 
             await IndexDynamicProperties(order, document);
