@@ -14,14 +14,14 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         rowTemplate: 'order-list.row.html',
         columnDefs: [
                    { name: 'actions', displayName: '', enableColumnResizing: false, enableSorting: false, width: 30, cellTemplate: 'list-actions.cell.html', pinnedLeft: true, displayAlways: true },
-                   { name: 'number', displayName: $translate.instant('orders.blades.customerOrder-list.labels.number'), width: '***', displayAlways: true },
-                   { name: 'customerName', displayName: $translate.instant('orders.blades.customerOrder-list.labels.customer'), width: '***' },
-                   { name: 'storeId', displayName: $translate.instant('orders.blades.customerOrder-list.labels.store'), width: '**' },
-                   { name: 'total', displayName: $translate.instant('orders.blades.customerOrder-list.labels.total'), cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
-                   { name: 'currency', displayName: $translate.instant('orders.blades.customerOrder-list.labels.currency'), width: '*' },
-                   { name: 'isApproved', displayName: $translate.instant('orders.blades.customerOrder-list.labels.confirmed'), width: '*', cellClass: '__blue' },
-                   { name: 'status', displayName: $translate.instant('orders.blades.customerOrder-list.labels.status'), cellFilter: 'statusTranslate:row.entity', width: '*' },
-                   { name: 'createdDate', displayName: $translate.instant('orders.blades.customerOrder-list.labels.created'), width: '**', sort: { direction: uiGridConstants.DESC } }
+                   { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
+                   { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
+                   { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
+                   { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
+                   { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
+                   { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
+                   { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'statusTranslate:row.entity', width: '*' },
+                   { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', sort: { direction: uiGridConstants.DESC } }
        ]}
     }
 
