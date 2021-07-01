@@ -33,7 +33,21 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     });
 
     blade.refresh = function () {
-        if (blade.preloadedOrders) {
+        if (angular.isFunction(blade.refreshCallback)) {
+            blade.isLoading = true;
+
+            var result = blade.refreshCallback(blade);
+
+            if (angular.isDefined(result.$promise)) {
+                result.$promise.then(function (data) {
+                    blade.isLoading = false;
+
+                    $scope.pageSettings.totalItems = data.totalCount;
+                    $scope.objects = data.results;
+                });
+            }
+        }
+        else if (blade.preloadedOrders) {
             $scope.pageSettings.totalItems = blade.preloadedOrders.length;
             $scope.objects = blade.preloadedOrders;
 
@@ -71,7 +85,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         var foundTemplate = knownOperations.getOperation(node.operationType);
         if (foundTemplate) {
             var newBlade = angular.copy(foundTemplate.detailBlade);
-            if (blade.preloadedOrders) {
+            if (blade.preloadedOrders || angular.isFunction(blade.refreshCallback)) {
                 newBlade.id = 'preloadedOrderDetails';
             }
             newBlade.customerOrder = node;
