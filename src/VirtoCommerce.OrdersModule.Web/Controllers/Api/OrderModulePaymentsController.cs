@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.OrdersModule.Core;
@@ -7,7 +9,9 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
+using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -19,18 +23,24 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
         private readonly ICustomerOrderService _customerOrderService;
+        private readonly IValidator<PaymentInValidator> _paymentInValidator;
+        private readonly ISettingsManager _settingsManager;
 
         public OrderModulePaymentsController(
               IPaymentSearchService paymentSearchService
             , IPaymentService paymentService
             , IAuthorizationService authorizationService
             , ICustomerOrderService customerOrderService
+            , IValidator<PaymentInValidator> paymentInValidator
+            , ISettingsManager settingsManager
          )
         {
             _paymentSearchService = paymentSearchService;
             _paymentService = paymentService;
             _authorizationService = authorizationService;
             _customerOrderService = customerOrderService;
+            _paymentInValidator = paymentInValidator;
+            _settingsManager = settingsManager;
         }
 
         /// <summary>
@@ -101,6 +111,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
+            var validationResult = await ValidateAsync(payment);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
             await _paymentService.SaveChangesAsync(new[] { payment });
             return Ok(payment);
         }
@@ -134,6 +153,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = await _paymentSearchService.SearchPaymentsAsync(searchCriteria);
             await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
+        }
+
+        private Task<ValidationResult> ValidateAsync(PaymentIn paymentIn)
+        {
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
+            {
+                return _paymentInValidator.ValidateAsync(paymentIn);
+            }
+
+            return Task.FromResult(new ValidationResult());
         }
     }
 }
