@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.OrdersModule.Core;
@@ -7,6 +8,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
+using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -19,18 +21,21 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
         private readonly ICustomerOrderService _customerOrderService;
+        private readonly IValidator<PaymentInValidator> _paymentInValidator;
 
         public OrderModulePaymentsController(
               IPaymentSearchService paymentSearchService
             , IPaymentService paymentService
             , IAuthorizationService authorizationService
             , ICustomerOrderService customerOrderService
+            , IValidator<PaymentInValidator> paymentInValidator
          )
         {
             _paymentSearchService = paymentSearchService;
             _paymentService = paymentService;
             _authorizationService = authorizationService;
             _customerOrderService = customerOrderService;
+            _paymentInValidator = paymentInValidator;
         }
 
         /// <summary>
@@ -100,6 +105,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
+            }
+            var validationResult = await payment.ValidateAsync();
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
             }
             await _paymentService.SaveChangesAsync(new[] { payment });
             return Ok(payment);
