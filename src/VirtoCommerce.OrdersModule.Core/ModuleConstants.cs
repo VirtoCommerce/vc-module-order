@@ -124,10 +124,10 @@ namespace VirtoCommerce.OrdersModule.Core
 
                 public static SettingDescriptor CustomerOrderValidation { get; } = new SettingDescriptor
                 {
-                    Name = "Order.Web.Validation",
+                    Name = "Order.Validation.Enable",
                     GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
-                    DefaultValue = default(bool)
+                    DefaultValue = false
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings

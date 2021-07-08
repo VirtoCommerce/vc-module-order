@@ -325,7 +325,7 @@
       "title": "Enable event-based indexation for order entities.",
       "description": "Any changes to the customer entity will trigger a background task that will apply these changes in the search index."
     },
-    "Order.Web.Validation": {
+    "Order.Validation.Enable": {
       "title": "Order's saving operation validation",
       "description": "Enable validation of Order's saving operations"
     },

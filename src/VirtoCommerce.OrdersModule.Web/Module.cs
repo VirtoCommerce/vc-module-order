@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +22,12 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.ExportImport;
 using VirtoCommerce.OrdersModule.Data.Handlers;
-using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
-using VirtoCommerce.OrdersModule.Data.Validation;
 using VirtoCommerce.OrdersModule.Web.Authorization;
+using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
-using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -60,11 +57,7 @@ namespace VirtoCommerce.OrdersModule.Web
                 options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
             });
 
-            // Fluent Validators
-            serviceCollection.AddTransient<IValidator<CustomerOrder>, CustomerOrderValidator>();
-            serviceCollection.AddTransient<IValidator<OperationEntity>, OperationEntityValidator>();
-            serviceCollection.AddTransient<IValidator<PaymentIn>, PaymentInValidator>();
-            serviceCollection.AddTransient<IValidator<ShipmentEntity>, ShipmentEntityValidator>();
+            serviceCollection.AddValidators();
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());

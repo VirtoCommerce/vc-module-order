@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -286,7 +287,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 customerOrder.Status = result.NewPaymentStatus.ToString();
             }
 
-            var validationResult = await customerOrder.ValidateAsync();
+            var validationResult = await ValidateAsync(customerOrder);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new
@@ -330,7 +331,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.Create)]
         public async Task<ActionResult<CustomerOrder>> CreateOrder([FromBody] CustomerOrder customerOrder)
         {
-            var validationResult = await customerOrder.ValidateAsync();
+            var validationResult = await ValidateAsync(customerOrder);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new
@@ -359,7 +360,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Unauthorized();
             }
 
-            var validationResult = await customerOrder.ValidateAsync();
+            var validationResult = await ValidateAsync(customerOrder);
             if (!validationResult.IsValid)
             {
                 return BadRequest(new
@@ -542,7 +543,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                     var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
                     if (retVal != null)
                     {
-                        var validationResult = await customerOrder.ValidateAsync();
+                        var validationResult = await ValidateAsync(customerOrder);
                         if (!validationResult.IsValid)
                         {
                             return BadRequest(new
@@ -701,6 +702,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = _converter.Convert(doc);
 
             return result;
+        }
+
+        private Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+        {
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
+            {
+                return new CustomerOrderValidator().ValidateAsync(customerOrder);
+            }
+            return Task.FromResult(new ValidationResult());
         }
     }
 }
