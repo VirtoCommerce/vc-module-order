@@ -708,8 +708,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         {
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
             {
-                return new CustomerOrderValidator().ValidateAsync(customerOrder);
+                return _customerOrderValidator.ValidateAsync(customerOrder);
             }
+
             return Task.FromResult(new ValidationResult());
         }
     }

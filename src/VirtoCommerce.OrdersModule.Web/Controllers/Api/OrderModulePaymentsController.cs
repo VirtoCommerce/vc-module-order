@@ -159,8 +159,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         {
             if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
             {
-                return new PaymentInValidator().ValidateAsync(paymentIn);
+                return _paymentInValidator.ValidateAsync(paymentIn);
             }
+
             return Task.FromResult(new ValidationResult());
         }
     }
