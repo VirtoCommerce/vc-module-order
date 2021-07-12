@@ -42,10 +42,24 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 var operationLogs = new List<OperationLog>();
 
-                foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+                foreach (var changedEntry in message.ChangedEntries)
                 {
-                    var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
-                    var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                    IList<IOperation> originalOperations = Array.Empty<IOperation>();
+                    IList<IOperation> modifiedOperations = Array.Empty<IOperation>();
+
+                    if (changedEntry.EntryState == EntryState.Deleted)
+                    {
+                        originalOperations = GetOrderOperations(changedEntry.OldEntry);
+                    }
+                    else if (changedEntry.EntryState == EntryState.Added)
+                    {
+                        modifiedOperations = GetOrderOperations(changedEntry.NewEntry);
+                    }
+                    else if (changedEntry.EntryState == EntryState.Modified)
+                    {
+                        originalOperations = GetOrderOperations(changedEntry.OldEntry);
+                        modifiedOperations = GetOrderOperations(changedEntry.NewEntry);
+                    }
 
                     modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
                                                          (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
@@ -63,6 +77,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public void TryToLogChangesBackgroundJob(OperationLog[] operationLogs)
         {
             _changeLogService.SaveChangesAsync(operationLogs).GetAwaiter().GetResult();
+        }
+
+
+        protected virtual IList<IOperation> GetOrderOperations(CustomerOrder order)
+        {
+            return order.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
         }
 
         protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)
