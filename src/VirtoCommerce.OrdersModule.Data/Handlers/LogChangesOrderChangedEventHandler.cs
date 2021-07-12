@@ -110,9 +110,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
                 }
 
-                List<string> auditableProperties;
                 var type = changedEntry.OldEntry.GetType();
-                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out auditableProperties))
+                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
                 {
                     auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
                                                               .Select(x => x.Name)
@@ -137,6 +136,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 result.Add($"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} has been created");
             }
+
             return result.Select(x => GetLogRecord(changedEntry.NewEntry, x));
         }
 
@@ -210,9 +210,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             result.ObjectType = operation.GetType().Name;
             result.OperationType = EntryState.Modified;
             result.Detail = template;
-            
-            return result;
 
+            return result;
         }
     }
 
