@@ -131,11 +131,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
             else if (changedEntry.EntryState == EntryState.Deleted)
             {
-                result.Add($"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted");
+                result.Add($"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} has been deleted");
             }
             else if (changedEntry.EntryState == EntryState.Added)
             {
-                result.Add($"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added");
+                result.Add($"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} has been created");
             }
             return result.Select(x => GetLogRecord(changedEntry.NewEntry, x));
         }
