@@ -8,6 +8,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule2.Web.Authorization;
+using VirtoCommerce.OrdersModule2.Web.Extensions;
 using VirtoCommerce.OrdersModule2.Web.Model;
 using VirtoCommerce.OrdersModule2.Web.Repositories;
 using VirtoCommerce.Platform.Core.Common;
@@ -36,6 +37,8 @@ namespace VirtoCommerce.OrdersModule2.Web
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
             serviceCollection.AddTransient<IAuthorizationHandler, CustomOrderAuthorizationHandler>();
+
+            serviceCollection.AddValidators();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

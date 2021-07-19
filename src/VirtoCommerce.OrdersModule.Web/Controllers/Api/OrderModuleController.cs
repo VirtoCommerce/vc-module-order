@@ -186,15 +186,24 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// Calculate order totals after changes
         /// </summary>
         /// <remarks>Return order with recalculated totals</remarks>
-        /// <param name="order">Customer order</param>
+        /// <param name="customerOrder">Customer order</param>
         [HttpPut]
         [Route("recalculate")]
-        public ActionResult<CustomerOrder> CalculateTotals([FromBody] CustomerOrder order)
+        public async Task<ActionResult<CustomerOrder>> CalculateTotals([FromBody] CustomerOrder customerOrder)
         {
-            _totalsCalculator.CalculateTotals(order);
-            order.FillAllChildOperations();
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
+            _totalsCalculator.CalculateTotals(customerOrder);
+            customerOrder.FillAllChildOperations();
 
-            return Ok(order);
+            return Ok(customerOrder);
         }
 
         /// <summary>
