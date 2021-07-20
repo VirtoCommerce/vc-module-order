@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Web.Validation
             RuleFor(order => order.CustomerId).NotNull().NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerName).NotEmpty().MaximumLength(255);
             RuleFor(order => order.StoreId).NotNull().NotEmpty().MaximumLength(64);
-            RuleFor(order => order.StoreName).NotEmpty().MaximumLength(255);
+            RuleFor(order => order.StoreName).MaximumLength(255);
             RuleFor(order => order.ChannelId).MaximumLength(64);
             RuleFor(order => order.OrganizationId).MaximumLength(64);
             RuleFor(order => order.OrganizationName).MaximumLength(255);
