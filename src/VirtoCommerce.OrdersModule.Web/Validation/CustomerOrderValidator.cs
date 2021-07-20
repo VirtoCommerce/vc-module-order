@@ -27,7 +27,7 @@ namespace VirtoCommerce.OrdersModule.Web.Validation
         }
         protected void SetDefaultRules()
         {
-            RuleFor(order => order.Number).NotEmpty().MaximumLength(128);
+            RuleFor(order => order.Number).NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerId).NotNull().NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerName).NotEmpty().MaximumLength(255);
             RuleFor(order => order.StoreId).NotNull().NotEmpty().MaximumLength(64);
