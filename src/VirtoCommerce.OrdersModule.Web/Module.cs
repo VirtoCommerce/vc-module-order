@@ -51,12 +51,14 @@ namespace VirtoCommerce.OrdersModule.Web
 
         public void Initialize(IServiceCollection serviceCollection)
         {
+            var cosmosOptions = new CosmosOptions();
+            Configuration.GetSection("CosmosOptions").Bind(cosmosOptions);
+
             serviceCollection.AddDbContext<CosmosOrderDBContext>((provider, options) =>
             {
-
                 options.UseCosmos(
-                    "https://cosmosaccn.documents.azure.com:443/",
-                    "qNe5ZWczBqqRn0GnHoFKYO1Z2kfXrLjYJ6Pqtr5jaT9WwpD9jcaBpFDuVC8IO6OpT9YA5ENBo7Xs2Zs0DeGPBg==",
+                    cosmosOptions.Endpoint,
+                    cosmosOptions.Key,
                     databaseName: "OrdersModule");
 
             });

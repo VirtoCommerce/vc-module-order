@@ -29,10 +29,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _paymentService = paymentService;
         }
 
-        public virtual async Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria)
+        public virtual Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria)
         {
             var cacheKey = CacheKey.With(GetType(), nameof(PaymentSearchCriteria), criteria.GetCacheKey());
-            return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
+            return _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
             {
                 cacheEntry.AddExpirationToken(OrderSearchCacheRegion.CreateChangeToken());
                 using (var repository = _repositoryFactory())
@@ -61,74 +61,75 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual IQueryable<PaymentInEntity> BuildQuery(IOrderRepository repository, PaymentSearchCriteria criteria)
         {
-            var query = repository.InPayments;
+            //var query = repository.InPayments;
 
-            if (!criteria.Ids.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.Ids.Contains(x.Id));
-            }
+            //if (!criteria.Ids.IsNullOrEmpty())
+            //{
+            //    query = query.Where(x => criteria.Ids.Contains(x.Id));
+            //}
 
-            if (!string.IsNullOrEmpty(criteria.OrderId))
-            {
-                query = query.Where(x => x.CustomerOrderId == criteria.OrderId);
-            }
-            else if (!string.IsNullOrEmpty(criteria.OrderNumber))
-            {
-                query = query.Where(x => x.CustomerOrder.Number == criteria.OrderNumber);
-            }
-            if (criteria.EmployeeId != null)
-            {
-                query = query.Where(x => x.CustomerOrder.EmployeeId == criteria.EmployeeId);
-            }
-            if (!criteria.StoreIds.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.StoreIds.Contains(x.CustomerOrder.StoreId));
-            }
+            //if (!string.IsNullOrEmpty(criteria.OrderId))
+            //{
+            //    query = query.Where(x => x.CustomerOrderId == criteria.OrderId);
+            //}
+            //else if (!string.IsNullOrEmpty(criteria.OrderNumber))
+            //{
+            //    query = query.Where(x => x.CustomerOrder.Number == criteria.OrderNumber);
+            //}
+            //if (criteria.EmployeeId != null)
+            //{
+            //    query = query.Where(x => x.CustomerOrder.EmployeeId == criteria.EmployeeId);
+            //}
+            //if (!criteria.StoreIds.IsNullOrEmpty())
+            //{
+            //    query = query.Where(x => criteria.StoreIds.Contains(x.CustomerOrder.StoreId));
+            //}
 
-            if (!criteria.Statuses.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.Statuses.Contains(x.Status));
-            }
+            //if (!criteria.Statuses.IsNullOrEmpty())
+            //{
+            //    query = query.Where(x => criteria.Statuses.Contains(x.Status));
+            //}
 
-            if (!criteria.CustomerId.IsNullOrEmpty())
-            {
-                query = query.Where(x => x.CustomerId == criteria.CustomerId);
-            }
+            //if (!criteria.CustomerId.IsNullOrEmpty())
+            //{
+            //    query = query.Where(x => x.CustomerId == criteria.CustomerId);
+            //}
 
-            if (criteria.StartDate != null)
-            {
-                query = query.Where(x => x.CreatedDate >= criteria.StartDate);
-            }
-            if (criteria.EndDate != null)
-            {
-                query = query.Where(x => x.CreatedDate <= criteria.EndDate);
-            }
-            if (criteria.CapturedStartDate != null)
-            {
-                query = query.Where(x => x.CapturedDate >= criteria.CapturedStartDate);
-            }
-            if (criteria.CapturedEndDate != null)
-            {
-                query = query.Where(x => x.CapturedDate <= criteria.CapturedEndDate);
-            }
-            if (criteria.AuthorizedStartDate != null)
-            {
-                query = query.Where(x => x.AuthorizedDate >= criteria.AuthorizedStartDate);
-            }
-            if (criteria.AuthorizedEndDate != null)
-            {
-                query = query.Where(x => x.AuthorizedDate <= criteria.AuthorizedEndDate);
-            }
-            if (!criteria.Numbers.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.Numbers.Contains(x.Number));
-            }
-            else if (!string.IsNullOrEmpty(criteria.Keyword))
-            {
-                query = query.Where(GetKeywordPredicate(criteria));
-            }
+            //if (criteria.StartDate != null)
+            //{
+            //    query = query.Where(x => x.CreatedDate >= criteria.StartDate);
+            //}
+            //if (criteria.EndDate != null)
+            //{
+            //    query = query.Where(x => x.CreatedDate <= criteria.EndDate);
+            //}
+            //if (criteria.CapturedStartDate != null)
+            //{
+            //    query = query.Where(x => x.CapturedDate >= criteria.CapturedStartDate);
+            //}
+            //if (criteria.CapturedEndDate != null)
+            //{
+            //    query = query.Where(x => x.CapturedDate <= criteria.CapturedEndDate);
+            //}
+            //if (criteria.AuthorizedStartDate != null)
+            //{
+            //    query = query.Where(x => x.AuthorizedDate >= criteria.AuthorizedStartDate);
+            //}
+            //if (criteria.AuthorizedEndDate != null)
+            //{
+            //    query = query.Where(x => x.AuthorizedDate <= criteria.AuthorizedEndDate);
+            //}
+            //if (!criteria.Numbers.IsNullOrEmpty())
+            //{
+            //    query = query.Where(x => criteria.Numbers.Contains(x.Number));
+            //}
+            //else if (!string.IsNullOrEmpty(criteria.Keyword))
+            //{
+            //    query = query.Where(GetKeywordPredicate(criteria));
+            //}
 
-            return query;
+            //return query;
+            return null;
         }
 
         protected virtual IList<SortInfo> BuildSortExpression(PaymentSearchCriteria criteria)

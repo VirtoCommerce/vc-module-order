@@ -22,13 +22,13 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories.Cosmos
 
         public IQueryable<CustomerOrderEntity> CustomerOrders => DbContext.Set<CustomerOrderEntity>();
 
-        public IQueryable<ShipmentEntity> Shipments => DbContext.Set<ShipmentEntity>();
+        //public IQueryable<ShipmentEntity> Shipments => DbContext.Set<ShipmentEntity>();
 
-        public IQueryable<PaymentInEntity> InPayments => DbContext.Set<PaymentInEntity>();
+        //public IQueryable<PaymentInEntity> InPayments => DbContext.Set<PaymentInEntity>();
 
-        public IQueryable<AddressEntity> Addresses => DbContext.Set<AddressEntity>();
+        //public IQueryable<AddressEntity> Addresses => DbContext.Set<AddressEntity>();
 
-        public IQueryable<LineItemEntity> LineItems => DbContext.Set<LineItemEntity>();
+        //public IQueryable<LineItemEntity> LineItems => DbContext.Set<LineItemEntity>();
 
         public IUnitOfWork UnitOfWork { get; private set; }
 
@@ -41,26 +41,27 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories.Cosmos
 
             var result = await CustomerOrders.Where(x => ids.Contains(x.Id)).ToArrayAsync();
 
-            foreach (var order in result)
-            {
-                order.Shipments = new System.Collections.ObjectModel.ObservableCollection<ShipmentEntity>(await Shipments.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
-                order.InPayments = new System.Collections.ObjectModel.ObservableCollection<PaymentInEntity>(await InPayments.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
-                order.Addresses = new System.Collections.ObjectModel.ObservableCollection<AddressEntity>(await Addresses.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
-                order.Items = new System.Collections.ObjectModel.ObservableCollection<LineItemEntity>(await LineItems.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
-            }
+            //foreach (var order in result)
+            //{
+            //    order.Shipments = new System.Collections.ObjectModel.ObservableCollection<ShipmentEntity>(await Shipments.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
+            //    order.InPayments = new System.Collections.ObjectModel.ObservableCollection<PaymentInEntity>(await InPayments.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
+            //    order.Addresses = new System.Collections.ObjectModel.ObservableCollection<AddressEntity>(await Addresses.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
+            //    order.Items = new System.Collections.ObjectModel.ObservableCollection<LineItemEntity>(await LineItems.Where(x => x.CustomerOrderId == order.Id).ToArrayAsync());
+            //}
 
             return result;
         }
 
         public async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null)
         {
-            if (ids.IsNullOrEmpty())
-            {
-                return Array.Empty<PaymentInEntity>();
-            }
+            //if (ids.IsNullOrEmpty())
+            //{
+            //    return Array.Empty<PaymentInEntity>();
+            //}
 
-            var result = await InPayments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
-            return result;
+            //var result = await InPayments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+            //return result;
+            return null;
         }
 
         public async Task RemoveOrdersByIdsAsync(string[] ids)
