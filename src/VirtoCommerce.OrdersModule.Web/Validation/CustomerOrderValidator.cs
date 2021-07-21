@@ -25,12 +25,11 @@ namespace VirtoCommerce.OrdersModule.Web.Validation
 
             RuleForEach(order => order.InPayments).SetValidator(paymentInValidator);
         }
-
         protected void SetDefaultRules()
         {
-            RuleFor(order => order.Number).MaximumLength(128);
+            RuleFor(order => order.Number).NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerId).NotNull().NotEmpty().MaximumLength(64);
-            RuleFor(order => order.CustomerName).MaximumLength(255);
+            RuleFor(order => order.CustomerName).NotEmpty().MaximumLength(255);
             RuleFor(order => order.StoreId).NotNull().NotEmpty().MaximumLength(64);
             RuleFor(order => order.StoreName).MaximumLength(255);
             RuleFor(order => order.ChannelId).MaximumLength(64);
