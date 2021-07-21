@@ -26,6 +26,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
+using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
@@ -55,6 +56,9 @@ namespace VirtoCommerce.OrdersModule.Web
                 var configuration = provider.GetRequiredService<IConfiguration>();
                 options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
             });
+
+            serviceCollection.AddValidators();
+
             serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
