@@ -27,6 +27,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories.Cosmos;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
+using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
 using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
@@ -62,9 +63,8 @@ namespace VirtoCommerce.OrdersModule.Web
                     databaseName: "OrdersModule");
 
             });
+            serviceCollection.AddValidators();
             serviceCollection.AddTransient<IOrderRepository, CosmosOrderRepository>();
-
-
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();

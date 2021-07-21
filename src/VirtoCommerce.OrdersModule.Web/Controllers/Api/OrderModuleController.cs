@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +32,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
+using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
@@ -63,6 +66,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IConverter _converter;
         private readonly IIndexedCustomerOrderSearchService _indexedSearchService;
         private readonly IConfiguration _configuration;
+        private readonly IValidator<CustomerOrder> _customerOrderValidator;
+        private readonly ISettingsManager _settingsManager;
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
         private readonly MvcNewtonsoftJsonOptions _jsonOptions;
 
@@ -84,7 +89,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , IIndexedCustomerOrderSearchService indexedSearchService
             , IConfiguration configuration
             , IOptions<HtmlToPdfOptions> htmlToPdfOptions
-            , IOptions<MvcNewtonsoftJsonOptions> jsonOptionsAccessor)
+            , IOptions<MvcNewtonsoftJsonOptions> jsonOptionsAccessor
+            , IValidator<CustomerOrder> customerOrderValidator
+            , ISettingsManager settingsManager)
         {
             _customerOrderService = customerOrderService;
             _searchService = searchService;
@@ -102,6 +109,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _converter = converter;
             _indexedSearchService = indexedSearchService;
             _configuration = configuration;
+            _customerOrderValidator = customerOrderValidator;
+            _settingsManager = settingsManager;
             _htmlToPdfOptions = htmlToPdfOptions.Value;
             _jsonOptions = jsonOptionsAccessor.Value;
         }
@@ -177,15 +186,24 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// Calculate order totals after changes
         /// </summary>
         /// <remarks>Return order with recalculated totals</remarks>
-        /// <param name="order">Customer order</param>
+        /// <param name="customerOrder">Customer order</param>
         [HttpPut]
         [Route("recalculate")]
-        public ActionResult<CustomerOrder> CalculateTotals([FromBody] CustomerOrder order)
+        public async Task<ActionResult<CustomerOrder>> CalculateTotals([FromBody] CustomerOrder customerOrder)
         {
-            _totalsCalculator.CalculateTotals(order);
-            order.FillAllChildOperations();
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
+            _totalsCalculator.CalculateTotals(customerOrder);
+            customerOrder.FillAllChildOperations();
 
-            return Ok(order);
+            return Ok(customerOrder);
         }
 
         /// <summary>
@@ -214,30 +232,30 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Consumes("application/json", new[] { "application/json-patch+json" })] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
         public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
         {
-            var order = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
-            if (order == null)
+            if (customerOrder == null)
             {
                 var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
                 searchCriteria.Number = orderId;
                 searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
 
                 var orders = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
-                order = orders.Results.FirstOrDefault();
+                customerOrder = orders.Results.FirstOrDefault();
             }
 
-            if (order == null)
+            if (customerOrder == null)
             {
                 throw new InvalidOperationException($"Cannot find order with ID {orderId}");
             }
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
             }
 
-            var inPayment = order.InPayments.FirstOrDefault(x => x.Id == paymentId);
+            var inPayment = customerOrder.InPayments.FirstOrDefault(x => x.Id == paymentId);
             if (inPayment == null)
             {
                 throw new InvalidOperationException($"Cannot find payment with ID {paymentId}");
@@ -247,19 +265,19 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find payment method with code {inPayment.GatewayCode}");
             }
 
-            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            var store = await _storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
             if (store == null)
             {
-                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+                throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
             }
 
             var request = new ProcessPaymentRequest
             {
-                OrderId = order.Id,
-                Order = order,
+                OrderId = customerOrder.Id,
+                Order = customerOrder,
                 PaymentId = inPayment.Id,
                 Payment = inPayment,
-                StoreId = order.StoreId,
+                StoreId = customerOrder.StoreId,
                 Store = store,
                 BankCardInfo = bankCardInfo
             };
@@ -275,10 +293,20 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             // One day, we should change the flow to commonly divide payment and order processing, but now it isn't.
             if (inPayment.PaymentMethod is DefaultManualPaymentMethod)
             {
-                order.Status = result.NewPaymentStatus.ToString();
+                customerOrder.Status = result.NewPaymentStatus.ToString();
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { order });
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
+
+            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
 
             return Ok(result);
         }
@@ -312,6 +340,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.Create)]
         public async Task<ActionResult<CustomerOrder>> CreateOrder([FromBody] CustomerOrder customerOrder)
         {
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
+
             await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
             return Ok(customerOrder);
         }
@@ -329,6 +367,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();
+            }
+
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
             }
 
             await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
@@ -467,23 +515,23 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
             //if order not found by order number search by order id
             var orders = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
-            var order = orders.Results.FirstOrDefault() ?? await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = orders.Results.FirstOrDefault() ?? await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
-            if (order == null)
+            if (customerOrder == null)
             {
                 throw new InvalidOperationException($"Cannot find order with ID {orderId}");
             }
 
-            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            var store = await _storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
             if (store == null)
             {
-                throw new InvalidOperationException($"Cannot find store with ID {order.StoreId}");
+                throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
             }
 
             var paymentMethodCode = parameters.Get("code");
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
-            foreach (var inPayment in order.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsInvariant(paymentMethodCode))))
+            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsInvariant(paymentMethodCode))))
             {
                 //Each payment method must check that these parameters are addressed to it
                 var result = inPayment.PaymentMethod.ValidatePostProcessRequest(parameters);
@@ -492,11 +540,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
                     var request = new PostProcessPaymentRequest
                     {
-                        OrderId = order.Id,
-                        Order = order,
+                        OrderId = customerOrder.Id,
+                        Order = customerOrder,
                         PaymentId = inPayment.Id,
                         Payment = inPayment,
-                        StoreId = order.StoreId,
+                        StoreId = customerOrder.StoreId,
                         Store = store,
                         OuterId = result.OuterId,
                         Parameters = parameters
@@ -504,10 +552,19 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                     var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
                     if (retVal != null)
                     {
-                        await _customerOrderService.SaveChangesAsync(new[] { order });
+                        var validationResult = await ValidateAsync(customerOrder);
+                        if (!validationResult.IsValid)
+                        {
+                            return BadRequest(new
+                            {
+                                Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                                Errors = validationResult.Errors
+                            });
+                        }
+                        await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
 
                         // order Number is required
-                        retVal.OrderId = order.Number;
+                        retVal.OrderId = customerOrder.Number;
                     }
                     return Ok(retVal);
                 }
@@ -654,6 +711,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = _converter.Convert(doc);
 
             return result;
+        }
+
+        private Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+        {
+            if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
+            {
+                return _customerOrderValidator.ValidateAsync(customerOrder);
+            }
+
+            return Task.FromResult(new ValidationResult());
         }
     }
 }

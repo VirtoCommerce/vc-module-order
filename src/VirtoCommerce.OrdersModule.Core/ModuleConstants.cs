@@ -122,6 +122,14 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = default(DateTime),
                 };
 
+                public static SettingDescriptor CustomerOrderValidation { get; } = new SettingDescriptor
+                {
+                    Name = "Order.Validation.Enable",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -135,6 +143,7 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return SendOrderNotifications;
                         yield return OrderAdjustInventory;
                         yield return LogOrderChanges;
+                        yield return CustomerOrderValidation;
                     }
                 }
             }
