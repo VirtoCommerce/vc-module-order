@@ -9,10 +9,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
     public interface IOrderRepository : IRepository
     {
         IQueryable<CustomerOrderEntity> CustomerOrders { get; }
-        IQueryable<ShipmentEntity> Shipments { get; }
-        IQueryable<PaymentInEntity> InPayments { get; }
-        IQueryable<AddressEntity> Addresses { get; }
-        IQueryable<LineItemEntity> LineItems { get; }
+        //IQueryable<ShipmentEntity> Shipments { get; }
+        //IQueryable<PaymentInEntity> InPayments { get; }
+        //IQueryable<AddressEntity> Addresses { get; }
+        //IQueryable<LineItemEntity> LineItems { get; }
 
         Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null);
         Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null);

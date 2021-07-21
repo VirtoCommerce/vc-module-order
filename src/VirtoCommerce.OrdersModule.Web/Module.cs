@@ -23,6 +23,7 @@ using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.ExportImport;
 using VirtoCommerce.OrdersModule.Data.Handlers;
 using VirtoCommerce.OrdersModule.Data.Repositories;
+using VirtoCommerce.OrdersModule.Data.Repositories.Cosmos;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Authorization;
@@ -51,15 +52,19 @@ namespace VirtoCommerce.OrdersModule.Web
 
         public void Initialize(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
+            var cosmosOptions = new CosmosOptions();
+            Configuration.GetSection("CosmosOptions").Bind(cosmosOptions);
+
+            serviceCollection.AddDbContext<CosmosOrderDBContext>((provider, options) =>
             {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+                options.UseCosmos(
+                    cosmosOptions.Endpoint,
+                    cosmosOptions.Key,
+                    databaseName: "OrdersModule");
+
             });
-
             serviceCollection.AddValidators();
-
-            serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
+            serviceCollection.AddTransient<IOrderRepository, CosmosOrderRepository>();
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
@@ -163,10 +168,9 @@ namespace VirtoCommerce.OrdersModule.Web
 
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {
-                var dbContext = serviceScope.ServiceProvider.GetRequiredService<OrderDbContext>();
-                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
-                dbContext.Database.EnsureCreated();
-                dbContext.Database.Migrate();
+                var dbContext = serviceScope.ServiceProvider.GetRequiredService<CosmosOrderDBContext>();
+                dbContext.Database.EnsureCreatedAsync().GetAwaiter().GetResult();
+                dbContext.AddIndexes().GetAwaiter().GetResult();
             }
 
             var notificationRegistrar = appBuilder.ApplicationServices.GetService<INotificationRegistrar>();
