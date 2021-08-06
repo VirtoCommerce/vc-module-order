@@ -49,7 +49,7 @@ VirtoCommerce Orders Module supports the following functionalities:
 
 1. [Order Details](order-details.md)
 
-1. [Widgets](widgets.md)
+1. [Widgets](order-widgets.md)
 1. [Order Documents](order-documents.md)
 
 ## Roles and Permissions
