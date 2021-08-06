@@ -49,7 +49,7 @@ VirtoCommerce Orders Module supports the following functionalities:
 
 1. [Order Details](order-details.md)
 
-1. [Widgets](/docs/widgets.md)
+1. [Widgets](widgets.md)
 1. [Order Documents](order-documents.md)
 
 ## Roles and Permissions
@@ -58,13 +58,13 @@ In order to manage Virto Commerce functionality each user must be assigned to at
 Permissions are controlled by assigning Roles to users. A Role is a collection of permissions. A Role can be assigned to multiple users. Each user can have more than one assigned Role.
 Through the combination of assigned Roles, you can ensure that users only have access to the information and functionality they need.
 
-[Scenarios](/docs/roles-and-permissions-scenarios.md)
+[Scenarios](roles-and-permissions-scenarios.md)
 
 ## Notification Templates
 
 Each notification has its own template (NotificationTemplate) which is responsible for notification contents and consists of a view template with placeholders.
 
-[Order Module Notification Types](/docs/order-module-notification-types.md)
+[Order Module Notification Types](order-module-notification-types.md)
 
 ## Database Model
 
