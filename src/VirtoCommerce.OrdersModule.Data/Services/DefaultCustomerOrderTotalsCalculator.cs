@@ -169,7 +169,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual async Task<Currency> GetCurrency(string orderCurrencyName)
         {
             var currencies = await _currencyService.GetAllCurrenciesAsync();
-            return currencies.First(c => c.Name == orderCurrencyName);
+            return currencies.First(c => c.Code == orderCurrencyName);
         }
 
         protected virtual void CalculatePaymentTotals(PaymentIn payment)
