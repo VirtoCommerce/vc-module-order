@@ -10,7 +10,6 @@ using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
@@ -112,11 +111,6 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
         {
-            var settingsManagerMock = new Mock<ISettingsManager>();
-            settingsManagerMock.Setup(s => s.GetObjectSettingAsync(StoreModule.Core.ModuleConstants.Settings.General.EnablePriceRoundingForTotalsCalculation.Name, null, null)).ReturnsAsync(new ObjectSettingEntry
-            {
-                Value = true
-            });
             var repositoryFactory = new Mock<System.Func<CoreModule.Data.Repositories.ICoreRepository>>().Object;
             var eventPublisher = new Mock<Platform.Core.Events.IEventPublisher>().Object;
             var memoryCacheOptions = new MemoryCacheOptions();
@@ -124,7 +118,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), null);
             var currencyServiceMock = new Mock<ICurrencyService>();
             currencyServiceMock.Setup(c => c.GetAllCurrenciesAsync()).ReturnsAsync(new List<Currency>() { currency });
-            return new DefaultCustomerOrderTotalsCalculator(currencyServiceMock.Object, settingsManagerMock.Object);
+            return new DefaultCustomerOrderTotalsCalculator(currencyServiceMock.Object);
         }
 
         [Fact]

@@ -15,12 +15,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
     public class DefaultCustomerOrderTotalsCalculator : ICustomerOrderTotalsCalculator
     {
         private readonly ICurrencyService _currencyService;
-        private readonly ISettingsManager _settingsManager;
 
-        public DefaultCustomerOrderTotalsCalculator(ICurrencyService currencyService, ISettingsManager settingsManager)
+        public DefaultCustomerOrderTotalsCalculator(ICurrencyService currencyService)
         {
             _currencyService = currencyService;
-            _settingsManager = settingsManager;
         }
         /// <summary>
         /// Order subtotal discount
