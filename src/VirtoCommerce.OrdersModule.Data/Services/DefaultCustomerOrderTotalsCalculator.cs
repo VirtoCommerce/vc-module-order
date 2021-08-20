@@ -136,31 +136,28 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.TaxTotal -= order.DiscountAmount * order.TaxPercentRate;
 
             //Need to round all order totals
-            if (_settingsManager.GetValue<bool>(StoreModule.Core.ModuleConstants.Settings.General.EnablePriceRoundingForTotalsCalculation.Name, true))
-            {
-                var currency = GetCurrency(order.Currency).GetAwaiter().GetResult();
-                order.SubTotal = currency.RoundingPolicy.RoundMoney(order.SubTotal, currency);
-                order.SubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalWithTax, currency);
-                order.SubTotalDiscount = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscount, currency);
-                order.SubTotalDiscountWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscountWithTax, currency);
-                order.TaxTotal = currency.RoundingPolicy.RoundMoney(order.TaxTotal, currency);
-                order.DiscountTotal = currency.RoundingPolicy.RoundMoney(order.DiscountTotal, currency);
-                order.DiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.DiscountTotalWithTax, currency);
-                order.Fee = currency.RoundingPolicy.RoundMoney(order.Fee, currency);
-                order.FeeWithTax = currency.RoundingPolicy.RoundMoney(order.FeeWithTax, currency);
-                order.FeeTotal = currency.RoundingPolicy.RoundMoney(order.FeeTotal, currency);
-                order.FeeTotalWithTax = currency.RoundingPolicy.RoundMoney(order.FeeTotalWithTax, currency);
-                order.ShippingTotal = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
-                order.ShippingTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
-                order.ShippingSubTotal = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotal, currency);
-                order.ShippingSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotalWithTax, currency);
-                order.PaymentTotal = currency.RoundingPolicy.RoundMoney(order.PaymentTotal, currency);
-                order.PaymentTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentTotalWithTax, currency);
-                order.PaymentSubTotal = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotal, currency);
-                order.PaymentSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotalWithTax, currency);
-                order.PaymentDiscountTotal = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotal, currency);
-                order.PaymentDiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotalWithTax, currency);
-            }
+            var currency = GetCurrency(order.Currency).GetAwaiter().GetResult();
+            order.SubTotal = currency.RoundingPolicy.RoundMoney(order.SubTotal, currency);
+            order.SubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalWithTax, currency);
+            order.SubTotalDiscount = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscount, currency);
+            order.SubTotalDiscountWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscountWithTax, currency);
+            order.TaxTotal = currency.RoundingPolicy.RoundMoney(order.TaxTotal, currency);
+            order.DiscountTotal = currency.RoundingPolicy.RoundMoney(order.DiscountTotal, currency);
+            order.DiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.DiscountTotalWithTax, currency);
+            order.Fee = currency.RoundingPolicy.RoundMoney(order.Fee, currency);
+            order.FeeWithTax = currency.RoundingPolicy.RoundMoney(order.FeeWithTax, currency);
+            order.FeeTotal = currency.RoundingPolicy.RoundMoney(order.FeeTotal, currency);
+            order.FeeTotalWithTax = currency.RoundingPolicy.RoundMoney(order.FeeTotalWithTax, currency);
+            order.ShippingTotal = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
+            order.ShippingTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
+            order.ShippingSubTotal = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotal, currency);
+            order.ShippingSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotalWithTax, currency);
+            order.PaymentTotal = currency.RoundingPolicy.RoundMoney(order.PaymentTotal, currency);
+            order.PaymentTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentTotalWithTax, currency);
+            order.PaymentSubTotal = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotal, currency);
+            order.PaymentSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotalWithTax, currency);
+            order.PaymentDiscountTotal = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotal, currency);
+            order.PaymentDiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotalWithTax, currency);
 
             order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
             order.Sum = order.Total;
