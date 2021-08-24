@@ -1,8 +1,14 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using Moq;
+using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using Xunit;
 
@@ -103,13 +109,30 @@ namespace VirtoCommerce.OrdersModule.Tests
             return order;
         }
 
+        private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
+        {
+            var repositoryFactory = new Mock<System.Func<CoreModule.Data.Repositories.ICoreRepository>>().Object;
+            var eventPublisher = new Mock<Platform.Core.Events.IEventPublisher>().Object;
+            var memoryCacheOptions = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(Options.Create(memoryCacheOptions));
+            var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), null);
+            var currencyServiceMock = new Mock<ICurrencyService>();
+            currencyServiceMock.Setup(c => c.GetAllCurrenciesAsync()).ReturnsAsync(new List<Currency>() { currency });
+            return new DefaultCustomerOrderTotalsCalculator(currencyServiceMock.Object);
+        }
+
         [Fact]
         public void CanZeroPrices()
         {
             var order = GetResetedOrder();
-
-            var calc = new DefaultCustomerOrderTotalsCalculator();
             var domainOrder = (CustomerOrder)order.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+
+            var currency = new Currency
+            {
+                Code = domainOrder.Currency,
+                RoundingPolicy = new DefaultMoneyRoundingPolicy()
+            };
+            var calc = GetTotalsCalculator(currency);
 
             calc.CalculateTotals(domainOrder);
 

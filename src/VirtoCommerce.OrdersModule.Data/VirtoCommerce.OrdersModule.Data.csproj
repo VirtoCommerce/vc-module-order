@@ -27,7 +27,7 @@
         <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.17.0" />
         <PackageReference Include="VirtoCommerce.CartModule.Data" Version="3.17.0" />
         <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.2.0" />
-        <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.1.0" />
+        <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.20.0" />
         <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.1.0" />
         <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.1.0" />
         <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.57.0" />
@@ -35,7 +35,7 @@
         <PackageReference Include="VirtoCommerce.Platform.Security" Version="3.57.0" />
         <PackageReference Include="VirtoCommerce.SearchModule.Core" Version="3.13.0" />
         <PackageReference Include="VirtoCommerce.SearchModule.Data" Version="3.13.0" />
-        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.17.0" />
+        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.21.0" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\VirtoCommerce.OrdersModule.Core\VirtoCommerce.OrdersModule.Core.csproj" />

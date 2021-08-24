@@ -1,6 +1,12 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using Moq;
+using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
+using VirtoCommerce.Platform.Caching;
+using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
@@ -8,6 +14,18 @@ namespace VirtoCommerce.OrdersModule.Tests
     [Trait("Category", "CI")]
     public class OrderTotalsCalculationTest
     {
+        private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
+        {
+            var repositoryFactory = new Mock<System.Func<CoreModule.Data.Repositories.ICoreRepository>>().Object;
+            var eventPublisher = new Mock<Platform.Core.Events.IEventPublisher>().Object;
+            var memoryCacheOptions = new MemoryCacheOptions();
+            var memoryCache = new MemoryCache(Options.Create(memoryCacheOptions));
+            var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), null);
+            var currencyServiceMock = new Mock<ICurrencyService>();
+            currencyServiceMock.Setup(c => c.GetAllCurrenciesAsync()).ReturnsAsync(new List<Currency>() { currency });
+            return new DefaultCustomerOrderTotalsCalculator(currencyServiceMock.Object);
+        }
+
         [Fact]
         public void CalculateTotals_ClearAllItems_TotalsMustBeZero()
         {
@@ -24,7 +42,15 @@ namespace VirtoCommerce.OrdersModule.Tests
                 InPayments = new List<PaymentIn> { payment },
                 Shipments = new List<Shipment> { shipment }
             };
-            var totalsCalculator = new DefaultCustomerOrderTotalsCalculator();
+
+            var currency = new Currency
+            {
+                Code = order.Currency,
+                RoundingPolicy = new DefaultMoneyRoundingPolicy()
+            };
+
+            var totalsCalculator = GetTotalsCalculator(currency);
+
             totalsCalculator.CalculateTotals(order);
 
             Assert.Equal(1400.07m, order.Total);
@@ -35,7 +61,6 @@ namespace VirtoCommerce.OrdersModule.Tests
             totalsCalculator.CalculateTotals(order);
 
             Assert.Equal(0m, order.Total);
-
         }
 
         [Fact]
@@ -55,7 +80,14 @@ namespace VirtoCommerce.OrdersModule.Tests
                 InPayments = new List<PaymentIn> { payment },
                 Shipments = new List<Shipment> { shipment }
             };
-            var totalsCalculator = new DefaultCustomerOrderTotalsCalculator();
+
+            var currency = new Currency
+            {
+                RoundingPolicy = new DefaultMoneyRoundingPolicy()
+            };
+
+            var totalsCalculator = GetTotalsCalculator(currency);
+
             totalsCalculator.CalculateTotals(order);
 
             Assert.Equal(12.3088m, item1.PriceWithTax);
@@ -100,4 +132,3 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
     }
 }
-
