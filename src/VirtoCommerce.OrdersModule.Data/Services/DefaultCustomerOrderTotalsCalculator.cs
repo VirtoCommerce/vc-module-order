@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
+using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
@@ -11,6 +14,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
     /// </summary>
     public class DefaultCustomerOrderTotalsCalculator : ICustomerOrderTotalsCalculator
     {
+        private readonly ICurrencyService _currencyService;
+
+        public DefaultCustomerOrderTotalsCalculator(ICurrencyService currencyService)
+        {
+            _currencyService = currencyService;
+        }
         /// <summary>
         /// Order subtotal discount
         /// When a discount is applied to the cart subtotal, the tax calculation has already been applied, and is reflected in the tax subtotal.
@@ -125,30 +134,37 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.TaxTotal -= order.DiscountAmount * order.TaxPercentRate;
 
             //Need to round all order totals
-            order.SubTotal = Math.Round(order.SubTotal, 2, MidpointRounding.AwayFromZero);
-            order.SubTotalWithTax = Math.Round(order.SubTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.SubTotalDiscount = Math.Round(order.SubTotalDiscount, 2, MidpointRounding.AwayFromZero);
-            order.SubTotalDiscountWithTax = Math.Round(order.SubTotalDiscountWithTax, 2, MidpointRounding.AwayFromZero);
-            order.TaxTotal = Math.Round(order.TaxTotal, 2, MidpointRounding.AwayFromZero);
-            order.DiscountTotal = Math.Round(order.DiscountTotal, 2, MidpointRounding.AwayFromZero);
-            order.DiscountTotalWithTax = Math.Round(order.DiscountTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.Fee = Math.Round(order.Fee, 2, MidpointRounding.AwayFromZero);
-            order.FeeWithTax = Math.Round(order.FeeWithTax, 2, MidpointRounding.AwayFromZero);
-            order.FeeTotal = Math.Round(order.FeeTotal, 2, MidpointRounding.AwayFromZero);
-            order.FeeTotalWithTax = Math.Round(order.FeeTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.ShippingTotal = Math.Round(order.ShippingTotal, 2, MidpointRounding.AwayFromZero);
-            order.ShippingTotalWithTax = Math.Round(order.ShippingTotal, 2, MidpointRounding.AwayFromZero);
-            order.ShippingSubTotal = Math.Round(order.ShippingSubTotal, 2, MidpointRounding.AwayFromZero);
-            order.ShippingSubTotalWithTax = Math.Round(order.ShippingSubTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.PaymentTotal = Math.Round(order.PaymentTotal, 2, MidpointRounding.AwayFromZero);
-            order.PaymentTotalWithTax = Math.Round(order.PaymentTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.PaymentSubTotal = Math.Round(order.PaymentSubTotal, 2, MidpointRounding.AwayFromZero);
-            order.PaymentSubTotalWithTax = Math.Round(order.PaymentSubTotalWithTax, 2, MidpointRounding.AwayFromZero);
-            order.PaymentDiscountTotal = Math.Round(order.PaymentDiscountTotal, 2, MidpointRounding.AwayFromZero);
-            order.PaymentDiscountTotalWithTax = Math.Round(order.PaymentDiscountTotalWithTax, 2, MidpointRounding.AwayFromZero);
+            var currency = GetCurrency(order.Currency).GetAwaiter().GetResult();
+            order.SubTotal = currency.RoundingPolicy.RoundMoney(order.SubTotal, currency);
+            order.SubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalWithTax, currency);
+            order.SubTotalDiscount = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscount, currency);
+            order.SubTotalDiscountWithTax = currency.RoundingPolicy.RoundMoney(order.SubTotalDiscountWithTax, currency);
+            order.TaxTotal = currency.RoundingPolicy.RoundMoney(order.TaxTotal, currency);
+            order.DiscountTotal = currency.RoundingPolicy.RoundMoney(order.DiscountTotal, currency);
+            order.DiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.DiscountTotalWithTax, currency);
+            order.Fee = currency.RoundingPolicy.RoundMoney(order.Fee, currency);
+            order.FeeWithTax = currency.RoundingPolicy.RoundMoney(order.FeeWithTax, currency);
+            order.FeeTotal = currency.RoundingPolicy.RoundMoney(order.FeeTotal, currency);
+            order.FeeTotalWithTax = currency.RoundingPolicy.RoundMoney(order.FeeTotalWithTax, currency);
+            order.ShippingTotal = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
+            order.ShippingTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
+            order.ShippingSubTotal = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotal, currency);
+            order.ShippingSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotalWithTax, currency);
+            order.PaymentTotal = currency.RoundingPolicy.RoundMoney(order.PaymentTotal, currency);
+            order.PaymentTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentTotalWithTax, currency);
+            order.PaymentSubTotal = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotal, currency);
+            order.PaymentSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentSubTotalWithTax, currency);
+            order.PaymentDiscountTotal = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotal, currency);
+            order.PaymentDiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotalWithTax, currency);
 
             order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
             order.Sum = order.Total;
+        }
+
+        protected virtual async Task<Currency> GetCurrency(string orderCurrencyName)
+        {
+            var currencies = await _currencyService.GetAllCurrenciesAsync();
+            return currencies.First(c => c.Code == orderCurrencyName);
         }
 
         protected virtual void CalculatePaymentTotals(PaymentIn payment)
