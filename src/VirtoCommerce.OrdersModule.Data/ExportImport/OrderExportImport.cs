@@ -9,19 +9,20 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Data.ExportImport;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.ExportImport
 {
     public sealed class OrderExportImport
     {
-        private readonly ICustomerOrderSearchService _customerOrderSearchService;
+        private readonly ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder> _customerOrderSearchService;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly JsonSerializer _jsonSerializer;
         private const int _batchSize = 50;
 
         public OrderExportImport(ICustomerOrderSearchService customerOrderSearchService, ICustomerOrderService customerOrderService, JsonSerializer jsonSerializer)
         {
-            _customerOrderSearchService = customerOrderSearchService;
+            _customerOrderSearchService = (ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>)customerOrderSearchService;
             _customerOrderService = customerOrderService;
             _jsonSerializer = jsonSerializer;
         }
@@ -48,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                     searchCriteria.Take = take;
                     searchCriteria.Skip = skip;
                     searchCriteria.WithPrototypes = true;
-                    var searchResult = await _customerOrderSearchService.SearchCustomerOrdersAsync(searchCriteria);
+                    var searchResult = await _customerOrderSearchService.SearchAsync(searchCriteria);
                     return (GenericSearchResult<CustomerOrder>)searchResult;
                 }, (processedCount, totalCount) =>
                 {
@@ -72,16 +73,13 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
             {
                 while (reader.Read())
                 {
-                    if (reader.TokenType == JsonToken.PropertyName)
+                    if (reader.TokenType == JsonToken.PropertyName && reader.Value.ToString() == "CustomerOrders")
                     {
-                        if (reader.Value.ToString() == "CustomerOrders")
+                        await reader.DeserializeJsonArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, items => _customerOrderService.SaveChangesAsync(items.ToArray()), processedCount =>
                         {
-                            await reader.DeserializeJsonArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, items => _customerOrderService.SaveChangesAsync(items.ToArray()), processedCount =>
-                            {
-                                progressInfo.Description = $"{ processedCount } orders have been imported";
-                                progressCallback(progressInfo);
-                            }, cancellationToken);
-                        }
+                            progressInfo.Description = $"{ processedCount } orders have been imported";
+                            progressCallback(progressInfo);
+                        }, cancellationToken);
                     }
                 }
             }
