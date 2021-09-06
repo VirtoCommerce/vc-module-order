@@ -38,14 +38,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return orders.ToArray();
         }
 
-        public virtual async Task SaveChangesAsync(PaymentIn[] payments)
+        public virtual Task SaveChangesAsync(PaymentIn[] payments)
         {
             if (payments == null)
             {
                 throw new ArgumentNullException(nameof(payments));
             }
 
-            await DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
+            return DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
             {
                 order.InPayments.Remove(payment);
                 order.InPayments.Add(payment);

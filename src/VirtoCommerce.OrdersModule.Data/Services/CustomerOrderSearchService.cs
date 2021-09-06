@@ -23,9 +23,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
         }
 
-        public virtual async Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria)
+        public virtual Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria)
         {
-            return await SearchAsync(criteria);
+            return SearchAsync(criteria);
         }
 
         protected override IQueryable<CustomerOrderEntity> BuildQuery(IRepository repository, CustomerOrderSearchCriteria criteria)

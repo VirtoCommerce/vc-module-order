@@ -23,9 +23,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
         }
 
-        public virtual async Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria)
+        public virtual Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria)
         {
-            return await SearchAsync(criteria);
+            return SearchAsync(criteria);
         }
 
         protected override IQueryable<PaymentInEntity> BuildQuery(IRepository repository, PaymentSearchCriteria criteria)

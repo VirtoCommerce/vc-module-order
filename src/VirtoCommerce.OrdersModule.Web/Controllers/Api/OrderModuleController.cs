@@ -217,9 +217,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
+        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
         {
-            return await ProcessOrderPayments(orderId, paymentId, null);
+            return ProcessOrderPayments(orderId, paymentId, null);
         }
 
         /// <summary>
