@@ -54,35 +54,35 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             document.AddSearchableValue(order.Comment);
 
-            document.AddFilterableValue("CreatedDate", order.CreatedDate);
-            document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate);
+            document.AddFilterableValue("CreatedDate", order.CreatedDate, IndexDocumentFieldValueType.DateTime);
+            document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate, IndexDocumentFieldValueType.DateTime);
 
-            document.AddFilterableValue("CreatedBy", order.CreatedBy);
-            document.AddFilterableValue("ModifiedBy", order.ModifiedBy);
+            document.AddFilterableValue("CreatedBy", order.CreatedBy, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("ModifiedBy", order.ModifiedBy, IndexDocumentFieldValueType.String);
 
-            document.AddFilterableValue("CustomerId", order.CustomerId);
-            document.AddFilterableValue("EmployeeId", order.EmployeeId);
-            document.AddFilterableValue("OrganizationId", order.OrganizationId);
-            document.AddFilterableValue("StoreId", order.StoreId);
+            document.AddFilterableValue("CustomerId", order.CustomerId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("EmployeeId", order.EmployeeId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("OrganizationId", order.OrganizationId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("StoreId", order.StoreId, IndexDocumentFieldValueType.String);
 
             if (!order.StoreName.IsNullOrEmpty())
             {
-                document.AddFilterableValue("StoreName", order.StoreName);
+                document.AddFilterableValue("StoreName", order.StoreName, IndexDocumentFieldValueType.String);
             }
             else if (!order.StoreId.IsNullOrEmpty())
             {
                 var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                document.AddFilterableValue("StoreName", store?.Name);
+                document.AddFilterableValue("StoreName", store?.Name, IndexDocumentFieldValueType.String);
             }
 
-            document.AddFilterableValue("OuterId", order.OuterId);
-            document.AddFilterableValue("Status", order.Status);
-            document.AddFilterableValue("Currency", order.Currency);
-            document.AddFilterableValue("Total", order.Total);
-            document.AddFilterableValue("SubTotal", order.SubTotal);
-            document.AddFilterableValue("TaxTotal", order.TaxTotal);
-            document.AddFilterableValue("DiscountTotal", order.DiscountTotal);
-            document.AddFilterableValue("IsCancelled", order.IsCancelled);
+            document.AddFilterableValue("OuterId", order.OuterId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Status", order.Status, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Currency", order.Currency, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Total", order.Total, IndexDocumentFieldValueType.Decimal);
+            document.AddFilterableValue("SubTotal", order.SubTotal, IndexDocumentFieldValueType.Decimal);
+            document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Decimal);
+            document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Decimal);
+            document.AddFilterableValue("IsCancelled", order.IsCancelled, IndexDocumentFieldValueType.Boolean);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
