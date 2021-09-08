@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -165,7 +164,6 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             var propertyName = property.Name?.ToLowerInvariant();
 
             IList<object> values = null;
-            IList<string> shotTextValues = new List<string>();
 
             var isCollection = property.IsDictionary || property.IsArray;
 
@@ -175,66 +173,40 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                     .Select(x => x.Value)
                     .ToList();
 
+                // add DynamicProperties that have the ShortText value type to __content
                 if (property.ValueType == DynamicPropertyValueType.ShortText)
                 {
-                    shotTextValues.AddRange(values.Cast<string>());
+                    foreach (var value in values)
+                    {
+                        document.AddSearchableValue(value.ToString());
+                    }
                 }
             }
 
-            // Use default or empty value for the property in index to be able to filter by it
-            if (values.IsNullOrEmpty())
+            // replace empty value for Boolean property with default 'False'
+            if (property.ValueType == DynamicPropertyValueType.Boolean && values.IsNullOrEmpty())
             {
-                values = new[] { property.IsRequired
-                        ? GetDynamicPropertyDefaultValue(property) ?? NoValueString
-                        : NoValueString
-                    };
+                document.Add(new IndexDocumentField(propertyName, false)
+                {
+                    IsRetrievable = true,
+                    IsFilterable = true,
+                    IsCollection = isCollection,
+                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
+                });
+
+                return;
             }
 
-            document.Add(new IndexDocumentField(propertyName, values) { IsRetrievable = true, IsFilterable = true, IsCollection = isCollection });
-
-            // add DynamicProperties that have the ShortText value type to __content
-            foreach (var value in shotTextValues)
+            if (!values.IsNullOrEmpty())
             {
-                document.AddSearchableValue(value);
+                document.Add(new IndexDocumentField(propertyName, values)
+                {
+                    IsRetrievable = true,
+                    IsFilterable = true,
+                    IsCollection = isCollection,
+                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
+                });
             }
-        }
-
-        // PT-2573: move to Platform
-        private object GetDynamicPropertyDefaultValue(DynamicProperty property)
-        {
-            object result;
-
-            switch (property.ValueType)
-            {
-                case DynamicPropertyValueType.ShortText:
-                case DynamicPropertyValueType.Html:
-                case DynamicPropertyValueType.LongText:
-                case DynamicPropertyValueType.Image:
-                    result = default(string);
-                    break;
-
-                case DynamicPropertyValueType.Integer:
-                    result = default(int);
-                    break;
-
-                case DynamicPropertyValueType.Decimal:
-                    result = default(decimal);
-                    break;
-
-                case DynamicPropertyValueType.DateTime:
-                    result = default(DateTime);
-                    break;
-
-                case DynamicPropertyValueType.Boolean:
-                    result = default(bool);
-                    break;
-
-                default:
-                    result = default(object);
-                    break;
-            }
-
-            return result;
         }
 
         private bool HasValuesOfType(DynamicObjectProperty objectProperty, DynamicPropertyValueType valueType)
