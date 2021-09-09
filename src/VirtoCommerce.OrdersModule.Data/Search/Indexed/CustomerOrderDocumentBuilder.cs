@@ -78,10 +78,10 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableValue("OuterId", order.OuterId, IndexDocumentFieldValueType.String);
             document.AddFilterableValue("Status", order.Status, IndexDocumentFieldValueType.String);
             document.AddFilterableValue("Currency", order.Currency, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("Total", order.Total, IndexDocumentFieldValueType.Decimal);
-            document.AddFilterableValue("SubTotal", order.SubTotal, IndexDocumentFieldValueType.Decimal);
-            document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Decimal);
-            document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Decimal);
+            document.AddFilterableValue("Total", order.Total, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("SubTotal", order.SubTotal, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Double);
             document.AddFilterableValue("IsCancelled", order.IsCancelled, IndexDocumentFieldValueType.Boolean);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
