@@ -3,7 +3,7 @@
   <id>VirtoCommerce.Orders</id>
   <version>3.37.0</version>
   <version-tag />
-  <platformVersion>3.57.0</platformVersion>
+  <platformVersion>3.78.0</platformVersion>
   <title>Orders module</title>
   <description>Document based flexible orders management system</description>
   <authors>
