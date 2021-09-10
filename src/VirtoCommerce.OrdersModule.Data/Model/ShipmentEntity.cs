@@ -223,6 +223,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 foreach (var Package in Packages)
                 {
                     Package.ShipmentId = Id;
+                    foreach (var shipmentItem in Package.Items)
+                    {
+                        shipmentItem.ShipmentId = Id;
+                    }
                 }
             }
 

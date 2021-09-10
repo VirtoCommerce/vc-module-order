@@ -77,7 +77,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             pkMap.AddPair(package, this);
 
-            if (!Items.IsNullOrEmpty())
+            if (!package.Items.IsNullOrEmpty())
             {
                 Items = new ObservableCollection<ShipmentItemEntity>(package.Items.Select(x => AbstractTypeFactory<ShipmentItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
                 foreach (var shipmentItem in Items)
