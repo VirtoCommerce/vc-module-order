@@ -5,7 +5,7 @@ using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class AddressEntity : Entity
+    public class AddressEntity : Entity, IHasOuterId
     {
         [StringLength(2048)]
         public string Name { get; set; }
@@ -41,6 +41,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string Phone { get; set; }
         [StringLength(254)]
         public string Email { get; set; }
+        [StringLength(128)]
+        public string OuterId { get; set; }
 
         #region Navigation Properties
 
@@ -76,6 +78,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             address.Line1 = Line1;
             address.Line2 = Line2;
             address.Organization = Organization;
+            address.OuterId = OuterId;
             address.AddressType = EnumUtility.SafeParseFlags(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping);
             
             return address;
@@ -102,6 +105,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             Line1 = address.Line1;
             Line2 = address.Line2;
             Organization = address.Organization;
+            OuterId = address.OuterId;
             AddressType = address.AddressType.ToString();
             return this;
         }
@@ -124,6 +128,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.Line1 = Line1;
             target.Line2 = Line2;
             target.Organization = Organization;
+            target.OuterId = OuterId;
         }
 
         public override bool Equals(object obj)
