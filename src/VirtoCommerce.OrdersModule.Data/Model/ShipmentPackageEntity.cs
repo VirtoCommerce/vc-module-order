@@ -43,6 +43,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             package.ModifiedDate = ModifiedDate;
             package.ModifiedBy = ModifiedBy;
 
+            package.BarCode = BarCode;
             package.PackageType = PackageType;
             package.Weight = Weight;
             package.Height = Height;
@@ -67,6 +68,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             ModifiedDate = package.ModifiedDate;
             ModifiedBy = package.ModifiedBy;
 
+            BarCode = package.BarCode;
             PackageType = package.PackageType;
             Weight = package.Weight;
             Height = package.Height;
@@ -94,6 +96,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
 
+            target.BarCode = BarCode;
             target.PackageType = PackageType;
             target.ShipmentId = ShipmentId;
             target.Weight = Weight;
