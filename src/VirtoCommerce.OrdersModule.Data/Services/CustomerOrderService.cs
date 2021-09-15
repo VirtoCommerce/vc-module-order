@@ -206,9 +206,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        protected override Task<IEnumerable<CustomerOrderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected async override Task<IEnumerable<CustomerOrderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
-            return ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids.ToArray(), responseGroup);
+            return await ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids.ToArray(), responseGroup);
         }
 
         protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity, CustomerOrder model)

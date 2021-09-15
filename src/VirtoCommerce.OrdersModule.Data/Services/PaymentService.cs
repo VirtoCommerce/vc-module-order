@@ -92,9 +92,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        protected override Task<IEnumerable<PaymentInEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected async override Task<IEnumerable<PaymentInEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
-            return ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids.ToArray(), responseGroup);
+            return await ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids.ToArray(), responseGroup);
         }
     }
 }
