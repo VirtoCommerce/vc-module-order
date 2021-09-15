@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Core
 {
+    [ExcludeFromCodeCoverage]
     public class ModuleConstants
     {
         public static string OrderIndexDocumentType { get; } = nameof(CustomerOrder);
