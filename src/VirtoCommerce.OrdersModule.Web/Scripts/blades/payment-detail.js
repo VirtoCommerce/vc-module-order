@@ -46,7 +46,7 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.customInitialize = function () {
-            blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.isCancelled;
+            blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
         blade.setEntityStatus = function (status) {
@@ -62,5 +62,5 @@ angular.module('virtoCommerce.orderModule')
             if (blade.isNew && paymentMethod) {
                 blade.currentEntity.gatewayCode = paymentMethod.code;
             }
-          }, true);
+        }, true);
     }]);

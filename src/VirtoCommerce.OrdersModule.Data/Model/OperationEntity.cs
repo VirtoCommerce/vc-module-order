@@ -24,6 +24,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal Sum { get; set; }
 
         public bool IsCancelled { get; set; }
+
+        [StringLength(32)]
+        public string CancelledState { get; set; }
         public DateTime? CancelledDate { get; set; }
         [StringLength(2048)]
         public string CancelReason { get; set; }
@@ -53,6 +56,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.Number = Number;
             operation.Status = Status;
             operation.IsCancelled = IsCancelled;
+            operation.CancelledState = EnumUtility.SafeParse(CancelledState, Core.Model.CancelledState.Undefined);
             operation.CancelledDate = CancelledDate;
             operation.CancelReason = CancelReason;
             operation.IsApproved = IsApproved;
@@ -83,6 +87,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             Number = operation.Number;
             Status = operation.Status;
             IsCancelled = operation.IsCancelled;
+            CancelledState = operation.CancelledState.ToString();
             CancelledDate = operation.CancelledDate;
             CancelReason = operation.CancelReason;
             IsApproved = operation.IsApproved;
@@ -103,6 +108,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.Number = Number;
             target.Status = Status;
             target.IsCancelled = IsCancelled;
+            target.CancelledState = CancelledState;
             target.CancelledDate = CancelledDate;
             target.CancelReason = CancelReason;
             target.IsApproved = IsApproved;

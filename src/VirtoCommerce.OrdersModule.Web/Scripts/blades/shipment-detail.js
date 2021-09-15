@@ -59,7 +59,7 @@ angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModul
         };
 
         blade.customInitialize = function () {
-            blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.isCancelled;
+            blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
         blade.updateRecalculationFlag = function () {
