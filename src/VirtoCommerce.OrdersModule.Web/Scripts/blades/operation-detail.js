@@ -176,14 +176,15 @@ angular.module('virtoCommerce.orderModule')
                                 });
 
                                 blade.currentEntity.isCancelled = true;
+                                blade.setEntityStatus('Cancelled');
                                 break;
                             default:
                                 blade.currentEntity.isCancelled = true;
+                                blade.setEntityStatus('Cancelled');
                         }
 
                         blade.currentEntity.cancelReason = reason == null || reason.replace(/\s/g, '').length < 1 ? null : reason;
                         blade.currentEntity.cancelledDate = new Date();
-                        blade.setEntityStatus('Cancelled');
                         $scope.saveChanges();
                     }
                 };
