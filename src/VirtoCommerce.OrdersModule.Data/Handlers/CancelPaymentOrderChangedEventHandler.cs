@@ -72,10 +72,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
             else
             {
-                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments.Where(x => x.IsCancelled))
+                foreach (var canceledPayment in changedEntry.NewEntry?.InPayments.Where(x => x.CancelledState == CancelledState.Requested))
                 {
                     var oldSamePayment = changedEntry.OldEntry?.InPayments.FirstOrDefault(x => x == canceledPayment);
-                    if (oldSamePayment != null && !oldSamePayment.IsCancelled)
+                    if (oldSamePayment != null && oldSamePayment.CancelledState != CancelledState.Completed)
                     {
                         toCancelPayments.Add(canceledPayment);
                     }
@@ -101,6 +101,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 paymentToCancel.IsCancelled = true;
                 paymentToCancel.CancelledDate = DateTime.UtcNow;
             }
+
+            paymentToCancel.CancelledState = CancelledState.Completed;
         }
     }
 
