@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,35 +54,35 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             document.AddSearchableValue(order.Comment);
 
-            document.AddFilterableValue("CreatedDate", order.CreatedDate);
-            document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate);
+            document.AddFilterableValue("CreatedDate", order.CreatedDate, IndexDocumentFieldValueType.DateTime);
+            document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate, IndexDocumentFieldValueType.DateTime);
 
-            document.AddFilterableValue("CreatedBy", order.CreatedBy);
-            document.AddFilterableValue("ModifiedBy", order.ModifiedBy);
+            document.AddFilterableValue("CreatedBy", order.CreatedBy, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("ModifiedBy", order.ModifiedBy, IndexDocumentFieldValueType.String);
 
-            document.AddFilterableValue("CustomerId", order.CustomerId);
-            document.AddFilterableValue("EmployeeId", order.EmployeeId);
-            document.AddFilterableValue("OrganizationId", order.OrganizationId);
-            document.AddFilterableValue("StoreId", order.StoreId);
+            document.AddFilterableValue("CustomerId", order.CustomerId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("EmployeeId", order.EmployeeId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("OrganizationId", order.OrganizationId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("StoreId", order.StoreId, IndexDocumentFieldValueType.String);
 
             if (!order.StoreName.IsNullOrEmpty())
             {
-                document.AddFilterableValue("StoreName", order.StoreName);
+                document.AddFilterableValue("StoreName", order.StoreName, IndexDocumentFieldValueType.String);
             }
             else if (!order.StoreId.IsNullOrEmpty())
             {
                 var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                document.AddFilterableValue("StoreName", store?.Name);
+                document.AddFilterableValue("StoreName", store?.Name, IndexDocumentFieldValueType.String);
             }
 
-            document.AddFilterableValue("OuterId", order.OuterId);
-            document.AddFilterableValue("Status", order.Status);
-            document.AddFilterableValue("Currency", order.Currency);
-            document.AddFilterableValue("Total", order.Total);
-            document.AddFilterableValue("SubTotal", order.SubTotal);
-            document.AddFilterableValue("TaxTotal", order.TaxTotal);
-            document.AddFilterableValue("DiscountTotal", order.DiscountTotal);
-            document.AddFilterableValue("IsCancelled", order.IsCancelled);
+            document.AddFilterableValue("OuterId", order.OuterId, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Status", order.Status, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Currency", order.Currency, IndexDocumentFieldValueType.String);
+            document.AddFilterableValue("Total", order.Total, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("SubTotal", order.SubTotal, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Double);
+            document.AddFilterableValue("IsCancelled", order.IsCancelled, IndexDocumentFieldValueType.Boolean);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
@@ -165,7 +164,6 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             var propertyName = property.Name?.ToLowerInvariant();
 
             IList<object> values = null;
-            IList<string> shotTextValues = new List<string>();
 
             var isCollection = property.IsDictionary || property.IsArray;
 
@@ -175,66 +173,40 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                     .Select(x => x.Value)
                     .ToList();
 
+                // add DynamicProperties that have the ShortText value type to __content
                 if (property.ValueType == DynamicPropertyValueType.ShortText)
                 {
-                    shotTextValues.AddRange(values.Cast<string>());
+                    foreach (var value in values)
+                    {
+                        document.AddSearchableValue(value.ToString());
+                    }
                 }
             }
 
-            // Use default or empty value for the property in index to be able to filter by it
-            if (values.IsNullOrEmpty())
+            // replace empty value for Boolean property with default 'False'
+            if (property.ValueType == DynamicPropertyValueType.Boolean && values.IsNullOrEmpty())
             {
-                values = new[] { property.IsRequired
-                        ? GetDynamicPropertyDefaultValue(property) ?? NoValueString
-                        : NoValueString
-                    };
+                document.Add(new IndexDocumentField(propertyName, false)
+                {
+                    IsRetrievable = true,
+                    IsFilterable = true,
+                    IsCollection = isCollection,
+                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
+                });
+
+                return;
             }
 
-            document.Add(new IndexDocumentField(propertyName, values) { IsRetrievable = true, IsFilterable = true, IsCollection = isCollection });
-
-            // add DynamicProperties that have the ShortText value type to __content
-            foreach (var value in shotTextValues)
+            if (!values.IsNullOrEmpty())
             {
-                document.AddSearchableValue(value);
+                document.Add(new IndexDocumentField(propertyName, values)
+                {
+                    IsRetrievable = true,
+                    IsFilterable = true,
+                    IsCollection = isCollection,
+                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
+                });
             }
-        }
-
-        // PT-2573: move to Platform
-        private object GetDynamicPropertyDefaultValue(DynamicProperty property)
-        {
-            object result;
-
-            switch (property.ValueType)
-            {
-                case DynamicPropertyValueType.ShortText:
-                case DynamicPropertyValueType.Html:
-                case DynamicPropertyValueType.LongText:
-                case DynamicPropertyValueType.Image:
-                    result = default(string);
-                    break;
-
-                case DynamicPropertyValueType.Integer:
-                    result = default(int);
-                    break;
-
-                case DynamicPropertyValueType.Decimal:
-                    result = default(decimal);
-                    break;
-
-                case DynamicPropertyValueType.DateTime:
-                    result = default(DateTime);
-                    break;
-
-                case DynamicPropertyValueType.Boolean:
-                    result = default(bool);
-                    break;
-
-                default:
-                    result = default(object);
-                    break;
-            }
-
-            return result;
         }
 
         private bool HasValuesOfType(DynamicObjectProperty objectProperty, DynamicPropertyValueType valueType)
