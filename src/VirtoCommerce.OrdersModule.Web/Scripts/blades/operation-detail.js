@@ -166,17 +166,32 @@ angular.module('virtoCommerce.orderModule')
                 var dialog = {
                     id: "confirmCancelOperation",
                     callback: function (reason) {
+                        switch (blade.currentEntity.operationType) {
+                            case 'PaymentIn':
+                                blade.currentEntity.cancelledState = 'Requested';
+                                break;
+                            case 'CustomerOrder':
+                                _.forEach(blade.currentEntity.inPayments, function (payment) {
+                                    payment.cancelledState = 'Requested';
+                                });
+
+                                blade.currentEntity.isCancelled = true;
+                                blade.setEntityStatus('Cancelled');
+                                break;
+                            default:
+                                blade.currentEntity.isCancelled = true;
+                                blade.setEntityStatus('Cancelled');
+                        }
+
                         blade.currentEntity.cancelReason = reason == null || reason.replace(/\s/g, '').length < 1 ? null : reason;
                         blade.currentEntity.cancelledDate = new Date();
-                        blade.currentEntity.isCancelled = true;
-                        blade.setEntityStatus('Cancelled');
                         $scope.saveChanges();
                     }
                 };
                 dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
             },
             canExecuteMethod: function () {
-                return blade.currentEntity && !blade.currentEntity.isCancelled;
+                return blade.currentEntity && (!blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined');
             },
             permission: blade.updatePermission
         }

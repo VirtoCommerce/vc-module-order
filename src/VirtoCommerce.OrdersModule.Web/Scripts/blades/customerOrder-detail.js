@@ -82,7 +82,7 @@ angular.module('virtoCommerce.orderModule')
                 });
 
             blade.customInitialize = function () {
-                blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.isCancelled;
+                blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
 
                 //var orderLineItemsBlade = {
                 //    id: 'customerOrderItems',
