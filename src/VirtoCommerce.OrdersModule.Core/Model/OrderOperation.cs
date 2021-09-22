@@ -35,6 +35,14 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #region ISupportCancelation Members
 
+        /// <summary>
+        /// For system use to handle canellation flow
+        /// </summary>
+        public CancelledState CancelledState { get; set; }
+
+        /// <summary>
+        /// Used by payment provides to indicate that cancellation operation has completed
+        /// </summary>
         public bool IsCancelled { get; set; }
         public DateTime? CancelledDate { get; set; }
         public string CancelReason { get; set; }
