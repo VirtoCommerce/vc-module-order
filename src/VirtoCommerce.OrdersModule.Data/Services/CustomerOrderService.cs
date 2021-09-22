@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
-using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
@@ -21,20 +19,19 @@ using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
+using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class CustomerOrderService : ICustomerOrderService
+    public class CustomerOrderService : CrudService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService
     {
-        private readonly Func<IOrderRepository> _repositoryFactory;
-        private readonly IEventPublisher _eventPublisher;
+        private new readonly Func<IOrderRepository> _repositoryFactory;
         private readonly IStoreService _storeService;
 
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
-        private readonly IPlatformMemoryCache _platformMemoryCache;
 
         public CustomerOrderService(
             Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator
@@ -42,68 +39,21 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             , IEventPublisher eventPublisher, ICustomerOrderTotalsCalculator totalsCalculator
             , IShippingMethodsSearchService shippingMethodsSearchService, IPaymentMethodsSearchService paymentMethodSearchService,
             IPlatformMemoryCache platformMemoryCache)
+                : base(orderRepositoryFactory, platformMemoryCache, eventPublisher)
         {
             _repositoryFactory = orderRepositoryFactory;
-            _eventPublisher = eventPublisher;
             _storeService = storeService;
             _totalsCalculator = totalsCalculator;
             _shippingMethodsSearchService = shippingMethodsSearchService;
 
             _paymentMethodSearchService = paymentMethodSearchService;
-            _platformMemoryCache = platformMemoryCache;
             _uniqueNumberGenerator = uniqueNumberGenerator;
         }
 
-        #region ICustomerOrderService Members
-
         public virtual async Task<CustomerOrder[]> GetByIdsAsync(string[] orderIds, string responseGroup = null)
         {
-            var cacheKey = CacheKey.With(GetType(), nameof(GetByIdsAsync), string.Join("-", orderIds), responseGroup);
-            return await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
-            {
-                var retVal = new List<CustomerOrder>();
-                var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-
-                using (var repository = _repositoryFactory())
-                {
-                    repository.DisableChangesTracking();
-
-                    //It is so important to generate change tokens for all ids even for not existing objects to prevent an issue
-                    //with caching of empty results for non - existing objects that have the infinitive lifetime in the cache
-                    //and future unavailability to create objects with these ids.
-                    cacheEntry.AddExpirationToken(OrderCacheRegion.CreateChangeToken(orderIds));
-
-                    var orderEntities = await repository.GetCustomerOrdersByIdsAsync(orderIds, responseGroup);
-                    foreach (var orderEntity in orderEntities)
-                    {
-                        var customerOrder = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
-                        if (customerOrder != null)
-                        {
-                            customerOrder = orderEntity.ToModel(customerOrder) as CustomerOrder;
-
-                            //Calculate totals only for full responseGroup
-                            if (orderResponseGroup == CustomerOrderResponseGroup.Full)
-                            {
-                                _totalsCalculator.CalculateTotals(customerOrder);
-                            }
-                            await LoadOrderDependenciesAsync(customerOrder);
-
-                            customerOrder.ReduceDetails(responseGroup);
-
-                            retVal.Add(customerOrder);
-
-                        }
-                    }
-                }
-
-                return retVal.ToArray();
-            });
-        }
-
-        public virtual async Task<CustomerOrder> GetByIdAsync(string orderId, string responseGroup = null)
-        {
-            var orders = await GetByIdsAsync(new[] { orderId }, responseGroup);
-            return orders.FirstOrDefault();
+            var orders = await base.GetByIdsAsync(orderIds);
+            return orders.ToArray();
         }
 
         public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
@@ -129,31 +79,29 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         // Otherwise on update trigger is fired only when non navigation properties are updated.
                         originalEntity.ModifiedDate = DateTime.UtcNow;
 
-                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
-                                                             .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
-                        /// This extension is allow to get around breaking changes is introduced in EF Core 3.0 that leads to throw
-                        /// Database operation expected to affect 1 row(s) but actually affected 0 row(s) exception when trying to add the new children entities with manually set keys
-                        /// https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#detectchanges-honors-store-generated-key-values
+                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(modifiedOrder, pkMap);
+                        // This extension is allow to get around breaking changes is introduced in EF Core 3.0 that leads to throw
+                        // Database operation expected to affect 1 row(s) but actually affected 0 row(s) exception when trying to add the new children entities with manually set keys
+                        // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#detectchanges-honors-store-generated-key-values
                         repository.TrackModifiedAsAddedForNewChildEntities(originalEntity);
 
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
                         modifiedEntity?.Patch(originalEntity);
 
                         //originalEntity is fully loaded and contains changes from order
-                        var newModel = (CustomerOrder)originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        var newModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
 
                         //newmodel is fully loaded,so we can CalculateTotals for order
                         _totalsCalculator.CalculateTotals(newModel);
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
-                        var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap) as CustomerOrderEntity;
+                        var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap);
                         newModifiedEntity?.Patch(originalEntity);
                         changedEntitiesMap.Add(modifiedOrder, originalEntity);
                     }
                     else
                     {
                         _totalsCalculator.CalculateTotals(modifiedOrder);
-                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance()
-                                                             .FromModel(modifiedOrder, pkMap) as CustomerOrderEntity;
+                        var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(modifiedOrder, pkMap);
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
                         changedEntitiesMap.Add(modifiedOrder, modifiedEntity);
@@ -171,7 +119,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             foreach (var changedEntry in changedEntries)
             {
                 // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
-                var changedModel = (CustomerOrder)changedEntitiesMap
+                var changedModel = changedEntitiesMap
                     .First(x => x.Key.Equals(changedEntry.OldEntry))
                     .Value
                     .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
@@ -202,8 +150,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
             }
         }
-
-        #endregion
 
         protected virtual async Task LoadOrderDependenciesAsync(CustomerOrder order)
         {
@@ -260,14 +206,23 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        private void ClearCache(IEnumerable<CustomerOrder> orders)
+        protected async override Task<IEnumerable<CustomerOrderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
-            OrderSearchCacheRegion.ExpireRegion();
+            return await ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids.ToArray(), responseGroup);
+        }
 
-            foreach (var order in orders)
+        protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity, CustomerOrder model)
+        {
+            var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
+            //Calculate totals only for full responseGroup
+            if (orderResponseGroup == CustomerOrderResponseGroup.Full)
             {
-                OrderCacheRegion.ExpireOrder(order);
+                _totalsCalculator.CalculateTotals(model);
             }
+            LoadOrderDependenciesAsync(model).GetAwaiter().GetResult();
+            model.ReduceDetails(responseGroup);
+            return model;
         }
     }
 }
