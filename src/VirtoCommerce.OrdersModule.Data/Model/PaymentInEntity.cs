@@ -10,11 +10,12 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Domain;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class PaymentInEntity : OperationEntity, ISupportPartialPriceUpdate
+    public class PaymentInEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<PaymentInEntity, PaymentIn>
     {
         [StringLength(64)]
         public string OrganizationId { get; set; }
@@ -81,12 +82,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         #endregion
 
-        public override OrderOperation ToModel(OrderOperation operation)
+        public virtual PaymentIn ToModel(PaymentIn payment)
         {
-            var payment = operation as PaymentIn;
             if (payment == null)
             {
-                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(payment));
             }
 
             if (!Addresses.IsNullOrEmpty())
@@ -142,12 +142,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             return payment;
         }
 
-        public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
+        public virtual PaymentInEntity FromModel(PaymentIn payment, PrimaryKeyResolvingMap pkMap)
         {
-            var payment = operation as PaymentIn;
             if (payment == null)
             {
-                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(payment));
             }
 
             base.FromModel(payment, pkMap);
@@ -221,17 +220,16 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation)
+        public virtual void Patch(PaymentInEntity target)
         {
-            var target = operation as PaymentInEntity;
             if (target == null)
-                throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(target));
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
             var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
 
-            base.NeedPatchSum = isNeedPatch;
-            base.Patch(operation);
+            NeedPatchSum = isNeedPatch;
+            base.Patch(target);
 
             target.TaxType = TaxType;
             target.CustomerId = CustomerId;
