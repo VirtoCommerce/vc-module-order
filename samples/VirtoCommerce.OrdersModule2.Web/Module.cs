@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.MetadataModule.Core.Services;
+using VirtoCommerce.MetadataModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
@@ -67,6 +69,69 @@ namespace VirtoCommerce.OrdersModule2.Web
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<Order2DbContext>();
             dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();
+
+
+
+            /// --------------------- Check metadata service below
+
+            var metadataService = appBuilder.ApplicationServices.GetRequiredService<IMetadataService>();
+
+            // All order properties projection (full, no details)
+            var projectionDefault = new Projection(typeof(CustomerOrder), ReadType.OnlyThat)
+            {
+                Name = "Default"
+            };
+            metadataService.AddProjection(projectionDefault);
+
+            // All order properties projection (full + 1st level details)
+            var projectionDefaultDetailsRelated = new Projection(typeof(CustomerOrder), ReadType.RelatedDetails)
+            {
+                Name = "DefaultDetailsRelated1stLevel"
+            };
+            metadataService.AddProjection(projectionDefaultDetailsRelated);
+
+            // An example with main order info (as example -- for orders list)
+            var projectionShortInfoList = new Projection
+            {
+                DefineClassType = typeof(CustomerOrder),
+                Name = "ShortInfoList"
+            };
+
+            projectionShortInfoList.AddProperties(new string[] {
+                nameof(CustomerOrder.StoreId),
+                nameof(CustomerOrder.Id),
+                nameof(CustomerOrder.CustomerName),
+                nameof(CustomerOrder.OrganizationName),
+                nameof(CustomerOrder.CreatedDate),
+                nameof(CustomerOrder.CreatedBy),
+                nameof(CustomerOrder.Sum),
+                nameof(CustomerOrder.Status)
+            });
+            metadataService.AddProjection(projectionShortInfoList);
+
+            // An example with main order info (as example -- payments edit)
+            var projectionWithLineItems = new Projection
+            {
+                DefineClassType = typeof(CustomerOrder),
+                Name = "WithLineItems"
+            };
+            projectionWithLineItems.AddProperties(new string[] {
+                nameof(CustomerOrder.StoreId),
+                nameof(CustomerOrder.Id),
+                nameof(CustomerOrder.CustomerName),
+                nameof(CustomerOrder.OrganizationName),
+                nameof(CustomerOrder.CreatedDate),
+                nameof(CustomerOrder.CreatedBy),
+                nameof(CustomerOrder.Sum),
+                nameof(CustomerOrder.Status),
+                nameof(CustomerOrder.Currency),
+                nameof(CustomerOrder.Total),
+            });
+            projectionWithLineItems.AddDetailInProjection(nameof(CustomerOrder.Items), new Projection(typeof(LineItem), ReadType.OnlyThat), true);
+            projectionWithLineItems.AddDetailInProjection(nameof(CustomerOrder.InPayments), new Projection(typeof(PaymentIn), ReadType.OnlyThat), true);
+
+            metadataService.AddProjection(projectionWithLineItems);
+
         }
 
         public void Uninstall()
