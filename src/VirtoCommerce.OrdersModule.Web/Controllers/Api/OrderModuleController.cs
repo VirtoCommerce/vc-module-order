@@ -32,7 +32,6 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
-using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
@@ -42,6 +41,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -51,7 +51,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     public class OrderModuleController : Controller
     {
         private readonly ICustomerOrderService _customerOrderService;
-        private readonly ICustomerOrderSearchService _searchService;
+        private readonly ICrudService<CustomerOrder> _customerOrderServiceCrud;
+        private readonly ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder> _searchService;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IStoreService _storeService;
         private readonly IPlatformMemoryCache _platformMemoryCache;
@@ -94,7 +95,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ISettingsManager settingsManager)
         {
             _customerOrderService = customerOrderService;
-            _searchService = searchService;
+            _customerOrderServiceCrud = (ICrudService<CustomerOrder>)customerOrderService;
+            _searchService = (ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>)searchService;
             _uniqueNumberGenerator = numberGenerator;
             _storeService = storeService;
             _platformMemoryCache = platformMemoryCache;
@@ -129,7 +131,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Unauthorized();
             }
 
-            var result = await _searchService.SearchCustomerOrdersAsync(criteria);
+            var result = await _searchService.SearchAsync(criteria);
             //It is a important to return serialized data by such way. Instead you have a slow response time for large outputs 
             //https://github.com/dotnet/aspnetcore/issues/19646
             return Content(JsonConvert.SerializeObject(result, _jsonOptions.SerializerSettings), "application/json");
@@ -153,7 +155,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
-            var result = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
+            var result = await _searchService.SearchAsync(searchCriteria);
 
             var retVal = result.Results.FirstOrDefault();
             return Ok(retVal);
@@ -177,7 +179,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
-            var result = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
+            var result = await _searchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
         }
@@ -215,9 +217,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
+        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
         {
-            return await ProcessOrderPayments(orderId, paymentId, null);
+            return ProcessOrderPayments(orderId, paymentId, null);
         }
 
         /// <summary>
@@ -232,7 +234,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Consumes("application/json", new[] { "application/json-patch+json" })] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
         public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
         {
-            var customerOrder = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
             {
@@ -240,7 +242,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 searchCriteria.Number = orderId;
                 searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
 
-                var orders = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
+                var orders = await _searchService.SearchAsync(searchCriteria);
                 customerOrder = orders.Results.FirstOrDefault();
             }
 
@@ -392,7 +394,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/shipments/new")]
         public async Task<ActionResult<Shipment>> GetNewShipment(string id)
         {
-            var order = await _customerOrderService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            var order = await _customerOrderServiceCrud.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
@@ -430,7 +432,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/payments/new")]
         public async Task<ActionResult<PaymentIn>> GetNewPayment(string id)
         {
-            var order = await _customerOrderService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            var order = await _customerOrderServiceCrud.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
@@ -514,8 +516,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             searchCriteria.Number = orderId;
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
             //if order not found by order number search by order id
-            var orders = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
-            var customerOrder = orders.Results.FirstOrDefault() ?? await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var orders = await _searchService.SearchAsync(searchCriteria);
+            var customerOrder = orders.Results.FirstOrDefault() ?? await _customerOrderServiceCrud.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
             {
@@ -583,7 +585,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             //ToDo
             //searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
 
-            var orders = await _searchService.SearchCustomerOrdersAsync(searchCriteria);
+            var orders = await _searchService.SearchAsync(searchCriteria);
             var order = orders.Results.FirstOrDefault();
 
             if (order == null)
@@ -612,7 +614,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<OperationLog[]>> GetOrderChanges(string id)
         {
             var result = Array.Empty<OperationLog>();
-            var order = await _customerOrderService.GetByIdAsync(id);
+            var order = await _customerOrderServiceCrud.GetByIdAsync(id);
             if (order != null)
             {
                 var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
@@ -646,7 +648,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Order ID can not be null");
             }
 
-            var order = await _customerOrderService.GetByIdAsync(historySearchCriteria.OrderId);
+            var order = await _customerOrderServiceCrud.GetByIdAsync(historySearchCriteria.OrderId);
 
             if (order == null)
             {

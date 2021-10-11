@@ -58,7 +58,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (cart.Items != null)
             {
                 retVal.Items = new List<LineItem>();
-                foreach (var cartLineItem in cart.Items)
+                foreach (var cartLineItem in cart.Items.Where(x => !x.IsRejected))
                 {
                     var orderLineItem = ToOrderModel(cartLineItem);
                     retVal.Items.Add(orderLineItem);
@@ -120,7 +120,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 retVal.DynamicProperties = cart.DynamicProperties.Select(ToOrderModel).ToList();
             }
 
-            //Save only disctinct addresses for order
+            //Save only distinct addresses for order
             retVal.Addresses = retVal.Addresses.Distinct().ToList();
             foreach (var address in retVal.Addresses)
             {
