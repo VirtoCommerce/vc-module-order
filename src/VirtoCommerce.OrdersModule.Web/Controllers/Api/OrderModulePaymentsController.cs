@@ -12,6 +12,7 @@ using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -19,10 +20,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     [Authorize]
     public class OrderModulePaymentsController : Controller
     {
-        private readonly IPaymentSearchService _paymentSearchService;
+        private readonly ISearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn> _paymentSearchService;
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly ICustomerOrderService _customerOrderService;
+        private readonly ICrudService<CustomerOrder> _customerOrderService;
         private readonly IValidator<PaymentInValidator> _paymentInValidator;
         private readonly ISettingsManager _settingsManager;
 
@@ -35,10 +36,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ISettingsManager settingsManager
          )
         {
-            _paymentSearchService = paymentSearchService;
+            _paymentSearchService = (ISearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn>)paymentSearchService;
             _paymentService = paymentService;
             _authorizationService = authorizationService;
-            _customerOrderService = customerOrderService;
+            _customerOrderService = (ICrudService<CustomerOrder>)customerOrderService;
             _paymentInValidator = paymentInValidator;
             _settingsManager = settingsManager;
         }
@@ -57,7 +58,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Unauthorized();
             }
 
-            var result = await _paymentSearchService.SearchPaymentsAsync(criteria);
+            var result = await _paymentSearchService.SearchAsync(criteria);
 
             return Ok(result);
         }
@@ -80,7 +81,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
-            var result = await _paymentSearchService.SearchPaymentsAsync(searchCriteria);
+            var result = await _paymentSearchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
         }
@@ -150,7 +151,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Unauthorized();
             }
-            var result = await _paymentSearchService.SearchPaymentsAsync(searchCriteria);
+            var result = await _paymentSearchService.SearchAsync(searchCriteria);
             await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
         }

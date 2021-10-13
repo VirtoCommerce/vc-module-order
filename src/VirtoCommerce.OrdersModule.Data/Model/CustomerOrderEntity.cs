@@ -9,11 +9,12 @@ using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Domain;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class CustomerOrderEntity : OperationEntity, ISupportPartialPriceUpdate
+    public class CustomerOrderEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<CustomerOrderEntity, CustomerOrder>
     {
         [Required]
         [StringLength(64)]
@@ -101,12 +102,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         #endregion
 
-        public override OrderOperation ToModel(OrderOperation operation)
+        public virtual CustomerOrder ToModel(CustomerOrder order)
         {
-            var order = operation as CustomerOrder;
             if (order == null)
             {
-                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(order));
             }
 
             order.ShoppingCartId = ShoppingCartId;
@@ -168,12 +168,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             return order;
         }
 
-        public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
+        public virtual CustomerOrderEntity FromModel(CustomerOrder order, PrimaryKeyResolvingMap pkMap)
         {
-            var order = operation as CustomerOrder;
             if (order == null)
             {
-                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(order));
             }
 
             base.FromModel(order, pkMap);
@@ -265,13 +264,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation)
+        public virtual void Patch(CustomerOrderEntity target)
         {
-            var target = operation as CustomerOrderEntity;
             if (target == null)
             {
                 throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity",
-                    nameof(operation));
+                    nameof(target));
             }
 
             target.ShoppingCartId = ShoppingCartId;
@@ -383,7 +381,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
 
-            base.Patch(operation);
+            base.Patch(target);
         }
 
         public virtual void ResetPrices()
