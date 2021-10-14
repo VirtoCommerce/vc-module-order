@@ -42,13 +42,20 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 var operationLogs = new List<OperationLog>();
 
-                foreach (var changedEntry in message.ChangedEntries.Where(x => x.EntryState == EntryState.Modified))
+                foreach (var changedEntry in message.ChangedEntries)
                 {
-                    var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
-                    var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                    if (changedEntry.EntryState == EntryState.Modified)
+                    {
+                        var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                        var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
 
-                    modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
-                                                         (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
+                        modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
+                                                             (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
+                    }
+                    else if (changedEntry.EntryState == EntryState.Added || changedEntry.EntryState == EntryState.Deleted)
+                    {
+                        operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(changedEntry.NewEntry, changedEntry.OldEntry, changedEntry.EntryState)));
+                    }
                 }
 
                 if (!operationLogs.IsNullOrEmpty())
@@ -67,26 +74,28 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)
         {
-            var result = new List<string>();
+            var result = new List<OperationLog>();
 
             //TDB: Rework to make more extensible
             if (changedEntry.EntryState == EntryState.Modified)
             {
+                var logs = new List<string>();
+
                 var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
 
                 if (changedEntry.OldEntry is Shipment shipment)
                 {
-                    result.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
+                    logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
                     diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
                 }
                 else if (changedEntry.OldEntry is PaymentIn payment)
                 {
-                    result.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
+                    logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
                     diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
                 }
                 else if (changedEntry.OldEntry is CustomerOrder order)
                 {
-                    result.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
+                    logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
                     diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
                 }
 
@@ -105,19 +114,26 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
                     foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
                     {
-                        result.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to  '{difference.NewValue}'");
+                        logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to  '{difference.NewValue}'");
                     }
                 }
+
+                result.AddRange(logs.Select(x => GetLogRecord(changedEntry.NewEntry, x)));
             }
             else if (changedEntry.EntryState == EntryState.Deleted)
             {
-                result.Add($"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted");
+                var record = GetLogRecord(changedEntry.NewEntry, $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted");
+                record.OperationType = EntryState.Deleted;
+                result.Add(record);
             }
             else if (changedEntry.EntryState == EntryState.Added)
             {
-                result.Add($"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added");
+                var record = GetLogRecord(changedEntry.NewEntry, $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added");
+                record.OperationType = EntryState.Added;
+                result.Add(record);
             }
-            return result.Select(x => GetLogRecord(changedEntry.NewEntry, x));
+
+            return result;
         }
 
         protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
@@ -131,7 +147,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var employee = _memberService.GetByIdAsync(modifiedOrder.EmployeeId).GetAwaiter().GetResult() as Employee;
                     employeeName = employee != null ? employee.FullName : employeeName;
                 }
-                result.Add($"Order employee was changed  to '{employeeName}'");
+                result.Add($"Order employee was changed to '{employeeName}'");
             }
             result.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));
             return result.ToArray();
@@ -190,9 +206,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             result.ObjectType = operation.GetType().Name;
             result.OperationType = EntryState.Modified;
             result.Detail = template;
-            
-            return result;
 
+            return result;
         }
     }
 
