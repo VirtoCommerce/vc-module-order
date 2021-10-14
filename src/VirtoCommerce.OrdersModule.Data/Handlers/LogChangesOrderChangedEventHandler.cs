@@ -114,7 +114,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
                     foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
                     {
-                        logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to  '{difference.NewValue}'");
+                        logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to '{difference.NewValue}'");
                     }
                 }
 
