@@ -234,7 +234,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(PaymentInEntity target)
         {
-            Patch(target);
+            Patch((OperationEntity)target);
         }
 
         public override void Patch(OperationEntity target)
