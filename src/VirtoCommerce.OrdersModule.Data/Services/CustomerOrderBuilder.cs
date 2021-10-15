@@ -261,6 +261,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 retVal.BillingAddress = ToOrderModel(payment.BillingAddress);
             }
+            if (payment.DynamicProperties != null)
+            {
+                retVal.DynamicProperties = payment.DynamicProperties.Select(ToOrderModel).ToList();
+            }
             retVal.TaxDetails = payment.TaxDetails;
             return retVal;
         }
