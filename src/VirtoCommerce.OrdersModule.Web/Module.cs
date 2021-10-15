@@ -32,6 +32,7 @@ using VirtoCommerce.Platform.Core.Bus;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -63,8 +64,10 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
+            serviceCollection.AddTransient(x => (ICrudService<CustomerOrder>)x.GetService<ICustomerOrderService>());
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
             serviceCollection.AddTransient<IPaymentService, PaymentService>();
+            serviceCollection.AddTransient(x => (ICrudService<PaymentIn>)x.GetService<IPaymentService>());
             serviceCollection.AddTransient<ICustomerOrderBuilder, CustomerOrderBuilder>();
             serviceCollection.AddTransient<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>();
             serviceCollection.AddTransient<OrderExportImport>();
