@@ -8,8 +8,8 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Domain;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
@@ -104,9 +104,15 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual CustomerOrder ToModel(CustomerOrder order)
         {
+            return (CustomerOrder)ToModel((OrderOperation)order);
+        }
+
+        public override OrderOperation ToModel(OrderOperation operation)
+        {
+            var order = operation as CustomerOrder;
             if (order == null)
             {
-                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(order));
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
             }
 
             order.ShoppingCartId = ShoppingCartId;
@@ -170,9 +176,15 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual CustomerOrderEntity FromModel(CustomerOrder order, PrimaryKeyResolvingMap pkMap)
         {
+            return (CustomerOrderEntity)FromModel((OrderOperation)order, pkMap);
+        }
+
+        public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
+        {
+            var order = operation as CustomerOrder;
             if (order == null)
             {
-                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(order));
+                throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
             }
 
             base.FromModel(order, pkMap);
@@ -266,52 +278,58 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(CustomerOrderEntity target)
         {
-            if (target == null)
+            Patch((OperationEntity)target);
+        }
+
+        public override void Patch(OperationEntity target)
+        {
+            var operation = target as CustomerOrderEntity;
+            if (operation == null)
             {
-                throw new ArgumentException(@"operation argument must be of type CustomerOrderEntity",
+                throw new ArgumentException(@"target argument must be of type CustomerOrderEntity",
                     nameof(target));
             }
 
-            target.ShoppingCartId = ShoppingCartId;
-            target.CustomerId = CustomerId;
-            target.CustomerName = CustomerName;
-            target.StoreId = StoreId;
-            target.StoreName = StoreName;
-            target.OrganizationId = OrganizationId;
-            target.OrganizationName = OrganizationName;
-            target.EmployeeId = EmployeeId;
-            target.EmployeeName = EmployeeName;
-            target.IsPrototype = IsPrototype;
-            target.SubscriptionNumber = SubscriptionNumber;
-            target.SubscriptionId = SubscriptionId;
-            target.PurchaseOrderNumber = PurchaseOrderNumber;
-            target.LanguageCode = LanguageCode;
+            operation.ShoppingCartId = ShoppingCartId;
+            operation.CustomerId = CustomerId;
+            operation.CustomerName = CustomerName;
+            operation.StoreId = StoreId;
+            operation.StoreName = StoreName;
+            operation.OrganizationId = OrganizationId;
+            operation.OrganizationName = OrganizationName;
+            operation.EmployeeId = EmployeeId;
+            operation.EmployeeName = EmployeeName;
+            operation.IsPrototype = IsPrototype;
+            operation.SubscriptionNumber = SubscriptionNumber;
+            operation.SubscriptionId = SubscriptionId;
+            operation.PurchaseOrderNumber = PurchaseOrderNumber;
+            operation.LanguageCode = LanguageCode;
 
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
             var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) &&
-                                    target.GetNonCalculatablePrices().Any(x => x != 0m));
+                                    operation.GetNonCalculatablePrices().Any(x => x != 0m));
 
             if (needPatchPrices)
             {
-                target.Total = Total;
-                target.SubTotal = SubTotal;
-                target.SubTotalWithTax = SubTotalWithTax;
-                target.ShippingTotal = ShippingTotal;
-                target.ShippingTotalWithTax = ShippingTotalWithTax;
-                target.PaymentTotal = PaymentTotal;
-                target.PaymentTotalWithTax = PaymentTotalWithTax;
-                target.HandlingTotal = HandlingTotal;
-                target.HandlingTotalWithTax = HandlingTotalWithTax;
-                target.DiscountTotal = DiscountTotal;
-                target.DiscountTotalWithTax = DiscountTotalWithTax;
-                target.DiscountAmount = DiscountAmount;
-                target.TaxTotal = TaxTotal;
-                target.TaxPercentRate = TaxPercentRate;
+                operation.Total = Total;
+                operation.SubTotal = SubTotal;
+                operation.SubTotalWithTax = SubTotalWithTax;
+                operation.ShippingTotal = ShippingTotal;
+                operation.ShippingTotalWithTax = ShippingTotalWithTax;
+                operation.PaymentTotal = PaymentTotal;
+                operation.PaymentTotalWithTax = PaymentTotalWithTax;
+                operation.HandlingTotal = HandlingTotal;
+                operation.HandlingTotalWithTax = HandlingTotalWithTax;
+                operation.DiscountTotal = DiscountTotal;
+                operation.DiscountTotalWithTax = DiscountTotalWithTax;
+                operation.DiscountAmount = DiscountAmount;
+                operation.TaxTotal = TaxTotal;
+                operation.TaxPercentRate = TaxPercentRate;
             }
 
             if (!Addresses.IsNullCollection())
             {
-                Addresses.Patch(target.Addresses, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Addresses.Patch(operation.Addresses, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
 
             if (!Shipments.IsNullCollection())
@@ -341,47 +359,47 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                     {
                         if (shipmentItem.LineItem != null)
                         {
-                            shipmentItem.LineItem = target.Items.FirstOrDefault(x => x == shipmentItem.LineItem) ??
+                            shipmentItem.LineItem = operation.Items.FirstOrDefault(x => x == shipmentItem.LineItem) ??
                                                     shipmentItem.LineItem;
                         }
                     }
                 }
 
-                Shipments.Patch(target.Shipments,
+                Shipments.Patch(operation.Shipments,
                     (sourceShipment, targetShipment) => sourceShipment.Patch(targetShipment));
             }
 
             if (!Items.IsNullCollection())
             {
-                Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Items.Patch(operation.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
 
             if (!InPayments.IsNullCollection())
             {
-                InPayments.Patch(target.InPayments,
+                InPayments.Patch(operation.InPayments,
                     (sourcePayment, targetPayment) => sourcePayment.Patch(targetPayment));
             }
 
             if (!Discounts.IsNullCollection())
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
-                Discounts.Patch(target.Discounts, discountComparer,
+                Discounts.Patch(operation.Discounts, discountComparer,
                     (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }
 
             if (!TaxDetails.IsNullCollection())
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
-                TaxDetails.Patch(target.TaxDetails, taxDetailComparer,
+                TaxDetails.Patch(operation.TaxDetails, taxDetailComparer,
                     (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
-                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
+                DynamicPropertyObjectValues.Patch(operation.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
 
-            base.Patch(target);
+            base.Patch(operation);
         }
 
         public virtual void ResetPrices()

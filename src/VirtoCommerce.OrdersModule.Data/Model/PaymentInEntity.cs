@@ -9,8 +9,8 @@ using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Domain;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
@@ -84,9 +84,15 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentIn ToModel(PaymentIn payment)
         {
+            return (PaymentIn)ToModel((OrderOperation)payment);
+        }
+
+        public override OrderOperation ToModel(OrderOperation operation)
+        {
+            var payment = operation as PaymentIn;
             if (payment == null)
             {
-                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(payment));
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
             }
 
             if (!Addresses.IsNullOrEmpty())
@@ -144,9 +150,15 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentInEntity FromModel(PaymentIn payment, PrimaryKeyResolvingMap pkMap)
         {
+            return (PaymentInEntity)FromModel((OrderOperation)payment, pkMap);
+        }
+
+        public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
+        {
+            var payment = operation as PaymentIn;
             if (payment == null)
             {
-                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(payment));
+                throw new ArgumentException(@"operation argument must be of type PaymentIn", nameof(operation));
             }
 
             base.FromModel(payment, pkMap);
@@ -222,70 +234,76 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(PaymentInEntity target)
         {
-            if (target == null)
-                throw new ArgumentException(@"operation argument must be of type PaymentInEntity", nameof(target));
+            Patch((OperationEntity)target);
+        }
+
+        public override void Patch(OperationEntity target)
+        {
+            var payment = target as PaymentInEntity;
+            if (payment == null)
+                throw new ArgumentException(@"target argument must be of type PaymentInEntity", nameof(target));
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
-            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
+            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || payment.GetNonCalculatablePrices().All(x => x == 0m);
 
             NeedPatchSum = isNeedPatch;
-            base.Patch(target);
+            base.Patch(payment);
 
-            target.TaxType = TaxType;
-            target.CustomerId = CustomerId;
-            target.CustomerName = CustomerName;
-            target.OrganizationId = OrganizationId;
-            target.OrganizationName = OrganizationName;
-            target.GatewayCode = GatewayCode;
-            target.Purpose = Purpose;
-            target.OuterId = OuterId;
-            target.Status = Status;
-            target.AuthorizedDate = AuthorizedDate;
-            target.CapturedDate = CapturedDate;
-            target.VoidedDate = VoidedDate;
-            target.IsCancelled = IsCancelled;
-            target.CancelledDate = CancelledDate;
-            target.CancelReason = CancelReason;
+            payment.TaxType = TaxType;
+            payment.CustomerId = CustomerId;
+            payment.CustomerName = CustomerName;
+            payment.OrganizationId = OrganizationId;
+            payment.OrganizationName = OrganizationName;
+            payment.GatewayCode = GatewayCode;
+            payment.Purpose = Purpose;
+            payment.OuterId = OuterId;
+            payment.Status = Status;
+            payment.AuthorizedDate = AuthorizedDate;
+            payment.CapturedDate = CapturedDate;
+            payment.VoidedDate = VoidedDate;
+            payment.IsCancelled = IsCancelled;
+            payment.CancelledDate = CancelledDate;
+            payment.CancelReason = CancelReason;
 
             if (isNeedPatch)
             {
-                target.Price = Price;
-                target.PriceWithTax = PriceWithTax;
-                target.DiscountAmount = DiscountAmount;
-                target.DiscountAmountWithTax = DiscountAmountWithTax;
-                target.TaxPercentRate = TaxPercentRate;
-                target.TaxTotal = TaxTotal;
-                target.Total = Total;
-                target.TotalWithTax = TotalWithTax;
-                target.Sum = Sum;
+                payment.Price = Price;
+                payment.PriceWithTax = PriceWithTax;
+                payment.DiscountAmount = DiscountAmount;
+                payment.DiscountAmountWithTax = DiscountAmountWithTax;
+                payment.TaxPercentRate = TaxPercentRate;
+                payment.TaxTotal = TaxTotal;
+                payment.Total = Total;
+                payment.TotalWithTax = TotalWithTax;
+                payment.Sum = Sum;
             }
 
 
             if (!Addresses.IsNullCollection())
             {
-                Addresses.Patch(target.Addresses, (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+                Addresses.Patch(payment.Addresses, (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
             }
 
             if (!TaxDetails.IsNullCollection())
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
-                TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+                TaxDetails.Patch(payment.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
             if (!Discounts.IsNullCollection())
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
-                Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
+                Discounts.Patch(payment.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }
 
             if (!Transactions.IsNullCollection())
             {
-                Transactions.Patch(target.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
+                Transactions.Patch(payment.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
-                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
+                DynamicPropertyObjectValues.Patch(payment.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
         }
 
