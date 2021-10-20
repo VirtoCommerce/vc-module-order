@@ -227,6 +227,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 retVal.Discounts = shipment.Discounts.Select(ToOrderModel).ToList();
             }
+
+            if (shipment.DynamicProperties != null)
+            {
+                retVal.DynamicProperties = shipment.DynamicProperties.Select(ToOrderModel).ToList();
+            }
+
             retVal.TaxDetails = shipment.TaxDetails;
             return retVal;
         }
