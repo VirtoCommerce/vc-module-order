@@ -11,7 +11,7 @@
           "order-number": "Customer order number",
           "status": "Status",
           "store": "Store",
-          "from": "From",
+          "from": "Created at",
           "channel": "Channel",
           "customer": "Customer",
           "invoice": "Get invoice PDF"
@@ -33,11 +33,11 @@
           "priceWithTax": "Unit price (incl. tax)",
           "discount": "Discount (excl. tax)",
           "discountWithTax": "Discount (incl. tax)",
-          "total": "Line items total",
+          "total": "Total line items",
           "dynamic-properties": "Dynamic properties",
           "sub-total": "Subtotal",
-          "discount-total": "Discount total",
-          "tax-total": "Tax total"
+          "discount-total": "Total discount",
+          "tax-total": "Total tax"
         }
       },
       "customerOrder-list": {
@@ -64,10 +64,10 @@
         "new-subtitle": "Create new filter",
         "labels": {
           "name": "Filter name",
-          "name_": "How will you call this filter?",
+          "name_": "Please give this filter a name",
           "criteria": "Filter criteria",
-          "from": "Created from",
-          "to": "Created till"
+          "from": "Created at",
+          "to": "Valid until"
         },
         "placeholders": {
           "all": "Not specified"
@@ -80,18 +80,18 @@
       },
       "payment-detail": {
         "title": "Incoming payment #{{number}}",
-        "title-new": "New Incoming payment",
+        "title-new": "New incoming payment",
         "subtitle": "Edit payment details and related documents",
         "labels": {
           "approved": "Approved",
-          "payment-number": "Payment number",
+          "payment-number": "Payment ID",
           "status": "Status",
           "amount": "Amount",
-          "from": "From",
+          "from": "Date and time",
           "payment-gateway": "Payment gateway",
           "payment-purpose": "Payment purpose",
           "price": "Payment fees",
-          "price-with-tax": "Payment fees (inc tax)"
+          "price-with-tax": "Payment fees (incl. tax)"
         },
         "placeholders": {
           "status": "Select...",
@@ -103,30 +103,30 @@
         "subtitle": "List of all payment gateway interactions"
       },
       "transaction-detail": {
-        "title": "Transaction detail",
+        "title": "Transaction details",
         "subtitle": "Raw transaction data "
       },
       "shipment-detail": {
         "title": "Shipment #{{number}}",
-        "title-new": "New Shipment",
+        "title-new": "New shipment",
         "subtitle": "Edit shipment details",
         "labels": {
           "shipment-method": "Shipment method",
           "approved": "Approved",
-          "shipment-number": "Shipment number",
+          "shipment-number": "Shipment ID",
           "status": "Status",
           "fulfillment-center": "Fulfillment center",
-          "from": "From",
+          "from": "Date and time",
           "employee": "Assigned to",
           "price": "Shipment amount",
           "price-with-tax": "Shipment amount with tax",
-          "shipment-method-option": "Shipment method option"
+          "shipment-method-option": "Shipment method"
         },
         "placeholders": {
           "status": "Select...",
           "shipment-method": "Select...",
           "fulfillment-center": "Select or search a center...",
-          "shipment-method-option": "Default shipment method option"
+          "shipment-method-option": "Default shipment method"
         }
       },
       "shipment-items": {
@@ -157,8 +157,8 @@
     },
     "widgets": {
       "notifications": {
-        "title": "Notifications feed",
-        "subtitle": "Order notifications feed"
+        "title": "Notification feed",
+        "subtitle": "Order notification feed"
       },
       "customerOrder-address": {
         "title": "Addresses",
@@ -171,18 +171,18 @@
       },
       "customerOrder-totals": {
         "sub-total": "Subtotal",
-        "shipping-total": "Shipping total",
-        "shipping-sub-total": "Shipping sub total",
+        "shipping-total": "Total shipping",
+        "shipping-sub-total": "Subtotal shipping",
         "payment-sub-total": "Payment fees",
-        "tax-total": "Tax total",
+        "tax-total": "Total tax",
         "discount": "Discount",
-        "discount-total": "Discount total",
-        "discount-total-with-tax": "Discount total with tax",
+        "discount-total": "Total discount",
+        "discount-total-with-tax": "Total discount with tax",
         "total": "Total"
       },
       "operation-comment": {
         "no-comments": "no comments",
-        "blade-title": "Write comments"
+        "blade-title": "Leave a comment"
       },
       "shipment-address": {
         "blade-title": "Manage delivery address",
@@ -192,17 +192,17 @@
         "title": "Shipment items"
       },
       "shipment-totals": {
-        "tax-total": "Tax total",
-        "shipment-total": "Shipment total",
+        "tax-total": "Total tax",
+        "shipment-total": "Total shipment",
         "shipment-price": "Shipping price",
-        "discount-total": "Discount total",
+        "discount-total": "Total discount",
         "total": "Total"
       },
       "payment-totals": {
-        "tax-total": "Tax total",
-        "payment-total": "Payment total",
+        "tax-total": "Total tax",
+        "payment-total": "Total payment",
         "payment-price": "Payment price",
-        "discount-total": "Discount total",
+        "discount-total": "Total discount",
         "total": "Total"
       },
       "payment-address": {
@@ -221,7 +221,7 @@
     "dialogs": {
       "orders-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete selected customer orders?"
+        "message": "Are you sure you want to delete the selected customer orders?"
       },
       "operation-save": {
         "title": "Save changes",
@@ -229,13 +229,13 @@
       },
       "operation-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete current operation?"
+        "message": "Are you sure you want to delete the current operation?"
       },
       "operation-cancel": {
         "title": "Cancel operation",
-        "message": "Are you sure you want to cancel the document?",
+        "message": "Are you sure you want to remove this document?",
         "placeholders": {
-          "reason": "Please enter cancel reason here..."
+          "reason": "Please enter the reason for removing here..."
         }
       }
     },
@@ -248,11 +248,11 @@
         "ready to send": "Ready to send",
         "cancelled": "Cancelled",
         "partially sent": "Partially sent",
-        "completed": "Completed"
+        "completed": "Complete"
       },
       "shipment-status": {
         "new": "New",
-        "pickpack": "Pick Pack",
+        "pickpack": "Pick pack",
         "cancelled": "Cancelled",
         "readytosend": "Ready to send",
         "sent": "Sent"
@@ -262,22 +262,22 @@
         "pending": "Pending",
         "authorized": "Authorized",
         "paid": "Paid",
-        "partiallyrefunded": "Partially Refunded",
+        "partiallyrefunded": "Partially refunded",
         "refunded": "Refunded",
-        "voided": "Voided",
+        "voided": "Void",
         "custom": "Custom",
         "cancelled": "Cancelled"
       }
     },
     "commands": {
       "new-document": "New document",
-      "cancel-document": "Cancel document",
+      "cancel-document": "Remove document",
       "add-selected": "Add selected",
       "add-item": "Add item"
     }
   },
   "permissions": {
-    "order:read": "Read order related data",
+    "order:read": "View order related data",
     "order:create": "Create order related data",
     "order:update": "Update order related data",
     "order:delete": "Delete order related data",
@@ -298,71 +298,71 @@
       "title": "Payment statuses"
     },
     "Order.CustomerOrderNewNumberTemplate": {
-      "description": "The template (pattern) that will be used to generate the number for new Customer Order. Parameters: 0 - date (the UTC time of number generation); 1 - the sequence number.",
-      "title": "Order number template"
+      "description": "This template will be used to generate the ID for a new Customer Order. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
+      "title": "Order ID template"
     },
     "Order.ShipmentNewNumberTemplate": {
-      "description": "The template (pattern) that will be used to generate the number for new Shipment. Parameters: 0 - date (the UTC time of number generation); 1 - the sequence number.",
-      "title": "Order shipment number template"
+      "description": "This template will be used to generate the ID for a new Shipment. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
+      "title": "Order shipment ID template"
     },
     "Order.PaymentInNewNumberTemplate": {
-      "description": "The template (pattern) that will be used to generate the number for new incoming Payment. Parameters: 0 - date (the UTC time of number generation); 1 - the sequence number.",
-      "title": "Order payment number template"
+      "description": "This template will be used to generate the ID for a new incoming Payment. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
+      "title": "Order payment ID template"
     },
     "Order.SendOrderNotifications": {
-      "description": "Send notification when order state changed.",
+      "description": "Sends a notification when the order status changes",
       "title": "Enable notifications for orders"
     },
     "Order.AdjustInventory": {
-      "description": "Adjust inventory when order state changed.",
+      "description": "Adjusts the inventory when the order status changes",
       "title": "Adjust inventory for orders"
     },
     "Order.LogOrderChanges": {
       "title": "Log order changes",
-      "description": "Log order changes into the platform operation log."
+      "description": "Logs order changes into the platform operation log"
     },
     "Order.Search.EventBasedIndexation.Enable": {
-      "title": "Enable event-based indexation for order entities.",
-      "description": "Any changes to the customer entity will trigger a background task that will apply these changes in the search index."
+      "title": "Enable event-based indexing for order entities",
+      "description": "Any changes to the customer entity will trigger a background task that will apply these changes to the search index"
     },
     "Order.Validation.Enable": {
-      "title": "Order's saving operation validation",
-      "description": "Enable validation of Order's saving operations"
+      "title": "Validate order saving",
+      "description": "Enables validation of saving an order"
     },
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
-      "title": "Order indexation date and time.",
-      "description": "Date and time of the last order indexation task."
+      "title": "Order indexing date and time",
+      "description": "Date and time of the latest order indexing task"
     }
   },
   "module": {
     "VirtoCommerce.Orders": {
-      "description": "Export/Import customer orders with all related objects (line items, shipments, payments etc)"
+      "description": "Export/import customer orders with all related objects (line items, shipments, payments, etc.)"
     }
   },
   "notificationTypes": {
     "CancelOrderEmailNotification": {
-      "displayName": "Cancel order notification",
-      "description": "This notification sends by email to client when order canceled"
+      "displayName": "Notification on cancelled order",
+      "description": "The customer will get an email notification when an order gets cancelled."
     },
     "InvoiceEmailNotification": {
-      "displayName": "The invoice for customer order",
-      "description": "The template for for customer order invoice (used for PDF generation)"
+      "displayName": "Invoice for customer order",
+      "description": "This is a template for customer order invoice used for generating PDF version"
     },
     "NewOrderStatusEmailNotification": {
-      "displayName": "New order status notification",
-      "description": "This notification sends by email to client when status of orders has been changed"
+      "displayName": "Notification on new order status",
+      "description": "The customer will get an email notification when the status of any order gets changed"
     },
     "OrderCreateEmailNotification": {
-      "displayName": "Create order notification",
-      "description": "This notification sends by email to client when he complite some form on storefront, for example contact us form"
+      "displayName": "Notification on created order",
+      "description": "The customer will get an email notification after submitting their details through a form in Storefront, e.g., through the Contact Us form"
     },
     "OrderPaidEmailNotification": {
-      "displayName": "Order paid notification",
-      "description": "This notification sends by email to client when all payments of order has status paid"
+      "displayName": "Notification on order payment",
+      "description": "The customer will get an email notification when all payments related to an order have been complete"
     },
     "OrderSentEmailNotification": {
-      "displayName": "Order sent notification",
-      "description": "This notification sends by email to client when all shipments gets status sent"
+      "displayName": "Notification on shipped order",
+      "description": "The customer will get an email notification when all ordered items have been shipped"
     }
   }
 }
