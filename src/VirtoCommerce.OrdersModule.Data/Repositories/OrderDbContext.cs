@@ -189,23 +189,23 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.CustomerOrderId })
                 .IsUnique(false)
-                .HasName("IX_ObjectType_CustomerOrderId");
+                .HasDatabaseName("IX_ObjectType_CustomerOrderId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.PaymentInId })
                 .IsUnique(false)
-                .HasName("IX_ObjectType_PaymentInId");
+                .HasDatabaseName("IX_ObjectType_PaymentInId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.ShipmentId })
                 .IsUnique(false)
-                .HasName("IX_ObjectType_ShipmentId");
+                .HasDatabaseName("IX_ObjectType_ShipmentId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.LineItemId })
                 .IsUnique(false)
-                .HasName("IX_ObjectType_LineItemId");
+                .HasDatabaseName("IX_ObjectType_LineItemId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.ObjectId })
                 .IsUnique(false)
-                .HasName("IX_ObjectType_ObjectId");
+                .HasDatabaseName("IX_ObjectType_ObjectId");
 
             #endregion
 
