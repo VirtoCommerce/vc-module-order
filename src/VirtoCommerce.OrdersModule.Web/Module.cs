@@ -65,7 +65,6 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>, CustomerOrderSearchService>();
             serviceCollection.AddTransient(x => (ICustomerOrderSearchService)x.GetRequiredService<ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>>());
-            serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICrudService<CustomerOrder>, CustomerOrderService>();
             serviceCollection.AddTransient(x => (ICustomerOrderService)x.GetRequiredService<ICrudService<CustomerOrder>>());
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
