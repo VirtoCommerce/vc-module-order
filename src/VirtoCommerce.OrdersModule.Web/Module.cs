@@ -16,6 +16,7 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Notifications;
 using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -62,9 +63,10 @@ namespace VirtoCommerce.OrdersModule.Web
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository>();
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
-            serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
-            serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
-            serviceCollection.AddTransient(x => (ICrudService<CustomerOrder>)x.GetService<ICustomerOrderService>());
+            serviceCollection.AddTransient<ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>, CustomerOrderSearchService>();
+            serviceCollection.AddTransient(x => (ICustomerOrderSearchService)x.GetRequiredService<ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>>());
+            serviceCollection.AddTransient<ICrudService<CustomerOrder>, CustomerOrderService>();
+            serviceCollection.AddTransient(x => (ICustomerOrderService)x.GetRequiredService<ICrudService<CustomerOrder>>());
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
             serviceCollection.AddTransient<IPaymentService, PaymentService>();
             serviceCollection.AddTransient(x => (ICrudService<PaymentIn>)x.GetService<IPaymentService>());
@@ -75,6 +77,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
+
             //Register as scoped because we use UserManager<> as dependency in this implementation
             serviceCollection.AddScoped<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
