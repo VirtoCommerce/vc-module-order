@@ -59,7 +59,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             order.DiscountTotal = 0m;
             order.DiscountTotalWithTax = 0m;
-            order.FeeTotal = order.Fee;
+            if(order.Fee != 0)
+                order.FeeTotal = order.Fee;
             order.TaxTotal = 0m;
 
             order.SubTotal = 0m;

@@ -51,6 +51,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.TaxPercentRate = cart.TaxPercentRate;
             retVal.TaxType = cart.TaxType;
             retVal.LanguageCode = cart.LanguageCode;
+            retVal.Fee = cart.Fee;
+            retVal.FeeTotal = cart.FeeTotal;
 
             retVal.Status = "New";
 
@@ -161,6 +163,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Width = lineItem.Width;
             retVal.FulfillmentCenterId = lineItem.FulfillmentCenterId;
             retVal.FulfillmentCenterName = lineItem.FulfillmentCenterName;
+            retVal.Fee = lineItem.Fee;
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
