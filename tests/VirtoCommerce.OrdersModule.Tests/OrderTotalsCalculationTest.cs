@@ -60,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.InPayments.Clear();
             totalsCalculator.CalculateTotals(order);
 
-            Assert.Equal(0m, order.Total);
+            Assert.Equal(0.53m, order.Total);
         }
 
         [Fact]

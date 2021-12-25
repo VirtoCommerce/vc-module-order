@@ -101,7 +101,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                                  .Excluding(x => x.Fee)
                                  );
             Assert.Equal(cartItem1.ListPrice, orderItem.Price);
-            Assert.Equal(0m, orderItem.Fee);
+            Assert.Equal(0.33m, orderItem.Fee);
         }
 
 
