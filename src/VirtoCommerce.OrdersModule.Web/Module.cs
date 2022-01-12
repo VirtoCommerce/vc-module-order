@@ -153,7 +153,6 @@ namespace VirtoCommerce.OrdersModule.Web
                                                                         ModuleConstants.Security.Permissions.Delete,
                                                                         }, new OnlyOrderResponsibleScope(), new OrderSelectedStoreScope());
 
-
             var inProcessBus = appBuilder.ApplicationServices.GetService<IHandlerRegistrar>();
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<AdjustInventoryOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<CancelPaymentOrderChangedEventHandler>().Handle(message));
