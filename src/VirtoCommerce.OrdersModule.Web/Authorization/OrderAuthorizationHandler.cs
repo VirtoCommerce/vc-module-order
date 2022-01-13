@@ -36,6 +36,12 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                 var userPermission = context.User.FindPermission(requirement.Permission, _jsonOptions.SerializerSettings);
                 if (userPermission != null)
                 {
+                    //Use associated to user memberId and userId as only fall-back value to check  "OnlyOrderResponsibleScope" auth rule
+                    var memberId = context.User.FindFirstValue(MemberIdClaimType);                  
+                    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? context.User.FindFirstValue("name");
+                    memberId = string.IsNullOrEmpty(memberId) ? null : memberId;
+                    userId = string.IsNullOrEmpty(userId) ? null : userId;
+
                     var storeSelectedScopes = userPermission.AssignedScopes.OfType<OrderSelectedStoreScope>();
                     var onlyResponsibleScope = userPermission.AssignedScopes.OfType<OnlyOrderResponsibleScope>().FirstOrDefault();
                     var allowedStoreIds = storeSelectedScopes.Select(x => x.StoreId).Distinct().ToArray();
@@ -45,9 +51,7 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                         criteria.StoreIds = allowedStoreIds;
                         if (onlyResponsibleScope != null)
                         {
-                            var identityName = context.User.Identity.Name;
-                            var memberId = context.User.FindFirstValue(MemberIdClaimType);
-                            criteria.EmployeeId = memberId ?? identityName;
+                            criteria.EmployeeId = memberId ?? userId;
                         }
 
                         context.Succeed(requirement);
@@ -55,7 +59,12 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
 
                     if (context.Resource is CustomerOrder order)
                     {
-                        if (allowedStoreIds.Contains(order.StoreId) || (onlyResponsibleScope != null && order.EmployeeId.EqualsInvariant(context.User.Identity.Name)))
+                        var succeed = allowedStoreIds.Contains(order.StoreId);
+                        if (!succeed)
+                        {
+                            succeed = onlyResponsibleScope != null && order.EmployeeId == (memberId ?? userId);
+                        }
+                        if (succeed)
                         {
                             context.Succeed(requirement);
                         }
