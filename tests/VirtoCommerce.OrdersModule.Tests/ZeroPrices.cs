@@ -143,6 +143,8 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(0, domainOrder.FeeTotal);
             Assert.Equal(0, domainOrder.FeeTotalWithTax);
             Assert.Equal(0, domainOrder.FeeWithTax);
+            Assert.Equal(0, domainOrder.HandlingTotal);
+            Assert.Equal(0, domainOrder.HandlingTotalWithTax);
             Assert.Equal(0, domainOrder.PaymentDiscountTotal);
             Assert.Equal(0, domainOrder.PaymentDiscountTotalWithTax);
             Assert.Equal(0, domainOrder.PaymentSubTotal);
@@ -217,6 +219,10 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(0, order.SubTotalWithTax);
             Assert.Equal(0, order.ShippingTotal);
             Assert.Equal(0, order.PaymentTotal);
+            Assert.Equal(0, order.Fee);
+            Assert.Equal(0, order.FeeWithTax);
+            Assert.Equal(0, order.FeeTotal);
+            Assert.Equal(0, order.FeeTotalWithTax);
             Assert.Equal(0, order.HandlingTotal);
             Assert.Equal(0, order.HandlingTotalWithTax);
             Assert.Equal(0, order.DiscountTotal);

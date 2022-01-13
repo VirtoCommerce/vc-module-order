@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
-using VirtoCommerce.Platform.Core.Common;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
@@ -76,13 +74,14 @@ namespace VirtoCommerce.OrdersModule.Tests
                 DiscountAmount = 1.33m,
                 TaxPercentRate = 0.12m,
                 Fee = 0.33m,
+                FeeWithTax = 0.34m,
                 Quantity = 2
             };
 
             var cart = new VirtoCommerce.CartModule.Core.Model.ShoppingCart
             {
                 Addresses = new List<CartModule.Core.Model.Address>(),
-                Items = new List<VirtoCommerce.CartModule.Core.Model.LineItem> { cartItem1 }
+                Items = new List<VirtoCommerce.CartModule.Core.Model.LineItem> { cartItem1 },
             };
             var builder = GetCustomerOrderBuilder();
 
@@ -101,7 +100,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                                  .Excluding(x => x.Fee)
                                  );
             Assert.Equal(cartItem1.ListPrice, orderItem.Price);
-            Assert.Equal(0m, orderItem.Fee);
+            Assert.Equal(0.33m, orderItem.Fee);
         }
 
 

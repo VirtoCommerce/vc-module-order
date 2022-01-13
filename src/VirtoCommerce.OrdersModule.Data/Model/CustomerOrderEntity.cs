@@ -66,6 +66,14 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal PaymentTotalWithTax { get; set; }
         [Column(TypeName = "Money")]
+        public decimal Fee { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeWithTax { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeTotal { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeTotalWithTax { get; set; }
+        [Column(TypeName = "Money")]
         public decimal HandlingTotal { get; set; }
         [Column(TypeName = "Money")]
         public decimal HandlingTotalWithTax { get; set; }
@@ -132,8 +140,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             order.ShippingTotalWithTax = ShippingTotalWithTax;
             order.PaymentTotal = PaymentTotal;
             order.PaymentTotalWithTax = PaymentTotalWithTax;
-            order.FeeTotal = HandlingTotal;
-            order.FeeTotalWithTax = HandlingTotalWithTax;
+            order.Fee = Fee;
+            order.FeeWithTax = FeeWithTax;
+            order.FeeTotal = FeeTotal;
+            order.FeeTotalWithTax = FeeTotalWithTax;
+            order.HandlingTotal = HandlingTotal;
+            order.HandlingTotalWithTax = HandlingTotalWithTax;
             order.DiscountTotal = DiscountTotal;
             order.DiscountTotalWithTax = DiscountTotalWithTax;
             order.DiscountAmount = DiscountAmount;
@@ -206,8 +218,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             ShippingTotalWithTax = order.ShippingTotalWithTax;
             PaymentTotal = order.PaymentTotal;
             PaymentTotalWithTax = order.PaymentTotalWithTax;
-            HandlingTotal = order.FeeTotal;
-            HandlingTotalWithTax = order.FeeTotalWithTax;
+            Fee = order.Fee;
+            FeeWithTax = order.FeeWithTax;
+            FeeTotal = order.FeeWithTax;
+            FeeTotalWithTax = order.FeeTotalWithTax;
+            HandlingTotal = order.HandlingTotal;
+            HandlingTotalWithTax = order.HandlingTotalWithTax;
             DiscountTotal = order.DiscountTotal;
             DiscountTotalWithTax = order.DiscountTotalWithTax;
             DiscountAmount = order.DiscountAmount;
@@ -304,7 +320,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.SubscriptionId = SubscriptionId;
             operation.PurchaseOrderNumber = PurchaseOrderNumber;
             operation.LanguageCode = LanguageCode;
-
+            
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
             var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) &&
                                     operation.GetNonCalculatablePrices().Any(x => x != 0m));
@@ -325,6 +341,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 operation.DiscountAmount = DiscountAmount;
                 operation.TaxTotal = TaxTotal;
                 operation.TaxPercentRate = TaxPercentRate;
+                operation.Fee = Fee;
+                operation.FeeWithTax = FeeWithTax;
+                operation.FeeTotal = FeeTotal;
+                operation.FeeTotalWithTax = FeeTotalWithTax;
+                operation.HandlingTotal = HandlingTotal;
+                operation.HandlingTotalWithTax = HandlingTotalWithTax;
             }
 
             if (!Addresses.IsNullCollection())
@@ -413,6 +435,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             SubTotalWithTax = 0m;
             ShippingTotal = 0m;
             PaymentTotal = 0m;
+            Fee = 0m;
+            FeeWithTax = 0m;
+            FeeTotal = 0;
+            FeeTotalWithTax = 0m;
             HandlingTotal = 0m;
             HandlingTotalWithTax = 0m;
             DiscountTotal = 0m;
