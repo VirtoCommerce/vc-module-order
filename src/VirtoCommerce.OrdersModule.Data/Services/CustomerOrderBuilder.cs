@@ -51,7 +51,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.TaxPercentRate = cart.TaxPercentRate;
             retVal.TaxType = cart.TaxType;
             retVal.LanguageCode = cart.LanguageCode;
-
+            retVal.Fee = cart.Fee;
+            retVal.FeeWithTax = cart.FeeWithTax;
+            retVal.FeeTotal = cart.FeeTotal;
+            retVal.FeeTotalWithTax = cart.FeeTotalWithTax;
+            retVal.HandlingTotal = cart.HandlingTotal;
+            retVal.HandlingTotalWithTax = cart.HandlingTotalWithTax;
             retVal.Status = "New";
 
             var cartLineItemsMap = new Dictionary<string, LineItem>();
@@ -162,6 +167,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.FulfillmentCenterId = lineItem.FulfillmentCenterId;
             retVal.FulfillmentCenterName = lineItem.FulfillmentCenterName;
 
+            retVal.Fee = lineItem.Fee;
+            retVal.FeeWithTax = lineItem.FeeWithTax;
+
             retVal.DiscountAmount = lineItem.DiscountAmount;
             retVal.Price = lineItem.ListPrice;
 
@@ -217,6 +225,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.TaxPercentRate = shipment.TaxPercentRate;
             retVal.DiscountAmount = shipment.DiscountAmount;
             retVal.Price = shipment.Price;
+            retVal.Fee = shipment.Fee;
+            retVal.Fee = shipment.FeeWithTax;
             retVal.Status = "New";
             if (shipment.DeliveryAddress != null)
             {

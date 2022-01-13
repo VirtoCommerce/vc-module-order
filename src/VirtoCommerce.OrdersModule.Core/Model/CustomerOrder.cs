@@ -134,6 +134,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal FeeTotal { get; set; }
 
         public virtual decimal FeeTotalWithTax { get; set; }
+
+        public virtual decimal HandlingTotal { get; set; }
+
+        public virtual decimal HandlingTotalWithTax { get; set; }
+
+
         #region ITaxable Members
 
         /// <summary>
@@ -199,6 +205,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 FeeTotalWithTax = 0m;
                 FeeTotal = 0m;
                 FeeWithTax = 0m;
+                HandlingTotal = 0m;
+                HandlingTotalWithTax = 0m;
             }
 
             foreach (var shipment in Shipments ?? Array.Empty<Shipment>())
