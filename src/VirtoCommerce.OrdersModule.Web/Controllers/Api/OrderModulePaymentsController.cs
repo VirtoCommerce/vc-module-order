@@ -24,7 +24,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
         private readonly ICrudService<CustomerOrder> _customerOrderService;
-        private readonly IValidator<PaymentInValidator> _paymentInValidator;
+        private readonly IValidator<PaymentIn> _paymentInValidator;
         private readonly ISettingsManager _settingsManager;
 
         public OrderModulePaymentsController(
@@ -32,7 +32,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , IPaymentService paymentService
             , IAuthorizationService authorizationService
             , ICustomerOrderService customerOrderService
-            , IValidator<PaymentInValidator> paymentInValidator
+            , IValidator<PaymentIn> paymentInValidator
             , ISettingsManager settingsManager
          )
         {

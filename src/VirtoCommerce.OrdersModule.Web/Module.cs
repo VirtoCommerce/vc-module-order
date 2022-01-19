@@ -77,6 +77,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
+
             //Register as scoped because we use UserManager<> as dependency in this implementation
             serviceCollection.AddScoped<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
