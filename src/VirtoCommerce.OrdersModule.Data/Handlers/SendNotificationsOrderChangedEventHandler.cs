@@ -34,13 +34,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly ICrudService<CustomerOrder> _orderService;
 
         public SendNotificationsOrderChangedEventHandler(
-            INotificationSender notificationSender
-            , ICrudService<Store> storeService
-            , IMemberService memberService
-            , ISettingsManager settingsManager
-            , UserManager<ApplicationUser> userManager
-            , INotificationSearchService notificationSearchService
-            , ICrudService<CustomerOrder> orderService)
+            INotificationSender notificationSender,
+            ICrudService<Store> storeService,
+            IMemberService memberService,
+            ISettingsManager settingsManager,
+            UserManager<ApplicationUser> userManager,
+            INotificationSearchService notificationSearchService,
+            ICrudService<CustomerOrder> orderService)
         {
             _notificationSender = notificationSender;
             _storeService = storeService;
