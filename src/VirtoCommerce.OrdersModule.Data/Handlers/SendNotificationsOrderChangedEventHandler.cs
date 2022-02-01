@@ -13,14 +13,13 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Notifications;
-using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -28,20 +27,20 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     {
         private readonly INotificationSearchService _notificationSearchService;
         private readonly INotificationSender _notificationSender;
-        private readonly IStoreService _storeService;
+        private readonly ICrudService<Store> _storeService;
         private readonly IMemberService _memberService;
         private readonly ISettingsManager _settingsManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ICustomerOrderService _orderService;
+        private readonly ICrudService<CustomerOrder> _orderService;
 
         public SendNotificationsOrderChangedEventHandler(
             INotificationSender notificationSender
-            , IStoreService storeService
+            , ICrudService<Store> storeService
             , IMemberService memberService
             , ISettingsManager settingsManager
             , UserManager<ApplicationUser> userManager
             , INotificationSearchService notificationSearchService
-            , ICustomerOrderService orderService)
+            , ICrudService<CustomerOrder> orderService)
         {
             _notificationSender = notificationSender;
             _storeService = storeService;
@@ -99,7 +98,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual async Task TryToSendOrderNotificationsAsync(OrderNotificationJobArgument[] jobArguments)
         {
-            var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
+            var ordersByIdDict = (await _orderService.GetAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToList()))
                                 .ToDictionary(x => x.Id)
                                 .WithDefaultValue(null);
 
@@ -167,8 +166,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns></returns>
         protected virtual bool IsOrderPaid(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var oldPaidTotal = changedEntry.OldEntry.InPayments.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum);
-            var newPaidTotal = changedEntry.NewEntry.InPayments.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum);
+            var oldPaidTotal = changedEntry.OldEntry.InPayments?.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum) ?? 0m;
+            var newPaidTotal = changedEntry.NewEntry.InPayments?.Where(x => x.PaymentStatus == PaymentStatus.Paid).Sum(x => x.Sum) ?? 0m;
             return oldPaidTotal != newPaidTotal && changedEntry.NewEntry.Total <= newPaidTotal;
         }
 
@@ -179,8 +178,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <returns></returns>
         protected virtual bool IsOrderSent(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var oldSentShipmentsCount = changedEntry.OldEntry.Shipments.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent"));
-            var newSentShipmentsCount = changedEntry.NewEntry.Shipments.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent"));
+            var oldSentShipmentsCount = changedEntry.OldEntry.Shipments?.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent")) ?? 0;
+            var newSentShipmentsCount = changedEntry.NewEntry.Shipments?.Count(x => x.Status.EqualsInvariant("Send") || x.Status.EqualsInvariant("Sent")) ?? 0;
             return oldSentShipmentsCount == 0 && newSentShipmentsCount > 0;
         }
 
