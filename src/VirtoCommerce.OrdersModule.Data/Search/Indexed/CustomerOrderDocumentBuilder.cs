@@ -51,6 +51,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableAndSearchableValue("EmployeeName", order.EmployeeName);
             document.AddFilterableAndSearchableValue("OrganizationName", order.OrganizationName);
             document.AddFilterableAndSearchableValue("CustomerName", order.CustomerName);
+            document.AddFilterableAndSearchableValue("PurchaseOrderNumber", order.PurchaseOrderNumber);
 
             document.AddSearchableValue(order.Comment);
 
