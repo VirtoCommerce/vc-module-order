@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.Orders</id>
   <version>3.201.0</version>
@@ -15,7 +15,7 @@
   <projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <copyright>Copyright © 2011-2021 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2022 Virto Commerce. All rights reserved</copyright>
   <tags>order system</tags>
   <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>
