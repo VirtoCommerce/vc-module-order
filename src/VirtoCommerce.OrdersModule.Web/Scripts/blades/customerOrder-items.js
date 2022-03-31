@@ -1,5 +1,5 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.pricingModule.prices', '$translate', 'platformWebApp.authService', function ($scope, bladeNavigationService, items, prices, $translate, authService) {
+    .controller('virtoCommerce.orderModule.customerOrderItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.orderModule.prices', '$translate', 'platformWebApp.authService', function ($scope, bladeNavigationService, items, prices, $translate, authService) {
     var blade = $scope.blade;
     blade.updatePermission = 'order:update';
     blade.isVisiblePrices = authService.checkPermission('order:read_prices');
@@ -38,6 +38,27 @@ angular.module('virtoCommerce.orderModule')
                     };
                     blade.currentEntity.items.push(newLineItem);
                     blade.recalculateFn();
+                }, function (error) {
+                    if (error.status == 404) {
+                        // Seems no pricing module installed.
+                        // Just add lineitem with zero price.
+                        var newLineItem =
+                        {
+                            productId: data.id,
+                            catalogId: data.catalogId,
+                            categoryId: data.categoryId,
+                            name: data.name,
+                            imageUrl: data.imgSrc,
+                            sku: data.code,
+                            quantity: 1,
+                            price: 0,
+                            discountAmount: 0,
+                            currency: blade.currentEntity.currency
+                        };
+                        blade.currentEntity.items.push(newLineItem);
+                        blade.recalculateFn();
+                    }
+                    
                 });
             });
         });
