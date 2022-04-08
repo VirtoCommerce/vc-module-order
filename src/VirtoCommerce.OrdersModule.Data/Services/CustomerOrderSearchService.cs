@@ -43,6 +43,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Ids.Contains(x.Id));
             }
 
+            if (criteria.HasParentOperation != null)
+            {
+                query = query.Where(x => criteria.HasParentOperation.Value ? x.ParentOperationId != null : x.ParentOperationId == null);   
+            }
+
+            if (criteria.ParentOperationId != null)
+            {
+                query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
+            }
+
             if (criteria.OnlyRecurring)
             {
                 query = query.Where(x => x.SubscriptionId != null);

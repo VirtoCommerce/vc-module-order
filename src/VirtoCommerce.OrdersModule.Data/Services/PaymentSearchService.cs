@@ -37,6 +37,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Ids.Contains(x.Id));
             }
 
+            if (criteria.HasParentOperation != null)
+            {
+                query = query.Where(x => criteria.HasParentOperation.Value ? x.ParentOperationId != null : x.ParentOperationId == null);
+            }
+
+            if (criteria.ParentOperationId != null)
+            {
+                query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
+            }
+
             if (!string.IsNullOrEmpty(criteria.OrderId))
             {
                 query = query.Where(x => x.CustomerOrderId == criteria.OrderId);
@@ -45,10 +55,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(x => x.CustomerOrder.Number == criteria.OrderNumber);
             }
+
             if (criteria.EmployeeId != null)
             {
                 query = query.Where(x => x.CustomerOrder.EmployeeId == criteria.EmployeeId);
             }
+
             if (!criteria.StoreIds.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.StoreIds.Contains(x.CustomerOrder.StoreId));
@@ -68,26 +80,32 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(x => x.CreatedDate >= criteria.StartDate);
             }
+
             if (criteria.EndDate != null)
             {
                 query = query.Where(x => x.CreatedDate <= criteria.EndDate);
             }
+
             if (criteria.CapturedStartDate != null)
             {
                 query = query.Where(x => x.CapturedDate >= criteria.CapturedStartDate);
             }
+
             if (criteria.CapturedEndDate != null)
             {
                 query = query.Where(x => x.CapturedDate <= criteria.CapturedEndDate);
             }
+
             if (criteria.AuthorizedStartDate != null)
             {
                 query = query.Where(x => x.AuthorizedDate >= criteria.AuthorizedStartDate);
             }
+
             if (criteria.AuthorizedEndDate != null)
             {
                 query = query.Where(x => x.AuthorizedDate <= criteria.AuthorizedEndDate);
             }
+
             if (!criteria.Numbers.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.Numbers.Contains(x.Number));
