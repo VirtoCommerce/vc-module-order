@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override IQueryable<CustomerOrderEntity> BuildQuery(IRepository repository, CustomerOrderSearchCriteria criteria)
         {
             var query = ((IOrderRepository)repository).CustomerOrders;
-
+            
             // Don't return prototypes by default
             if (!criteria.WithPrototypes)
             {
@@ -52,22 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
             }
-
-            if (criteria.OnlyRecurring)
-            {
-                query = query.Where(x => x.SubscriptionId != null);
-            }
-
-            if (!criteria.CustomerIds.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.CustomerIds.Contains(x.CustomerId));
-            }
-
-            if (criteria.EmployeeId != null)
-            {
-                query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
-            }
-
+            
             if (criteria.StartDate != null)
             {
                 query = query.Where(x => x.CreatedDate >= criteria.StartDate);
@@ -76,11 +61,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (criteria.EndDate != null)
             {
                 query = query.Where(x => x.CreatedDate <= criteria.EndDate);
-            }
-
-            if (!criteria.SubscriptionIds.IsNullOrEmpty())
-            {
-                query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
             }
 
             if (!criteria.Statuses.IsNullOrEmpty())
@@ -101,6 +81,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(GetKeywordPredicate(criteria));
             }
+
+            query = WithCustomerConditions(query, criteria);
+
+            query = WithSubscriptionConditions(query, criteria);
 
             return query;
         }
@@ -125,6 +109,36 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual Expression<Func<CustomerOrderEntity, bool>> GetKeywordPredicate(CustomerOrderSearchCriteria criteria)
         {
             return order => order.Number.Contains(criteria.Keyword) || order.CustomerName.Contains(criteria.Keyword);
+        }
+
+        private IQueryable<CustomerOrderEntity> WithCustomerConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (!criteria.CustomerIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.CustomerIds.Contains(x.CustomerId));
+            }
+
+            if (criteria.EmployeeId != null)
+            {
+                query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
+            }
+
+            return query;
+        }
+
+        private IQueryable<CustomerOrderEntity> WithSubscriptionConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (criteria.OnlyRecurring)
+            {
+                query = query.Where(x => x.SubscriptionId != null);
+            }
+
+            if (!criteria.SubscriptionIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
+            }
+
+            return query;
         }
     }
 }
