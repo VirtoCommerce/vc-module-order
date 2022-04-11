@@ -43,26 +43,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Ids.Contains(x.Id));
             }
 
-            if (criteria.HasParentOperation != null)
-            {
-                query = query.Where(x => criteria.HasParentOperation.Value ? x.ParentOperationId != null : x.ParentOperationId == null);   
-            }
-
-            if (criteria.ParentOperationId != null)
-            {
-                query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
-            }
-            
-            if (criteria.StartDate != null)
-            {
-                query = query.Where(x => x.CreatedDate >= criteria.StartDate);
-            }
-
-            if (criteria.EndDate != null)
-            {
-                query = query.Where(x => x.CreatedDate <= criteria.EndDate);
-            }
-
             if (!criteria.Statuses.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.Statuses.Contains(x.Status));
@@ -81,6 +61,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 query = query.Where(GetKeywordPredicate(criteria));
             }
+
+            query = WithDateConditions(query, criteria);
+
+            query = WithParentOperationConditions(query, criteria);
 
             query = WithCustomerConditions(query, criteria);
 
@@ -111,7 +95,37 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return order => order.Number.Contains(criteria.Keyword) || order.CustomerName.Contains(criteria.Keyword);
         }
 
-        private IQueryable<CustomerOrderEntity> WithCustomerConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        private static IQueryable<CustomerOrderEntity> WithParentOperationConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (criteria.HasParentOperation != null)
+            {
+                query = query.Where(x => criteria.HasParentOperation.Value ? x.ParentOperationId != null : x.ParentOperationId == null);
+            }
+
+            if (criteria.ParentOperationId != null)
+            {
+                query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
+            }
+
+            return query;
+        }
+
+        private static IQueryable<CustomerOrderEntity> WithDateConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (criteria.StartDate != null)
+            {
+                query = query.Where(x => x.CreatedDate >= criteria.StartDate);
+            }
+
+            if (criteria.EndDate != null)
+            {
+                query = query.Where(x => x.CreatedDate <= criteria.EndDate);
+            }
+
+            return query;
+        }
+
+        private static IQueryable<CustomerOrderEntity> WithCustomerConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
         {
             if (!criteria.CustomerIds.IsNullOrEmpty())
             {
@@ -126,7 +140,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return query;
         }
 
-        private IQueryable<CustomerOrderEntity> WithSubscriptionConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        private static IQueryable<CustomerOrderEntity> WithSubscriptionConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
         {
             if (criteria.OnlyRecurring)
             {
