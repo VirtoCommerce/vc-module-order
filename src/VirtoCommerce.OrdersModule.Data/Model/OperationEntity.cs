@@ -12,14 +12,19 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [Required]
         [StringLength(64)]
         public string Number { get; set; }
+
         public bool IsApproved { get; set; }
+
         [StringLength(64)]
         public string Status { get; set; }
+
         [StringLength(2048)]
         public string Comment { get; set; }
+
         [Required]
         [StringLength(3)]
         public string Currency { get; set; }
+
         [Column(TypeName = "Money")]
         public decimal Sum { get; set; }
 
@@ -27,7 +32,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         [StringLength(32)]
         public string CancelledState { get; set; }
+
         public DateTime? CancelledDate { get; set; }
+
         [StringLength(2048)]
         public string CancelReason { get; set; }
 
@@ -36,6 +43,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         [StringLength(128)]
         public string OuterId { get; set; }
+
+        [StringLength(128)]
+        public string ParentOperationId { get; set; }
 
         public virtual OrderOperation ToModel(OrderOperation operation)
         {
@@ -50,6 +60,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.ModifiedDate = ModifiedDate;
             operation.ModifiedBy = ModifiedBy;
             operation.OuterId = OuterId;
+            operation.ParentOperationId = ParentOperationId;
 
             operation.Comment = Comment;
             operation.Currency = Currency;
@@ -81,6 +92,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             ModifiedDate = operation.ModifiedDate;
             ModifiedBy = operation.ModifiedBy;
             OuterId = operation.OuterId;
+            ParentOperationId = operation.ParentOperationId;
 
             Comment = operation.Comment;
             Currency = operation.Currency;
@@ -113,6 +125,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.CancelReason = CancelReason;
             target.IsApproved = IsApproved;
             target.OuterId = OuterId;
+            target.ParentOperationId = ParentOperationId;
 
             if (NeedPatchSum)
             {

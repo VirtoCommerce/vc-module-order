@@ -6,7 +6,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
     public abstract class OrderOperationSearchCriteriaBase : SearchCriteriaBase
     {
         public string[] Ids { get; set; }
+
+        public bool? HasParentOperation { get; set; }
+
+        public string ParentOperationId { get; set; }
+
         public string EmployeeId { get; set; }
+
         public string[] StoreIds { get; set; }
 
         /// <summary>
@@ -54,6 +60,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         }
 
         public DateTime? StartDate { get; set; }
+
         public DateTime? EndDate { get; set; }
     }
 }

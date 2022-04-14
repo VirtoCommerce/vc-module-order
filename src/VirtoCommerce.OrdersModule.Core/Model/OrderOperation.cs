@@ -14,19 +14,28 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         {
             OperationType = GetType().Name;
         }
+
         public string OperationType { get; set; }
+
         public string ParentOperationId { get; set; }
+
         [Auditable]
         public string Number { get; set; }
+
         [Auditable]
         public bool IsApproved { get; set; }
+
         [Auditable]
         public string Status { get; set; }
+
         [Auditable]
         public string Comment { get; set; }
+
         [Auditable]
         public string Currency { get; set; }
+
         public decimal Sum { get; set; }
+
         [Auditable]
         public string OuterId { get; set; }
 
@@ -44,7 +53,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// Used by payment provides to indicate that cancellation operation has completed
         /// </summary>
         public bool IsCancelled { get; set; }
+
         public DateTime? CancelledDate { get; set; }
+
         public string CancelReason { get; set; }
 
         #endregion
@@ -52,12 +63,15 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #region IHasDynamicProperties Members
 
         public virtual string ObjectType { get; set; }
+
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
         #endregion
 
         #region IHasChangesHistory
+
         public ICollection<OperationLog> OperationsLog { get; set; }
+
         #endregion
 
         #region ICloneable members
