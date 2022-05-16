@@ -171,9 +171,9 @@
       },
       "customerOrder-totals": {
         "sub-total": "Subtotal",
-        "shipping-total": "Total shipping",
-        "shipping-sub-total": "Subtotal shipping",
-        "payment-sub-total": "Payment fees",
+        "shipping-total": "Shipping total",
+        "shipping-sub-total": "Shipping subtotal",
+        "payment-sub-total": "Payment subtotal",
         "tax-total": "Total tax",
         "discount": "Discount",
         "discount-total": "Total discount",
