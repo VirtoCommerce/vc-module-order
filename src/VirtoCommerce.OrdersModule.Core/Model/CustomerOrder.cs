@@ -33,24 +33,24 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string EmployeeName { get; set; }
 
         /// <summary>
-        /// The basis shopping cart id of which the order was created
+        /// The base shopping cart ID the order was created with
         /// </summary>
         public string ShoppingCartId { get; set; }
 
         /// <summary>
-        /// Flag determines that the order is the prototype
+        /// This checkbox determines whether the order is a prototype
         /// </summary>
         public bool IsPrototype { get; set; }
         /// <summary>
-        /// Internal number of order provided by customer
+        /// The order internal number provided by customer
         /// </summary>
         public string PurchaseOrderNumber { get; set; }
         /// <summary>
-        /// Number for subscription  associated with this order
+        /// Number of subscription associated with this order
         /// </summary>
         public string SubscriptionNumber { get; set; }
         /// <summary>
-        /// Identifier for subscription  associated with this order
+        /// The ID of subscription associated with this order
         /// </summary>
         public string SubscriptionId { get; set; }
 
@@ -69,9 +69,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #endregion
 
         /// <summary>
-        /// When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
-        /// Therefore, a discount applying to the order  will occur after tax. 
-        /// For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100).
+        /// When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
+        /// Therefore, the discount will not be taking tax into account. 
+        /// For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax).
         /// </summary>
         [Auditable]
         public decimal DiscountAmount { get; set; }
@@ -87,63 +87,63 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #endregion
         
         /// <summary>
-        /// Grand order total
+        /// Order grand total
         /// </summary>
         [Auditable]
         public virtual decimal Total { get; set; }
         
         /// <summary>
-        /// Sum of the items prices
+        /// Amount of the item prices
         /// </summary>
         public virtual decimal SubTotal { get; set; }
 
         /// <summary>
-        /// Sum of the items prices with tax
+        /// Amount of the item prices with tax
         /// </summary>
         public virtual decimal SubTotalWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the items discount total
+        /// Amount of the item discount total
         /// </summary>
         public virtual decimal SubTotalDiscount { get; set; }
 
         /// <summary>
-        /// Sum of the items discount total with tax
+        /// Amount of the item discount total with tax
         /// </summary>
         public virtual decimal SubTotalDiscountWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the items tax total
+        /// Amount of the item tax total
         /// </summary>
         public virtual decimal SubTotalTaxTotal { get; set; }
 
         /// <summary>
-        /// Sum of the shipments total
+        /// Amount of the shipment total
         /// </summary>
         public virtual decimal ShippingTotal { get; set; }
 
         /// <summary>
-        /// Sum of the shipments total with tax
+        /// Amount of the shipment total with tax
         /// </summary>
         public virtual decimal ShippingTotalWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the shipments prices
+        /// Amount of the shipment prices
         /// </summary>
         public virtual decimal ShippingSubTotal { get; set; }
 
         /// <summary>
-        /// Sum of hte shipments prices with tax
+        /// Amount of the shipment prices with tax
         /// </summary>
         public virtual decimal ShippingSubTotalWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the shipments discount amounts
+        /// Amount of the shipment discount amounts
         /// </summary>
         public virtual decimal ShippingDiscountTotal { get; set; }
 
         /// <summary>
-        /// Sum of the shipments discount amounts with tax
+        /// Amount of the shipment discount amounts with tax
         /// </summary>
         public virtual decimal ShippingDiscountTotalWithTax { get; set; }
 
@@ -153,32 +153,32 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal ShippingTaxTotal { get; set; }
 
         /// <summary>
-        /// Sum of the payments totals
+        /// Amount of the payments totals
         /// </summary>
         public virtual decimal PaymentTotal { get; set; }
 
         /// <summary>
-        /// Sum of the payments totals with tax
+        /// Amount of the payment totals with tax
         /// </summary>
         public virtual decimal PaymentTotalWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the payments prices
+        /// Amount of the payment prices
         /// </summary>
         public virtual decimal PaymentSubTotal { get; set; }
 
         /// <summary>
-        /// Sum of the payments prices with tax
+        /// Amount of the payment prices with tax
         /// </summary>
         public virtual decimal PaymentSubTotalWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the payments discount amounts
+        /// Amount of the payments discount amounts
         /// </summary>
         public virtual decimal PaymentDiscountTotal { get; set; }
 
         /// <summary>
-        /// Sum of the payments discount amounts with tax
+        /// Amount of the payment discount amounts with tax
         /// </summary>
         public virtual decimal PaymentDiscountTotalWithTax { get; set; }
 
@@ -188,17 +188,17 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal PaymentTaxTotal { get; set; }
 
         /// <summary>
-        /// Sum of the discount amounts of items, shipments and payments, and the order discount amount
+        /// Amount of the discount amounts of items, shipments and payments, and the order discount amount
         /// </summary>
         public virtual decimal DiscountTotal { get; set; }
 
         /// <summary>
-        /// Sum of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax
+        /// Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax
         /// </summary>
         public virtual decimal DiscountTotalWithTax { get; set; }
         
         /// <summary>
-        /// Any extra fees applied to the order. This value comes from a cart
+        /// Any extra fees applied to the order. This value comes from the cart
         /// </summary>
         [Auditable]
         public decimal Fee { get; set; }
@@ -209,12 +209,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal FeeWithTax { get; set; }
 
         /// <summary>
-        /// Sum of the order fee and fees of the items, shipments and payments
+        /// Amount of the order fee, as well as any item, shipment, and payment fees
         /// </summary>
         public virtual decimal FeeTotal { get; set; }
 
         /// <summary>
-        /// FeeTotal with applied tax factor
+        /// Total fee with applied tax factor
         /// </summary>
         public virtual decimal FeeTotalWithTax { get; set; }
 
@@ -237,7 +237,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string TaxType { get; set; }
 
         /// <summary>
-        /// Sum of tax totals of the items, shipments and payments without the order discount amount with tax factor applied
+        /// Amount of tax totals for items, shipments, and payments without the order discount amount with tax factor applied
         /// </summary>
         [Auditable]
         public virtual decimal TaxTotal { get; set; }
