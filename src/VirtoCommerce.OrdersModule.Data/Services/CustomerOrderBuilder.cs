@@ -219,7 +219,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.PurchaseOrderNumber = cart.PurchaseOrderNumber;
             order.Comment = cart.Comment;
             order.Currency = cart.Currency;
-            order.ChannelId = cart.ChannelId;
+            
             order.CustomerId = cart.CustomerId;
             order.CustomerName = cart.CustomerName;
             order.DiscountAmount = cart.DiscountAmount;
