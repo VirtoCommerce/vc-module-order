@@ -164,22 +164,29 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 if (!cartShipment.Items.IsNullOrEmpty())
                 {
-                    shipment.Items = new List<ShipmentItem>();
-                    foreach (var cartShipmentItem in cartShipment.Items)
-                    {
-                        var shipmentItem = ToOrderModel(cartShipmentItem);
-                        if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
-                        {
-                            shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
-                            shipment.Items.Add(shipmentItem);
-                        }
-                    }
+                    shipment.Items = ToOrderModel(cartShipment.Items, cartLineItemsMap);
                 }
 
                 retVal.Add(shipment);
             }
 
             return retVal;
+        }
+
+        protected virtual List<ShipmentItem> ToOrderModel(ICollection<VirtoCommerce.CartModule.Core.Model.ShipmentItem> cartShipmentItems, Dictionary<string, LineItem> cartLineItemsMap)
+        {
+            var shipments = new List<ShipmentItem>();
+            foreach (var cartShipmentItem in cartShipmentItems)
+            {
+                var shipmentItem = ToOrderModel(cartShipmentItem);
+
+                if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
+                {
+                    shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
+                    shipments.Add(shipmentItem);
+                }
+            }
+            return shipments;
         }
 
         protected virtual List<Address> ToOrderModel(ICollection<VirtoCommerce.CartModule.Core.Model.Address> cartAddress)
