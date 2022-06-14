@@ -287,6 +287,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.WeightUnit = WeightUnit;
             target.Length = Length;
             target.TaxType = TaxType;
+            target.TrackingNumber = TrackingNumber;
+            target.TrackingUrl = TrackingUrl;
+            target.DeliveryDate = DeliveryDate;
 
             if (isNeedPatch)
             {
