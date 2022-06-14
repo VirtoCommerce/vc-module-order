@@ -91,7 +91,10 @@
           "payment-gateway": "Платежная система",
           "payment-purpose": "Цель платежа",
           "price": "Внесение оплаты",
-          "price-with-tax": "Внесение оплаты (с учетом налога)"
+          "price-with-tax": "Внесение оплаты (с учетом налога)",
+          "tracking-number": "Номер отслеживания",
+          "tracking-url": "URL отслеживания",
+          "delivery-date": "Дата доставки"
         },
         "placeholders": {
           "status": "Выбрать...",

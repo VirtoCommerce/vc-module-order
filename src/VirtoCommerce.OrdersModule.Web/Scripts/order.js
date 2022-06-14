@@ -198,6 +198,21 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                         name: 'priceWithTax',
                         title: "orders.blades.shipment-detail.labels.price-with-tax",
                         templateUrl: 'priceWithTax.html'
+                    },
+                    {
+                        name: 'trackingNumber',
+                        title: 'orders.blades.shipment-detail.labels.tracking-number',
+                        valueType: 'ShortText'
+                    },
+                    {
+                        name: 'trackingUrl',
+                        title: 'orders.blades.shipment-detail.labels.tracking-url',
+                        valueType: 'LongText'
+                    },
+                    {
+                        name: 'deliveryDate',
+                        title: 'orders.blades.shipment-detail.labels.delivery-date',
+                        valueType: 'DateTime'
                     }
                 ]
             }
