@@ -1,8 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Authorization;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -11,16 +13,30 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     public class OrderModuleShipmentsController : Controller
     {
         private readonly IShipmentService _shipmentService;
+        private readonly IAuthorizationService _authorizationService;
 
-        public OrderModuleShipmentsController(IShipmentService shipmentService)
+        public OrderModuleShipmentsController(IShipmentService shipmentService,
+            IAuthorizationService authorizationService)
         {
             _shipmentService = shipmentService;
+            _authorizationService = authorizationService;
         }
 
         [HttpPost]
-        public Task UpdateShipment([FromBody] Shipment shipment)
+        public async Task<ActionResult> UpdateShipment([FromBody] Shipment shipment)
         {
-            return _shipmentService.SaveChangesAsync(new[] { shipment });
+            var authorizationResult = await _authorizationService.AuthorizeAsync(
+                User,
+                null,
+                new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.UpdateShipments));
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            await _shipmentService.SaveChangesAsync(new[] { shipment });
+
+            return Ok();
         }
     }
 }
