@@ -154,6 +154,32 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
+        public virtual async Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids, string responseGroup = null)
+        {
+            if (ids.IsNullOrEmpty())
+            {
+                return Array.Empty<ShipmentEntity>();
+            }
+
+            var result = await Shipments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+
+            if (!result.Any())
+            {
+                return Array.Empty<ShipmentEntity>();
+            }
+
+            ids = result.Select(x => x.Id).ToArray();
+            
+            await Discounts.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await TaxDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await Addresses.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await ShipmentItems.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await ShipmentPackagesPackages.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+
+            return result;
+        }
+
         public virtual async Task RemoveOrdersByIdsAsync(string[] ids)
         {
             var orders = await GetCustomerOrdersByIdsAsync(ids);
