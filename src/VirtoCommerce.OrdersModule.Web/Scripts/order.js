@@ -205,14 +205,14 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                         valueType: 'ShortText'
                     },
                     {
-                        name: 'trackingUrl',
-                        title: 'orders.blades.shipment-detail.labels.tracking-url',
-                        valueType: 'LongText'
-                    },
-                    {
                         name: 'deliveryDate',
                         title: 'orders.blades.shipment-detail.labels.delivery-date',
                         valueType: 'DateTime'
+                    },
+                    {
+                        name: 'trackingUrl',
+                        title: 'orders.blades.shipment-detail.labels.tracking-url',
+                        valueType: 'LongText'
                     }
                 ]
             }
