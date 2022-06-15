@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Unauthorized();
             }
 
-            await _shipmentService.SaveChangesAsync(new[] { shipment });
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+
+            await _shipmentService.SaveChangesAsync(new[] { shipment }, token);
 
             return Ok();
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -26,7 +27,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
         }
 
-        public Task SaveChangesAsync(Shipment[] shipments)
+        public Task SaveChangesAsync(Shipment[] shipments, CancellationToken token)
         {
             return base.SaveChangesAsync(shipments);
         }
