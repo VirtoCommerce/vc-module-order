@@ -26,9 +26,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> UpdateShipment([FromBody] Shipment shipment)
         {
             var authorizationResult = await _authorizationService.AuthorizeAsync(
-                User,
-                null,
-                new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.UpdateShipments));
+                user: User,
+                resource: null,
+                requirement: new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.UpdateShipments));
             if (!authorizationResult.Succeeded)
             {
                 return Unauthorized();

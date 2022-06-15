@@ -129,7 +129,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
-        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null)
+        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids)
         {
             if (ids.IsNullOrEmpty())
             {
@@ -154,7 +154,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
-        public virtual async Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids, string responseGroup = null)
+        public virtual async Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids)
         {
             if (ids.IsNullOrEmpty())
             {

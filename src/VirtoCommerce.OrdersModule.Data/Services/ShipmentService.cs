@@ -33,7 +33,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected override async Task<IEnumerable<ShipmentEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
         {
-            return await((IOrderRepository)repository).GetShipmentsByIdsAsync(ids.ToArray(), responseGroup);
+            return await((IOrderRepository)repository).GetShipmentsByIdsAsync(ids.ToArray());
         }
 
         protected override void ClearCache(IEnumerable<Shipment> models)
