@@ -8,12 +8,13 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentEntity : OperationEntity, ISupportPartialPriceUpdate
+    public class ShipmentEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<ShipmentEntity, Shipment>
     {
         [StringLength(64)]
         public string OrganizationId { get; set; }
@@ -359,6 +360,21 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
+        }
+
+        public Shipment ToModel(Shipment shipment)
+        {
+            return (Shipment)ToModel((OrderOperation)shipment);
+        }
+
+        public ShipmentEntity FromModel(Shipment shipment, PrimaryKeyResolvingMap pkMap)
+        {
+            return (ShipmentEntity)FromModel((OrderOperation)shipment, pkMap);
+        }
+
+        public void Patch(ShipmentEntity target)
+        {
+            Patch((OperationEntity)target);
         }
     }
 }
