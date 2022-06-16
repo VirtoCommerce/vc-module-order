@@ -129,7 +129,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
-        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids, string responseGroup = null)
+        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids)
         {
             if (ids.IsNullOrEmpty())
             {
@@ -150,6 +150,32 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             await Addresses.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await Transactions.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+
+            return result;
+        }
+
+        public virtual async Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids)
+        {
+            if (ids.IsNullOrEmpty())
+            {
+                return Array.Empty<ShipmentEntity>();
+            }
+
+            var result = await Shipments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+
+            if (!result.Any())
+            {
+                return Array.Empty<ShipmentEntity>();
+            }
+
+            ids = result.Select(x => x.Id).ToArray();
+            
+            await Discounts.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await TaxDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await Addresses.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await ShipmentItems.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await ShipmentPackagesPackages.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
 
             return result;
         }
