@@ -1,11 +1,16 @@
 //Call this to register our module to main application
 var moduleName = "virtoCommerce.orderModule";
+const bladeNavigationServiceName = 'platformWebApp.bladeNavigationService';
 
 if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
 }
 
-angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module will be done 'virtoCommerce.pricingModule'*/, 'virtoCommerce.customerModule', 'virtoCommerce.storeModule', 'virtoCommerce.inventoryModule'])
+angular.module(moduleName, [
+        'virtoCommerce.pricingModule',
+        'virtoCommerce.customerModule',
+        'virtoCommerce.storeModule',
+        'virtoCommerce.inventoryModule'])
 .config(
   ['$stateProvider', function ($stateProvider) {
       $stateProvider
@@ -13,7 +18,7 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
               url: '/orders',
               templateUrl: '$(Platform)/Scripts/common/templates/home.tpl.html',
               controller: [
-                  '$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
+                  '$scope', bladeNavigationServiceName, function ($scope, bladeNavigationService) {
                       var blade = {
                           id: 'orders',
                           title: 'orders.blades.customerOrder-list.title',
@@ -24,7 +29,7 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                           isClosingDisabled: true
                       };
                       bladeNavigationService.showBlade(blade);
-                      //Need for isolate and prevent conflict module css to another modules 
+                      //Need for isolate and prevent conflict module css to another modules
                       //it value included in bladeContainer as ng-class='moduleName'
                       $scope.moduleName = "vc-order";
                   }
@@ -33,7 +38,7 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
   }]
 )
 // define known Operations to be accessible platform-wide
-.factory('virtoCommerce.orderModule.knownOperations', ['platformWebApp.bladeNavigationService', function (bladeNavigationService) {
+    .factory('virtoCommerce.orderModule.knownOperations', [bladeNavigationServiceName, function (bladeNavigationService) {
     var map = {};
 
     function registerOperation(op) {
@@ -58,8 +63,36 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
     };
 }])
 .run(
-    ['$rootScope', '$http', '$compile', 'platformWebApp.mainMenuService', 'platformWebApp.widgetService', 'platformWebApp.bladeNavigationService', '$state', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.permissionScopeResolver', 'virtoCommerce.storeModule.stores', 'virtoCommerce.orderModule.knownOperations', 'platformWebApp.authService', 'platformWebApp.metaFormsService',
-        function ($rootScope, $http, $compile, mainMenuService, widgetService, bladeNavigationService, $state, $localStorage, customerOrders, scopeResolver, stores, knownOperations, authService, metaFormsService) {
+    [
+        '$rootScope',
+        '$http',
+        '$compile',
+        'platformWebApp.mainMenuService',
+        'platformWebApp.widgetService',
+        bladeNavigationServiceName,
+        '$state',
+        '$localStorage',
+        'virtoCommerce.orderModule.order_res_customerOrders',
+        'platformWebApp.permissionScopeResolver',
+        'virtoCommerce.storeModule.stores',
+        'virtoCommerce.orderModule.knownOperations',
+        'platformWebApp.authService',
+        'platformWebApp.metaFormsService',
+        function ( // nosonar
+            $rootScope,
+            $http,
+            $compile,
+            mainMenuService,
+            widgetService,
+            bladeNavigationService,
+            $state,
+            $localStorage,
+            customerOrders,
+            scopeResolver,
+            stores,
+            knownOperations,
+            authService,
+            metaFormsService) {
         //Register module in main menu
         var menuItem = {
             path: 'browse/orders',
@@ -198,6 +231,21 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                         name: 'priceWithTax',
                         title: "orders.blades.shipment-detail.labels.price-with-tax",
                         templateUrl: 'priceWithTax.html'
+                    },
+                    {
+                        name: 'trackingNumber',
+                        title: 'orders.blades.shipment-detail.labels.tracking-number',
+                        valueType: 'ShortText'
+                    },
+                    {
+                        name: 'deliveryDate',
+                        title: 'orders.blades.shipment-detail.labels.delivery-date',
+                        valueType: 'DateTime'
+                    },
+                    {
+                        name: 'trackingUrl',
+                        title: 'orders.blades.shipment-detail.labels.tracking-url',
+                        valueType: 'LongText'
                     }
                 ]
             }
@@ -369,7 +417,7 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                 widgetService.registerWidget(customerOrderIndexWidget, 'customerOrderDetailWidgets');
             }
         });
-        
+
         $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
             // compile the response, which will put stuff into the cache
             $compile(response.data);
@@ -443,7 +491,7 @@ angular.module(moduleName, [ /*TODO: Uncomment when migration of theses module w
                     // prepare statistics
                     var statisticsToChartRows = function (statsList, allCurrencies) {
                         var groupedQuarters = _.groupBy(statsList, function (stats) {
-                            return stats.year + ' Q' + stats.quarter;
+                            return `${stats.year} Q${stats.quarter}`;
                         });
                         return _.map(groupedQuarters, function (stats, key) {
                             var values = [{
