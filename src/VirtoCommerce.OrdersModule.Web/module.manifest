@@ -34,3 +34,4 @@
     <group>commerce</group>
   </groups>
   <useFullTypeNameInSwagger>false</useFullTypeNameInSwagger>
+</module>
