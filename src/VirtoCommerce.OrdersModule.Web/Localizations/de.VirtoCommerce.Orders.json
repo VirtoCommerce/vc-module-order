@@ -120,7 +120,10 @@
           "employee": "Zugewiesen zu",
           "price": "Versandmenge",
           "price-with-tax": "Versandbetrag mit Steuer",
-          "shipment-method-option": "Verzendmethode optie"
+          "shipment-method-option": "Verzendmethode optie",
+          "tracking-number": "Auftragsnummer",
+          "tracking-url": "Tracking-URL",
+          "delivery-date": "Lieferdatum"
         },
         "placeholders": {
           "status": "Wählen Sie aus...",

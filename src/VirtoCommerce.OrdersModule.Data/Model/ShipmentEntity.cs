@@ -8,12 +8,13 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentEntity : OperationEntity, ISupportPartialPriceUpdate
+    public class ShipmentEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<ShipmentEntity, Shipment>
     {
         [StringLength(64)]
         public string OrganizationId { get; set; }
@@ -66,6 +67,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
+
+        [StringLength(128)]
+        public string TrackingNumber { get; set; }
+        public string TrackingUrl { get; set; }
+        public DateTime? DeliveryDate { get; set; }
 
         #region NavigationProperties
 
@@ -136,6 +142,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.Packages = Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
             shipment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
 
+            shipment.TrackingNumber = TrackingNumber;
+            shipment.TrackingUrl = TrackingUrl;
+            shipment.DeliveryDate = DeliveryDate;
+
             shipment.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
             {
                 var property = AbstractTypeFactory<DynamicObjectProperty>.TryCreateInstance();
@@ -193,6 +203,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             TaxTotal = shipment.TaxTotal;
             Total = shipment.Total;
             TotalWithTax = shipment.TotalWithTax;
+
+            TrackingNumber = shipment.TrackingNumber;
+            TrackingUrl = shipment.TrackingUrl;
+            DeliveryDate = shipment.DeliveryDate;
 
             //Allow to empty address
             Addresses = new ObservableCollection<AddressEntity>();
@@ -274,6 +288,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.WeightUnit = WeightUnit;
             target.Length = Length;
             target.TaxType = TaxType;
+            target.TrackingNumber = TrackingNumber;
+            target.TrackingUrl = TrackingUrl;
+            target.DeliveryDate = DeliveryDate;
 
             if (isNeedPatch)
             {
@@ -343,6 +360,21 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
+        }
+
+        public Shipment ToModel(Shipment shipment)
+        {
+            return (Shipment)ToModel((OrderOperation)shipment);
+        }
+
+        public ShipmentEntity FromModel(Shipment shipment, PrimaryKeyResolvingMap pkMap)
+        {
+            return (ShipmentEntity)FromModel((OrderOperation)shipment, pkMap);
+        }
+
+        public void Patch(ShipmentEntity target)
+        {
+            Patch((OperationEntity)target);
         }
     }
 }

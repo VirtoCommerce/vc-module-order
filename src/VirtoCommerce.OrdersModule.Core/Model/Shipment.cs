@@ -79,6 +79,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal Fee { get; set; }
         public virtual decimal FeeWithTax { get; set; }
 
+        /// <summary>
+        /// Tracking information
+        /// </summary>
+        public string TrackingNumber { get; set; }
+        public string TrackingUrl { get; set; }
+        public DateTime? DeliveryDate { get; set; }
+
         public override string ObjectType { get; set; } = typeof(Shipment).FullName;
 
         #region ITaxable Members
