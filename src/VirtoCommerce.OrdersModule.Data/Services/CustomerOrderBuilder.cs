@@ -36,6 +36,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         }
 
         #endregion
+
         protected virtual CustomerOrder ConvertCartToOrder(ShoppingCart cart)
         {
             var cartLineItemsMap = new Dictionary<string, LineItem>();
@@ -102,115 +103,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return order;
         }
 
-        protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
-        {
-        }
-
-        protected virtual void CopyOtherAddress(ShoppingCart cart, CustomerOrder order)
-        {
-            //Add shipping address to order
-            if (order.Shipments != null)
-            {
-                order.Addresses.AddRange(order.Shipments.Where(x => x.DeliveryAddress != null).Select(x => x.DeliveryAddress));
-            }
-
-            //Add payment address to order
-            if (cart.Payments != null)
-            {
-                order.Addresses.AddRange(cart.Payments.Where(x => x.BillingAddress != null).Select(x => ToOrderModel(x.BillingAddress)));
-            }
-        }
-
-        protected virtual ICollection<Address> DistinctAddresses(ICollection<Address> addresses)
-        {
-            var retVal = addresses.Distinct().ToList();
-            foreach (var address in retVal)
-            {
-                //Reset primary key for addresses
-                address.Key = null;
-            }
-            return retVal;
-        }
-
-        protected virtual ICollection<TaxDetail> ToOrderModel(ICollection<TaxDetail> cartTaxDetails)
-        {
-            return cartTaxDetails;
-        }
-
-        protected virtual IList<DynamicObjectProperty> ToOrderModel(ICollection<DynamicObjectProperty> cartDynamicProperties)
-        {
-           return cartDynamicProperties.Select(ToOrderModel).ToList();
-        }
-
-        protected virtual List<PaymentIn> ToOrderModel(ShoppingCart cart, ICollection<Payment> cartPayments)
-        {
-            var retVal = new List<PaymentIn>();
-            foreach (var payment in cartPayments)
-            {
-                var paymentIn = ToOrderModel(payment);
-                paymentIn.CustomerId = cart.CustomerId;
-                retVal.Add(paymentIn);
-            }
-            return retVal;
-        }
-
-        protected virtual List<Shipment> ToOrderModel(ICollection<VirtoCommerce.CartModule.Core.Model.Shipment> cartShipments, Dictionary<string, LineItem> cartLineItemsMap)
-        {
-            var retVal = new List<Shipment>();
-
-            foreach (var cartShipment in cartShipments)
-            {
-                var shipment = ToOrderModel(cartShipment);
-
-                if (!cartShipment.Items.IsNullOrEmpty())
-                {
-                    shipment.Items = ToOrderModel(cartShipment.Items, cartLineItemsMap);
-                }
-
-                retVal.Add(shipment);
-            }
-
-            return retVal;
-        }
-
-        protected virtual List<ShipmentItem> ToOrderModel(ICollection<VirtoCommerce.CartModule.Core.Model.ShipmentItem> cartShipmentItems, Dictionary<string, LineItem> cartLineItemsMap)
-        {
-            var shipments = new List<ShipmentItem>();
-            foreach (var cartShipmentItem in cartShipmentItems)
-            {
-                var shipmentItem = ToOrderModel(cartShipmentItem);
-
-                if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
-                {
-                    shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
-                    shipments.Add(shipmentItem);
-                }
-            }
-            return shipments;
-        }
-
-        protected virtual List<Address> ToOrderModel(ICollection<VirtoCommerce.CartModule.Core.Model.Address> cartAddress)
-        {
-            return cartAddress.Select(ToOrderModel).ToList();
-        }
-
-        protected virtual List<Discount> ToOrderModel(ICollection<Discount> cartDiscounts)
-        {
-            return cartDiscounts.Select(ToOrderModel).ToList();
-        }
-
-        protected virtual List<LineItem> ToOrderModel(ICollection<CartModule.Core.Model.LineItem> cartLineItems, Dictionary<string, LineItem> cartLineItemsMap)
-        {
-            var retVal = new List<LineItem>();
-            foreach (var cartLineItem in cartLineItems.Where(x => !x.IsRejected))
-            {
-                var orderLineItem = ToOrderModel(cartLineItem);
-                retVal.Add(orderLineItem);
-                cartLineItemsMap.Add(cartLineItem.Id, orderLineItem);
-            }
-            return retVal;
-        }
-
         protected virtual CustomerOrder ToOrderModel(ShoppingCart cart)
         {
             var order = AbstractTypeFactory<CustomerOrder>.TryCreateInstance();
@@ -219,7 +111,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.PurchaseOrderNumber = cart.PurchaseOrderNumber;
             order.Comment = cart.Comment;
             order.Currency = cart.Currency;
-            
+
             order.CustomerId = cart.CustomerId;
             order.CustomerName = cart.CustomerName;
             order.DiscountAmount = cart.DiscountAmount;
@@ -240,9 +132,89 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return order;
         }
 
-        protected virtual string GetDefaultOrderStatus()
+        protected virtual List<LineItem> ToOrderModel(ICollection<CartModule.Core.Model.LineItem> cartLineItems, Dictionary<string, LineItem> cartLineItemsMap)
         {
-            return "New";
+            var retVal = new List<LineItem>();
+
+            foreach (var cartLineItem in cartLineItems.Where(x => !x.IsRejected))
+            {
+                var orderLineItem = ToOrderModel(cartLineItem);
+                retVal.Add(orderLineItem);
+                cartLineItemsMap.Add(cartLineItem.Id, orderLineItem);
+            }
+
+            return retVal;
+        }
+
+        protected virtual List<Discount> ToOrderModel(ICollection<Discount> cartDiscounts)
+        {
+            return cartDiscounts.Select(ToOrderModel).ToList();
+        }
+
+        protected virtual List<Shipment> ToOrderModel(ICollection<CartModule.Core.Model.Shipment> cartShipments, Dictionary<string, LineItem> cartLineItemsMap)
+        {
+            var retVal = new List<Shipment>();
+
+            foreach (var cartShipment in cartShipments)
+            {
+                var shipment = ToOrderModel(cartShipment);
+
+                if (!cartShipment.Items.IsNullOrEmpty())
+                {
+                    shipment.Items = ToOrderModel(cartShipment.Items, cartLineItemsMap);
+                }
+
+                retVal.Add(shipment);
+            }
+
+            return retVal;
+        }
+
+        protected virtual List<ShipmentItem> ToOrderModel(ICollection<CartModule.Core.Model.ShipmentItem> cartShipmentItems, Dictionary<string, LineItem> cartLineItemsMap)
+        {
+            var shipments = new List<ShipmentItem>();
+
+            foreach (var cartShipmentItem in cartShipmentItems)
+            {
+                var shipmentItem = ToOrderModel(cartShipmentItem);
+
+                if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
+                {
+                    shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
+                    shipments.Add(shipmentItem);
+                }
+            }
+
+            return shipments;
+        }
+
+        protected virtual ICollection<TaxDetail> ToOrderModel(ICollection<TaxDetail> cartTaxDetails)
+        {
+            return cartTaxDetails;
+        }
+
+        protected virtual IList<DynamicObjectProperty> ToOrderModel(ICollection<DynamicObjectProperty> cartDynamicProperties)
+        {
+            return cartDynamicProperties.Select(ToOrderModel).ToList();
+        }
+
+        protected virtual List<PaymentIn> ToOrderModel(ShoppingCart cart, ICollection<Payment> cartPayments)
+        {
+            var retVal = new List<PaymentIn>();
+
+            foreach (var payment in cartPayments)
+            {
+                var paymentIn = ToOrderModel(payment);
+                paymentIn.CustomerId = cart.CustomerId;
+                retVal.Add(paymentIn);
+            }
+
+            return retVal;
+        }
+
+        protected virtual List<Address> ToOrderModel(ICollection<CartModule.Core.Model.Address> cartAddress)
+        {
+            return cartAddress.Select(ToOrderModel).ToList();
         }
 
         protected virtual LineItem ToOrderModel(CartModule.Core.Model.LineItem lineItem)
@@ -430,6 +402,43 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 ValueType = item.ValueType,
                 Values = item.Values
             };
+        }
+
+        protected virtual void CopyOtherAddress(ShoppingCart cart, CustomerOrder order)
+        {
+            //Add shipping address to order
+            if (order.Shipments != null)
+            {
+                order.Addresses.AddRange(order.Shipments.Where(x => x.DeliveryAddress != null).Select(x => x.DeliveryAddress));
+            }
+
+            //Add payment address to order
+            if (cart.Payments != null)
+            {
+                order.Addresses.AddRange(cart.Payments.Where(x => x.BillingAddress != null).Select(x => ToOrderModel(x.BillingAddress)));
+            }
+        }
+
+        protected virtual ICollection<Address> DistinctAddresses(ICollection<Address> addresses)
+        {
+            var retVal = addresses.Distinct().ToList();
+
+            foreach (var address in retVal)
+            {
+                //Reset primary key for addresses
+                address.Key = null;
+            }
+
+            return retVal;
+        }
+
+        protected virtual string GetDefaultOrderStatus()
+        {
+            return "New";
+        }
+
+        protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
+        {
         }
     }
 }
