@@ -134,16 +134,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual List<LineItem> ToOrderModel(ICollection<CartModule.Core.Model.LineItem> cartLineItems, Dictionary<string, LineItem> cartLineItemsMap)
         {
-            var retVal = new List<LineItem>();
+            var result = new List<LineItem>();
 
             foreach (var cartLineItem in cartLineItems.Where(x => !x.IsRejected))
             {
                 var orderLineItem = ToOrderModel(cartLineItem);
-                retVal.Add(orderLineItem);
+                result.Add(orderLineItem);
                 cartLineItemsMap.Add(cartLineItem.Id, orderLineItem);
             }
 
-            return retVal;
+            return result;
         }
 
         protected virtual List<Discount> ToOrderModel(ICollection<Discount> cartDiscounts)
@@ -153,7 +153,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual List<Shipment> ToOrderModel(ICollection<CartModule.Core.Model.Shipment> cartShipments, Dictionary<string, LineItem> cartLineItemsMap)
         {
-            var retVal = new List<Shipment>();
+            var result = new List<Shipment>();
 
             foreach (var cartShipment in cartShipments)
             {
@@ -164,10 +164,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     shipment.Items = ToOrderModel(cartShipment.Items, cartLineItemsMap);
                 }
 
-                retVal.Add(shipment);
+                result.Add(shipment);
             }
 
-            return retVal;
+            return result;
         }
 
         protected virtual List<ShipmentItem> ToOrderModel(ICollection<CartModule.Core.Model.ShipmentItem> cartShipmentItems, Dictionary<string, LineItem> cartLineItemsMap)
@@ -200,16 +200,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual List<PaymentIn> ToOrderModel(ShoppingCart cart, ICollection<Payment> cartPayments)
         {
-            var retVal = new List<PaymentIn>();
+            var result = new List<PaymentIn>();
 
             foreach (var payment in cartPayments)
             {
                 var paymentIn = ToOrderModel(payment);
                 paymentIn.CustomerId = cart.CustomerId;
-                retVal.Add(paymentIn);
+                result.Add(paymentIn);
             }
 
-            return retVal;
+            return result;
         }
 
         protected virtual List<Address> ToOrderModel(ICollection<CartModule.Core.Model.Address> cartAddress)
@@ -421,15 +421,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual ICollection<Address> DistinctAddresses(ICollection<Address> addresses)
         {
-            var retVal = addresses.Distinct().ToList();
+            var result = addresses.Distinct().ToList();
 
-            foreach (var address in retVal)
+            foreach (var address in result)
             {
                 //Reset primary key for addresses
                 address.Key = null;
             }
 
-            return retVal;
+            return result;
         }
 
         protected virtual string GetDefaultOrderStatus()
