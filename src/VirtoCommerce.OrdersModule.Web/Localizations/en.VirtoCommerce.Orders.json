@@ -251,7 +251,7 @@
         "ready to send": "Ready to send",
         "cancelled": "Cancelled",
         "partially sent": "Partially sent",
-        "completed": "Complete"
+        "completed": "Completed"
       },
       "shipment-status": {
         "new": "New",
