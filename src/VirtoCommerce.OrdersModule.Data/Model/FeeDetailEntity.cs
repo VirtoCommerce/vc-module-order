@@ -37,7 +37,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual FeeDetail ToModel(FeeDetail feeDetail)
         {
             if (feeDetail == null)
+            {
                 throw new ArgumentNullException(nameof(feeDetail));
+            }
 
             feeDetail.Id = Id;
             feeDetail.FeeId = FeeId;
@@ -51,7 +53,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual FeeDetailEntity FromModel(FeeDetail feeDetail)
         {
             if (feeDetail == null)
+            {
                 throw new ArgumentNullException(nameof(feeDetail));
+            }
 
             Id = feeDetail.Id;
             FeeId = feeDetail.FeeId;
@@ -65,7 +69,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual void Patch(FeeDetailEntity target)
         {
             if (target == null)
+            {
                 throw new ArgumentNullException(nameof(target));
+            }
 
             target.Currency = Currency;
             target.Amount = Amount;
