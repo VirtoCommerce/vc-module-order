@@ -151,6 +151,27 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
 
+            #region FeeDetail
+
+            modelBuilder.Entity<FeeDetailEntity>().HasKey(x => x.Id);
+            modelBuilder.Entity<FeeDetailEntity>().Property(x => x.Id).HasMaxLength(128).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.FeeDetails)
+                        .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.Shipment).WithMany(x => x.FeeDetails)
+                        .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.LineItem).WithMany(x => x.FeeDetails)
+                        .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.PaymentIn).WithMany(x => x.FeeDetails)
+                        .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<FeeDetailEntity>().ToTable("OrderFeeDetail");
+
+            #endregion
+
             #region PaymentGatewayTransactionEntity
 
             modelBuilder.Entity<PaymentGatewayTransactionEntity>().HasKey(x => x.Id);

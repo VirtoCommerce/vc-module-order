@@ -84,6 +84,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual ObservableCollection<AddressEntity> Addresses { get; set; } = new NullCollection<AddressEntity>();
         public virtual ObservableCollection<DiscountEntity> Discounts { get; set; } = new NullCollection<DiscountEntity>();
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
+        public virtual ObservableCollection<FeeDetailEntity> FeeDetails { get; set; } = new NullCollection<FeeDetailEntity>();
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -141,6 +142,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.InPayments = InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
             shipment.Packages = Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
             shipment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            shipment.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
 
             shipment.TrackingNumber = TrackingNumber;
             shipment.TrackingUrl = TrackingUrl;
@@ -241,6 +243,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 TaxDetails = new ObservableCollection<TaxDetailEntity>(shipment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
             }
 
+            if (shipment.FeeDetails != null)
+            {
+                FeeDetails = new ObservableCollection<FeeDetailEntity>(shipment.FeeDetails.Select(x => AbstractTypeFactory<FeeDetailEntity>.TryCreateInstance().FromModel(x)));
+            }
+
             if (shipment.Discounts != null)
             {
                 Discounts = new ObservableCollection<DiscountEntity>(shipment.Discounts.Select(x => AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
@@ -334,6 +341,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+            }
+
+            if (!FeeDetails.IsNullCollection())
+            {
+                var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
+                FeeDetails.Patch(target.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
