@@ -41,7 +41,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentNullException(nameof(feeDetail));
             }
 
-            feeDetail.Id = Id;
             feeDetail.FeeId = FeeId;
             feeDetail.Currency = Currency;
             feeDetail.Amount = Amount;
@@ -57,7 +56,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentNullException(nameof(feeDetail));
             }
 
-            Id = feeDetail.Id;
             FeeId = feeDetail.FeeId;
             Currency = feeDetail.Currency;
             Amount = feeDetail.Amount;

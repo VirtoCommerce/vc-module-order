@@ -36,19 +36,19 @@ namespace VirtoCommerce.OrdersModule.Data.Migrations
                         column: x => x.LineItemId,
                         principalTable: "OrderLineItem",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_OrderFeeDetail_OrderPaymentIn_PaymentInId",
                         column: x => x.PaymentInId,
                         principalTable: "OrderPaymentIn",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_OrderFeeDetail_OrderShipment_ShipmentId",
                         column: x => x.ShipmentId,
                         principalTable: "OrderShipment",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

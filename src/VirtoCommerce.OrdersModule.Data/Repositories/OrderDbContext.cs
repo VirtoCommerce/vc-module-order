@@ -161,13 +161,13 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                         .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.Shipment).WithMany(x => x.FeeDetails)
-                        .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.LineItem).WithMany(x => x.FeeDetails)
-                        .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<FeeDetailEntity>().HasOne(x => x.PaymentIn).WithMany(x => x.FeeDetails)
-                        .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<FeeDetailEntity>().ToTable("OrderFeeDetail");
 
