@@ -9,7 +9,7 @@ using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFees
+    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         public string CustomerId { get; set; }
 

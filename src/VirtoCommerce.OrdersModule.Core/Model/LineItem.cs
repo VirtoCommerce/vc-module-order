@@ -11,7 +11,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderLineItem")]
     public class LineItem : AuditableEntity, IHasTaxDetalization, ISupportCancellation, IHasDimension,
-        IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable, IHasFees
+        IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         /// <summary>
         /// Price id

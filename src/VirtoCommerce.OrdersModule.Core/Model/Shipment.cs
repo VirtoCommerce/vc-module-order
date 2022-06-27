@@ -10,7 +10,7 @@ using VirtoCommerce.ShippingModule.Core.Model;
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderShipment")]
-    public class Shipment : OrderOperation, IHasTaxDetalization, ISupportCancellation, ITaxable, IHasDiscounts, ICloneable, IHasFees
+    public class Shipment : OrderOperation, IHasTaxDetalization, ISupportCancellation, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         public string OrganizationId { get; set; }
         public string OrganizationName { get; set; }
