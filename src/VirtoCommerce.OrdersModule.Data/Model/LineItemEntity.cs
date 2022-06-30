@@ -28,6 +28,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [Column(TypeName = "Money")]
         public decimal DiscountAmountWithTax { get; set; }
         [Column(TypeName = "Money")]
+        public decimal Fee { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeWithTax { get; set; }
+
+        [Column(TypeName = "Money")]
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
         public int Quantity { get; set; }
@@ -140,6 +145,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.DiscountAmountWithTax = DiscountAmountWithTax;
             lineItem.Quantity = Quantity;
             lineItem.TaxTotal = TaxTotal;
+            lineItem.Fee = Fee;
+            lineItem.FeeWithTax = FeeWithTax;
             lineItem.TaxPercentRate = TaxPercentRate;
             lineItem.Weight = Weight;
             lineItem.Height = Height;
@@ -205,6 +212,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PriceWithTax = lineItem.PriceWithTax;
             DiscountAmount = lineItem.DiscountAmount;
             DiscountAmountWithTax = lineItem.DiscountAmountWithTax;
+            Fee = lineItem.Fee;
+            FeeWithTax = lineItem.FeeWithTax;
             Quantity = lineItem.Quantity;
             TaxTotal = lineItem.TaxTotal;
             TaxPercentRate = lineItem.TaxPercentRate;
@@ -285,6 +294,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 target.PriceWithTax = PriceWithTax;
                 target.DiscountAmountWithTax = DiscountAmountWithTax;
                 target.TaxTotal = TaxTotal;
+                target.Fee = Fee;
+                target.FeeWithTax = FeeWithTax;
             }
 
             if (!Discounts.IsNullCollection())
@@ -319,6 +330,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             DiscountAmountWithTax = 0m;
             TaxTotal = 0m;
             TaxPercentRate = 0m;
+            Fee = 0m;
+            FeeWithTax = 0m;
         }
 
         public virtual IEnumerable<decimal> GetNonCalculatablePrices()
@@ -326,6 +339,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
+            yield return Fee;
         }
     }
 }

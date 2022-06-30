@@ -223,7 +223,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PaymentTotalWithTax = order.PaymentTotalWithTax;
             Fee = order.Fee;
             FeeWithTax = order.FeeWithTax;
-            FeeTotal = order.FeeWithTax;
+            FeeTotal = order.FeeTotal;
             FeeTotalWithTax = order.FeeTotalWithTax;
             HandlingTotal = order.HandlingTotal;
             HandlingTotalWithTax = order.HandlingTotalWithTax;
@@ -484,6 +484,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return ShippingTotalWithTax;
             yield return PaymentTotalWithTax;
             yield return DiscountAmount;
+            yield return Fee;
         }
     }
 }

@@ -65,6 +65,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal TotalWithTax { get; set; }
 
         [Column(TypeName = "Money")]
+        public decimal Fee { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeWithTax { get; set; }
+
+        [Column(TypeName = "Money")]
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
 
@@ -114,6 +119,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.PriceWithTax = PriceWithTax;
             shipment.DiscountAmount = DiscountAmount;
             shipment.DiscountAmountWithTax = DiscountAmountWithTax;
+            shipment.Fee = Fee;
+            shipment.FeeWithTax = FeeWithTax;
             shipment.FulfillmentCenterId = FulfillmentCenterId;
             shipment.FulfillmentCenterName = FulfillmentCenterName;
             shipment.OrganizationId = OrganizationId;
@@ -184,6 +191,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PriceWithTax = shipment.PriceWithTax;
             DiscountAmount = shipment.DiscountAmount;
             DiscountAmountWithTax = shipment.DiscountAmountWithTax;
+            Fee = shipment.Fee;
+            FeeWithTax = shipment.FeeWithTax;
             FulfillmentCenterId = shipment.FulfillmentCenterId;
             FulfillmentCenterName = shipment.FulfillmentCenterName;
             OrganizationId = shipment.OrganizationId;
@@ -309,6 +318,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 target.TaxTotal = TaxTotal;
                 target.Total = Total;
                 target.TotalWithTax = TotalWithTax;
+                target.Fee = Fee;
+                target.FeeWithTax = FeeWithTax;
             }
 
             if (!InPayments.IsNullCollection())
@@ -373,6 +384,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
+            yield return Fee;
         }
 
         public Shipment ToModel(Shipment shipment)
