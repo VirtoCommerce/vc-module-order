@@ -157,7 +157,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.PaymentDiscountTotal = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotal, currency);
             order.PaymentDiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotalWithTax, currency);
 
-            order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
+            order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal - order.DiscountTotal;
             order.Sum = order.Total;
         }
 
@@ -193,8 +193,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             shipment.PriceWithTax = shipment.Price * taxFactor;
             shipment.DiscountAmountWithTax = shipment.DiscountAmount * taxFactor;
             shipment.FeeWithTax = shipment.Fee * taxFactor;
-            shipment.Total = shipment.Price + shipment.Fee - shipment.DiscountAmount;
-            shipment.TotalWithTax = shipment.PriceWithTax + shipment.FeeWithTax - shipment.DiscountAmountWithTax;
+            shipment.Total = shipment.Price - shipment.DiscountAmount;
+            shipment.TotalWithTax = shipment.PriceWithTax  - shipment.DiscountAmountWithTax;
             shipment.TaxTotal = shipment.Total * shipment.TaxPercentRate;
             shipment.Sum = shipment.Total;
         }
@@ -215,7 +215,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             lineItem.PlacedPriceWithTax = lineItem.PlacedPrice * taxFactor;
             lineItem.ExtendedPriceWithTax = lineItem.PlacedPriceWithTax * lineItem.Quantity;
             lineItem.DiscountTotalWithTax = lineItem.DiscountAmountWithTax * Math.Max(1, lineItem.Quantity);
-            lineItem.TaxTotal = (lineItem.ExtendedPrice + lineItem.Fee) * lineItem.TaxPercentRate;
+            lineItem.TaxTotal = lineItem.ExtendedPrice * lineItem.TaxPercentRate;
         }
     }
 }

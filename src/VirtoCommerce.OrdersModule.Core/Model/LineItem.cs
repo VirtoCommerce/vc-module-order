@@ -11,7 +11,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderLineItem")]
     public class LineItem : AuditableEntity, IHasTaxDetalization, ISupportCancellation, IHasDimension,
-        IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable
+        IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         /// <summary>
         /// Price id
@@ -92,6 +92,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string FulfillmentCenterName { get; set; }
 
         public string OuterId { get; set; }
+        public ICollection<FeeDetail> FeeDetails { get; set; }
 
         #region IHaveDimension Members
 
@@ -169,6 +170,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             if (TaxDetails != null)
             {
                 result.TaxDetails = new List<TaxDetail>(TaxDetails.Select(x => x.Clone() as TaxDetail));
+            }
+
+            if (FeeDetails != null)
+            {
+                result.FeeDetails = new List<FeeDetail>(FeeDetails.Select(x => x.Clone() as FeeDetail));
             }
 
             return result;

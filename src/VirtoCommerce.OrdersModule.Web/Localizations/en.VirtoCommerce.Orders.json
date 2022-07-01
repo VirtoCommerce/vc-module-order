@@ -37,7 +37,8 @@
           "dynamic-properties": "Dynamic properties",
           "sub-total": "Subtotal",
           "discount-total": "Total discount",
-          "tax-total": "Total tax"
+          "tax-total": "Total tax",
+          "fee-total": "Total fee"
         }
       },
       "customerOrder-list": {
@@ -178,6 +179,7 @@
         "shipping-sub-total": "Shipping subtotal",
         "payment-sub-total": "Payment subtotal",
         "tax-total": "Total tax",
+        "fee-total": "Total fee",
         "discount": "Discount",
         "discount-total": "Total discount",
         "discount-total-with-tax": "Total discount with tax",
@@ -196,6 +198,7 @@
       },
       "shipment-totals": {
         "tax-total": "Total tax",
+        "fee-total": "Total fee",
         "shipment-total": "Total shipment",
         "shipment-price": "Shipping price",
         "discount-total": "Total discount",

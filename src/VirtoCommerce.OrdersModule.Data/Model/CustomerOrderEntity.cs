@@ -105,6 +105,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ObservableCollection<DiscountEntity> Discounts { get; set; } = new NullCollection<DiscountEntity>();
 
+        public virtual ObservableCollection<FeeDetailEntity> FeeDetails { get; set; } = new NullCollection<FeeDetailEntity>();
+
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -163,6 +165,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             order.Shipments = Shipments.Select(x => x.ToModel(AbstractTypeFactory<Shipment>.TryCreateInstance())).OfType<Shipment>().ToList();
             order.InPayments = InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
             order.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            order.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
 
             order.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
             {
@@ -220,7 +223,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PaymentTotalWithTax = order.PaymentTotalWithTax;
             Fee = order.Fee;
             FeeWithTax = order.FeeWithTax;
-            FeeTotal = order.FeeWithTax;
+            FeeTotal = order.FeeTotal;
             FeeTotalWithTax = order.FeeTotalWithTax;
             HandlingTotal = order.HandlingTotal;
             HandlingTotalWithTax = order.HandlingTotalWithTax;
@@ -279,6 +282,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 TaxDetails = new ObservableCollection<TaxDetailEntity>(order.TaxDetails.Select(x =>
                     AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
+            }
+
+            if (order.FeeDetails != null)
+            {
+                FeeDetails = new ObservableCollection<FeeDetailEntity>(order.FeeDetails.Select(x =>
+                    AbstractTypeFactory<FeeDetailEntity>.TryCreateInstance().FromModel(x)));
             }
 
             if (order.DynamicProperties != null)
@@ -416,6 +425,13 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                     (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
+            if (!FeeDetails.IsNullCollection())
+            {
+                var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
+                FeeDetails.Patch(operation.FeeDetails, feeDetailComparer,
+                    (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
+            }
+
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
                 DynamicPropertyObjectValues.Patch(operation.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
@@ -468,6 +484,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return ShippingTotalWithTax;
             yield return PaymentTotalWithTax;
             yield return DiscountAmount;
+            yield return Fee;
         }
     }
 }
