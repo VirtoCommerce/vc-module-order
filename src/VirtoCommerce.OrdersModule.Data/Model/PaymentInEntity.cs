@@ -77,6 +77,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
 
+        public virtual ObservableCollection<FeeDetailEntity> FeeDetails { get; set; } = new NullCollection<FeeDetailEntity>();
+
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -130,6 +132,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             payment.Transactions = Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
             payment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            payment.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
             payment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
 
             payment.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
@@ -206,6 +209,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (payment.TaxDetails != null)
             {
                 TaxDetails = new ObservableCollection<TaxDetailEntity>(payment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
+            }
+
+            if (payment.FeeDetails != null)
+            {
+                FeeDetails = new ObservableCollection<FeeDetailEntity>(payment.FeeDetails.Select(x => AbstractTypeFactory<FeeDetailEntity>.TryCreateInstance().FromModel(x)));
             }
 
             if (payment.Discounts != null)
@@ -288,6 +296,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
                 TaxDetails.Patch(payment.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+            }
+
+            if (!FeeDetails.IsNullCollection())
+            {
+                var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
+                FeeDetails.Patch(payment.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
             }
 
             if (!Discounts.IsNullCollection())

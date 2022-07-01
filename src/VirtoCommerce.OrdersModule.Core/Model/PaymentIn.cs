@@ -10,7 +10,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class PaymentIn : OrderOperation, IHasTaxDetalization, ITaxable, IHasDiscounts, ICloneable
+    public class PaymentIn : OrderOperation, IHasTaxDetalization, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         public string OrderId { get; set; }
 
@@ -56,6 +56,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal DiscountAmount { get; set; }
         public virtual decimal DiscountAmountWithTax { get; set; }
         public override string ObjectType { get; set; } = typeof(PaymentIn).FullName;
+        public ICollection<FeeDetail> FeeDetails { get; set; }
 
 
         #region ITaxable Members
@@ -125,6 +126,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.Transactions = Transactions?.Select(x => x.Clone()).OfType<PaymentGatewayTransaction>().ToList();
             result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
             result.TaxDetails = TaxDetails?.Select(x => x.Clone()).OfType<TaxDetail>().ToList();
+            result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
 
             return result;
         }

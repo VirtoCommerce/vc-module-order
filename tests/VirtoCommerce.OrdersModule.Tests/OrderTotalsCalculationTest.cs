@@ -53,7 +53,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             totalsCalculator.CalculateTotals(order);
 
-            Assert.Equal(1400.07m, order.Total);
+            Assert.Equal(1399.47m, order.Total);
 
             order.Items.Clear();
             order.Shipments.Clear();
@@ -99,7 +99,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(10.8192m, item1.PlacedPriceWithTax);
             Assert.Equal(21.6384m, item1.ExtendedPriceWithTax);
             Assert.Equal(2.9792m, item1.DiscountTotalWithTax);
-            Assert.Equal(2.358m, item1.TaxTotal);
+            Assert.Equal(2.3184m, item1.TaxTotal);
 
             Assert.Equal(5.6m, shipment.DiscountAmountWithTax);
             Assert.Equal(24.64m, shipment.PriceWithTax);
@@ -122,13 +122,13 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(24.64m, order.ShippingSubTotalWithTax);
             Assert.Equal(44.52m, order.PaymentSubTotal);
             Assert.Equal(49.86m, order.PaymentSubTotalWithTax);
-            Assert.Equal(150.01m, order.TaxTotal);
+            Assert.Equal(149.94m, order.TaxTotal);
             Assert.Equal(176.47m, order.DiscountTotal);
             Assert.Equal(197.65m, order.DiscountTotalWithTax);
             Assert.Equal(13.64m, order.FeeTotal);
             Assert.Equal(15.28m, order.FeeTotalWithTax);
             Assert.Equal(14.68m, order.FeeWithTax);
-            Assert.Equal(1413.18m, order.Total);
+            Assert.Equal(1399.47m, order.Total);
         }
     }
 }

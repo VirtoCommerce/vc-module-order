@@ -22,6 +22,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<ShipmentItemEntity> ShipmentItems => DbContext.Set<ShipmentItemEntity>();
         public IQueryable<DiscountEntity> Discounts => DbContext.Set<DiscountEntity>();
         public IQueryable<TaxDetailEntity> TaxDetails => DbContext.Set<TaxDetailEntity>();
+        public IQueryable<FeeDetailEntity> FeeDetails => DbContext.Set<FeeDetailEntity>();
         public IQueryable<PaymentInEntity> InPayments => DbContext.Set<PaymentInEntity>();
         public IQueryable<AddressEntity> Addresses => DbContext.Set<AddressEntity>();
         public IQueryable<LineItemEntity> LineItems => DbContext.Set<LineItemEntity>();
@@ -46,6 +47,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             await Discounts.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
             await TaxDetails.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
+            await FeeDetails.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
 
             var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
@@ -69,6 +71,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
                     await Discounts.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
                     await TaxDetails.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
+                    await FeeDetails.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
                     await Addresses.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
                     await Transactions.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
 
@@ -89,6 +92,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
                     await Discounts.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
                     await TaxDetails.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
+                    await FeeDetails.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
 
                     if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                     {
@@ -107,6 +111,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
                     await Discounts.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
                     await TaxDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    await FeeDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
                     await Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
                     await ShipmentItems.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
                     await ShipmentPackagesPackages.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
@@ -147,6 +152,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             await Discounts.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await TaxDetails.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
+            await FeeDetails.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await Addresses.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await Transactions.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
             await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
@@ -172,6 +178,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             
             await Discounts.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await TaxDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            await FeeDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await Addresses.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await ShipmentItems.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await ShipmentPackagesPackages.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();

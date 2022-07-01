@@ -10,7 +10,7 @@ using VirtoCommerce.ShippingModule.Core.Model;
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderShipment")]
-    public class Shipment : OrderOperation, IHasTaxDetalization, ISupportCancellation, ITaxable, IHasDiscounts, ICloneable
+    public class Shipment : OrderOperation, IHasTaxDetalization, ISupportCancellation, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         public string OrganizationId { get; set; }
         public string OrganizationName { get; set; }
@@ -44,6 +44,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<ShipmentPackage> Packages { get; set; }
 
         public ICollection<PaymentIn> InPayments { get; set; }
+        public ICollection<FeeDetail> FeeDetails { get; set; }
 
         [Auditable]
         public string WeightUnit { get; set; }
@@ -151,6 +152,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.InPayments = InPayments?.Select(x => x.Clone()).OfType<PaymentIn>().ToList();
             result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
             result.TaxDetails = TaxDetails?.Select(x => x.Clone()).OfType<TaxDetail>().ToList();
+            result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
 
             return result;
         }

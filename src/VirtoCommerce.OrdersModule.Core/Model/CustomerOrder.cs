@@ -9,7 +9,7 @@ using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable
+    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         public string CustomerId { get; set; }
 
@@ -63,7 +63,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<LineItem> Items { get; set; }
 
         public ICollection<Shipment> Shipments { get; set; }
-        
+
+        public ICollection<FeeDetail> FeeDetails { get; set; }
+
         #region IHasDiscounts
         public ICollection<Discount> Discounts { get; set; }
         #endregion
@@ -329,6 +331,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 result.Items = Items?.Select(x => x.Clone()).OfType<LineItem>().ToList();
                 result.Shipments = Shipments?.Select(x => x.Clone()).OfType<Shipment>().ToList();
                 result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
+                result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
 
             return result;
         }

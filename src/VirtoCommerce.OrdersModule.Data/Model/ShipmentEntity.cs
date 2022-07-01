@@ -65,6 +65,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal TotalWithTax { get; set; }
 
         [Column(TypeName = "Money")]
+        public decimal Fee { get; set; }
+        [Column(TypeName = "Money")]
+        public decimal FeeWithTax { get; set; }
+
+        [Column(TypeName = "Money")]
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
 
@@ -84,6 +89,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual ObservableCollection<AddressEntity> Addresses { get; set; } = new NullCollection<AddressEntity>();
         public virtual ObservableCollection<DiscountEntity> Discounts { get; set; } = new NullCollection<DiscountEntity>();
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
+        public virtual ObservableCollection<FeeDetailEntity> FeeDetails { get; set; } = new NullCollection<FeeDetailEntity>();
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -113,6 +119,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.PriceWithTax = PriceWithTax;
             shipment.DiscountAmount = DiscountAmount;
             shipment.DiscountAmountWithTax = DiscountAmountWithTax;
+            shipment.Fee = Fee;
+            shipment.FeeWithTax = FeeWithTax;
             shipment.FulfillmentCenterId = FulfillmentCenterId;
             shipment.FulfillmentCenterName = FulfillmentCenterName;
             shipment.OrganizationId = OrganizationId;
@@ -141,6 +149,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.InPayments = InPayments.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToList();
             shipment.Packages = Packages.Select(x => x.ToModel(AbstractTypeFactory<ShipmentPackage>.TryCreateInstance())).ToList();
             shipment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
+            shipment.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
 
             shipment.TrackingNumber = TrackingNumber;
             shipment.TrackingUrl = TrackingUrl;
@@ -182,6 +191,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PriceWithTax = shipment.PriceWithTax;
             DiscountAmount = shipment.DiscountAmount;
             DiscountAmountWithTax = shipment.DiscountAmountWithTax;
+            Fee = shipment.Fee;
+            FeeWithTax = shipment.FeeWithTax;
             FulfillmentCenterId = shipment.FulfillmentCenterId;
             FulfillmentCenterName = shipment.FulfillmentCenterName;
             OrganizationId = shipment.OrganizationId;
@@ -239,6 +250,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (shipment.TaxDetails != null)
             {
                 TaxDetails = new ObservableCollection<TaxDetailEntity>(shipment.TaxDetails.Select(x => AbstractTypeFactory<TaxDetailEntity>.TryCreateInstance().FromModel(x)));
+            }
+
+            if (shipment.FeeDetails != null)
+            {
+                FeeDetails = new ObservableCollection<FeeDetailEntity>(shipment.FeeDetails.Select(x => AbstractTypeFactory<FeeDetailEntity>.TryCreateInstance().FromModel(x)));
             }
 
             if (shipment.Discounts != null)
@@ -302,6 +318,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 target.TaxTotal = TaxTotal;
                 target.Total = Total;
                 target.TotalWithTax = TotalWithTax;
+                target.Fee = Fee;
+                target.FeeWithTax = FeeWithTax;
             }
 
             if (!InPayments.IsNullCollection())
@@ -336,6 +354,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
+            if (!FeeDetails.IsNullCollection())
+            {
+                var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
+                FeeDetails.Patch(target.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
+            }
+
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
                 DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
@@ -360,6 +384,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             yield return TaxPercentRate;
             yield return Price;
             yield return DiscountAmount;
+            yield return Fee;
         }
 
         public Shipment ToModel(Shipment shipment)
