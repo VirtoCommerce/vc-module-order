@@ -23,7 +23,7 @@ using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class CustomerOrderService : CrudService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService
+    public class CustomerOrderService : CrudService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService, IMemberOrdersService
     {
         private new readonly Func<IOrderRepository> _repositoryFactory;
         private readonly IStoreService _storeService;
@@ -151,6 +151,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
+        public bool IsFirstTimeBuyer(string customerId)
+        {
+            using var repository = _repositoryFactory();
+            return !repository.CustomerOrders.Any(x => x.CustomerId == customerId);
+        }
+
         protected virtual async Task LoadOrderDependenciesAsync(CustomerOrder order)
         {
             if (order == null)
@@ -211,7 +217,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return await ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids.ToArray(), responseGroup);
         }
 
-        protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity, CustomerOrder model)
+        protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity,
+            CustomerOrder model)
         {
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
@@ -220,6 +227,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 _totalsCalculator.CalculateTotals(model);
             }
+
             LoadOrderDependenciesAsync(model).GetAwaiter().GetResult();
             model.ReduceDetails(responseGroup);
             return model;
