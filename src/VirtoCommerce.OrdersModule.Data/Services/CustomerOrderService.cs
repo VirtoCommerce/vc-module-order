@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -10,6 +11,7 @@ using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
@@ -151,10 +153,18 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        public bool IsFirstTimeBuyer(string customerId)
+        public virtual bool IsFirstTimeBuyer(string customerId)
         {
-            using var repository = _repositoryFactory();
-            return !repository.CustomerOrders.Any(x => x.CustomerId == customerId);
+            var cacheKey = CacheKey.With(GetType(), nameof(IsFirstTimeBuyer), customerId);
+            var result = _platformMemoryCache.GetOrCreateExclusive(cacheKey, cacheEntry =>
+            {
+                cacheEntry.AddExpirationToken(CreateCacheToken(new[] { customerId }));
+
+                using var repository = _repositoryFactory();
+                return !repository.CustomerOrders.Any(x => x.CustomerId == customerId);
+            });
+
+            return result;
         }
 
         protected virtual async Task LoadOrderDependenciesAsync(CustomerOrder order)
@@ -231,6 +241,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             LoadOrderDependenciesAsync(model).GetAwaiter().GetResult();
             model.ReduceDetails(responseGroup);
             return model;
+        }
+
+        protected override void ClearCache(IEnumerable<CustomerOrder> models)
+        {
+            GenericSearchCachingRegion<CustomerOrder>.ExpireRegion();
+
+            foreach (var model in models)
+            {
+                GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(model.Id);
+                GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(model.CustomerId);
+            }
         }
     }
 }
