@@ -1,0 +1,78 @@
+<html>
+<head>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif;">
+    <div style="border: 1px solid #E0DCDA;">
+        <div style="background-color: #E0DCDA; margin: 2px; padding: 10px; height: 30px; line-height: 30px;">
+            <div style="float: left;display: inline-block;">Invoice Details {{ customer_order.number }}</div>
+         <div style="float: right;display: inline-block;">Status: {{ customer_order.status }}</div>
+        </div>
+        <img src="http://www.startupguys.net/wp-content/uploads/2016/03/virto-commerce-logo.png" width="250" />
+        <div style="font-size: 16px; padding: 20px;">
+            <div style="display: inline-block;">
+                <div style="width: 250px; display: inline-block;"><strong>Order Date</strong></div>
+                <div style="width: 250px; display: inline-block;"><strong>Order Number</strong></div>
+            </div>
+            <div>
+                <div style="width: 250px; display: inline-block;">{{ customer_order.created_date }}</div>
+                <div style="width: 250px; display: inline-block;">{{ customer_order.number }}</div>
+            </div>
+        </div>
+        <div style="padding: 10px; font-size: 18px;">
+            <p><strong>Details:</strong></p>
+        </div>
+        <div style="background-color: #E0DCDA; margin: 2px; padding: 10px; font-size: 18px; font-size: 18px; margin-bottom: 15px">
+            <div style="text-align: center; width: 30px; display: inline-block;"><strong>#</strong></div>
+            <div style="width: 350px; display: inline-block;"><strong>Item Description</strong></div>
+            <div style="width: 150px; display: inline-block;"><strong>Unit Price</strong></div>
+            <div style="width: 150px; display: inline-block;"><strong>Invoice Qty</strong></div>
+            <div style="width: 150px; display: inline-block;"><strong>Line Price</strong></div>
+        </div>
+        <table style="font-size: 14px;">
+            {% for line_item in customer_order.items %}
+            <tr>
+                <td style="text-align: center; vertical-align: top; width: 30px;"><p>{{ forloop.index }}</p></td>
+                <td style="vertical-align: top; width: 350px;"><p>{{ line_item.name }}</p><p style="color: #999; font-size: 11px;">SKU: {{ line_item.sku }}</p></td>
+                <td style="text-align: center; vertical-align: top; width: 150px;"><p>${{ line_item.placed_price | round: 2 }}</p></td>
+                <td style="text-align: center; vertical-align: top; width: 150px;"><p>{{ line_item.quantity }}</p></td>
+                <td style="text-align: center; vertical-align: top; width: 150px;"><p>${{ line_item.extended_price | round: 2 }}</p></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div style="background-color: #F9F9F9; font-size: 14px; margin: 2px; padding: 10px; text-align: end;">
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="width: 100px;  display: inline-block;margin-right: 100px; text-align: left;">Shipping:</div>
+                <div style="width: 100px;  display: inline-block; float:right; text-align: left;">${{ customer_order.shipping_total | round: 2 }}</div>
+            </div>
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="width: 100px;  display: inline-block; margin-right: 100px;text-align: left; ">Total Fees:</div>
+                <div style="width: 100px;  display: inline-block; float:right; text-align: left;">${{ customer_order.fee_total | round: 2 }}</div>
+            </div>
+            <br />
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="width: 100px;  display: inline-block; margin-right: 100px; text-align: left;">Order Subtotal:</div>
+                <div style="width: 100px;  display: inline-block; float:right; text-align: left;">${{ customer_order.sub_total | round: 2 }}</div>
+            </div>
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="width: 100px;  display: inline-block;margin-right: 100px; text-align: left;">GST:</div>
+                <div style="width: 100px;  display: inline-block; float:right; text-align: left;">${{ customer_order.tax_total | round: 2 }}</div>
+            </div>
+            <br />
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="font-size: 14px; width: 100px;  display: inline-block;margin-right: 100px; text-align: left;"><strong>Total:</strong></div>
+                <div style="font-size: 14px; width: 100px;  display: inline-block; float:right; text-align: left;"><strong>${{ customer_order.total | round: 2 }}</strong></div>
+            </div>
+            <div style="margin-right: 100px">
+                <div style="width: 300px;  display: inline-block;"></div>
+                <div style="width: 100px;  display: inline-block;margin-right: 100px; text-align: left;">Currency:</div>
+                <div style="width: 100px;  display: inline-block; float: right; text-align: left;">{{ customer_order.currency }}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

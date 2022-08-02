@@ -30,12 +30,17 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
     <PackageReference Include="VirtoCommerce.PaymentModule.Data" Version="3.200.0" />
+    <PackageReference Include="VirtoCommerce.NotificationsModule.TemplateLoader.FileSystem" Version="3.200.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VirtoCommerce.OrdersModule.Core\VirtoCommerce.OrdersModule.Core.csproj" />
     <ProjectReference Include="..\VirtoCommerce.OrdersModule.Data\VirtoCommerce.OrdersModule.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <NotificationTemplates Include="NotificationTemplates\**" />
     <Folder Include="Properties\" />
   </ItemGroup>
+  <Target Name="CopyCustomContentOnPublish" AfterTargets="Publish">
+    <Copy SourceFiles="@(NotificationTemplates)" DestinationFiles="$(PublishDir)\..\%(Identity)" />
+  </Target>
 </Project>
