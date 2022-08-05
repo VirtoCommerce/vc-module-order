@@ -21,7 +21,7 @@
         <div style="padding: 10px; font-size: 16px;">
             <p style="margin-bottom: 0px;"><strong>Details:</strong></p>
         </div>
-        <table style="font-size: 14px;">
+        <table style="font-size: 14px; width: 100%">
             <tr style="background-color: #E0DCDA; margin: 2px; padding: 10px; font-size: 16px; margin-bottom: 15px; height: 50px;">
                 <th style="text-align: center; width: 30px;"><strong>#</strong></th>
                 <th style="width: 280px;"><strong>Item Description</strong></th>
@@ -39,7 +39,7 @@
             </tr>
             {% endfor %}
         </table>
-        <table style="background-color: #F9F9F9; font-size: 14px; margin: 2px; padding: 10px; text-align: end;">
+        <table style="background-color: #F9F9F9; font-size: 14px; margin: 2px; padding: 10px; text-align: end; width: 100%">
             <tr>
                 <td style="width: 400px;"></td>
                 <td style="width: 140px; text-align: left;">Shipping:</td>
@@ -49,7 +49,7 @@
                 <td style="width: 400px;"></td>
                 <td style="width: 140px; text-align: left; ">Total Fees:</td>
                 <td style="width: 90px; float:right; text-align: left;">${{ customer_order.fee_total | round: 2 }}</td>
-            </tr>            
+            </tr>
             <tr>
                 <td style="width: 400px;"></td>
                 <td style="width: 140px; text-align: left;">Order Subtotal:</td>
