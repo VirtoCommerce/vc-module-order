@@ -1,0 +1,76 @@
+<html>
+<head>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif;">
+    <div style="border: 1px solid #E0DCDA;">
+        <div style="background-color: #E0DCDA; margin: 2px; padding: 10px; height: 30px; line-height: 30px;">
+            <div style="float: left;display: inline-block;">Invoice Details {{ customer_order.number }}</div>
+            <div style="float: right;display: inline-block;">Status: {{ customer_order.status }}</div>
+        </div>
+        <img src="data:image/png;base64,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" width="250" />
+        <div style="font-size: 16px; padding: 20px;">
+            <div style="display: inline-block;">
+                <div style="width: 250px; display: inline-block;"><strong>Order Date</strong></div>
+                <div style="width: 250px; display: inline-block;"><strong>Order Number</strong></div>
+            </div>
+            <div>
+                <div style="width: 250px; display: inline-block;">{{ customer_order.created_date }}</div>
+                <div style="width: 250px; display: inline-block;">{{ customer_order.number }}</div>
+            </div>
+        </div>
+        <div style="padding: 10px; font-size: 16px;">
+            <p style="margin-bottom: 0px;"><strong>Details:</strong></p>
+        </div>
+        <table style="font-size: 14px; width: 100%">
+            <tr style="background-color: #E0DCDA; margin: 2px; padding: 10px; font-size: 16px; margin-bottom: 15px; height: 50px;">
+                <th style="text-align: center; width: 30px;"><strong>#</strong></th>
+                <th style="width: 280px;"><strong>Item Description</strong></th>
+                <th style="width: 100px;"><strong>Unit Price</strong></th>
+                <th style="width: 100px;"><strong>Invoice Qty</strong></th>
+                <th style="width: 100px;"><strong>Line Price</strong></th>
+            </tr>
+            {% for line_item in customer_order.items %}
+            <tr>
+                <td style="text-align: center; vertical-align: top;"><p>{{ forloop.index }}</p></td>
+                <td style="vertical-align: top;"><p>{{ line_item.name }}</p><p style="color: #999; font-size: 11px;">SKU: {{ line_item.sku }}</p></td>
+                <td style="text-align: center; vertical-align: top;"><p>${{ line_item.placed_price | round: 2 }}</p></td>
+                <td style="text-align: center; vertical-align: top;"><p>{{ line_item.quantity }}</p></td>
+                <td style="text-align: center; vertical-align: top;"><p>${{ line_item.extended_price | round: 2 }}</p></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <table style="background-color: #F9F9F9; font-size: 14px; margin: 2px; padding: 10px; text-align: end; width: 100%">
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="width: 140px; text-align: left;">Shipping:</td>
+                <td style="width: 90px; float:right; text-align: left;">${{ customer_order.shipping_total | round: 2 }}</td>
+            </tr>
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="width: 140px; text-align: left; ">Total Fees:</td>
+                <td style="width: 90px; float:right; text-align: left;">${{ customer_order.fee_total | round: 2 }}</td>
+            </tr>
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="width: 140px; text-align: left;">Order Subtotal:</td>
+                <td style="width: 90px; float:right; text-align: left;">${{ customer_order.sub_total | round: 2 }}</td>
+            </tr>
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="width: 140px; text-align: left;">GST:</td>
+                <td style="width: 90px; float:right; text-align: left;">${{ customer_order.tax_total | round: 2 }}</td>
+            </tr>
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="font-size: 14px; width: 140px; text-align: left;"><strong>Total:</strong></td>
+                <td style="font-size: 14px; width: 90px; float:right; text-align: left;"><strong>${{ customer_order.total | round: 2 }}</strong></td>
+            </tr>
+            <tr>
+                <td style="width: 400px;"></td>
+                <td style="width: 140px; text-align: left;">Currency:</td>
+                <td style="width: 90px; float: right; text-align: left;">{{ customer_order.currency }}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

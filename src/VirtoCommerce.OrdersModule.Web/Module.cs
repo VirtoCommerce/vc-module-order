@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.NotificationsModule.Core.Services;
+using VirtoCommerce.NotificationsModule.TemplateLoader.FileSystem;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Extensions;
@@ -178,12 +179,13 @@ namespace VirtoCommerce.OrdersModule.Web
             }
 
             var notificationRegistrar = appBuilder.ApplicationServices.GetService<INotificationRegistrar>();
-            notificationRegistrar.RegisterNotification<CancelOrderEmailNotification>();
-            notificationRegistrar.RegisterNotification<InvoiceEmailNotification>();
-            notificationRegistrar.RegisterNotification<NewOrderStatusEmailNotification>();
-            notificationRegistrar.RegisterNotification<OrderCreateEmailNotification>();
-            notificationRegistrar.RegisterNotification<OrderPaidEmailNotification>();
-            notificationRegistrar.RegisterNotification<OrderSentEmailNotification>();
+            var defaultTemplatesDirectory = Path.Combine(ModuleInfo.FullPhysicalPath, "NotificationTemplates");
+            notificationRegistrar.RegisterNotification<CancelOrderEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<InvoiceEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<NewOrderStatusEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<OrderCreateEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<OrderPaidEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<OrderSentEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
 
             // enable polymorphic types in API controller methods
             var mvcJsonOptions = appBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
