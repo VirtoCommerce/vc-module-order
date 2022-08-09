@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
@@ -27,6 +28,7 @@ namespace VirtoCommerce.OrdersModule.Web.Validation
         }
         protected void SetDefaultRules()
         {
+#pragma warning disable S109
             RuleFor(order => order.Number).NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerId).NotNull().NotEmpty().MaximumLength(64);
             RuleFor(order => order.CustomerName).NotEmpty().MaximumLength(255);
@@ -39,9 +41,12 @@ namespace VirtoCommerce.OrdersModule.Web.Validation
             RuleFor(order => order.EmployeeName).MaximumLength(255);
             RuleFor(order => order.SubscriptionId).MaximumLength(64);
             RuleFor(order => order.SubscriptionNumber).MaximumLength(64);
-            RuleFor(order => order.LanguageCode).MaximumLength(16);
+            RuleFor(order => order.LanguageCode).MaximumLength(16)
+                .Matches("^[a-z]{2}-[A-Z]{2}$")
+                .When(order => !string.IsNullOrEmpty(order.LanguageCode));
             RuleFor(order => order.ShoppingCartId).MaximumLength(128);
             RuleFor(order => order.PurchaseOrderNumber).MaximumLength(128);
+#pragma warning restore S109
         }
     }
 }
