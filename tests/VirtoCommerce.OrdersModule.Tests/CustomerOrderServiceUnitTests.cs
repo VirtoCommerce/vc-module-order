@@ -27,6 +27,7 @@ using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
+    [Trait("Category", "Unit")]
     public class CustomerOrderServiceUnitTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -136,15 +137,13 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             // Ensure CalculateTotals is called for OldEntry
             _eventPublisherMock.Verify(x =>
-                x.Publish(It.Is<OrderChangedEvent>(changedEvent =>
-                        changedEvent.ChangedEntries.First().OldEntry.PaymentDiscountTotalWithTax == 10),
-                    It.IsAny<CancellationToken>()), Times.Once);
+                x.Publish(It.Is<OrderChangedEvent>(changedEvent => changedEvent.ChangedEntries.First().OldEntry.PaymentDiscountTotalWithTax == 10), It.IsAny<CancellationToken>()),
+                Times.Once);
 
             // Ensure CalculateTotals is called for NewEntry
             _eventPublisherMock.Verify(x =>
-                x.Publish(It.Is<OrderChangedEvent>(changedEvent =>
-                    changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10),
-                    It.IsAny<CancellationToken>()), Times.Once);
+                x.Publish(It.Is<OrderChangedEvent>(changedEvent => changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10), It.IsAny<CancellationToken>()),
+                Times.Once);
         }
 
 
