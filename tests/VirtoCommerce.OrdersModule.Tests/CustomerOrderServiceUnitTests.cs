@@ -123,7 +123,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] { id }, It.IsAny<string>()))
                 .ReturnsAsync(new[] { newOrderEntity });
 
-            // Mock totals creation to verify it was called for change OrderChangeEvent.NewEntry
+            // Mock CalculateTotals to verify it was called for OldEntry and NewEntry in the OrderChangedEvent
             // PaymentDiscountTotalWithTax property is ot stored in entity and filled only buy Totals calculator
             _customerOrderTotalsCalculatorMock.Setup(x => x.CalculateTotals(It.IsAny<CustomerOrder>()))
                 .Callback<CustomerOrder>(x => x.PaymentDiscountTotalWithTax = 10);
@@ -132,11 +132,19 @@ namespace VirtoCommerce.OrdersModule.Tests
             await service.SaveChangesAsync(new[] { newOrder });
 
             //Assert
-            _customerOrderTotalsCalculatorMock.Verify(x => x.CalculateTotals(It.Is<CustomerOrder>(order => order == newOrder)), Times.Exactly(2));
-            // Here we are ensuring that totals calculation was done for OrderChangeEvent.NewEntry
-            _eventPublisherMock.Verify(x => x.Publish(
-                It.Is<OrderChangeEvent>(changedEvent => changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10), It.IsAny<CancellationToken>())
-            , Times.Once);
+            _customerOrderTotalsCalculatorMock.Verify(x => x.CalculateTotals(It.Is<CustomerOrder>(order => order == newOrder)), Times.Exactly(3));
+
+            // Ensure CalculateTotals is called for OldEntry
+            _eventPublisherMock.Verify(x =>
+                x.Publish(It.Is<OrderChangedEvent>(changedEvent =>
+                        changedEvent.ChangedEntries.First().OldEntry.PaymentDiscountTotalWithTax == 10),
+                    It.IsAny<CancellationToken>()), Times.Once);
+
+            // Ensure CalculateTotals is called for NewEntry
+            _eventPublisherMock.Verify(x =>
+                x.Publish(It.Is<OrderChangedEvent>(changedEvent =>
+                    changedEvent.ChangedEntries.First().NewEntry.PaymentDiscountTotalWithTax == 10),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
 
 

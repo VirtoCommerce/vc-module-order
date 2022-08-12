@@ -16,12 +16,12 @@ using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.GenericCrud;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
-using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
@@ -77,6 +77,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
+                        var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        _totalsCalculator.CalculateTotals(oldModel);
+
                         // Workaround to trigger update of auditable fields when only updating navigation properties.
                         // Otherwise on update trigger is fired only when non navigation properties are updated.
                         originalEntity.ModifiedDate = DateTime.UtcNow;
@@ -87,7 +90,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#detectchanges-honors-store-generated-key-values
                         repository.TrackModifiedAsAddedForNewChildEntities(originalEntity);
 
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, oldModel, EntryState.Modified));
                         modifiedEntity?.Patch(originalEntity);
 
                         //originalEntity is fully loaded and contains changes from order
