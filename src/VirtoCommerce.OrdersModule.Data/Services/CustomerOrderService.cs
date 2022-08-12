@@ -62,7 +62,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
-            var changedEntitiesMap = new Dictionary<CustomerOrder, CustomerOrderEntity>();
+            var changedEntities = new List<CustomerOrderEntity>();
 
             using (var repository = _repositoryFactory())
             {
@@ -101,7 +101,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap);
                         newModifiedEntity?.Patch(originalEntity);
-                        changedEntitiesMap.Add(modifiedOrder, originalEntity);
+                        changedEntities.Add(originalEntity);
                     }
                     else
                     {
@@ -109,7 +109,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(modifiedOrder, pkMap);
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
-                        changedEntitiesMap.Add(modifiedOrder, modifiedEntity);
+                        changedEntities.Add(modifiedEntity);
                     }
                 }
 
@@ -121,13 +121,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
-            foreach (var changedEntry in changedEntries)
+            foreach (var (changedEntry, i) in changedEntries.Select((x, i) => (x, i)))
             {
-                // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
-                var changedModel = changedEntitiesMap
-                    .First(x => x.Key.Equals(changedEntry.OldEntry))
-                    .Value
-                    .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                var changedModel = changedEntities[i].ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
 
                 // We need to CalculateTotals for the new Order, because it is empty after entity.ToModel creation
                 _totalsCalculator.CalculateTotals(changedModel);
