@@ -16,12 +16,12 @@ using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Data.GenericCrud;
 using VirtoCommerce.Platform.Data.Infrastructure;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
-using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
@@ -62,7 +62,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
-            var changedEntitiesMap = new Dictionary<CustomerOrder, CustomerOrderEntity>();
+            var changedEntities = new List<CustomerOrderEntity>();
 
             using (var repository = _repositoryFactory())
             {
@@ -77,6 +77,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
+                        var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        _totalsCalculator.CalculateTotals(oldModel);
+
                         // Workaround to trigger update of auditable fields when only updating navigation properties.
                         // Otherwise on update trigger is fired only when non navigation properties are updated.
                         originalEntity.ModifiedDate = DateTime.UtcNow;
@@ -87,7 +90,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         // https://docs.microsoft.com/en-us/ef/core/what-is-new/ef-core-3.0/breaking-changes#detectchanges-honors-store-generated-key-values
                         repository.TrackModifiedAsAddedForNewChildEntities(originalEntity);
 
-                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance()), EntryState.Modified));
+                        changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, oldModel, EntryState.Modified));
                         modifiedEntity?.Patch(originalEntity);
 
                         //originalEntity is fully loaded and contains changes from order
@@ -98,7 +101,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap);
                         newModifiedEntity?.Patch(originalEntity);
-                        changedEntitiesMap.Add(modifiedOrder, originalEntity);
+                        changedEntities.Add(originalEntity);
                     }
                     else
                     {
@@ -106,7 +109,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         var modifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(modifiedOrder, pkMap);
                         repository.Add(modifiedEntity);
                         changedEntries.Add(new GenericChangedEntry<CustomerOrder>(modifiedOrder, EntryState.Added));
-                        changedEntitiesMap.Add(modifiedOrder, modifiedEntity);
+                        changedEntities.Add(modifiedEntity);
                     }
                 }
 
@@ -118,13 +121,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
-            foreach (var changedEntry in changedEntries)
+            foreach (var (changedEntry, i) in changedEntries.Select((x, i) => (x, i)))
             {
-                // Here we should use Equals. ReferenceEquals is not working in case of modified entities, dictionary search without custom EqualityComparer not working at all
-                var changedModel = changedEntitiesMap
-                    .First(x => x.Key.Equals(changedEntry.OldEntry))
-                    .Value
-                    .ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                var changedModel = changedEntities[i].ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
 
                 // We need to CalculateTotals for the new Order, because it is empty after entity.ToModel creation
                 _totalsCalculator.CalculateTotals(changedModel);
