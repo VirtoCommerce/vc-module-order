@@ -38,10 +38,11 @@ using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Json;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -70,7 +71,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IValidator<CustomerOrder> _customerOrderValidator;
         private readonly ISettingsManager _settingsManager;
         private readonly HtmlToPdfOptions _htmlToPdfOptions;
-        private readonly MvcNewtonsoftJsonOptions _jsonOptions;
+        private readonly OutputJsonSerializerSettings _outputJsonSerializerSettings;
 
         public OrderModuleController(
               ICustomerOrderService customerOrderService
@@ -90,7 +91,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , IIndexedCustomerOrderSearchService indexedSearchService
             , IConfiguration configuration
             , IOptions<HtmlToPdfOptions> htmlToPdfOptions
-            , IOptions<MvcNewtonsoftJsonOptions> jsonOptionsAccessor
+            , IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings
             , IValidator<CustomerOrder> customerOrderValidator
             , ISettingsManager settingsManager)
         {
@@ -114,7 +115,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _customerOrderValidator = customerOrderValidator;
             _settingsManager = settingsManager;
             _htmlToPdfOptions = htmlToPdfOptions.Value;
-            _jsonOptions = jsonOptionsAccessor.Value;
+            _outputJsonSerializerSettings = outputJsonSerializerSettings.Value;
         }
 
         /// <summary>
@@ -134,7 +135,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = await _searchService.SearchAsync(criteria);
             //It is a important to return serialized data by such way. Instead you have a slow response time for large outputs 
             //https://github.com/dotnet/aspnetcore/issues/19646
-            return Content(JsonConvert.SerializeObject(result, _jsonOptions.SerializerSettings), "application/json");
+            return Content(JsonConvert.SerializeObject(result, _outputJsonSerializerSettings), "application/json");
         }
 
         /// <summary>
@@ -691,7 +692,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrderIndexed([FromBody] CustomerOrderIndexedSearchCriteria criteria)
         {
             var result = await _indexedSearchService.SearchCustomerOrdersAsync(criteria);
-            return Content(JsonConvert.SerializeObject(result, _jsonOptions.SerializerSettings), "application/json");
+            return Content(JsonConvert.SerializeObject(result, _outputJsonSerializerSettings), "application/json");
         }
 
         private byte[] GeneratePdf(string htmlContent)
