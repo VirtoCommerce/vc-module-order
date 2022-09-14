@@ -250,6 +250,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentNullException(nameof(target));
             }
 
+            target.OuterId = OuterId;
             target.Quantity = Quantity;
             target.Weight = Weight;
             target.Height = Height;
