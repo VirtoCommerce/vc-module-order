@@ -32,10 +32,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<LineItemEntity>().HasKey(x => x.Id);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
-            modelBuilder.Entity<LineItemEntity>().Property(x => x.Weight).HasPrecision(18,4);
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Weight).HasPrecision(18, 4);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.Height).HasPrecision(18, 4);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.Length).HasPrecision(18, 4);
-            modelBuilder.Entity<LineItemEntity>().Property(x => x.Width).HasPrecision(18, 4);            
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Width).HasPrecision(18, 4);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
             modelBuilder.Entity<LineItemEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Items)
                         .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
@@ -83,7 +83,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.Weight).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.Height).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.Length).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Width).HasPrecision(18, 4);            
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Width).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
             modelBuilder.Entity<ShipmentEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Shipments)
                         .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();

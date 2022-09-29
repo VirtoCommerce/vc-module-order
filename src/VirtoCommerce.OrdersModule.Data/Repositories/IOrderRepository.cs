@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Threading.Tasks;
-using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.Platform.Core.Common;
 

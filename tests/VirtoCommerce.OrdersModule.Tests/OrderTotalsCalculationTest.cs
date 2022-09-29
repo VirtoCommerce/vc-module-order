@@ -6,7 +6,6 @@ using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.Platform.Caching;
-using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests

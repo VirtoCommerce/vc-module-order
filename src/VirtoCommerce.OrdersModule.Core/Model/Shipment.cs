@@ -115,7 +115,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
-                DeliveryAddress = null;               
+                DeliveryAddress = null;
             }
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
