@@ -9,7 +9,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         {
             var builder = new DbContextOptionsBuilder<OrderDbContext>();
 
-            builder.UseSqlServer("Data Source=(local);Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30");
+            builder.UseSqlServer("Data Source=tv.;Initial Catalog=VirtoCommerce3;Persist Security Info=True;User ID=virto;Password=virto;MultipleActiveResultSets=True;Connect Timeout=30");
 
             return new OrderDbContext(builder.Options);
         }
