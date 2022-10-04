@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrdersModule.Data.Extensions
             var properties = objectType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             var childOperations = properties.Where(x => x.PropertyType.GetInterface(typeof(IOperation).Name) != null)
-                .Select(x => (IOperation) x.GetValue(operation)).Where(x => x != null).ToList();
+                .Select(x => (IOperation)x.GetValue(operation)).Where(x => x != null).ToList();
 
             foreach (var childOperation in childOperations)
             {

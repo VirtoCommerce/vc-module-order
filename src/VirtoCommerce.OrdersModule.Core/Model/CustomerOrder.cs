@@ -87,13 +87,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #region ISupportSecurityScopes Members
         public IEnumerable<string> Scopes { get; set; }
         #endregion
-        
+
         /// <summary>
         /// Order grand total
         /// </summary>
         [Auditable]
         public virtual decimal Total { get; set; }
-        
+
         /// <summary>
         /// Amount of the item prices
         /// </summary>
@@ -198,7 +198,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax
         /// </summary>
         public virtual decimal DiscountTotalWithTax { get; set; }
-        
+
         /// <summary>
         /// Any extra fees applied to the order. This value comes from the cart
         /// </summary>
@@ -320,18 +320,18 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         }
 
         #region ICloneable members
-        
+
         public override object Clone()
         {
             var result = base.Clone() as CustomerOrder;
 
-                result.TaxDetails = TaxDetails?.Select(x => x.Clone()).OfType<TaxDetail>().ToList();
-                result.Addresses = Addresses?.Select(x => x.Clone()).OfType<Address>().ToList();
-                result.InPayments = InPayments?.Select(x => x.Clone()).OfType<PaymentIn>().ToList();
-                result.Items = Items?.Select(x => x.Clone()).OfType<LineItem>().ToList();
-                result.Shipments = Shipments?.Select(x => x.Clone()).OfType<Shipment>().ToList();
-                result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
-                result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
+            result.TaxDetails = TaxDetails?.Select(x => x.Clone()).OfType<TaxDetail>().ToList();
+            result.Addresses = Addresses?.Select(x => x.Clone()).OfType<Address>().ToList();
+            result.InPayments = InPayments?.Select(x => x.Clone()).OfType<PaymentIn>().ToList();
+            result.Items = Items?.Select(x => x.Clone()).OfType<LineItem>().ToList();
+            result.Shipments = Shipments?.Select(x => x.Clone()).OfType<Shipment>().ToList();
+            result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
+            result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
 
             return result;
         }

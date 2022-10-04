@@ -8,8 +8,8 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
-using VirtoCommerce.Platform.Data.ExportImport;
 using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Data.ExportImport;
 
 namespace VirtoCommerce.OrdersModule.Data.ExportImport
 {
@@ -53,7 +53,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                     return (GenericSearchResult<CustomerOrder>)searchResult;
                 }, (processedCount, totalCount) =>
                 {
-                    progressInfo.Description = $"{ processedCount } of { totalCount } orders have been exported";
+                    progressInfo.Description = $"{processedCount} of {totalCount} orders have been exported";
                     progressCallback(progressInfo);
                 }, cancellationToken);
 
@@ -77,7 +77,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                     {
                         await reader.DeserializeJsonArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, items => _customerOrderService.SaveChangesAsync(items.ToArray()), processedCount =>
                         {
-                            progressInfo.Description = $"{ processedCount } orders have been imported";
+                            progressInfo.Description = $"{processedCount} orders have been imported";
                             progressCallback(progressInfo);
                         }, cancellationToken);
                     }

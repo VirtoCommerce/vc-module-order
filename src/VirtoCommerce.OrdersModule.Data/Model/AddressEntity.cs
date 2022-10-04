@@ -80,7 +80,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             address.Organization = Organization;
             address.OuterId = OuterId;
             address.AddressType = EnumUtility.SafeParseFlags(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping);
-            
+
             return address;
         }
 

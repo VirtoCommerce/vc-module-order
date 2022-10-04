@@ -329,7 +329,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.SubscriptionId = SubscriptionId;
             operation.PurchaseOrderNumber = PurchaseOrderNumber;
             operation.LanguageCode = LanguageCode;
-            
+
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
             var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) &&
                                     operation.GetNonCalculatablePrices().Any(x => x != 0m));

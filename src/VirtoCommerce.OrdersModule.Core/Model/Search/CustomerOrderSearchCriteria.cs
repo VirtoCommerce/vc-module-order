@@ -1,10 +1,9 @@
-using System;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
 {
     public class CustomerOrderSearchCriteria : OrderOperationSearchCriteriaBase
-    {     
+    {
 
         /// <summary>
         /// Search orders with flag IsPrototype
@@ -41,7 +40,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
             }
         }
 
-    
+
 
         /// <summary>
         /// It used to limit search within an operation (customer order for example)
@@ -67,6 +66,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
                 _customerIds = value;
             }
         }
-  
+
     }
 }

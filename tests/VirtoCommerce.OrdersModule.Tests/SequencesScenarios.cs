@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
@@ -34,11 +33,11 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
         */
 
-            /*
-        [TestMethod]
-        [DeploymentItem("connectionStrings.config")]
-        [DeploymentItem("Configs/AppConfig.config", "Configs")]
-        */
+        /*
+    [TestMethod]
+    [DeploymentItem("connectionStrings.config")]
+    [DeploymentItem("Configs/AppConfig.config", "Configs")]
+    */
 
         //[Fact]
         //public void Can_run_sequences_performance()

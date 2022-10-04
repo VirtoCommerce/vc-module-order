@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation;
 using VirtoCommerce.OrdersModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule2.Web.Validation
 {
-    public class LineItemValidator: AbstractValidator<LineItem>
+    public class LineItemValidator : AbstractValidator<LineItem>
     {
         public LineItemValidator()
         {

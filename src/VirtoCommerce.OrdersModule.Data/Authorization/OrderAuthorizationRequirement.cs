@@ -8,5 +8,5 @@ namespace VirtoCommerce.OrdersModule.Data.Authorization
             : base(permission)
         {
         }
-    }   
+    }
 }

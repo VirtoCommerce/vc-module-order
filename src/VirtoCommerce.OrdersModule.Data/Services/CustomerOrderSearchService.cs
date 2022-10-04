@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override IQueryable<CustomerOrderEntity> BuildQuery(IRepository repository, CustomerOrderSearchCriteria criteria)
         {
             var query = ((IOrderRepository)repository).CustomerOrders;
-            
+
             // Don't return prototypes by default
             if (!criteria.WithPrototypes)
             {
