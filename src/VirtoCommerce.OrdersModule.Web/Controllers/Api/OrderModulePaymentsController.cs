@@ -9,10 +9,9 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
-using VirtoCommerce.OrdersModule.Web.Validation;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -71,7 +70,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="respGroup"></param>
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<PaymentIn>> GetById(string id, [SwaggerOptional] [FromQuery] string respGroup = null)
+        public async Task<ActionResult<PaymentIn>> GetById(string id, [SwaggerOptional][FromQuery] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
             searchCriteria.Ids = new[] { id };

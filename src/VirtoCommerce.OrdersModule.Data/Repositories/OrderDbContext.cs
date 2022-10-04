@@ -6,6 +6,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 {
     public class OrderDbContext : DbContextWithTriggers
     {
+#pragma warning disable S109
         private const int MaxLength = 128;
         public OrderDbContext(DbContextOptions<OrderDbContext> options)
             : base(options)
@@ -31,6 +32,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<LineItemEntity>().HasKey(x => x.Id);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Weight).HasPrecision(18, 4);
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Height).HasPrecision(18, 4);
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Length).HasPrecision(18, 4);
+            modelBuilder.Entity<LineItemEntity>().Property(x => x.Width).HasPrecision(18, 4);
             modelBuilder.Entity<LineItemEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
             modelBuilder.Entity<LineItemEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Items)
                         .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
@@ -59,7 +64,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<ShipmentPackageEntity>().HasKey(x => x.Id);
             modelBuilder.Entity<ShipmentPackageEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
-
+            modelBuilder.Entity<ShipmentPackageEntity>().Property(x => x.Weight).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentPackageEntity>().Property(x => x.Height).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentPackageEntity>().Property(x => x.Length).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentPackageEntity>().Property(x => x.Width).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentPackageEntity>().HasOne(x => x.Shipment).WithMany(x => x.Packages)
                         .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Cascade).IsRequired();
 
@@ -71,7 +79,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<ShipmentEntity>().HasKey(x => x.Id);
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
-
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.VolumetricWeight).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Weight).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Height).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Length).HasPrecision(18, 4);
+            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Width).HasPrecision(18, 4);
             modelBuilder.Entity<ShipmentEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
             modelBuilder.Entity<ShipmentEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Shipments)
                         .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();
@@ -234,4 +246,5 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             base.OnModelCreating(modelBuilder);
         }
     }
+#pragma warning restore S109
 }

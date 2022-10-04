@@ -5,7 +5,6 @@ using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
@@ -194,7 +193,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             shipment.DiscountAmountWithTax = shipment.DiscountAmount * taxFactor;
             shipment.FeeWithTax = shipment.Fee * taxFactor;
             shipment.Total = shipment.Price - shipment.DiscountAmount;
-            shipment.TotalWithTax = shipment.PriceWithTax  - shipment.DiscountAmountWithTax;
+            shipment.TotalWithTax = shipment.PriceWithTax - shipment.DiscountAmountWithTax;
             shipment.TaxTotal = shipment.Total * shipment.TaxPercentRate;
             shipment.Sum = shipment.Total;
         }

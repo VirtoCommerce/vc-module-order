@@ -19,7 +19,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _customerOrderServiceMock = new Mock<ICustomerOrderService>();
         }
 
-        
+
 
         [Fact]
         public async Task PlaceCustomerOrderFromCartAsync_Cart_ComparingWithOrder()

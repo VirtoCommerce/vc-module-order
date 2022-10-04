@@ -132,11 +132,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             foreach (var item in itemChanges)
             {
                 var lineItem = allLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
-                if(lineItem != null)
+                if (lineItem != null)
                 {
                     item.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(lineItem, customerOrder.StoreId, customerOrderShipments);
                 }
-                
+
             }
             //Do not return unchanged records
             return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
@@ -283,7 +283,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             //Use a default fulfillment center defined for store
             if (string.IsNullOrEmpty(result))
             {
-                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] {lineItem.ProductId})).ToList();
+                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
                 var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
                 if (store != null)
                 {

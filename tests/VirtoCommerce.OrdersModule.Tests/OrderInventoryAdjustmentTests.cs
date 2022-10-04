@@ -1,7 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
+using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
+using VirtoCommerce.InventoryModule.Core.Model;
 using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Handlers;
@@ -11,12 +16,6 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
-using VirtoCommerce.CatalogModule.Core.Model;
-using VirtoCommerce.InventoryModule.Core.Model;
-using System;
-using System.Linq;
-using FluentAssertions;
-using VirtoCommerce.InventoryModule.Core.Model.Search;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -214,7 +213,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var changedOrder = new CustomerOrder
             {
                 StoreId = TestStoreId,
-                Items = new List<LineItem> { new LineItem  { Id = "{01234567-89ab-cdef-0123-456789abcdef}",  ProductId = "shoes", Quantity = 1 }}
+                Items = new List<LineItem> { new LineItem { Id = "{01234567-89ab-cdef-0123-456789abcdef}", ProductId = "shoes", Quantity = 1 } }
             };
             var changedEntry = new GenericChangedEntry<CustomerOrder>(changedOrder, changedOrder, EntryState.Added);
 
@@ -224,10 +223,10 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             var storeServiceMock = new Mock<IStoreService>();
             storeServiceMock.Setup(x => x.GetByIdAsync(TestStoreId, It.IsAny<string>()))
-                .ReturnsAsync(new Store { MainFulfillmentCenterId = mainFulfillmentCenterId, AdditionalFulfillmentCenterIds = new List<string>() {additionalFulfillmentCenterId}});
+                .ReturnsAsync(new Store { MainFulfillmentCenterId = mainFulfillmentCenterId, AdditionalFulfillmentCenterIds = new List<string>() { additionalFulfillmentCenterId } });
 
-            inventoryServiceMock.Setup(x=>x.GetProductsInventoryInfosAsync(It.IsAny<IEnumerable<string>>(), null))
-                .ReturnsAsync( new List<InventoryInfo>()
+            inventoryServiceMock.Setup(x => x.GetProductsInventoryInfosAsync(It.IsAny<IEnumerable<string>>(), null))
+                .ReturnsAsync(new List<InventoryInfo>()
                 {
                     new InventoryInfo() { InStockQuantity = 0, FulfillmentCenterId = mainFulfillmentCenterId},
                     new InventoryInfo() { InStockQuantity = 10, FulfillmentCenterId = additionalFulfillmentCenterId}

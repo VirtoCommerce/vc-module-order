@@ -175,7 +175,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             }
 
             ids = result.Select(x => x.Id).ToArray();
-            
+
             await Discounts.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await TaxDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
             await FeeDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();

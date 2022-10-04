@@ -1,4 +1,3 @@
-using VirtoCommerce.OrdersModule.Data.Repositories;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests

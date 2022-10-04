@@ -4,7 +4,7 @@ namespace VirtoCommerce.OrdersModule.Core.Notifications
     {
         public NewOrderStatusEmailNotification() : base(nameof(NewOrderStatusEmailNotification))
         {
-            
+
         }
 
         public string OldStatus { get; set; }

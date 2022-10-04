@@ -23,7 +23,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// <summary>
         /// Raw request data
         /// </summary>
-        public string RequestData { get; set; }     
+        public string RequestData { get; set; }
         /// <summary>
         /// Raw response data
         /// </summary>
@@ -42,7 +42,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// The type of payment interaction.The payment can be Capture or CheckReceived. 
         /// The value also includes customer payment interactions such as Website, Call, Store, or Unknown.
         /// </summary>
-        public string Type { get; set;  }
+        public string Type { get; set; }
         /// <summary>
         /// "Active", "Expired", and "Inactive" or other
         /// </summary>
