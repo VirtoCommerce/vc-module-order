@@ -12,6 +12,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 {
     public class OrderRepository : DbContextRepositoryBase<OrderDbContext>, IOrderRepository
     {
+#pragma warning disable S109
         public OrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork = null) : base(dbContext, unitOfWork)
         {
         }
@@ -195,5 +196,6 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 Remove(order);
             }
         }
+#pragma warning restore S109
     }
 }
