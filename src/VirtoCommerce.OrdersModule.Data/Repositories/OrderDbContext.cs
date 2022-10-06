@@ -161,6 +161,9 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<TaxDetailEntity>().HasOne(x => x.PaymentIn).WithMany(x => x.TaxDetails)
                         .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<TaxDetailEntity>().Property(x => x.Rate).HasPrecision(18, 2);
+            modelBuilder.Entity<TaxDetailEntity>().Property(x => x.Rate).HasPrecision(18, 2);
+
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
 
