@@ -37,7 +37,8 @@
           "dynamic-properties": "Динамические свойства",
           "sub-total": "Промежуточный итог",
           "discount-total": "Общая сумма скидки",
-          "tax-total": "Общая сумма налога"
+          "tax-total": "Общая сумма налога",
+          "fee-total": "Общая сумма сбора"
         }
       },
       "customerOrder-list": {
@@ -91,10 +92,7 @@
           "payment-gateway": "Платежная система",
           "payment-purpose": "Цель платежа",
           "price": "Внесение оплаты",
-          "price-with-tax": "Внесение оплаты (с учетом налога)",
-          "tracking-number": "Номер отслеживания",
-          "tracking-url": "URL отслеживания",
-          "delivery-date": "Дата доставки"
+          "price-with-tax": "Внесение оплаты (с учетом налога)"
         },
         "placeholders": {
           "status": "Выбрать...",
@@ -123,7 +121,10 @@
           "employee": "Назначено",
           "price": "Цена отправления",
           "price-with-tax": "Цена отправления с учетом налога",
-          "shipment-method-option": "Вариант способа доставки"
+          "shipment-method-option": "Вариант способа доставки",
+          "tracking-number": "Номер отслеживания",
+          "tracking-url": "URL отслеживания",
+          "delivery-date": "Дата доставки"
         },
         "placeholders": {
           "status": "Выбрать...",
@@ -178,6 +179,7 @@
         "shipping-sub-total": "Сумма промежуточного итога доставки",
         "payment-sub-total": "Оплата",
         "tax-total": "Общая сумма налога",
+        "fee-total": "Общая сумма сбора",
         "discount": "Скидка",
         "discount-total": "Общая сумма скидки",
         "discount-total-with-tax": "Общая сумма скидки с учетом налога",
@@ -196,6 +198,7 @@
       },
       "shipment-totals": {
         "tax-total": "Общая сумма налога",
+        "fee-total": "Общая сумма сбора",
         "shipment-total": "Общая сумма доставки",
         "shipment-price": "Цена доставки",
         "discount-total": "Общая сумма скидки",
@@ -277,6 +280,95 @@
       "cancel-document": "Закрыть документ",
       "add-selected": "Добавить выбранные",
       "add-item": "Добавить товар"
+    }
+  },
+  "permissions": {
+    "order:read": "Просмотр данных заказа",
+    "order:create": "Создание нового заказа",
+    "order:update": "Обновление данных существующего заказа",
+    "order:delete": "Удаление данных заказа",
+    "order:access": "Доступ к данным заказа",
+    "order:read_prices": "Просмотр цен заказа"
+  },
+  "settings": {
+    "Order.Status": {
+      "description": "Статусы заказа",
+      "title": "Статусы заказа"
+    },
+    "Shipment.Status": {
+      "description": "Статусы доставки",
+      "title": "Статусы доставки"
+    },
+    "PaymentIn.Status": {
+      "description": "Статусы входящих платежей",
+      "title": "Статусы платежей"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Этот шаблон будет использоваться для создания ID нового Заказа. Параметры: 0: Дата и время (UTC), когда был сгенерирован ID, 1: ID заказа.",
+      "title": "Шаблон ID заказа"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Этот шаблон будет использоваться для создания ID новой доставки. Параметры: 0: Дата и время (UTC), когда был сгенерирован ID, 1: ID заказа.",
+      "title": "Шаблон ID доставки заказа"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Этот шаблон будет использоваться для генерации ID нового входящего платежа. Параметры: 0: Дата и время (UTC), когда был сгенерирован ID, 1: ID заказа.",
+      "title": "Шаблон ID оплаты заказа"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Отправление уведомлений при изменении статуса заказа",
+      "title": "Включить уведомления для заказов"
+    },
+    "Order.AdjustInventory": {
+      "description": "Списывать со склада при изменении статуса заказа",
+      "title": "Списывать со склада продукцию из заказов"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Лог изменений заказа",
+      "description": "Регистрирует изменения заказа в логе работы приложения"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Включить индексацию событий для заказов",
+      "description": "Любые изменения в заказе вызовут фоновую задачу, которая применит эти изменения к поисковому индексу"
+    },
+    "Order.Validation.Enable": {
+      "title": "Подтвердить сохранение заказа",
+      "description": "Включает необходимость подтверждения при сохранении заказа"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Дата и время индексации заказа",
+      "description": "Дата и время последней индексации заказа"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Экспорт/импорт заказов со всеми связанными объектами (продукцию, доставку, оплату и т. д.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Уведомление при отмене заказа",
+      "description": "Клиент получит уведомление по электронной почте, когда заказ будет отменен."
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Счет-фактура для заказа",
+      "description": "Это шаблон счета-фактуры заказа, используется при создании PDF-версии."
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Уведомление при изменении статуса заказа",
+      "description": "Клиент получит уведомление по электронной почте, когда статус заказа будет изменен"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Уведомление о создании заказа",
+      "description": "Клиент получит уведомление по электронной почте после отправки своих данных через форму на сайте, например, через форму «Свяжитесь с нами»."
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Уведомление об оплате заказа",
+      "description": "Клиент получит уведомление по электронной почте, когда все платежи, связанные с заказом, будут оплачены."
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Уведомление о доставке заказа",
+      "description": "Клиент получит уведомление по электронной почте, когда все заказанные товары будут отправлены."
     }
   }
 }
