@@ -46,7 +46,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(64)]
         public string CategoryId { get; set; }
         [Required]
-        [StringLength(64)]
+        [StringLength(128)]
         public string Sku { get; set; }
 
         [StringLength(64)]
