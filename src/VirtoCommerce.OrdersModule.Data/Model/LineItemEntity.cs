@@ -37,7 +37,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal TaxPercentRate { get; set; }
         public int Quantity { get; set; }
         [Required]
-        [StringLength(64)]
+        [StringLength(128)]
         public string ProductId { get; set; }
         [Required]
         [StringLength(64)]
@@ -46,7 +46,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(64)]
         public string CategoryId { get; set; }
         [Required]
-        [StringLength(64)]
+        [StringLength(128)]
         public string Sku { get; set; }
 
         [StringLength(64)]
