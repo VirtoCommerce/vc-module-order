@@ -1,5 +1,14 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.authService', 'virtoCommerce.paymentModule.paymentMethods', 'virtoCommerce.customerModule.members',
+    .controller('virtoCommerce.orderModule.paymentDetailController', [
+        '$scope',
+        'platformWebApp.bladeNavigationService',
+        'platformWebApp.dialogService',
+        'platformWebApp.settings',
+        'virtoCommerce.orderModule.order_res_customerOrders',
+        'virtoCommerce.orderModule.statusTranslationService',
+        'platformWebApp.authService',
+        'virtoCommerce.paymentModule.paymentMethods',
+        'virtoCommerce.customerModule.members',
     function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
