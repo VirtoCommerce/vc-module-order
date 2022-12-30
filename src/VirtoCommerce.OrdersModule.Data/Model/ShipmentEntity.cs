@@ -78,6 +78,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string TrackingUrl { get; set; }
         public DateTime? DeliveryDate { get; set; }
 
+        [StringLength(64)]
+        public string VendorId { get; set; }
+
         #region NavigationProperties
 
         public string CustomerOrderId { get; set; }
@@ -143,6 +146,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipment.Total = Total;
             shipment.TotalWithTax = TotalWithTax;
             shipment.CustomerOrderId = CustomerOrderId;
+            shipment.VendorId = VendorId;
 
             shipment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             shipment.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<ShipmentItem>.TryCreateInstance())).ToList();
@@ -214,6 +218,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             TaxTotal = shipment.TaxTotal;
             Total = shipment.Total;
             TotalWithTax = shipment.TotalWithTax;
+            VendorId = shipment.VendorId;
 
             TrackingNumber = shipment.TrackingNumber;
             TrackingUrl = shipment.TrackingUrl;
@@ -307,6 +312,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.TrackingNumber = TrackingNumber;
             target.TrackingUrl = TrackingUrl;
             target.DeliveryDate = DeliveryDate;
+            target.VendorId = VendorId;
 
             if (isNeedPatch)
             {

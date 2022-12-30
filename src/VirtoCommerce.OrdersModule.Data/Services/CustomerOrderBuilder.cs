@@ -308,6 +308,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Fee = shipment.Fee;
             retVal.Fee = shipment.FeeWithTax;
             retVal.Status = "New";
+            retVal.VendorId = shipment.VendorId;
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = ToOrderModel(shipment.DeliveryAddress);
@@ -353,6 +354,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.GatewayCode = payment.PaymentGatewayCode;
             retVal.Sum = payment.Amount;
             retVal.PaymentStatus = PaymentStatus.New;
+            retVal.VendorId = payment.VendorId;
             if (payment.BillingAddress != null)
             {
                 retVal.BillingAddress = ToOrderModel(payment.BillingAddress);

@@ -246,6 +246,10 @@ angular.module(moduleName, [
                         name: 'trackingUrl',
                         title: 'orders.blades.shipment-detail.labels.tracking-url',
                         valueType: 'LongText'
+                    },
+                    {
+                        name: 'vendorId',
+                        templateUrl: "vendor.html"
                     }
                 ]
             }

@@ -1,5 +1,5 @@
-angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.inventoryModule.fulfillments', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.authService', 'virtoCommerce.shippingModule.shippingMethods',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, fulfillments, statusTranslationService, authService, shippingMethods) {
+angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModule.shipmentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.inventoryModule.fulfillments', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.authService', 'virtoCommerce.shippingModule.shippingMethods', 'virtoCommerce.customerModule.members',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, fulfillments, statusTranslationService, authService, shippingMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.shippingMethods = [];
@@ -65,6 +65,20 @@ angular.module('virtoCommerce.orderModule').controller('virtoCommerce.orderModul
         blade.updateRecalculationFlag = function () {
             blade.isTotalsRecalculationNeeded = blade.origEntity.price != blade.currentEntity.price || blade.origEntity.priceWithTax != blade.currentEntity.priceWithTax;
         }
+
+        blade.fetchVendors = function (criteria) {
+            return members.search(criteria);
+        }
+
+        blade.openVendorsManagement = function () {
+            var newBlade = {
+                id: 'vendorList',
+                currentEntity: { id: null },
+                controller: 'virtoCommerce.customerModule.memberListController',
+                template: 'Modules/$(VirtoCommerce.Customer)/Scripts/blades/member-list.tpl.html'
+            };
+            bladeNavigationService.showBlade(newBlade, blade);
+        };
 
         function getFulfillmentCenters() {
             fulfillments.search({ take: 100 }, function (response) {

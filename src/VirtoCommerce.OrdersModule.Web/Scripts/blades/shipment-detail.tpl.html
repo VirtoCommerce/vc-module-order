@@ -116,3 +116,14 @@
         <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
     </div>
 </script>
+
+<script type="text/ng-template" id="vendor.html">
+    <div class="form-input">
+        <label class="form-label">{{ 'orders.blades.shipment-detail.labels.vendor' | translate }} <a href="" ng-click="blade.openVendorsManagement()" class="form-edit" va-permission="customer:read"><i class="form-ico fa fa-pencil"></i></a></label>
+        <ui-scroll-drop-down ng-model="blade.currentEntity.vendorId"
+                             data="blade.fetchVendors(criteria)"
+                             placeholder="'orders.blades.shipment-detail.placeholders.vendor'">
+        </ui-scroll-drop-down>
+    </div>
+</script>
+

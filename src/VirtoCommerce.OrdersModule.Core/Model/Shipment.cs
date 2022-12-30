@@ -89,6 +89,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public override string ObjectType { get; set; } = typeof(Shipment).FullName;
 
+        public string VendorId { get; set; }
+
         #region ITaxable Members
 
         /// <summary>

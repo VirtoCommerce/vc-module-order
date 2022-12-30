@@ -92,11 +92,13 @@
           "payment-gateway": "Платежная система",
           "payment-purpose": "Цель платежа",
           "price": "Внесение оплаты",
-          "price-with-tax": "Внесение оплаты (с учетом налога)"
+          "price-with-tax": "Внесение оплаты (с учетом налога)",
+          "vendor": "Вендор"
         },
         "placeholders": {
           "status": "Выбрать...",
-          "payment-gateway": "Выбрать..."
+          "payment-gateway": "Выбрать...",
+          "vendor": "Выбрать..."
         }
       },
       "transactions-list": {
@@ -124,13 +126,15 @@
           "shipment-method-option": "Вариант способа доставки",
           "tracking-number": "Номер отслеживания",
           "tracking-url": "URL отслеживания",
-          "delivery-date": "Дата доставки"
+          "delivery-date": "Дата доставки",
+          "vendor": "Вендор"
         },
         "placeholders": {
           "status": "Выбрать...",
           "shipment-method": "Выбрать...",
           "fulfillment-center": "Выбрать или найти центр...",
-          "shipment-method-option": "Способ доставки по умолчанию"
+          "shipment-method-option": "Способ доставки по умолчанию",
+          "vendor": "Выбрать..."
         }
       },
       "shipment-items": {

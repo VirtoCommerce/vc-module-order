@@ -92,11 +92,13 @@
           "payment-gateway": "Payment gateway",
           "payment-purpose": "Payment purpose",
           "price": "Payment fees",
-          "price-with-tax": "Payment fees (incl. tax)"
+          "price-with-tax": "Payment fees (incl. tax)",
+          "vendor": "Vendor"
         },
         "placeholders": {
           "status": "Select...",
-          "payment-gateway": "Select..."
+          "payment-gateway": "Select...",
+          "vendor": "Select..."
         }
       },
       "transactions-list": {
@@ -124,13 +126,15 @@
           "shipment-method-option": "Shipment method",
           "tracking-number": "Tracking number",
           "tracking-url": "Tracking URL",
-          "delivery-date": "Delivery date" 
+          "delivery-date": "Delivery date",
+          "vendor": "Vendor"
         },
         "placeholders": {
           "status": "Select...",
           "shipment-method": "Select...",
           "fulfillment-center": "Select or search a center...",
-          "shipment-method-option": "Default shipment method"
+          "shipment-method-option": "Default shipment method",
+          "vendor": "Select..."
         }
       },
       "shipment-items": {
