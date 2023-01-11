@@ -60,6 +60,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal TaxTotal { get; set; }
         public decimal TaxPercentRate { get; set; }
 
+        [StringLength(64)]
+        public string VendorId { get; set; }
+
         #region Navigation Properties
 
         public string CustomerOrderId { get; set; }
@@ -129,6 +132,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             payment.CancelledDate = CancelledDate;
             payment.CancelReason = CancelReason;
             payment.Sum = Sum;
+            payment.VendorId = VendorId;
 
             payment.Transactions = Transactions.Select(x => x.ToModel(AbstractTypeFactory<PaymentGatewayTransaction>.TryCreateInstance())).ToList();
             payment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
@@ -191,6 +195,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             CancelledDate = payment.CancelledDate;
             CancelReason = payment.CancelReason;
             Sum = payment.Sum;
+            VendorId = payment.VendorId;
 
             if (payment.PaymentMethod != null)
             {
@@ -272,6 +277,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             payment.IsCancelled = IsCancelled;
             payment.CancelledDate = CancelledDate;
             payment.CancelReason = CancelReason;
+            payment.VendorId = VendorId;
 
             if (isNeedPatch)
             {

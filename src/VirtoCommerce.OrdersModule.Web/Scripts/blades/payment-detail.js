@@ -1,6 +1,15 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.paymentDetailController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.settings', 'virtoCommerce.orderModule.order_res_customerOrders', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.authService', 'virtoCommerce.paymentModule.paymentMethods',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods) {
+    .controller('virtoCommerce.orderModule.paymentDetailController', [
+        '$scope',
+        'platformWebApp.bladeNavigationService',
+        'platformWebApp.dialogService',
+        'platformWebApp.settings',
+        'virtoCommerce.orderModule.order_res_customerOrders',
+        'virtoCommerce.orderModule.statusTranslationService',
+        'platformWebApp.authService',
+        'virtoCommerce.paymentModule.paymentMethods',
+        'virtoCommerce.customerModule.members',
+    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.paymentMethods = [];
@@ -57,6 +66,20 @@ angular.module('virtoCommerce.orderModule')
         blade.updateRecalculationFlag = function () {
             blade.isTotalsRecalculationNeeded = blade.origEntity.price != blade.currentEntity.price || blade.origEntity.priceWithTax != blade.currentEntity.priceWithTax;
         }
+
+        blade.fetchVendors = function (criteria) {
+            return members.search(criteria);
+        }
+
+        blade.openVendorsManagement = function () {
+            var newBlade = {
+                id: 'vendorList',
+                currentEntity: { id: null },
+                controller: 'virtoCommerce.customerModule.memberListController',
+                template: 'Modules/$(VirtoCommerce.Customer)/Scripts/blades/member-list.tpl.html'
+            };
+            bladeNavigationService.showBlade(newBlade, blade);
+        };
 
         $scope.$watch("blade.currentEntity.paymentMethod", function (paymentMethod) {
             if (blade.isNew && paymentMethod) {
