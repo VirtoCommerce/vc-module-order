@@ -91,11 +91,13 @@
           "payment-gateway": "Zahlungsgateway",
           "payment-purpose": "Zahlung",
           "price": "Zahlung Gebühren",
-          "price-with-tax": "Zahlung Gebühren (inkl. Mwst.)"
+          "price-with-tax": "Zahlung Gebühren (inkl. Mwst.)",
+          "vendor": "Verkäufer"
         },
         "placeholders": {
           "status": "Wählen Sie aus...",
-          "payment-gateway": "Wählen Sie aus..."
+          "payment-gateway": "Wählen Sie aus...",
+          "vendor": "Wählen Sie aus..."
         }
       },
       "transactions-list": {
@@ -123,13 +125,15 @@
           "shipment-method-option": "Verzendmethode optie",
           "tracking-number": "Auftragsnummer",
           "tracking-url": "Tracking-URL",
-          "delivery-date": "Lieferdatum"
+          "delivery-date": "Lieferdatum",
+          "vendor": "Verkäufer"
         },
         "placeholders": {
           "status": "Wählen Sie aus...",
           "shipment-method": "Wählen Sie aus...",
           "fulfillment-center": "Wählen Sie Oder suchen Sie ein Zentrum...",
-          "shipment-method-option": "Standaard verzendmethode"
+          "shipment-method-option": "Standaard verzendmethode",
+          "vendor": "Wählen Sie aus..."
         }
       },
       "shipment-items": {

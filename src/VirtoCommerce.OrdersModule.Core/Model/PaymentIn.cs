@@ -57,6 +57,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public override string ObjectType { get; set; } = typeof(PaymentIn).FullName;
         public ICollection<FeeDetail> FeeDetails { get; set; }
 
+        public string VendorId { get; set; }
 
         #region ITaxable Members
 
