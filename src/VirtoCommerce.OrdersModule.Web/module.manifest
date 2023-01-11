@@ -15,7 +15,7 @@
   <projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <copyright>Copyright © 2011-2022 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2023 Virto Commerce. All rights reserved</copyright>
   <tags>order system</tags>
   <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>
