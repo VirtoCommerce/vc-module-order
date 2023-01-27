@@ -255,6 +255,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;
 
+            retVal.VendorId = lineItem.VendorId;
+
             if (lineItem.DynamicProperties != null)
             {
                 retVal.DynamicProperties = lineItem.DynamicProperties.Select(ToOrderModel).ToList();
