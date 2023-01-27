@@ -94,6 +94,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string OuterId { get; set; }
         public ICollection<FeeDetail> FeeDetails { get; set; }
 
+        public string VendorId { get; set; }
+
         #region IHaveDimension Members
 
         public string WeightUnit { get; set; }
