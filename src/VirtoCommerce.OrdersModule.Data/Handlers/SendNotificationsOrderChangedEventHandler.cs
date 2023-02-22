@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using StackExchange.Redis;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -53,7 +54,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual Task Handle(OrderChangedEvent message)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.SendOrderNotifications.Name, true))
+            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.SendOrderNotifications))
             {
                 var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
                 if (jobArguments.Any())
@@ -83,14 +84,36 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));
             }
 
-            if (IsOrderPaid(changedEntry))
+            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.NewPaymentAndShipmentNotifications))
             {
-                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderPaidEmailNotification)));
+                var changedPayments = GetEntriesWithChangedStatus(changedEntry.OldEntry.InPayments, changedEntry.NewEntry.InPayments);
+                if (changedPayments.Any())
+                {
+                    var argument = OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(PaymentStatusChangedEmailNotification));
+                    argument.OrderOperations = changedPayments;
+                    result.Add(argument);
+                }
+
+                var changedShipments = GetEntriesWithChangedStatus(changedEntry.OldEntry.Shipments, changedEntry.NewEntry.Shipments);
+                if (changedShipments.Any())
+                {
+                    var argument = OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(ShipmentStatusChangedEmailNotification));
+                    argument.OrderOperations = changedShipments;
+                    result.Add(argument);
+                }
             }
 
-            if (IsOrderSent(changedEntry))
+            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.OldPaymentAndShipmentNotifications))
             {
-                result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderSentEmailNotification)));
+                if (IsOrderPaid(changedEntry))
+                {
+                    result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderPaidEmailNotification)));
+                }
+
+                if (IsOrderSent(changedEntry))
+                {
+                    result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(OrderSentEmailNotification)));
+                }
             }
 
             return result.ToArray();
@@ -125,6 +148,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                             newStatusNotification.NewStatus = jobArgument.NewStatus;
                         }
 
+                        if (notification is PaymentStatusChangedEmailNotification paymentsStatusesChangedEmailNotification)
+                        {
+                            paymentsStatusesChangedEmailNotification.Entries = jobArgument.OrderOperations;
+                        }
+
+                        if (notification is ShipmentStatusChangedEmailNotification shipmentsStatusesChangedEmailNotification)
+                        {
+                            shipmentsStatusesChangedEmailNotification.Entries = jobArgument.OrderOperations;
+                        }
+
                         await _notificationSender.ScheduleSendNotificationAsync(notification);
                     }
                 }
@@ -157,6 +190,28 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var result = changedEntry.OldEntry.Status != changedEntry.NewEntry.Status;
             return result;
+        }
+
+        protected virtual IList<OrderOperationStatusChangedEntry> GetEntriesWithChangedStatus<T>(ICollection<T> oldEntries, ICollection<T> newEntries)
+            where T : OrderOperation
+        {
+            var documents = new List<OrderOperationStatusChangedEntry>();
+            if (!oldEntries.Any() || !newEntries.Any())
+            {
+                return documents;
+            }
+            documents.AddRange(
+                from oldInPayment in oldEntries
+                let newInPayment = newEntries.FirstOrDefault(x => x.Id == oldInPayment.Id && x.Status != oldInPayment.Status)
+                where newInPayment != null
+                select new OrderOperationStatusChangedEntry
+                {
+                    Number = newInPayment.Number,
+                    OldStatus = oldInPayment.Status,
+                    NewStatus = newInPayment.Status,
+                }); ;
+
+            return documents;
         }
 
         /// <summary>
@@ -263,6 +318,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public string StoreId { get; set; }
         public string NewStatus { get; set; }
         public string OldStatus { get; set; }
+        public IList<OrderOperationStatusChangedEntry> OrderOperations { get; set; }
         public static OrderNotificationJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, Type notificationtType)
         {
             var result = new OrderNotificationJobArgument
@@ -272,7 +328,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 StoreId = changedEntry.NewEntry.StoreId,
                 CustomerId = changedEntry.NewEntry.CustomerId,
                 NewStatus = changedEntry.NewEntry.Status,
-                OldStatus = changedEntry.OldEntry.Status
+                OldStatus = changedEntry.OldEntry.Status,
             };
 
             return result;

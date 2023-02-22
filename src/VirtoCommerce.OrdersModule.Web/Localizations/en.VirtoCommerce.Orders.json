@@ -342,6 +342,14 @@
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
       "title": "Order indexing date and time",
       "description": "Date and time of the latest order indexing task"
+    },
+    "Order.OldPaymentAndShipmentNotifications.Enable": {
+      "title": "Use old notifications for payments/shipments",
+      "description": "Use old notifications for payments/shipments status change"
+    },
+    "Order.NewPaymentAndShipmentNotifications.Enable": {
+      "title": "Use new notifications for payments/shipments",
+      "description": "Use new notifications for payments/shipments status change"
     }
   },
   "module": {

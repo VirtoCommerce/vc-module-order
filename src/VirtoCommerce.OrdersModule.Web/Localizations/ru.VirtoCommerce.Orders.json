@@ -342,6 +342,14 @@
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
       "title": "Дата и время индексации заказа",
       "description": "Дата и время последней индексации заказа"
+    },
+    "Order.OldPaymentAndShipmentNotifications.Enable": {
+      "title": "Использовать старые уведомления для платежей/доставок",
+      "description": "Использовать старые уведомления для изменения статусов платежей/доставок"
+    },
+    "Order.NewPaymentAndShipmentNotifications.Enable": {
+      "title": "Использовать новые уведомления для платежей/доставок",
+      "description": "Использовать новые уведомления для изменения статусов платежей/доставок"
     }
   },
   "module": {

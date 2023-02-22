@@ -38,6 +38,14 @@
   </ItemGroup>
   <ItemGroup>
     <NotificationTemplates Include="NotificationTemplates\**" />
+    <None Remove="NotificationTemplates\PaymentStatusChangedEmailNotification_body.html" />
+    <None Remove="NotificationTemplates\ShipmentStatusChangedEmailNotification_body.html" />
+    <NotificationTemplates Remove="NotificationTemplates\PaymentStatusChangedEmailNotification_body.html" />
+    <NotificationTemplates Remove="NotificationTemplates\PaymentStatusChangedEmailNotification_subject.txt" />
+    <NotificationTemplates Remove="NotificationTemplates\ShipmentStatusChangedEmailNotification_body.html" />
+    <NotificationTemplates Remove="NotificationTemplates\ShipmentStatusChangedEmailNotification_subject.txt" />
+    <Content Include="NotificationTemplates\ShipmentStatusChangedEmailNotification_body.html" />
+    <Content Include="NotificationTemplates\PaymentStatusChangedEmailNotification_body.html" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <Target Name="CopyCustomContentOnPublish" AfterTargets="Publish">
