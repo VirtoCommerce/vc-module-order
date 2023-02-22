@@ -381,6 +381,14 @@
     "OrderSentEmailNotification": {
       "displayName": "Notification on shipped order",
       "description": "The customer will get an email notification when all ordered items have been shipped"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Notification on payments status changed",
+      "description": "The customer will receive an email notification with all changed payments statuses"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Notification on shipments status changed",
+      "description": "The customer will receive an email notification with all changed shipments statuses"
     }
   }
 }
