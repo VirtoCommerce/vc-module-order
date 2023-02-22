@@ -84,7 +84,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));
             }
 
-            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.NewPaymentAndShipmentNotifications))
+            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.PaymentShipmentStatusChangedNotifications))
             {
                 var changedPayments = GetEntriesWithChangedStatus(changedEntry.OldEntry.InPayments, changedEntry.NewEntry.InPayments);
                 if (changedPayments.Any())
@@ -103,7 +103,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             }
 
-            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.OldPaymentAndShipmentNotifications))
+            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.OrderPaidAndOrderSentNotifications))
             {
                 if (IsOrderPaid(changedEntry))
                 {

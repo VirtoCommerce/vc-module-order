@@ -133,17 +133,17 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false
                 };
 
-                public static SettingDescriptor OldPaymentAndShipmentNotifications { get; } = new SettingDescriptor
+                public static SettingDescriptor OrderPaidAndOrderSentNotifications { get; } = new SettingDescriptor
                 {
-                    Name = "Order.OldPaymentAndShipmentNotifications.Enable",
+                    Name = "Order.OrderPaidAndOrderSentNotifications.Enable",
                     GroupName = "Orders|Notification",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor NewPaymentAndShipmentNotifications { get; } = new SettingDescriptor
+                public static SettingDescriptor PaymentShipmentStatusChangedNotifications { get; } = new SettingDescriptor
                 {
-                    Name = "Order.NewPaymentAndShipmentNotifications.Enable",
+                    Name = "Order.PaymentShipmentStatusChangedNotifications.Enable",
                     GroupName = "Orders|Notification",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
@@ -163,8 +163,8 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return OrderAdjustInventory;
                         yield return LogOrderChanges;
                         yield return CustomerOrderValidation;
-                        yield return OldPaymentAndShipmentNotifications;
-                        yield return NewPaymentAndShipmentNotifications;
+                        yield return OrderPaidAndOrderSentNotifications;
+                        yield return PaymentShipmentStatusChangedNotifications;
                     }
                 }
             }
