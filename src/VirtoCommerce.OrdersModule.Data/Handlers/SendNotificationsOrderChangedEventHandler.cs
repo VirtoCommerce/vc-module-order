@@ -209,7 +209,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     Number = newInPayment.Number,
                     OldStatus = oldInPayment.Status,
                     NewStatus = newInPayment.Status,
-                }); ;
+                });
 
             return documents;
         }
