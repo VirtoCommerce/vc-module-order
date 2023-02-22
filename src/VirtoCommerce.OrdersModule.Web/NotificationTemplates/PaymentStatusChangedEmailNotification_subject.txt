@@ -1,1 +1,1 @@
-Payments status changed
+Payment status changed

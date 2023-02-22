@@ -1,1 +1,1 @@
-Shipments status changed
+Shipment status changed
