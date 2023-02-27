@@ -27,6 +27,18 @@ namespace VirtoCommerce.OrdersModule.Core
             }
         }
 
+        public static class CustomerOrderStatus
+        {
+            public const string New = "New";
+            public const string NotPayed = "Not payed";
+            public const string Pending = "Pending";
+            public const string Processing = "Processing";
+            public const string ReadyToSend = "Ready to send";
+            public const string Cancelled = "Cancelled";
+            public const string PartiallySent = "Partially sent";
+            public const string Completed = "Completed";
+        }
+
         public static class Settings
         {
             public static class General
@@ -37,8 +49,18 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
-                    DefaultValue = "New",
-                    AllowedValues = new[] { "New", "Not payed", "Pending", "Processing", "Ready to send", "Cancelled", "Partially sent", "Completed" }
+                    DefaultValue = CustomerOrderStatus.New,
+                    AllowedValues = new[]
+                    {
+                        CustomerOrderStatus.New,
+                        CustomerOrderStatus.NotPayed,
+                        CustomerOrderStatus.Pending,
+                        CustomerOrderStatus.Processing,
+                        CustomerOrderStatus.ReadyToSend,
+                        CustomerOrderStatus.Cancelled,
+                        CustomerOrderStatus.PartiallySent,
+                        CustomerOrderStatus.Completed,
+                    }
                 };
 
                 public static SettingDescriptor ShipmentStatus = new SettingDescriptor
