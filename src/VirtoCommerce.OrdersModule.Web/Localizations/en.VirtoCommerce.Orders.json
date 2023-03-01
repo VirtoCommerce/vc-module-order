@@ -342,6 +342,14 @@
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
       "title": "Order indexing date and time",
       "description": "Date and time of the latest order indexing task"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Use order paid and order sent notifications",
+      "description": "Use order paid and order sent notifications"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Use payments/shipments status changed notifications",
+      "description": "Use for payments/shipments status change notifications"
     }
   },
   "module": {
@@ -373,6 +381,14 @@
     "OrderSentEmailNotification": {
       "displayName": "Notification on shipped order",
       "description": "The customer will get an email notification when all ordered items have been shipped"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Notification on payments status changed",
+      "description": "The customer will receive an email notification with all changed payments statuses"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Notification on shipments status changed",
+      "description": "The customer will receive an email notification with all changed shipments statuses"
     }
   }
 }
