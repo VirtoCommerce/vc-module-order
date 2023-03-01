@@ -342,6 +342,14 @@
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
       "title": "Дата и время индексации заказа",
       "description": "Дата и время последней индексации заказа"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Использовать уведомления об оплате/доставке заказа",
+      "description": "Использовать уведомления об оплате/доставке заказа"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Использовать уведомления о смене статуса платежа/доставки",
+      "description": "Использовать уведомления о смене статуса платежа/доставки"
     }
   },
   "module": {
@@ -373,6 +381,14 @@
     "OrderSentEmailNotification": {
       "displayName": "Уведомление о доставке заказа",
       "description": "Клиент получит уведомление по электронной почте, когда все заказанные товары будут отправлены."
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Уведомление об изменение статусов платежей",
+      "description": "Клиент получит уведомление по электронной почте, со списком платежей, у которых изменились статусы"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Уведомление об изменение статусов доставок",
+      "description": "Клиент получит уведомление по электронной почте, со списком доставок, у которых изменились статусы"
     }
   }
 }
