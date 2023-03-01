@@ -113,7 +113,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 {
                     oldQuantity = 0;
                 }
-                else if (changedEntry.EntryState == EntryState.Deleted || state == EntryState.Deleted)
+                else if (changedEntry.EntryState == EntryState.Deleted
+                || state == EntryState.Deleted
+                || changedEntry.NewEntry.Status == ModuleConstants.CustomerOrderStatus.Cancelled && changedEntry.OldEntry != null && changedEntry.OldEntry.Status != ModuleConstants.CustomerOrderStatus.Cancelled)
                 {
                     newQuantity = 0;
                 }
