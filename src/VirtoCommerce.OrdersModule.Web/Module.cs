@@ -205,6 +205,8 @@ namespace VirtoCommerce.OrdersModule.Web
             notificationRegistrar.RegisterNotification<OrderCreateEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<OrderPaidEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<OrderSentEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<PaymentStatusChangedEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<ShipmentStatusChangedEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
 
             // enable polymorphic types in API controller methods
             var mvcJsonOptions = appBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
