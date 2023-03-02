@@ -24,9 +24,12 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.ExportImport;
 using VirtoCommerce.OrdersModule.Data.Handlers;
+using VirtoCommerce.OrdersModule.Data.MySql;
+using VirtoCommerce.OrdersModule.Data.PostgreSql;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
+using VirtoCommerce.OrdersModule.Data.SqlServer;
 using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
@@ -56,8 +59,21 @@ namespace VirtoCommerce.OrdersModule.Web
         {
             serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
             {
-                var configuration = provider.GetRequiredService<IConfiguration>();
-                options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id) ?? configuration.GetConnectionString("VirtoCommerce"));
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
+                var connectionString = Configuration.GetConnectionString(ModuleInfo.Id) ?? Configuration.GetConnectionString("VirtoCommerce");
+
+                switch (databaseProvider)
+                {
+                    case "MySql":
+                        options.UseMySqlDatabase(connectionString);
+                        break;
+                    case "PostgreSql":
+                        options.UsePostgreSqlDatabase(connectionString);
+                        break;
+                    default:
+                        options.UseSqlServerDatabase(connectionString);
+                        break;
+                }
             });
 
             serviceCollection.AddValidators();
@@ -172,9 +188,12 @@ namespace VirtoCommerce.OrdersModule.Web
 
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {
+                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<OrderDbContext>();
-                dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
-                dbContext.Database.EnsureCreated();
+                if (databaseProvider == "SqlServer")
+                {
+                    dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));
+                }
                 dbContext.Database.Migrate();
             }
 
