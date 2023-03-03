@@ -1,3 +1,4 @@
+using System.Reflection;
 using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Data.Model;
@@ -226,27 +227,42 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.CustomerOrderId })
                 .IsUnique(false)
-                .HasDatabaseName("IX_ObjectType_CustomerOrderId");
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_CustomerOrderId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.PaymentInId })
                 .IsUnique(false)
-                .HasDatabaseName("IX_ObjectType_PaymentInId");
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_PaymentInId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.ShipmentId })
                 .IsUnique(false)
-                .HasDatabaseName("IX_ObjectType_ShipmentId");
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_ShipmentId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.LineItemId })
                 .IsUnique(false)
-                .HasDatabaseName("IX_ObjectType_LineItemId");
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_LineItemId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.ObjectId })
                 .IsUnique(false)
-                .HasDatabaseName("IX_ObjectType_ObjectId");
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_ObjectId");
 
             #endregion
 
             base.OnModelCreating(modelBuilder);
+
+            // Allows configuration for an entity type for different database types.
+            // Applies configuration from all <see cref="IEntityTypeConfiguration{TEntity}" in VirtoCommerce.OrdersModule.Data.XXX project. /> 
+            switch (this.Database.ProviderName)
+            {
+                case "Pomelo.EntityFrameworkCore.MySql":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.OrdersModule.Data.MySql"));
+                    break;
+                case "Npgsql.EntityFrameworkCore.PostgreSQL":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.OrdersModule.Data.PostgreSql"));
+                    break;
+                case "Microsoft.EntityFrameworkCore.SqlServer":
+                    modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.OrdersModule.Data.SqlServer"));
+                    break;
+            }
         }
     }
 #pragma warning restore S109
