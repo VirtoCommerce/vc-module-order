@@ -21,7 +21,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public static string PaymentMethodNotFound(string gatewayCode)
         {
-            return $"Can't find payment method with code {gatewayCode ?? "undef"}";
+            return $"Can't find payment method with code: '{gatewayCode ?? "null"}'";
         }
 
         public static string StoreNotFound()

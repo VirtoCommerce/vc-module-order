@@ -62,7 +62,7 @@ angular.module('virtoCommerce.orderModule')
                 }, function (data) {
                     blade.isLoading = false;
 
-                    if (data.isSuccess) {
+                    if (data.succeeded) {
                         blade.currentEntity.status = 'Paid';
                         blade.refresh();
                         blade.parentBlade.refresh();

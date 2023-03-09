@@ -58,7 +58,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
-                    result.IsSuccess = true;
+                    result.Succeeded = true;
                 }
                 else
                 {
