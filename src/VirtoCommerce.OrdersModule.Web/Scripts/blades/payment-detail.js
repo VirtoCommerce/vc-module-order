@@ -50,6 +50,37 @@ angular.module('virtoCommerce.orderModule')
             bladeNavigationService.showBlade(newBlade, blade);
         };
 
+        blade.toolbarCommands.push({
+            name: 'orders.blades.payment-detail.labels.capture-payment',
+            icon: 'fas fa-file-text',
+            index: 1,
+            executeMethod: function (blade) {
+                blade.isLoading = true;
+
+                customerOrders.capturePayment({
+                    paymentId: blade.currentEntity.id
+                }, function (data) {
+                    blade.isLoading = false;
+
+                    if (data.isSuccess) {
+                        blade.currentEntity.status = 'Paid';
+                        blade.refresh();
+                        blade.parentBlade.refresh();
+                    }
+                    else {
+                        bladeNavigationService.setError(data.errorMessage, blade);
+                    }
+                }, function (error) {
+                    blade.isLoading = false;
+
+                    bladeNavigationService.setError('Error ' + error.status, blade);
+                })
+            },
+            canExecuteMethod: function () {
+                return blade.currentEntity.status === 'Authorized';;
+            }
+        });
+
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'PaymentIn');
         }

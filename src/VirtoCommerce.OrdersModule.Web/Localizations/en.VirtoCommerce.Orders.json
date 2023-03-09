@@ -93,7 +93,8 @@
           "payment-purpose": "Payment purpose",
           "price": "Payment fees",
           "price-with-tax": "Payment fees (incl. tax)",
-          "vendor": "Vendor"
+          "vendor": "Vendor",
+          "capture-payment": "Capture payment"
         },
         "placeholders": {
           "status": "Select...",

@@ -22,8 +22,9 @@ namespace VirtoCommerce.OrdersModule.Core
                 public const string Delete = "order:delete";
                 public const string ReadPrices = "order:read_prices";
                 public const string UpdateShipments = "order:update_shipments";
+                public const string CapturePayment = "order:payment:capture";
 
-                public static string[] AllPermissions { get; } = { Read, Create, Update, Access, Delete, ReadPrices, UpdateShipments };
+                public static string[] AllPermissions { get; } = { Read, Create, Update, Access, Delete, ReadPrices, UpdateShipments, CapturePayment };
             }
         }
 

@@ -25,14 +25,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly ICrudService<CustomerOrder> _customerOrderService;
         private readonly IValidator<PaymentIn> _paymentInValidator;
         private readonly ISettingsManager _settingsManager;
+        private readonly IPaymentFlowService _paymentFlowService;
 
         public OrderModulePaymentsController(
-              IPaymentSearchService paymentSearchService
-            , IPaymentService paymentService
-            , IAuthorizationService authorizationService
-            , ICustomerOrderService customerOrderService
-            , IValidator<PaymentIn> paymentInValidator
-            , ISettingsManager settingsManager
+            IPaymentSearchService paymentSearchService,
+            IPaymentService paymentService,
+            IAuthorizationService authorizationService,
+            ICustomerOrderService customerOrderService,
+            IValidator<PaymentIn> paymentInValidator,
+            ISettingsManager settingsManager,
+            IPaymentFlowService paymentFlowService
          )
         {
             _paymentSearchService = (ISearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn>)paymentSearchService;
@@ -41,6 +43,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _customerOrderService = (ICrudService<CustomerOrder>)customerOrderService;
             _paymentInValidator = paymentInValidator;
             _settingsManager = settingsManager;
+            _paymentFlowService = paymentFlowService;
         }
 
         /// <summary>
@@ -153,6 +156,16 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = await _paymentSearchService.SearchAsync(searchCriteria);
             await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("payment/capture")]
+        [Authorize(ModuleConstants.Security.Permissions.CapturePayment)]
+        public async Task<ActionResult> CapturePayment([FromBody] OrderPaymentRequest request)
+        {
+            var result = await _paymentFlowService.CapturePaymentAsync(request);
+
+            return Ok(result);
         }
 
         private Task<ValidationResult> ValidateAsync(PaymentIn paymentIn)
