@@ -54,7 +54,7 @@ angular.module('virtoCommerce.orderModule')
             name: 'orders.blades.payment-detail.labels.capture-payment',
             icon: 'fas fa-file-text',
             index: 1,
-            executeMethod: function (blade) {
+            executeMethod: function () {
                 blade.isLoading = true;
 
                 customerOrders.capturePayment({
@@ -77,7 +77,7 @@ angular.module('virtoCommerce.orderModule')
                 })
             },
             canExecuteMethod: function () {
-                return blade.currentEntity.status === 'Authorized';;
+                return blade.currentEntity.status === 'Authorized';
             }
         });
 

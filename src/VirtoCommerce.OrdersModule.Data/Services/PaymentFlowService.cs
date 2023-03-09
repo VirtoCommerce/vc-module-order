@@ -41,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var validationResult = _validator.Validate(paymentInfo);
             if (!validationResult.IsValid)
             {
-                result.ErrorMessage = validationResult.Errors.FirstOrDefault().ErrorMessage;
+                result.ErrorMessage = validationResult.Errors.FirstOrDefault()?.ErrorMessage;
                 return result;
             }
 
