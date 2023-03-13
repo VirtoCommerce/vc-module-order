@@ -12,10 +12,13 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         IQueryable<PaymentInEntity> InPayments { get; }
         IQueryable<AddressEntity> Addresses { get; }
         IQueryable<LineItemEntity> LineItems { get; }
+        //IQueryable<RefundEntity> Refunds { get; }
 
         Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null);
         Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids);
         Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids);
+        //Task<RefundEntity[]> GetRefundsByIdsAsync(string[] ids);
+
         Task RemoveOrdersByIdsAsync(string[] ids);
     }
 }

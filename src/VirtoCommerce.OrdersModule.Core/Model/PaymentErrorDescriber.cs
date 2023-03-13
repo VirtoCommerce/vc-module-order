@@ -29,6 +29,16 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             return $"Can't find a store";
         }
 
+        public static string NotCapturable()
+        {
+            return "Payment method does not support payment capture";
+        }
+
+        public static string NotRefundable()
+        {
+            return "Payment method does not support refund";
+        }
+
         public static string PaymentMethodError()
         {
             return $"Internal payment method error";

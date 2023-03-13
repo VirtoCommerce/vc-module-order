@@ -1,5 +1,5 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.paymentDetailController', [
+    .controller('virtoCommerce.orderModule.refundDetailController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
         'platformWebApp.dialogService',

@@ -94,12 +94,45 @@
           "price": "Payment fees",
           "price-with-tax": "Payment fees (incl. tax)",
           "vendor": "Vendor",
-          "capture-payment": "Capture payment"
+          "capture-payment": "Capture payment",
+          "refund-payment": "Refund payment"
         },
         "placeholders": {
           "status": "Select...",
           "payment-gateway": "Select...",
           "vendor": "Select..."
+        }
+      },
+      "refund-add": {
+        "title": "Create a refund",
+        "labels": {
+          "amount": "Refund amount",
+          "reasonCode": "Refund reason",
+          "message": "Refund message"
+        },
+        "reason-codes": {
+          "duplicate": "Duplicate",
+          "fraudulent": "Fraudulent",
+          "requestedbycustomer": "Requested by Customer",
+          "other": "Other"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "reasonCode": "Select...",
+          "message": "Enter..."
+        }
+      },
+      "refund-details": {
+        "title": "Refund #{{number}}",
+        "labels": {
+        },
+        "refund-status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "processed": "Processed"
+        },
+        "placeholders": {
         }
       },
       "transactions-list": {

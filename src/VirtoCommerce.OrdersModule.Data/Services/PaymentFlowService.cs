@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Validators;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
@@ -19,6 +22,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICrudService<Store> _storeService;
         private readonly IValidator<OrderPaymentInfo> _validator;
 
+        private PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
+        private PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
+
         public PaymentFlowService(
             ICrudService<CustomerOrder> customerOrderService,
             ICrudService<PaymentIn> paymentService,
@@ -31,49 +37,120 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _validator = validator;
         }
 
-        public virtual async Task<OrderPaymentResult> CapturePaymentAsync(OrderPaymentRequest request)
+        public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            var result = AbstractTypeFactory<OrderPaymentResult>.TryCreateInstance();
+            var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request);
+            var paymentInfo = await GetPaymentInfoAsync(request, _refundAllowedPaymentStatus);
 
             // validate payment
-            var validationResult = _validator.Validate(paymentInfo);
+            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(PaymentRequestValidator.RefundRuleSet));
             if (!validationResult.IsValid)
             {
-                result.ErrorMessage = validationResult.Errors.FirstOrDefault()?.ErrorMessage;
+                var error = validationResult.Errors.FirstOrDefault();
+                result.ErrorMessage = error?.ErrorMessage;
+                result.ErrorCode = error?.ErrorCode;
+
                 return result;
             }
 
-            var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
+            // create and save refund
+            var refund = CreateRefund(paymentInfo.Payment, request);
+
+            if (paymentInfo.Payment.Refunds == null)
+            {
+                paymentInfo.Payment.Refunds = new List<Refund>();
+            }
+            paymentInfo.Payment.Refunds.Add(refund);
+
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+
+            // call payment method refund
+            var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
+            var refundResult = default(RefundPaymentRequestResult);
 
             try
             {
-                var captureResult = paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
-
-                // save order
-                if (captureResult.IsSuccess)
-                {
-                    paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
-
-                    await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
-
-                    result.Succeeded = true;
-                }
-                else
-                {
-                    result.ErrorMessage = captureResult.ErrorMessage;
-                }
+                refundResult = paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
             }
             catch (Exception)
             {
+                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = PaymentErrorDescriber.PaymentMethodError();
+
+                return result;
+            }
+
+            if (refundResult.IsSuccess)
+            {
+                refund.Status = refundResult.NewRefundStatus.ToString();
+                await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+
+                result.RefundStatus = refund.Status;
+                result.Succeeded = true;
+            }
+            else
+            {
+                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
+                result.ErrorMessage = refundResult.ErrorMessage;
             }
 
             return result;
         }
 
-        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request)
+
+
+        public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
+        {
+            var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
+
+            var paymentInfo = await GetPaymentInfoAsync(request, _captureAllowedPaymentStatus);
+
+            // validate payment
+            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(PaymentRequestValidator.CaptureRuleSet));
+            if (!validationResult.IsValid)
+            {
+                var error = validationResult.Errors.FirstOrDefault();
+                result.ErrorMessage = error?.ErrorMessage;
+                result.ErrorCode = error?.ErrorCode;
+
+                return result;
+            }
+
+            var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
+            var captureResult = default(CapturePaymentRequestResult);
+
+            try
+            {
+                captureResult = paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
+            }
+            catch (Exception)
+            {
+                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
+                result.ErrorMessage = PaymentErrorDescriber.PaymentMethodError();
+
+                return result;
+            }
+
+            // save order
+            if (captureResult.IsSuccess)
+            {
+                paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
+                await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+
+                result.PaymentStatus = paymentInfo.Payment.Status;
+                result.Succeeded = true;
+            }
+            else
+            {
+                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
+                result.ErrorMessage = captureResult.ErrorMessage;
+            }
+
+            return result;
+        }
+
+        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request, PaymentStatus paymentStatus)
         {
             var result = AbstractTypeFactory<OrderPaymentInfo>.TryCreateInstance();
 
@@ -82,8 +159,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.CustomerOrder = await _customerOrderService.GetByIdAsync(request.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
                 result.Payment = string.IsNullOrEmpty(request.PaymentId)
-                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Status == PaymentStatus.Authorized.ToString())
-                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == PaymentStatus.Authorized.ToString());
+                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Status == paymentStatus.ToString())
+                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == paymentStatus.ToString());
             }
             else if (!string.IsNullOrEmpty(request.PaymentId))
             {
@@ -91,7 +168,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.CustomerOrder = await _customerOrderService.GetByIdAsync(result.Payment?.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
                 // take payment from order since Order payment contains instanced PaymentMethod (payment taken from service doesn't)
-                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == PaymentStatus.Authorized.ToString());
+                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == paymentStatus.ToString());
             }
 
             result.Store = await _storeService.GetByIdAsync(result.CustomerOrder?.StoreId, StoreResponseGroup.StoreInfo.ToString());
@@ -99,20 +176,73 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-        protected virtual CapturePaymentRequest GetCapturePaymentRequest(OrderPaymentInfo paymentInfo, OrderPaymentRequest request)
+        protected virtual CapturePaymentRequest GetCapturePaymentRequest(OrderPaymentInfo paymentInfo, CaptureOrderPaymentRequest request)
         {
             var result = AbstractTypeFactory<CapturePaymentRequest>.TryCreateInstance();
 
+            FillPaymentRequestBase(paymentInfo, result);
+
+            result.CaptureAmount = request.Amount;
+
+            if (!string.IsNullOrEmpty(request.CaptureDetails))
+            {
+                result.Parameters = new NameValueCollection
+                {
+                    { nameof(request.CaptureDetails), request.CaptureDetails }
+                };
+            }
+
+            return result;
+        }
+
+        protected virtual RefundPaymentRequest GetRefundPaymentRequest(OrderPaymentInfo paymentInfo, RefundOrderPaymentRequest request)
+        {
+            var result = AbstractTypeFactory<RefundPaymentRequest>.TryCreateInstance();
+
+            FillPaymentRequestBase(paymentInfo, result);
+
+            result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
+
+            result.Parameters = new NameValueCollection();
+            if (!string.IsNullOrEmpty(request.ReasonCode))
+            {
+                result.Parameters.Add(nameof(request.ReasonCode), request.ReasonCode);
+            }
+
+            if (!string.IsNullOrEmpty(request.ReasonMessage))
+            {
+                result.Parameters.Add(nameof(request.ReasonMessage), request.ReasonMessage);
+            }
+
+            return result;
+        }
+
+        protected virtual Refund CreateRefund(PaymentIn payment, RefundOrderPaymentRequest request)
+        {
+            var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
+
+            refund.Number = payment.Number;
+
+            refund.Amount = request.Amount ?? payment.Sum;
+            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
+            refund.ReasonMessage = request.ReasonMessage;
+
+            refund.Status = RefundStatus.Pending.ToString();
+            refund.Currency = payment.Currency;
+            refund.CustomerOrderId = payment.OrderId;
+            refund.VendorId = payment.VendorId;
+
+            return refund;
+        }
+
+        private static void FillPaymentRequestBase(OrderPaymentInfo paymentInfo, PaymentRequestBase result)
+        {
             result.OrderId = paymentInfo.CustomerOrder.Id;
             result.Order = paymentInfo.CustomerOrder;
             result.PaymentId = paymentInfo.Payment.Id;
             result.Payment = paymentInfo.Payment;
             result.StoreId = paymentInfo.Store.Id;
             result.Store = paymentInfo.Store;
-
-            result.CaptureAmount = request.Amount;
-
-            return result;
         }
     }
 }

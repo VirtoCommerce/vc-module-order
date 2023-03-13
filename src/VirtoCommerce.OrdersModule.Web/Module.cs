@@ -140,6 +140,7 @@ namespace VirtoCommerce.OrdersModule.Web
             dynamicPropertyRegistrar.RegisterType<CustomerOrder>();
             dynamicPropertyRegistrar.RegisterType<PaymentIn>();
             dynamicPropertyRegistrar.RegisterType<Shipment>();
+            dynamicPropertyRegistrar.RegisterType<Refund>();
             dynamicPropertyRegistrar.RegisterType<LineItem>();
 
             var fullTextSearchEnabled = Configuration.IsOrderFullTextSearchEnabled();

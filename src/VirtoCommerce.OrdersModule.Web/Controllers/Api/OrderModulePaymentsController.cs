@@ -161,9 +161,19 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("payment/capture")]
         [Authorize(ModuleConstants.Security.Permissions.CapturePayment)]
-        public async Task<ActionResult> CapturePayment([FromBody] OrderPaymentRequest request)
+        public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
             var result = await _paymentFlowService.CapturePaymentAsync(request);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("payment/refund")]
+        [Authorize(ModuleConstants.Security.Permissions.RefundPayment)]
+        public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
+        {
+            var result = await _paymentFlowService.RefundPaymentAsync(request);
 
             return Ok(result);
         }

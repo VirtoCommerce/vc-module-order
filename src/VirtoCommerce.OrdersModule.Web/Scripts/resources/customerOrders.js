@@ -11,6 +11,7 @@ angular.module('virtoCommerce.orderModule')
         searchOrderChanges: { method: 'POST', url: 'api/order/customerOrders/searchChanges' },
         indexedSearch: { method: 'POST', url: 'api/order/customerOrders/indexed/search' },
         indexedSearchEnabled: { method: 'GET', url: '/api/order/customerOrders/indexed/searchEnabled' },
-        capturePayment: { method: 'POST', url: 'api/order/payments/payment/capture' }
+        capturePayment: { method: 'POST', url: 'api/order/payments/payment/capture' },
+        refundPayment: { method: 'POST', url: 'api/order/payments/payment/refund' }
     });
 }]);

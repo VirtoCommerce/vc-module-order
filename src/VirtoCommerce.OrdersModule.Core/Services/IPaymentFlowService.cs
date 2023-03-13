@@ -5,6 +5,7 @@ namespace VirtoCommerce.OrdersModule.Core.Services
 {
     public interface IPaymentFlowService
     {
-        Task<OrderPaymentResult> CapturePaymentAsync(OrderPaymentRequest request);
+        Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request);
+        Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request);
     }
 }

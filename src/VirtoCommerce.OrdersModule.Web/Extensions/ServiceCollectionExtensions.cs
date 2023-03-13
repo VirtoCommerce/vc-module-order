@@ -12,7 +12,7 @@ namespace VirtoCommerce.OrdersModule.Web.Extensions
         {
             serviceCollection.AddTransient<IValidator<CustomerOrder>, CustomerOrderValidator>();
             serviceCollection.AddTransient<IValidator<PaymentIn>, PaymentInValidator>();
-            serviceCollection.AddTransient<IValidator<OrderPaymentInfo>, CapturePaymentRequestValidator>();
+            serviceCollection.AddTransient<IValidator<OrderPaymentInfo>, PaymentRequestValidator>();
         }
     }
 }

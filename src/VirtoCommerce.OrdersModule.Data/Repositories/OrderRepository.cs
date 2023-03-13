@@ -28,6 +28,9 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<AddressEntity> Addresses => DbContext.Set<AddressEntity>();
         public IQueryable<LineItemEntity> LineItems => DbContext.Set<LineItemEntity>();
         public IQueryable<PaymentGatewayTransactionEntity> Transactions => DbContext.Set<PaymentGatewayTransactionEntity>();
+        public IQueryable<RefundEntity> Refunds => DbContext.Set<RefundEntity>();
+        public IQueryable<RefundItemEntity> RefundItems => DbContext.Set<RefundItemEntity>();
+
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
         public virtual async Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null)
@@ -120,6 +123,24 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                     {
                         await OrderDynamicPropertyObjectValues.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
+                    }
+                }
+            }
+
+
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
+            {
+                var refunds = await Refunds.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
+
+                if (refunds.Any())
+                {
+                    var refundIds = refunds.Select(x => x.Id).ToArray();
+
+                    await RefundItems.Where(x => refundIds.Contains(x.RefundId)).LoadAsync();
+
+                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                    {
+                        await OrderDynamicPropertyObjectValues.Where(x => refundIds.Contains(x.RefundId)).LoadAsync();
                     }
                 }
             }
