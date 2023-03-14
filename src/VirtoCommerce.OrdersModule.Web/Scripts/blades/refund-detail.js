@@ -15,7 +15,7 @@ angular.module('virtoCommerce.orderModule')
         blade.titleValues = { number: blade.currentEntity.number };
         blade.subtitle = 'orders.blades.refund-details.subtitle';
 
-        blade.realOperationsCollection = blade.customerOrder.inPayments;
+        blade.realOperationsCollection = _.flatten(_.pluck(blade.customerOrder.inPayments, 'refunds'));
 
         paymentMethods.search({storeId: blade.customerOrder.storeId}, function (data) {
                 blade.paymentMethods = data.results;

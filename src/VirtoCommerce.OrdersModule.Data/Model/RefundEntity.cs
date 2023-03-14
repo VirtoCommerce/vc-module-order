@@ -163,6 +163,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             refund.CancelledDate = CancelledDate;
             refund.CancelReason = CancelReason;
             refund.VendorId = VendorId;
+            refund.Amount = Amount;
             refund.Sum = Sum;
             refund.OuterId = OuterId;
             refund.Status = Status;
