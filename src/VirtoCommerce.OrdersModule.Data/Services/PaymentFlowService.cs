@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
+using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Validators;
@@ -11,6 +12,7 @@ using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
@@ -21,6 +23,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICrudService<PaymentIn> _paymentService;
         private readonly ICrudService<Store> _storeService;
         private readonly IValidator<OrderPaymentInfo> _validator;
+        private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
 
         private PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
         private PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
@@ -29,12 +32,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             ICrudService<CustomerOrder> customerOrderService,
             ICrudService<PaymentIn> paymentService,
             ICrudService<Store> storeService,
-            IValidator<OrderPaymentInfo> validator)
+            IValidator<OrderPaymentInfo> validator,
+            IUniqueNumberGenerator uniqueNumberGenerator)
         {
             _customerOrderService = customerOrderService;
             _paymentService = paymentService;
             _storeService = storeService;
             _validator = validator;
+            _uniqueNumberGenerator = uniqueNumberGenerator;
         }
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
@@ -55,7 +60,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             // create and save refund
-            var refund = CreateRefund(paymentInfo.Payment, request);
+            var refund = CreateRefund(paymentInfo.Payment, paymentInfo.Store, request);
 
             if (paymentInfo.Payment.Refunds == null)
             {
@@ -217,11 +222,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-        protected virtual Refund CreateRefund(PaymentIn payment, RefundOrderPaymentRequest request)
+        protected virtual Refund CreateRefund(PaymentIn payment, Store store, RefundOrderPaymentRequest request)
         {
             var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
 
-            refund.Number = payment.Number;
+            var numberTemplate = store.Settings.GetSettingValue(
+                Core.ModuleConstants.Settings.General.RefundNewNumberTemplate.Name,
+                Core.ModuleConstants.Settings.General.RefundNewNumberTemplate.DefaultValue);
+            refund.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
 
             refund.Amount = request.Amount ?? payment.Sum;
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);

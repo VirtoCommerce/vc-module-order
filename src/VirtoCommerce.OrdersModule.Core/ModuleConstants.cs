@@ -85,6 +85,16 @@ namespace VirtoCommerce.OrdersModule.Core
                     AllowedValues = new[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
                 };
 
+                public static SettingDescriptor RefundStatus = new SettingDescriptor
+                {
+                    Name = "Refund.Status",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|General",
+                    IsDictionary = true,
+                    DefaultValue = "Pending",
+                    AllowedValues = new[] { "Pending", "Rejected", "Processed" }
+                };
+
                 public static SettingDescriptor OrderCustomerOrderNewNumberTemplate = new SettingDescriptor
                 {
                     Name = "Order.CustomerOrderNewNumberTemplate",
@@ -107,6 +117,14 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|Orders",
                     DefaultValue = "PI{0:yyMMdd}-{1:D5}"
+                };
+
+                public static SettingDescriptor RefundNewNumberTemplate = new SettingDescriptor
+                {
+                    Name = "Order.RefundNewNumberTemplate",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|Orders",
+                    DefaultValue = "RE{0:yyMMdd}-{1:D5}"
                 };
 
                 public static SettingDescriptor SendOrderNotifications = new SettingDescriptor
@@ -180,9 +198,11 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return OrderStatus;
                         yield return ShipmentStatus;
                         yield return PaymentInStatus;
+                        yield return RefundStatus;
                         yield return OrderCustomerOrderNewNumberTemplate;
                         yield return OrderShipmentNewNumberTemplate;
                         yield return OrderPaymentInNewNumberTemplate;
+                        yield return RefundNewNumberTemplate;
                         yield return SendOrderNotifications;
                         yield return OrderAdjustInventory;
                         yield return LogOrderChanges;
@@ -200,6 +220,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     yield return General.OrderCustomerOrderNewNumberTemplate;
                     yield return General.OrderPaymentInNewNumberTemplate;
                     yield return General.OrderShipmentNewNumberTemplate;
+                    yield return General.RefundNewNumberTemplate;
                 }
             }
 

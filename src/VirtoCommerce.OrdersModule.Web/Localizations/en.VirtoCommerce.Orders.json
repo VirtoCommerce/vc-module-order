@@ -124,7 +124,11 @@
       },
       "refund-details": {
         "title": "Refund #{{number}}",
+        "subtitle": "Edit payment details and related documents",
         "labels": {
+          "status": "Status",
+          "amount": "Amount",
+          "vendor": "Vendor"
         },
         "refund-status": {
           "pending": "Pending",
@@ -133,6 +137,8 @@
           "processed": "Processed"
         },
         "placeholders": {
+          "status": "Select...",
+          "vendor": "Select..."
         }
       },
       "transactions-list": {
@@ -193,6 +199,9 @@
           },
           "payment-operation": {
             "description": "Incoming payment document"
+          },
+          "refund-operation": {
+            "description": "Refund document"
           }
         }
       }
@@ -311,6 +320,11 @@
         "voided": "Void",
         "custom": "Custom",
         "cancelled": "Cancelled"
+      },
+      "refund-status": {
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "processed": "Processed"
       }
     },
     "commands": {

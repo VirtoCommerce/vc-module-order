@@ -38,8 +38,8 @@ angular.module('virtoCommerce.orderModule')
                 blade.isLoading = false;
 
                 if (data.succeeded) {
-                    //blade.refresh();
-                    //blade.parentBlade.refresh();
+                    blade.parentRefresh();
+                    $scope.bladeClose();
                 }
                 else {
                     bladeNavigationService.setError(data.errorMessage, blade);
@@ -61,7 +61,7 @@ angular.module('virtoCommerce.orderModule')
         }
 
         function translateCode(code, $translate) {
-            var translateKey = 'orders.blades.refund-add.reason-codes.' + code.ToLowerCase();
+            var translateKey = 'orders.blades.refund-add.reason-codes.' + code.toLowerCase();
             var result = $translate.instant(translateKey);
             return result === translateKey ? code : result;
         }

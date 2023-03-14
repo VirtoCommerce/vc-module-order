@@ -89,6 +89,10 @@ angular.module('virtoCommerce.orderModule')
                     id: 'refund-add',
                     title: 'orders.blades.refund-add.title',
                     payment: blade.currentEntity,
+                    parentRefresh: function () {
+                        blade.refresh();
+                        blade.parentBlade.refresh();
+                    },
                     controller: 'virtoCommerce.orderModule.refundAddController',
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/refund-add.html'
                 };
