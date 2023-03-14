@@ -20,7 +20,9 @@ angular.module('virtoCommerce.orderModule')
             blade.isLoading = false;
         };
 
-        $scope.setForm = function (form) { $scope.formScope = form; };
+        $scope.setForm = function (form) {
+            $scope.formScope = form;
+        };
 
         $scope.cancelChanges = function () {
             $scope.bladeClose();
@@ -51,16 +53,15 @@ angular.module('virtoCommerce.orderModule')
         };
 
         $scope.getRefundReasons = function () {
-            var result = _.map(blade.refundCodes, function (x) {
+            return _.map(blade.refundCodes, function (x) {
                 return {
                     id: x,
-                    name: translateCode(x, $translate)
+                    name: translateCode(x)
                 };
             });
-            return result;
         }
 
-        function translateCode(code, $translate) {
+        function translateCode(code) {
             var translateKey = 'orders.blades.refund-add.reason-codes.' + code.toLowerCase();
             var result = $translate.instant(translateKey);
             return result === translateKey ? code : result;

@@ -15,14 +15,4 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string ErrorMessage { get; set; }
     }
-
-    public class CaptureOrderPaymentResult : OrderPaymentResult
-    {
-        public string PaymentStatus { get; set; }
-    }
-
-    public class RefundOrderPaymentResult : OrderPaymentResult
-    {
-        public string RefundStatus { get; set; }
-    }
 }

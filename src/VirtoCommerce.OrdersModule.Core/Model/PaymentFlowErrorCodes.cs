@@ -1,6 +1,6 @@
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class PaymentFlowErrorCodes
+    public static class PaymentFlowErrorCodes
     {
         /// <summary>
         /// Invalid request errors arise when your request has invalid parameters or the payment provider doesn’t support the operation

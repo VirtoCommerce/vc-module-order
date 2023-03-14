@@ -301,9 +301,6 @@ angular.module(moduleName, [
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-items-widget.tpl.html'
         };
         widgetService.registerWidget(shipmentItemsWidget, 'shipmentDetailWidgets');
-        widgetService.registerWidget({
-            controller: 'platformWebApp.changeLog.operationsWidgetController',
-            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'shipmentDetailWidgets');
 
 
         var customerOrderAddressWidget = {
@@ -370,15 +367,14 @@ angular.module(moduleName, [
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-transactions-widget.tpl.html'
         };
         widgetService.registerWidget(paymentTransactionsWidget, 'paymentDetailWidgets');
-        widgetService.registerWidget({
-            controller: 'platformWebApp.changeLog.operationsWidgetController',
-            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
-        }, 'paymentDetailWidgets');
 
-        widgetService.registerWidget({
+        var operationsWidget = {
             controller: 'platformWebApp.changeLog.operationsWidgetController',
             template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
-        }, 'refundDetailWidgets');
+        };
+        widgetService.registerWidget(operationsWidget, 'shipmentDetailWidgets');
+        widgetService.registerWidget(operationsWidget, 'paymentDetailWidgets');
+        widgetService.registerWidget(operationsWidget, 'refundDetailWidgets');
 
         var dynamicPropertyWidget = {
             controller: 'platformWebApp.dynamicPropertyWidgetController',

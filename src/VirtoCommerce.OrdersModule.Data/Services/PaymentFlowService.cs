@@ -25,8 +25,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IValidator<OrderPaymentInfo> _validator;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
 
-        private PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
-        private PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
+        private readonly PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
+        private readonly PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
 
         public PaymentFlowService(
             ICrudService<CustomerOrder> customerOrderService,

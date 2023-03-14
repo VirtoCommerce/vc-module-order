@@ -85,7 +85,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     AllowedValues = new[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
                 };
 
-                public static SettingDescriptor RefundStatus = new SettingDescriptor
+                public static SettingDescriptor RefundStatus { get; } = new SettingDescriptor
                 {
                     Name = "Refund.Status",
                     ValueType = SettingValueType.ShortText,
@@ -119,7 +119,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "PI{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor RefundNewNumberTemplate = new SettingDescriptor
+                public static SettingDescriptor RefundNewNumberTemplate { get; } = new SettingDescriptor
                 {
                     Name = "Order.RefundNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,

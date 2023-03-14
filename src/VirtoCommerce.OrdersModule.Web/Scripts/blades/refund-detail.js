@@ -2,21 +2,19 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.refundDetailController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
-        'platformWebApp.dialogService',
         'platformWebApp.settings',
-        'virtoCommerce.orderModule.order_res_customerOrders',
         'virtoCommerce.orderModule.statusTranslationService',
         'platformWebApp.authService',
         'virtoCommerce.paymentModule.paymentMethods',
         'virtoCommerce.customerModule.members',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members) {
+    function ($scope, bladeNavigationService, settings, statusTranslationService, authService, paymentMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
         blade.title = 'orders.blades.refund-details.title';
         blade.titleValues = { number: blade.currentEntity.number };
         blade.subtitle = 'orders.blades.refund-details.subtitle';
-                
+
         blade.realOperationsCollection = blade.customerOrder.inPayments;
 
         paymentMethods.search({storeId: blade.customerOrder.storeId}, function (data) {

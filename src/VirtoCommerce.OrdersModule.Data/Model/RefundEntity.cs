@@ -147,38 +147,38 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             Patch((OperationEntity)target);
         }
 
-        public override void Patch(OperationEntity operation)
+        public override void Patch(OperationEntity target)
         {
-            var target = operation as RefundEntity;
-            if (target == null)
+            var refund = target as RefundEntity;
+            if (refund == null)
             {
                 throw new ArgumentException(@"target argument must be of type RefunrEntity", nameof(target));
             }
 
-            base.Patch(target);
+            base.Patch(refund);
 
-            target.OuterId = OuterId;
-            target.Status = Status;
-            target.IsCancelled = IsCancelled;
-            target.CancelledDate = CancelledDate;
-            target.CancelReason = CancelReason;
-            target.VendorId = VendorId;
-            target.Sum = Sum;
-            target.OuterId = OuterId;
-            target.Status = Status;
-            target.IsCancelled = IsCancelled;
-            target.CancelledDate = CancelledDate;
-            target.CancelReason = CancelReason;
-            target.VendorId = VendorId;
+            refund.OuterId = OuterId;
+            refund.Status = Status;
+            refund.IsCancelled = IsCancelled;
+            refund.CancelledDate = CancelledDate;
+            refund.CancelReason = CancelReason;
+            refund.VendorId = VendorId;
+            refund.Sum = Sum;
+            refund.OuterId = OuterId;
+            refund.Status = Status;
+            refund.IsCancelled = IsCancelled;
+            refund.CancelledDate = CancelledDate;
+            refund.CancelReason = CancelReason;
+            refund.VendorId = VendorId;
 
             if (!Items.IsNullCollection())
             {
-                Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Items.Patch(refund.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
-                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
+                DynamicPropertyObjectValues.Patch(refund.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
         }
     }
