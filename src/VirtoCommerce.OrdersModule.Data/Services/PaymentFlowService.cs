@@ -28,6 +28,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
         private readonly PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
 
+        protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
+        protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
+
         public PaymentFlowService(
             ICrudService<CustomerOrder> customerOrderService,
             ICrudService<PaymentIn> paymentService,
@@ -49,7 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, _refundAllowedPaymentStatus);
 
             // validate payment
-            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(PaymentRequestValidator.RefundRuleSet));
+            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();
@@ -112,7 +115,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, _captureAllowedPaymentStatus);
 
             // validate payment
-            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(PaymentRequestValidator.CaptureRuleSet));
+            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();

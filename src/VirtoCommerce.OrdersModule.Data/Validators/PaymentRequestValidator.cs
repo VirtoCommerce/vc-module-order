@@ -9,6 +9,7 @@ namespace VirtoCommerce.OrdersModule.Data.Validators
 {
     public class PaymentRequestValidator : AbstractValidator<OrderPaymentInfo>
     {
+        public const string DefaultRuleSet = "default";
         public const string CaptureRuleSet = "capture";
         public const string RefundRuleSet = "refund";
 
