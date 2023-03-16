@@ -88,8 +88,6 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                     {
                         criteria.ResponseGroup = CustomerOrderResponseGroup.Default.ToString();
                     }
-
-                    context.Succeed(requirement);
                 }
 
                 if (context.Resource is CustomerOrder order)
