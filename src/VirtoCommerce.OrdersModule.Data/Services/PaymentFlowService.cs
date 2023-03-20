@@ -71,8 +71,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
             paymentInfo.Payment.Refunds.Add(refund);
 
-            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
-
             // call payment method refund
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
             var refundResult = default(RefundPaymentRequestResult);
@@ -81,16 +79,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 refundResult = paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
-                result.ErrorMessage = PaymentErrorDescriber.PaymentMethodError();
+                result.ErrorMessage = ex.Message;
 
                 return result;
             }
 
             if (refundResult.IsSuccess)
             {
+                refund.OuterId = refundResult.OuterId;
                 refund.Status = refundResult.NewRefundStatus.ToString();
                 await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
@@ -132,10 +131,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 captureResult = paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
-                result.ErrorMessage = PaymentErrorDescriber.PaymentMethodError();
+                result.ErrorMessage = ex.Message;
 
                 return result;
             }
@@ -190,7 +189,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             FillPaymentRequestBase(paymentInfo, result);
 
-            result.CaptureAmount = request.Amount;
+            result.CaptureAmount = request.Amount ?? paymentInfo.Payment.Sum;
 
             if (!string.IsNullOrEmpty(request.CaptureDetails))
             {
@@ -210,17 +209,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             FillPaymentRequestBase(paymentInfo, result);
 
             result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
-
-            result.Parameters = new NameValueCollection();
-            if (!string.IsNullOrEmpty(request.ReasonCode))
-            {
-                result.Parameters.Add(nameof(request.ReasonCode), request.ReasonCode);
-            }
-
-            if (!string.IsNullOrEmpty(request.ReasonMessage))
-            {
-                result.Parameters.Add(nameof(request.ReasonMessage), request.ReasonMessage);
-            }
+            result.Reason = request.ReasonCode;
+            result.Notes = request.ReasonMessage;           
 
             return result;
         }

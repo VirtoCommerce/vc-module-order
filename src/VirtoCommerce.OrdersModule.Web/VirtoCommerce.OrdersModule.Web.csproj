@@ -29,7 +29,7 @@
     <PackageReference Include="DinkToPdfCopy" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-    <PackageReference Include="VirtoCommerce.PaymentModule.Data" Version="3.208.0-alpha.199-pt-11145" />
+    <PackageReference Include="VirtoCommerce.PaymentModule.Data" Version="3.208.0-alpha.200-pt-11145" />
     <PackageReference Include="VirtoCommerce.NotificationsModule.TemplateLoader.FileSystem" Version="3.200.0" />
   </ItemGroup>
   <ItemGroup>
