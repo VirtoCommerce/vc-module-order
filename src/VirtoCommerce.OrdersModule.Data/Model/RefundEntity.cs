@@ -68,6 +68,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             refund.CancelReason = CancelReason;
             refund.Sum = Sum;
             refund.VendorId = VendorId;
+            refund.Comment = Comment;
 
             refund.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<RefundItem>.TryCreateInstance())).ToList();
 
@@ -118,6 +119,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             CancelReason = refund.CancelReason;
             Sum = refund.Sum;
             VendorId = refund.VendorId;
+            Comment = refund.Comment;
 
             if (refund.Status.IsNullOrEmpty())
             {
@@ -171,6 +173,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             refund.CancelledDate = CancelledDate;
             refund.CancelReason = CancelReason;
             refund.VendorId = VendorId;
+            refund.Comment = Comment;
 
             if (!Items.IsNullCollection())
             {

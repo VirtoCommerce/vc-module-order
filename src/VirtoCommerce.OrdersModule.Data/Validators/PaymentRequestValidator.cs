@@ -14,7 +14,7 @@ namespace VirtoCommerce.OrdersModule.Data.Validators
         public const string RefundRuleSet = "refund";
 
         private readonly PaymentStatus[] _captureValidStates = new[] { PaymentStatus.Authorized };
-        private readonly PaymentStatus[] _refundValidStates = new[] { PaymentStatus.Paid };
+        private readonly PaymentStatus[] _refundValidStates = new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded };
 
         public PaymentRequestValidator()
         {

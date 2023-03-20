@@ -5,6 +5,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class Refund : OrderOperation
     {
+        public override string ObjectType { get; set; } = typeof(Refund).FullName;
+
         public decimal Amount { get; set; }
 
         public RefundReasonCode ReasonCode { get; set; }

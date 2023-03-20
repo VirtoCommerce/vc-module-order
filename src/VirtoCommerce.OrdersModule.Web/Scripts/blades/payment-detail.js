@@ -9,10 +9,14 @@ angular.module('virtoCommerce.orderModule')
         'platformWebApp.authService',
         'virtoCommerce.paymentModule.paymentMethods',
         'virtoCommerce.customerModule.members',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members) {
+        'currencyFilter',
+        function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members, currencyFilter) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.paymentMethods = [];
+
+        blade.captureStatuses = ['Authorized'];
+        blade.refundStatuses = ['PartiallyRefunded', 'Paid'];
 
         if (blade.isNew) {
             blade.title = 'orders.blades.payment-detail.title-new';
@@ -55,30 +59,44 @@ angular.module('virtoCommerce.orderModule')
             icon: 'fas fa-file-text',
             index: 1,
             executeMethod: function () {
-                blade.isLoading = true;
+                var amount = currencyFilter(blade.currentEntity.sum, blade.currentEntity.currency).replace(/\s/g, '');
 
-                customerOrders.capturePayment({
-                    paymentId: blade.currentEntity.id
-                }, function (data) {
-                    blade.isLoading = false;
+                var dialog = {
+                    id: "confirmCapture",
+                    title: "orders.dialogs.payment-capture.title",
+                    message: "orders.dialogs.payment-capture.message",
+                    messageValues: { amount: amount },
+                    callback: function (capture) {
+                        if (capture) {
+                            blade.isLoading = true;
 
-                    if (data.succeeded) {
-                        blade.currentEntity.status = 'Paid';
+                            customerOrders.capturePayment({
+                                paymentId: blade.currentEntity.id
+                            }, function (data) {
+                                blade.isLoading = false;
 
-                        blade.refresh();
-                        blade.parentBlade.refresh();
+                                if (data.succeeded) {
+                                    blade.currentEntity.status = 'Paid';
+
+                                    blade.refresh();
+                                    blade.parentBlade.refresh();
+                                }
+                                else {
+                                    bladeNavigationService.setError(data.errorMessage, blade);
+                                }
+                            }, function (error) {
+                                blade.isLoading = false;
+
+                                bladeNavigationService.setError('Error ' + error.status, blade);
+                            })
+                        }
                     }
-                    else {
-                        bladeNavigationService.setError(data.errorMessage, blade);
-                    }
-                }, function (error) {
-                    blade.isLoading = false;
+                };
 
-                    bladeNavigationService.setError('Error ' + error.status, blade);
-                })
+                dialogService.showConfirmationDialog(dialog);
             },
             canExecuteMethod: function () {
-                return blade.currentEntity.status === 'Authorized';
+                return _.find(blade.captureStatuses, function (x) { return x === blade.currentEntity.status });
             }
         });
 
@@ -101,7 +119,7 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.showBlade(newBlade, blade);
             },
             canExecuteMethod: function () {
-                return blade.currentEntity.status === 'Paid';
+                return _.find(blade.refundStatuses, function (x) { return x === blade.currentEntity.status });
             }
         });
 

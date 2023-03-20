@@ -19,7 +19,7 @@
             </div>
             <div class="tree-el __price" va-permission="order:read_prices">
                 <i class="tree-ico fa fa-money"></i>
-                {{node.operation.sum  | currency:node.operation.currency}}
+                {{node.operation.sum || node.operation.amount | currency:node.operation.currency}}
             </div>
             <div class="tree-el __canceled" ng-if="node.operation.status">
                 {{node.operation | statusTranslate}}

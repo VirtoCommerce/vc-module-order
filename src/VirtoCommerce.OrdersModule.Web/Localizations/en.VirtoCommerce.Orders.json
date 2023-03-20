@@ -290,6 +290,10 @@
         "placeholders": {
           "reason": "Please enter the reason for removing here..."
         }
+      },
+      "payment-capture": {
+        "title": "Capture confirmation",
+        "message": "Are you sure you want to capture payment on {{amount}}?"
       }
     },
     "settings": {
