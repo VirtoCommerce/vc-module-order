@@ -25,9 +25,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IValidator<OrderPaymentInfo> _validator;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
 
-        private readonly PaymentStatus _captureAllowedPaymentStatus = PaymentStatus.Authorized;
-        private readonly PaymentStatus _refundAllowedPaymentStatus = PaymentStatus.Paid;
-
         protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
         protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
 
@@ -49,7 +46,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, _refundAllowedPaymentStatus);
+            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Paid, PaymentStatus.PartiallyRefunded);
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
@@ -111,7 +108,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, _captureAllowedPaymentStatus);
+            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized );
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
@@ -157,7 +154,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request, PaymentStatus paymentStatus)
+        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request, params PaymentStatus[] allowedStatuses)
         {
             var result = AbstractTypeFactory<OrderPaymentInfo>.TryCreateInstance();
 
@@ -166,8 +163,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.CustomerOrder = await _customerOrderService.GetByIdAsync(request.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
                 result.Payment = string.IsNullOrEmpty(request.PaymentId)
-                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Status == paymentStatus.ToString())
-                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == paymentStatus.ToString());
+                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => allowedStatuses.Contains(x.PaymentStatus))
+                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
             }
             else if (!string.IsNullOrEmpty(request.PaymentId))
             {
@@ -175,7 +172,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.CustomerOrder = await _customerOrderService.GetByIdAsync(result.Payment?.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
                 // take payment from order since Order payment contains instanced PaymentMethod (payment taken from service doesn't)
-                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && x.Status == paymentStatus.ToString());
+                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
             }
 
             result.Store = await _storeService.GetByIdAsync(result.CustomerOrder?.StoreId, StoreResponseGroup.StoreInfo.ToString());
