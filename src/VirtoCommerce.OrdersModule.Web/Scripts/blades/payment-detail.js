@@ -17,6 +17,8 @@ angular.module('virtoCommerce.orderModule')
 
         blade.captureStatuses = ['Authorized'];
         blade.refundStatuses = ['PartiallyRefunded', 'Paid'];
+        blade.capturePermission = 'order:capture_payment';
+        blade.refundPermission = 'order:refund';
 
         if (blade.isNew) {
             blade.title = 'orders.blades.payment-detail.title-new';
@@ -58,6 +60,7 @@ angular.module('virtoCommerce.orderModule')
             name: 'orders.blades.payment-detail.labels.capture-payment',
             icon: 'fas fa-file-text',
             index: 1,
+            permission: blade.capturePermission,
             executeMethod: function () {
                 var amount = currencyFilter(blade.currentEntity.sum, blade.currentEntity.currency).replace(/\s/g, '');
 
@@ -104,6 +107,7 @@ angular.module('virtoCommerce.orderModule')
             name: 'orders.blades.payment-detail.labels.refund-payment',
             icon: 'fas fa-file-text',
             index: 2,
+            permission: blade.refundPermission,
             executeMethod: function () {
                 var newBlade = {
                     id: 'refund-add',
