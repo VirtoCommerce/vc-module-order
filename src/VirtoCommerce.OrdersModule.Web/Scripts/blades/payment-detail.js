@@ -99,7 +99,9 @@ angular.module('virtoCommerce.orderModule')
                 dialogService.showConfirmationDialog(dialog);
             },
             canExecuteMethod: function () {
-                return _.find(blade.captureStatuses, function (x) { return x === blade.currentEntity.status });
+                return _.find(blade.captureStatuses, function (x) {
+                    return x === blade.currentEntity.status
+                });
             }
         });
 
@@ -123,7 +125,9 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.showBlade(newBlade, blade);
             },
             canExecuteMethod: function () {
-                return _.find(blade.refundStatuses, function (x) { return x === blade.currentEntity.status });
+                return _.find(blade.refundStatuses, function (x) {
+                    return x === blade.currentEntity.status
+                });
             }
         });
 
