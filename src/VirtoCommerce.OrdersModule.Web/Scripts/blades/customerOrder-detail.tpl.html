@@ -18,12 +18,13 @@
 
 <script type="text/ng-template" id="order-employeeSelector.html">
     <div class="form-input">
-        <ui-select ng-model="blade.customerOrder.employeeId" ng-change="blade.customerOrder.employeeName = $select.selected ? $select.selected.fullName : undefined" ng-disabled="blade.isLocked">
-            <ui-select-match allow-clear placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.employee' | translate }}">{{$select.selected.fullName}}</ui-select-match>
-            <ui-select-choices repeat="x.id as x in blade.employees | filter: { fullName: $select.search }">
-                <span ng-bind-html="x.fullName | highlight: $select.search"></span>
-            </ui-select-choices>
-        </ui-select>
+        <ui-scroll-drop-down data="blade.fetchEmployees(criteria)"
+                             ng-model="blade.customerOrder.employeeId"
+                             on-select="blade.customerOrder.employeeName = item.name"
+                             on-remove="blade.customerOrder.employeeName = undefined"
+                             placeholder="'orders.blades.customerOrder-detail.placeholders.employee'"
+                             disabled="blade.isLocked">
+        </ui-scroll-drop-down>
     </div>
 </script>
 
