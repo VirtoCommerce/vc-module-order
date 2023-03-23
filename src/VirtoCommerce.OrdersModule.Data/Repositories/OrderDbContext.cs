@@ -125,6 +125,36 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #endregion
 
+            #region Refund
+
+            modelBuilder.Entity<RefundEntity>().HasKey(x => x.Id);
+            modelBuilder.Entity<RefundEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<RefundEntity>().HasOne(x => x.CustomerOrder).WithMany()
+                .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RefundEntity>().HasOne(x => x.Payment).WithMany(x => x.Refunds)
+                .HasForeignKey(x => x.PaymentId).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RefundEntity>().ToTable("OrderRefund");
+
+            #endregion
+
+            #region RefundItem
+
+            modelBuilder.Entity<RefundItemEntity>().HasKey(x => x.Id);
+            modelBuilder.Entity<RefundItemEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<RefundItemEntity>().HasOne(x => x.LineItem).WithMany(x => x.RefundItems)
+                        .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+
+            modelBuilder.Entity<RefundItemEntity>().HasOne(x => x.Refund).WithMany(x => x.Items)
+                        .HasForeignKey(x => x.RefundId).OnDelete(DeleteBehavior.Restrict).IsRequired();
+
+            modelBuilder.Entity<RefundItemEntity>().ToTable("OrderRefundItem");
+
+            #endregion
+
             #region Discount
 
             modelBuilder.Entity<DiscountEntity>().HasKey(x => x.Id);
@@ -221,6 +251,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 .OnDelete(DeleteBehavior.Cascade);
 
             //need to set DeleteBehavior.Cascade manually
+            modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasOne(p => p.Refund)
+                .WithMany(s => s.DynamicPropertyObjectValues).HasForeignKey(k => k.RefundId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //need to set DeleteBehavior.Cascade manually
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasOne(p => p.LineItem)
                 .WithMany(s => s.DynamicPropertyObjectValues).HasForeignKey(k => k.LineItemId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -236,6 +271,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.ShipmentId })
                 .IsUnique(false)
                 .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_ShipmentId");
+
+            modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.RefundId })
+                .IsUnique(false)
+                .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_RefundId");
 
             modelBuilder.Entity<OrderDynamicPropertyObjectValueEntity>().HasIndex(x => new { x.ObjectType, x.LineItemId })
                 .IsUnique(false)

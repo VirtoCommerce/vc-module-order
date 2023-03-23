@@ -79,12 +79,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #endregion
 
-
         #region IHasDiscounts
         public ICollection<Discount> Discounts { get; set; }
         #endregion
 
         public ICollection<PaymentGatewayTransaction> Transactions { get; set; }
+
+        public ICollection<Refund> Refunds { get; set; }
 
         public virtual void ReduceDetails(string responseGroup)
         {
@@ -97,6 +98,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
                 Discounts = null;
+            }
+            if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
+            {
+                Refunds = null;
             }
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
@@ -127,6 +132,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
             result.TaxDetails = TaxDetails?.Select(x => x.Clone()).OfType<TaxDetail>().ToList();
             result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
+
+            result.Refunds = Refunds?.Select(x => x.Clone()).OfType<Refund>().ToList();
 
             return result;
         }

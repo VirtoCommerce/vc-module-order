@@ -97,6 +97,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
+            serviceCollection.AddTransient<IPaymentFlowService, PaymentFlowService>();
 
             //Register as scoped because we use UserManager<> as dependency in this implementation
             serviceCollection.AddScoped<SendNotificationsOrderChangedEventHandler>();
@@ -139,6 +140,7 @@ namespace VirtoCommerce.OrdersModule.Web
             dynamicPropertyRegistrar.RegisterType<CustomerOrder>();
             dynamicPropertyRegistrar.RegisterType<PaymentIn>();
             dynamicPropertyRegistrar.RegisterType<Shipment>();
+            dynamicPropertyRegistrar.RegisterType<Refund>();
             dynamicPropertyRegistrar.RegisterType<LineItem>();
 
             var fullTextSearchEnabled = Configuration.IsOrderFullTextSearchEnabled();
