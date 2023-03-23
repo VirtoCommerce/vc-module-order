@@ -36,22 +36,18 @@
 
 <script type="text/ng-template" id="customerSelector.html">
     <div class="form-input">
-        <ui-select ng-model="blade.currentEntity.customerId">
-            <ui-select-match allow-clear placeholder="{{ 'orders.blades.filter-detail.placeholders.all' | translate }}">{{$select.selected.fullName}}</ui-select-match>
-            <ui-select-choices repeat="x.id as x in blade.contacts | filter: { fullName: $select.search }">
-                <span ng-bind-html="x.fullName | highlight: $select.search"></span>
-            </ui-select-choices>
-        </ui-select>
+        <ui-scroll-drop-down data="blade.fetchCustomers(criteria)"
+                             ng-model="blade.currentEntity.customerId"
+                             placeholder="'orders.blades.filter-detail.placeholders.all'">
+        </ui-scroll-drop-down>
     </div>
 </script>
 
 <script type="text/ng-template" id="filter-employeeSelector.html">
     <div class="form-input">
-        <ui-select ng-model="blade.currentEntity.employeeId">
-            <ui-select-match allow-clear placeholder="{{ 'orders.blades.filter-detail.placeholders.all' | translate }}">{{$select.selected.fullName}}</ui-select-match>
-            <ui-select-choices repeat="x.id as x in blade.employees | filter: { fullName: $select.search }">
-                <span ng-bind-html="x.fullName | highlight: $select.search"></span>
-            </ui-select-choices>
-        </ui-select>
+        <ui-scroll-drop-down data="blade.fetchEmployees(criteria)"
+                             ng-model="blade.currentEntity.employeeId"
+                             placeholder="'orders.blades.filter-detail.placeholders.all'">
+        </ui-scroll-drop-down>
     </div>
 </script>

@@ -56,8 +56,13 @@ angular.module('virtoCommerce.orderModule')
             blade.statuses = statusTranslationService.translateStatuses(data, 'shipment');
         }
 
-        // load employees
-        blade.employees = blade.parentBlade.employees;
+        blade.fetchEmployees = function (criteria) {
+            criteria.memberType = 'Employee';
+            criteria.deepSearch = true;
+            criteria.sort = 'name';
+
+            return members.search(criteria);
+        };
 
         getFulfillmentCenters();
         blade.openFulfillmentCentersList = function () {

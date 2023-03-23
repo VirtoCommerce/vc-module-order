@@ -10,25 +10,21 @@ angular.module('virtoCommerce.orderModule')
         }
         settings.getValues({ id: 'Order.Status' }, translateBladeStatuses);
 
-        // load employees
-        members.search(
-           {
-               memberType: 'Employee',
-               sort: 'fullName:asc',
-               take: 1000
-           },
-           function (data) {
-               blade.employees = data.results;
-           });
-        members.search(
-           {
-               memberType: 'Contact',
-               sort: 'fullName:asc',
-               take: 1000
-           },
-           function (data) {
-               blade.contacts = data.results;
-           });
+        blade.fetchEmployees = function (criteria) {
+            criteria.memberType = 'Employee';
+            criteria.deepSearch = true;
+            criteria.sort = 'name';
+
+            return members.search(criteria);
+        };
+
+        blade.fetchCustomers = function (criteria) {
+            criteria.memberType = 'Contact';
+            criteria.deepSearch = true;
+            criteria.sort = 'name';
+
+            return members.search(criteria);
+        };
 
         $scope.applyCriteria = function () {
             angular.copy(blade.currentEntity, blade.origEntity);
