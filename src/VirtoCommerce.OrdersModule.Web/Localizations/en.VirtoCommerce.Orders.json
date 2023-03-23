@@ -93,11 +93,51 @@
           "payment-purpose": "Payment purpose",
           "price": "Payment fees",
           "price-with-tax": "Payment fees (incl. tax)",
-          "vendor": "Vendor"
+          "vendor": "Vendor",
+          "capture-payment": "Capture payment",
+          "refund-payment": "Refund payment"
         },
         "placeholders": {
           "status": "Select...",
           "payment-gateway": "Select...",
+          "vendor": "Select..."
+        }
+      },
+      "refund-add": {
+        "title": "Create a refund",
+        "labels": {
+          "amount": "Refund amount",
+          "reasonCode": "Refund reason",
+          "message": "Refund message"
+        },
+        "reason-codes": {
+          "duplicate": "Duplicate",
+          "fraudulent": "Fraudulent",
+          "requestedbycustomer": "Requested by Customer",
+          "other": "Other"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "reasonCode": "Select...",
+          "message": "Enter..."
+        }
+      },
+      "refund-details": {
+        "title": "Refund #{{number}}",
+        "subtitle": "Edit payment details and related documents",
+        "labels": {
+          "status": "Status",
+          "amount": "Amount",
+          "vendor": "Vendor"
+        },
+        "refund-status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "processed": "Processed"
+        },
+        "placeholders": {
+          "status": "Select...",
           "vendor": "Select..."
         }
       },
@@ -159,6 +199,9 @@
           },
           "payment-operation": {
             "description": "Incoming payment document"
+          },
+          "refund-operation": {
+            "description": "Refund document"
           }
         }
       }
@@ -247,6 +290,10 @@
         "placeholders": {
           "reason": "Please enter the reason for removing here..."
         }
+      },
+      "payment-capture": {
+        "title": "Capture confirmation",
+        "message": "Are you sure you want to capture payment on {{amount}}?"
       }
     },
     "settings": {
@@ -277,6 +324,11 @@
         "voided": "Void",
         "custom": "Custom",
         "cancelled": "Cancelled"
+      },
+      "refund-status": {
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "processed": "Processed"
       }
     },
     "commands": {

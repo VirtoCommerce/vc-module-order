@@ -19,6 +19,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string LineItemId { get; set; }
         public virtual LineItemEntity LineItem { get; set; }
 
+        public string RefundId { get; set; }
+        public virtual RefundEntity Refund { get; set; }
+
         #endregion        
     }
 }

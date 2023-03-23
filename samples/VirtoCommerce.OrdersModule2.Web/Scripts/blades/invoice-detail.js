@@ -40,18 +40,11 @@ angular.module('virtoCommerce.ordersModule2')
                 bladeNavigationService.showBlade(newBlade, blade);
             };
 
-            // load customers
-            members.search(
-                {
-                    memberType: 'Contact',
-                    sort: 'fullName:asc',
-                    take: 1000
-                },
-                function (data) {
-                    blade.contacts = data.results;
-                });
+            blade.fetchCustomers = function (criteria) {
+                criteria.memberType = 'Contact';
+                criteria.deepSearch = true;
+                criteria.sort = 'name';
 
-            blade.resetCustomerName = function (newVal) {
-                blade.currentEntity.customerName = newVal ? newVal.fullName : undefined;
+                return members.search(criteria);
             };
         }]);

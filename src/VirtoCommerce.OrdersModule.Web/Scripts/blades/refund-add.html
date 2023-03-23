@@ -1,0 +1,37 @@
+<div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
+<div class="blade-content __medium-wide">
+    <div class="blade-inner">
+        <div class="inner-block">
+            <form class="form" name="formScope">
+                <fieldset ng-init="setForm(formScope)">
+                    <div class="form-group __info list">
+                        <label class="form-label">{{ 'orders.blades.refund-add.labels.amount' | translate }}</label>
+                        <div class="form-input __currency">
+                            <span class="currency">{{blade.payment.currency}}</span>
+                            <input money type="text" ng-model="blade.currentEntity.amount" placeholder="{{ 'orders.blades.refund-add.placeholders.amount' | translate }}">
+                        </div>
+                    </div>
+                    <div class="form-group clearfix">
+                        <div class="column">
+                            <div class="form-group __info list">
+                                <label class="form-label" style="margin:0">{{'orders.blades.refund-add.labels.reasonCode' | translate}}</label>
+                                <ui-scroll-drop-down required
+                                                     page-size="50"
+                                                     ng-model="blade.currentEntity.reasonCode"
+                                                     data="getRefundReasons()"
+                                                     placeholder="'orders.blades.refund-add.placeholders.reasonCode'">
+                                </ui-scroll-drop-down>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group __info list">
+                        <label class="form-label">{{ 'orders.blades.refund-add.labels.message' | translate }}</label>
+                        <div class="form-input">
+                            <input ng-model="blade.currentEntity.reasonMessage" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.refund-add.placeholders.message' | translate }}">
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>

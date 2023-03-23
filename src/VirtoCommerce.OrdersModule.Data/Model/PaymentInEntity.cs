@@ -82,6 +82,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ObservableCollection<FeeDetailEntity> FeeDetails { get; set; } = new NullCollection<FeeDetailEntity>();
 
+        public virtual ObservableCollection<RefundEntity> Refunds { get; set; } = new NullCollection<RefundEntity>();
+
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -138,6 +140,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             payment.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             payment.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
             payment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
+
+            payment.Refunds = Refunds.Select(x => x.ToModel(AbstractTypeFactory<Refund>.TryCreateInstance())).ToList();
 
             payment.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
             {
@@ -231,6 +235,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 Transactions = new ObservableCollection<PaymentGatewayTransactionEntity>(payment.Transactions.Select(x => AbstractTypeFactory<PaymentGatewayTransactionEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
 
+            if (payment.Refunds != null)
+            {
+                Refunds = new ObservableCollection<RefundEntity>(payment.Refunds.Select(x => AbstractTypeFactory<RefundEntity>.TryCreateInstance().FromModel(x, pkMap)));
+            }
+
             if (payment.Status.IsNullOrEmpty())
             {
                 Status = payment.PaymentStatus.ToString();
@@ -319,6 +328,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (!Transactions.IsNullCollection())
             {
                 Transactions.Patch(payment.Transactions, (sourceTran, targetTran) => sourceTran.Patch(targetTran));
+            }
+
+            if (!Refunds.IsNullCollection())
+            {
+                Refunds.Patch(payment.Refunds, (sourceRefund, targetRefund) => sourceRefund.Patch(targetRefund));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())

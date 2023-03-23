@@ -195,6 +195,29 @@ angular.module(moduleName, [
         };
         knownOperations.registerOperation(paymentInOperation);
 
+        var refundOperation = {
+            type: 'Refund',
+            description: 'orders.blades.newOperation-wizard.menu.refund-operation',
+            detailBlade: {
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/refund-detail.html',
+                metaFields: [
+                    {
+                        name: 'number',
+                        isRequired: true,
+                        title: "orders.blades.payment-detail.labels.payment-number",
+                        valueType: "ShortText"
+                    },
+                    {
+                        name: 'createdDate',
+                        isReadOnly: true,
+                        title: "orders.blades.payment-detail.labels.from",
+                        valueType: "DateTime"
+                    }
+                ]
+            }
+        };
+        knownOperations.registerOperation(refundOperation);
+
         var shipmentOperation = {
             type: 'Shipment',
             description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
@@ -278,9 +301,6 @@ angular.module(moduleName, [
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/shipment-items-widget.tpl.html'
         };
         widgetService.registerWidget(shipmentItemsWidget, 'shipmentDetailWidgets');
-        widgetService.registerWidget({
-            controller: 'platformWebApp.changeLog.operationsWidgetController',
-            template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html' }, 'shipmentDetailWidgets');
 
 
         var customerOrderAddressWidget = {
@@ -308,6 +328,8 @@ angular.module(moduleName, [
         widgetService.registerWidget(operationCommentWidget, 'customerOrderDetailWidgets');
         widgetService.registerWidget(operationCommentWidget, 'shipmentDetailWidgets');
         widgetService.registerWidget(operationCommentWidget, 'paymentDetailWidgets');
+        widgetService.registerWidget(operationCommentWidget, 'refundDetailWidgets');
+
 
         var shipmentAddressWidget = {
             controller: 'virtoCommerce.orderModule.shipmentAddressWidgetController',
@@ -345,10 +367,14 @@ angular.module(moduleName, [
             template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/payment-transactions-widget.tpl.html'
         };
         widgetService.registerWidget(paymentTransactionsWidget, 'paymentDetailWidgets');
-        widgetService.registerWidget({
+
+        var operationsWidget = {
             controller: 'platformWebApp.changeLog.operationsWidgetController',
             template: '$(Platform)/Scripts/app/changeLog/widgets/operations-widget.tpl.html'
-        }, 'paymentDetailWidgets');
+        };
+        widgetService.registerWidget(operationsWidget, 'shipmentDetailWidgets');
+        widgetService.registerWidget(operationsWidget, 'paymentDetailWidgets');
+        widgetService.registerWidget(operationsWidget, 'refundDetailWidgets');
 
         var dynamicPropertyWidget = {
             controller: 'platformWebApp.dynamicPropertyWidgetController',
@@ -358,6 +384,7 @@ angular.module(moduleName, [
         widgetService.registerWidget(dynamicPropertyWidget, 'shipmentDetailWidgets');
         widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderDetailWidgets');
         widgetService.registerWidget(dynamicPropertyWidget, 'paymentDetailWidgets');
+        widgetService.registerWidget(dynamicPropertyWidget, 'refundDetailWidgets');
 
 
         var operationsTreeWidget = {

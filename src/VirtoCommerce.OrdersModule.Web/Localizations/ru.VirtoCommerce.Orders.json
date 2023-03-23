@@ -91,8 +91,8 @@
           "from": "От",
           "payment-gateway": "Платежная система",
           "payment-purpose": "Цель платежа",
-          "price": "Внесение оплаты",
-          "price-with-tax": "Внесение оплаты (с учетом налога)",
+          "price": "Комиссия за оплату",
+          "price-with-tax": "Комиссия за оплату (с учетом налога)",
           "vendor": "Вендор"
         },
         "placeholders": {
@@ -183,7 +183,7 @@
         "shipping-sub-total": "Сумма промежуточного итога доставки",
         "payment-sub-total": "Оплата",
         "tax-total": "Общая сумма налога",
-        "fee-total": "Общая сумма сбора",
+        "fee-total": "Общая сумма комиссии",
         "discount": "Скидка",
         "discount-total": "Общая сумма скидки",
         "discount-total-with-tax": "Общая сумма скидки с учетом налога",
@@ -202,7 +202,7 @@
       },
       "shipment-totals": {
         "tax-total": "Общая сумма налога",
-        "fee-total": "Общая сумма сбора",
+        "fee-total": "Общая сумма комиссии",
         "shipment-total": "Общая сумма доставки",
         "shipment-price": "Цена доставки",
         "discount-total": "Общая сумма скидки",
