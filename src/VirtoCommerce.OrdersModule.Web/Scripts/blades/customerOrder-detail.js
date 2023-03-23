@@ -68,18 +68,13 @@ angular.module('virtoCommerce.orderModule')
                 });
             };
 
+            blade.fetchEmployees = function (criteria) {
+                criteria.memberType = 'Employee';
+                criteria.deepSearch = true;
+                criteria.sort = 'name';
 
-            // load employees
-            members.search(
-                {
-                    memberType: 'Employee',
-                    //memberId: parent org. ID,
-                    sort: 'fullName:asc',
-                    take: 1000
-                },
-                function (data) {
-                    blade.employees = data.results;
-                });
+                return members.search(criteria);
+            };
 
             blade.customInitialize = function () {
                 blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
