@@ -112,6 +112,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         #endregion
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
+
         public virtual CustomerOrder ToModel(CustomerOrder order)
         {
             return (CustomerOrder)ToModel((OrderOperation)order);
