@@ -10,7 +10,6 @@ namespace VirtoCommerce.OrdersModule.Core.Services
     /// </summary>
     public interface IPaymentSearchService
     {
-        [Obsolete(@"Need to remove after inherit IPaymentSearchService from SearchService<PaymentIn>")]
         Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria);
     }
 }

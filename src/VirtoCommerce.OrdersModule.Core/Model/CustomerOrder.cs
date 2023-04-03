@@ -11,25 +11,49 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
+        ///<summary>
+        /// Represents the unique identifier of the customer who placed the order.
+        ///</summary>
         public string CustomerId { get; set; }
 
+        ///<summary>
+        /// Represents the name of the customer who placed the order.
+        ///</summary>
         public string CustomerName { get; set; }
 
-        [Obsolete("Use StoreId instead")]
+        ///<summary>
+        /// It may have been used to indicate the optional channel through which the order was placed, such as a physical store, online store, or mobile app.
+        ///</summary>
         public string ChannelId { get; set; }
 
+        ///<summary>
+        /// Represents the unique identifier of the store where the order was placed, which could be a physical store, online store, or mobile app.
+        ///</summary>
         public string StoreId { get; set; }
 
+        ///<summary>
+        /// Represents the unique identifier of the store where the order was placed, which could be a physical store, online store, or mobile app.
+        ///</summary>
         public string StoreName { get; set; }
 
+        ///<summary>
+        /// Represents the unique identifier of the organization that owns the store where the order was placed.
+        ///</summary>
         public string OrganizationId { get; set; }
 
+        ///<summary>
+        /// Represents the name of the organization that owns the store where the order was placed.
+        ///</summary>
         public string OrganizationName { get; set; }
 
-        [Obsolete("Use CustomerId instead")]
+        ///<summary>
+        /// Represents the name of the organization that owns the store where the order was placed.
+        /// </summary>
         public string EmployeeId { get; set; }
 
-        [Obsolete("Use CustomerName instead")]
+        ///<summary>
+        /// Represents the name of the employee who processed the order.
+        /// </summary>
         public string EmployeeName { get; set; }
 
         /// <summary>

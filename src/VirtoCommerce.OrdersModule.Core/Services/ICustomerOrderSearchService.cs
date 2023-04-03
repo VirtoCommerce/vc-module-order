@@ -10,7 +10,6 @@ namespace VirtoCommerce.OrdersModule.Core.Services
     /// </summary>
     public interface ICustomerOrderSearchService
     {
-        [Obsolete(@"Need to remove after inherit ICustomerOrderSearchService from SearchService<CustomerOrder>")]
         Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria);
     }
 }

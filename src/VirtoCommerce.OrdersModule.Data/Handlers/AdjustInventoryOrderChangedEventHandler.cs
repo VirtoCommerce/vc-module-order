@@ -183,45 +183,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
         }
 
-        [Obsolete("This method is not used anymore. Please use the TryAdjustOrderInventory(OrderLineItemChange[]) method instead.")]
-        protected virtual async Task TryAdjustOrderInventory(GenericChangedEntry<CustomerOrder> changedEntry)
-        {
-            var customerOrder = changedEntry.OldEntry;
-            //Skip prototypes
-            if (customerOrder.IsPrototype)
-                return;
-
-            var origLineItems = new LineItem[] { };
-            var changedLineItems = new LineItem[] { };
-
-            if (changedEntry.EntryState == EntryState.Added)
-            {
-                changedLineItems = changedEntry.NewEntry.Items.ToArray();
-            }
-            else if (changedEntry.EntryState == EntryState.Deleted)
-            {
-                origLineItems = changedEntry.OldEntry.Items.ToArray();
-            }
-            else
-            {
-                origLineItems = changedEntry.OldEntry.Items.ToArray();
-                changedLineItems = changedEntry.NewEntry.Items.ToArray();
-            }
-
-            var inventoryAdjustments = new HashSet<InventoryInfo>();
-            //Load all inventories records for all changes and old order items
-            var inventoryInfos = await _inventoryService.GetProductsInventoryInfosAsync(origLineItems.Select(x => x.ProductId).Concat(changedLineItems.Select(x => x.ProductId)).Distinct().ToArray());
-            changedLineItems.CompareTo(origLineItems, EqualityComparer<LineItem>.Default, async (state, changed, orig) =>
-            {
-                await AdjustInventory(inventoryInfos, inventoryAdjustments, customerOrder, state, changed, orig);
-            });
-            //Save inventories adjustments
-            if (inventoryAdjustments != null)
-            {
-                await _inventoryService.SaveChangesAsync(inventoryAdjustments);
-            }
-        }
-
         protected virtual async Task AdjustInventory(IEnumerable<InventoryInfo> inventories, HashSet<InventoryInfo> changedInventories, CustomerOrder order, EntryState action, LineItem changedLineItem, LineItem origLineItem)
         {
             var fulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(origLineItem, order.StoreId, order.Shipments?.ToArray());
