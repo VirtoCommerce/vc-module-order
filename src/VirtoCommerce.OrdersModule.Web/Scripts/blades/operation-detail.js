@@ -147,7 +147,7 @@ angular.module('virtoCommerce.orderModule')
                                             return;
                                         }
                                         else {
-                                            for (let operation of childrenOperations) {
+                                            for (var operation of childrenOperations) {
                                                 removeChildrenOperation(operation.childrenOperations, operationId);
                                             }
                                         }
