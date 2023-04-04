@@ -1,20 +1,18 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.refundAddController', [
         '$scope',
-        '$translate',
         'platformWebApp.bladeNavigationService',
         'virtoCommerce.orderModule.order_res_customerOrders',
-    function ($scope, $translate, bladeNavigationService, customerOrders) {
+        'virtoCommerce.orderModule.refundReasonsService',
+    function ($scope, bladeNavigationService, customerOrders, refundReasonsService) {
         var blade = $scope.blade;
         blade.title = 'orders.blades.refund-add.title';
         blade.subtitle = blade.payment.number;
 
-        blade.refundCodes = ['Duplicate', 'Fraudulent', 'RequestedByCustomer', 'Other'];
-
         blade.initialize = function () {
             blade.currentEntity = {
                 amout: blade.payment.sum,
-                reasonCode: blade.refundCodes[0]
+                reasonCode: refundReasonsService.refundCodes[0]
             };
 
             blade.isLoading = false;
@@ -53,18 +51,7 @@ angular.module('virtoCommerce.orderModule')
         };
 
         $scope.getRefundReasons = function () {
-            return _.map(blade.refundCodes, function (x) {
-                return {
-                    id: x,
-                    name: translateCode(x)
-                };
-            });
-        }
-
-        function translateCode(code) {
-            var translateKey = 'orders.blades.refund-add.reason-codes.' + code.toLowerCase();
-            var result = $translate.instant(translateKey);
-            return result === translateKey ? code : result;
+            return refundReasonsService.getRefundReasons();
         }
 
         blade.initialize();

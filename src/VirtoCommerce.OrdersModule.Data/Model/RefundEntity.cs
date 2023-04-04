@@ -51,24 +51,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type Refund", nameof(operation));
             }
 
-            refund.Id = Id;
-            refund.CreatedDate = CreatedDate;
-            refund.CreatedBy = CreatedBy;
-            refund.ModifiedDate = ModifiedDate;
-            refund.ModifiedBy = ModifiedBy;
-            refund.OuterId = OuterId;
-
             refund.CustomerOrderId = CustomerOrderId;
-
             refund.Amount = Amount;
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
-            refund.Sum = Sum;
             refund.VendorId = VendorId;
-            refund.Comment = Comment;
+            refund.ReasonMessage = ReasonMessage;
+            refund.PaymentId = PaymentId;
 
             refund.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<RefundItem>.TryCreateInstance())).ToList();
 
@@ -84,6 +71,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             base.ToModel(refund);
 
             refund.RefundStatus = EnumUtility.SafeParse(Status, RefundStatus.Pending);
+            refund.ReasonCode = EnumUtility.SafeParse(ReasonCode, RefundReasonCode.Other);
 
             return refund;
         }
@@ -103,28 +91,17 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             base.FromModel(refund, pkMap);
 
-            Id = refund.Id;
-            CreatedDate = refund.CreatedDate;
-            CreatedBy = refund.CreatedBy;
-            ModifiedDate = refund.ModifiedDate;
-            ModifiedBy = refund.ModifiedBy;
-
             CustomerOrderId = refund.CustomerOrderId;
-
             Amount = refund.Amount;
-            OuterId = refund.OuterId;
-            Status = refund.Status;
-            IsCancelled = refund.IsCancelled;
-            CancelledDate = refund.CancelledDate;
-            CancelReason = refund.CancelReason;
-            Sum = refund.Sum;
             VendorId = refund.VendorId;
-            Comment = refund.Comment;
 
             if (refund.Status.IsNullOrEmpty())
             {
                 Status = refund.RefundStatus.ToString();
             }
+
+            ReasonCode = refund.ReasonCode.ToString();
+            ReasonMessage = refund.ReasonMessage;
 
             if (refund.Items != null)
             {
@@ -159,21 +136,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             base.Patch(refund);
 
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
             refund.VendorId = VendorId;
             refund.Amount = Amount;
-            refund.Sum = Sum;
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
-            refund.VendorId = VendorId;
-            refund.Comment = Comment;
+            refund.CustomerOrderId = CustomerOrderId;
+            refund.ReasonCode = ReasonCode;
+            refund.ReasonMessage = ReasonMessage;
 
             if (!Items.IsNullCollection())
             {

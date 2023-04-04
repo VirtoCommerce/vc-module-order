@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus',
-    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus) {
+    .controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus', '$rootScope',
+    function ($scope,dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus, $rootScope) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -137,11 +137,32 @@ angular.module('virtoCommerce.orderModule')
                     callback: function (remove) {
                         if (remove) {
                             if (blade.id === 'operationDetail') {
-                                var idx = _.findIndex(blade.customerOrder.childrenOperations, function (x) { return x.id === blade.origEntity.id; });
-                                blade.customerOrder.childrenOperations.splice(idx, 1);
+                                function removeChildrenOperation(childrenOperations, operationId) {
+                                    if (childrenOperations && childrenOperations.length) {
+                                        var index = _.findIndex(childrenOperations, function (x) { return x.id === operationId; });
+                                        if (index >= 0) {
+                                            childrenOperations.splice(index, 1);
+                                        }
+                                        else {
+                                            for (var i = 0; i < childrenOperations.length; i++) {
+                                                var operation = childrenOperations[i];
+                                                removeChildrenOperation(operation.childrenOperations, operationId);
+                                            }
+                                        }
+                                    }
+                                }
+                                removeChildrenOperation(blade.customerOrder.childrenOperations, blade.origEntity.id);
+
                                 var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
                                 blade.realOperationsCollection.splice(idx, 1);
 
+                                switch (blade.currentEntity.operationType) {
+                                    case 'Refund':
+                                        blade.remove(blade.origEntity);
+                                        break;
+                                }
+
+                                $rootScope.$broadcast('update-operation-tree');
                                 bladeNavigationService.closeBlade(blade);
                             }
                             else {
