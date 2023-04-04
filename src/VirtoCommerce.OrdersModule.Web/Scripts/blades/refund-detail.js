@@ -21,7 +21,9 @@ angular.module('virtoCommerce.orderModule')
         blade.remove = function (refund) {
             var payment = _.findWhere(blade.customerOrder.inPayments, { id: refund.paymentId });
             if (payment) {
-                var index = _.findIndex(payment.refunds, function (x) { return x.id === refund.id; });
+                var index = _.findIndex(payment.refunds, function (x) {
+                    return x.id === refund.id;
+                });
                 if (index >= 0) {
                     payment.refunds.splice(index, 1);
                 }

@@ -139,13 +139,15 @@ angular.module('virtoCommerce.orderModule')
                             if (blade.id === 'operationDetail') {
                                 function removeChildrenOperation(childrenOperations, operationId) {
                                     if (childrenOperations && childrenOperations.length) {
-                                        var index = _.findIndex(childrenOperations, function (x) { return x.id === operationId; });
+                                        var index = _.findIndex(childrenOperations, function (x) {
+                                            return x.id === operationId;
+                                        });
                                         if (index >= 0) {
                                             childrenOperations.splice(index, 1);
+                                            return;
                                         }
                                         else {
-                                            for (var i = 0; i < childrenOperations.length; i++) {
-                                                var operation = childrenOperations[i];
+                                            for (let operation of childrenOperations) {
                                                 removeChildrenOperation(operation.childrenOperations, operationId);
                                             }
                                         }
@@ -156,10 +158,8 @@ angular.module('virtoCommerce.orderModule')
                                 var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
                                 blade.realOperationsCollection.splice(idx, 1);
 
-                                switch (blade.currentEntity.operationType) {
-                                    case 'Refund':
-                                        blade.remove(blade.origEntity);
-                                        break;
+                                if (blade.currentEntity.operationType === 'Refund') {
+                                    blade.remove(blade.origEntity);
                                 }
 
                                 $rootScope.$broadcast('update-operation-tree');
