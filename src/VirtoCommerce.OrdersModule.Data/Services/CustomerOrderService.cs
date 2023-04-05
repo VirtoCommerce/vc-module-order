@@ -58,6 +58,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return orders.ToArray();
         }
 
+        public override async Task SaveChangesAsync(IEnumerable<CustomerOrder> orders)
+        {
+            await SaveChangesAsync(orders.ToArray());
+        }
+
         public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
         {
             var pkMap = new PrimaryKeyResolvingMap();
