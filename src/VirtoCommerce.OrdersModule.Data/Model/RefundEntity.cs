@@ -45,17 +45,21 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override OrderOperation ToModel(OrderOperation operation)
         {
-            var refund = operation as Refund;
-            if (refund == null)
+            if (operation is not Refund refund)
             {
-                throw new ArgumentException(@"operation argument must be of type Refund", nameof(operation));
+                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Refund)}", nameof(operation));
             }
+
+            base.ToModel(refund);
 
             refund.CustomerOrderId = CustomerOrderId;
             refund.Amount = Amount;
             refund.VendorId = VendorId;
             refund.ReasonMessage = ReasonMessage;
             refund.PaymentId = PaymentId;
+
+            refund.RefundStatus = EnumUtility.SafeParse(Status, RefundStatus.Pending);
+            refund.ReasonCode = EnumUtility.SafeParse(ReasonCode, RefundReasonCode.Other);
 
             refund.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<RefundItem>.TryCreateInstance())).ToList();
 
@@ -68,11 +72,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 return property;
             }).ToArray();
 
-            base.ToModel(refund);
-
-            refund.RefundStatus = EnumUtility.SafeParse(Status, RefundStatus.Pending);
-            refund.ReasonCode = EnumUtility.SafeParse(ReasonCode, RefundReasonCode.Other);
-
             return refund;
         }
 
@@ -83,10 +82,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            var refund = operation as Refund;
-            if (refund == null)
+            if (operation is not Refund refund)
             {
-                throw new ArgumentException(@"operation argument must be of type Refund", nameof(operation));
+                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Refund)}", nameof(operation));
             }
 
             base.FromModel(refund, pkMap);
@@ -128,10 +126,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override void Patch(OperationEntity target)
         {
-            var refund = target as RefundEntity;
-            if (refund == null)
+            if (target is not RefundEntity refund)
             {
-                throw new ArgumentException(@"target argument must be of type RefunrEntity", nameof(target));
+                throw new ArgumentException($"{nameof(target)} argument must be of type {nameof(RefundEntity)}", nameof(target));
             }
 
             base.Patch(refund);
