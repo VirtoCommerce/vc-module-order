@@ -1,8 +1,8 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.operationTreeWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.knownOperations', function ($scope, bladeNavigationService, knownOperations) {
     var blade = $scope.blade;
 
-    $scope.$watchCollection('blade.customerOrder.childrenOperations', function () {
+    function updateOperationTree() {
         $scope.currentOperationId = blade.customerOrder.id;
 
         if (!blade.isLoading) {
@@ -10,7 +10,10 @@
             buildOperationsTree(blade.customerOrder, treeRoot)
             $scope.node = treeRoot.childrenNodes[0];
         }
-    });
+    }
+
+    $scope.$watchCollection('blade.customerOrder.childrenOperations', updateOperationTree);
+    $scope.$on('update-operation-tree', updateOperationTree);
 
     function buildOperationsTree(op, tree) {
         var foundTemplate = knownOperations.getOperation(op.operationType);

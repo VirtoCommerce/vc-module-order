@@ -45,30 +45,21 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override OrderOperation ToModel(OrderOperation operation)
         {
-            var refund = operation as Refund;
-            if (refund == null)
+            if (operation is not Refund refund)
             {
-                throw new ArgumentException(@"operation argument must be of type Refund", nameof(operation));
+                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Refund)}", nameof(operation));
             }
 
-            refund.Id = Id;
-            refund.CreatedDate = CreatedDate;
-            refund.CreatedBy = CreatedBy;
-            refund.ModifiedDate = ModifiedDate;
-            refund.ModifiedBy = ModifiedBy;
-            refund.OuterId = OuterId;
+            base.ToModel(refund);
 
             refund.CustomerOrderId = CustomerOrderId;
-
             refund.Amount = Amount;
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
-            refund.Sum = Sum;
             refund.VendorId = VendorId;
-            refund.Comment = Comment;
+            refund.ReasonMessage = ReasonMessage;
+            refund.PaymentId = PaymentId;
+
+            refund.RefundStatus = EnumUtility.SafeParse(Status, RefundStatus.Pending);
+            refund.ReasonCode = EnumUtility.SafeParse(ReasonCode, RefundReasonCode.Other);
 
             refund.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<RefundItem>.TryCreateInstance())).ToList();
 
@@ -81,10 +72,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 return property;
             }).ToArray();
 
-            base.ToModel(refund);
-
-            refund.RefundStatus = EnumUtility.SafeParse(Status, RefundStatus.Pending);
-
             return refund;
         }
 
@@ -95,36 +82,24 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            var refund = operation as Refund;
-            if (refund == null)
+            if (operation is not Refund refund)
             {
-                throw new ArgumentException(@"operation argument must be of type Refund", nameof(operation));
+                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Refund)}", nameof(operation));
             }
 
             base.FromModel(refund, pkMap);
 
-            Id = refund.Id;
-            CreatedDate = refund.CreatedDate;
-            CreatedBy = refund.CreatedBy;
-            ModifiedDate = refund.ModifiedDate;
-            ModifiedBy = refund.ModifiedBy;
-
             CustomerOrderId = refund.CustomerOrderId;
-
             Amount = refund.Amount;
-            OuterId = refund.OuterId;
-            Status = refund.Status;
-            IsCancelled = refund.IsCancelled;
-            CancelledDate = refund.CancelledDate;
-            CancelReason = refund.CancelReason;
-            Sum = refund.Sum;
             VendorId = refund.VendorId;
-            Comment = refund.Comment;
 
             if (refund.Status.IsNullOrEmpty())
             {
                 Status = refund.RefundStatus.ToString();
             }
+
+            ReasonCode = refund.ReasonCode.ToString();
+            ReasonMessage = refund.ReasonMessage;
 
             if (refund.Items != null)
             {
@@ -151,29 +126,18 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public override void Patch(OperationEntity target)
         {
-            var refund = target as RefundEntity;
-            if (refund == null)
+            if (target is not RefundEntity refund)
             {
-                throw new ArgumentException(@"target argument must be of type RefunrEntity", nameof(target));
+                throw new ArgumentException($"{nameof(target)} argument must be of type {nameof(RefundEntity)}", nameof(target));
             }
 
             base.Patch(refund);
 
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
             refund.VendorId = VendorId;
             refund.Amount = Amount;
-            refund.Sum = Sum;
-            refund.OuterId = OuterId;
-            refund.Status = Status;
-            refund.IsCancelled = IsCancelled;
-            refund.CancelledDate = CancelledDate;
-            refund.CancelReason = CancelReason;
-            refund.VendorId = VendorId;
-            refund.Comment = Comment;
+            refund.CustomerOrderId = CustomerOrderId;
+            refund.ReasonCode = ReasonCode;
+            refund.ReasonMessage = ReasonMessage;
 
             if (!Items.IsNullCollection())
             {

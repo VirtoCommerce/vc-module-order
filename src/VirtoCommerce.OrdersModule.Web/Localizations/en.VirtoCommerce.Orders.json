@@ -110,12 +110,6 @@
           "reasonCode": "Refund reason",
           "message": "Refund message"
         },
-        "reason-codes": {
-          "duplicate": "Duplicate",
-          "fraudulent": "Fraudulent",
-          "requestedbycustomer": "Requested by Customer",
-          "other": "Other"
-        },
         "placeholders": {
           "amount": "Enter...",
           "reasonCode": "Select...",
@@ -128,7 +122,8 @@
         "labels": {
           "status": "Status",
           "amount": "Amount",
-          "vendor": "Vendor"
+          "vendor": "Vendor",
+          "reasonCode": "Refund reason"
         },
         "refund-status": {
           "pending": "Pending",
@@ -138,7 +133,8 @@
         },
         "placeholders": {
           "status": "Select...",
-          "vendor": "Select..."
+          "vendor": "Select...",
+          "reasonCode": "Select..."
         }
       },
       "transactions-list": {
@@ -329,6 +325,12 @@
         "pending": "Pending",
         "rejected": "Rejected",
         "processed": "Processed"
+      },
+      "reason-codes": {
+        "duplicate": "Duplicate",
+        "fraudulent": "Fraudulent",
+        "requestedbycustomer": "Requested by Customer",
+        "other": "Other"
       }
     },
     "commands": {

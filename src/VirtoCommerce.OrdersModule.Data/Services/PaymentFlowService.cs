@@ -108,7 +108,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized );
+            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized);
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
@@ -207,7 +207,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
             result.Reason = request.ReasonCode;
-            result.Notes = request.ReasonMessage;           
+            result.Notes = request.ReasonMessage;
 
             return result;
         }
@@ -224,6 +224,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             refund.Amount = request.Amount ?? payment.Sum;
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
             refund.ReasonMessage = request.ReasonMessage;
+            refund.Comment = request.ReasonMessage;
 
             refund.Status = RefundStatus.Pending.ToString();
             refund.Currency = payment.Currency;
