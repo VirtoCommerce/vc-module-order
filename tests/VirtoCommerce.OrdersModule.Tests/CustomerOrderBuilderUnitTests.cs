@@ -96,7 +96,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
 
-        private CustomerOrderBuilder GetCustomerOrderBuilder()
+        private static CustomerOrderBuilder GetCustomerOrderBuilder()
         {
             return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object);
         }
