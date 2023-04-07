@@ -58,6 +58,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(2048)]
         public string Comment { get; set; }
 
+        [StringLength(64)]
+        public string Status { get; set; }
+
         public bool IsReccuring { get; set; }
 
         [StringLength(1028)]
@@ -164,6 +167,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.CancelledDate = CancelledDate;
             lineItem.CancelReason = CancelReason;
             lineItem.Comment = Comment;
+            lineItem.Status = Status;
             lineItem.IsGift = IsGift;
             lineItem.FulfillmentCenterId = FulfillmentCenterId;
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
@@ -234,6 +238,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             CancelledDate = lineItem.CancelledDate;
             CancelReason = lineItem.CancelReason;
             Comment = lineItem.Comment;
+            Status = lineItem.Status;
 
             IsGift = lineItem.IsGift ?? false;
 
@@ -288,6 +293,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.CancelledDate = CancelledDate;
             target.CancelReason = CancelReason;
             target.Comment = Comment;
+            target.Status = Status;
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
             target.VendorId = VendorId;

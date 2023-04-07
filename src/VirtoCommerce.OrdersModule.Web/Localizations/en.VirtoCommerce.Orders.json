@@ -25,6 +25,7 @@
       "customerOrder-items": {
         "labels": {
           "item": "Item",
+          "status": "Status",
           "quantity": "Qty",
           "available": "Avail",
           "await": "Await",
@@ -303,6 +304,13 @@
         "partially sent": "Partially sent",
         "completed": "Completed"
       },
+      "line-item-status": {
+        "pending": "Pending",
+        "inprogress": "In Progress",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
       "shipment-status": {
         "new": "New",
         "pickpack": "Pick pack",
@@ -352,6 +360,18 @@
     "Order.Status": {
       "description": "Customer order statuses",
       "title": "Customer order statuses"
+    },
+    "Order.InitialStatus": {
+      "title": "Customer order initial status",
+      "description": "The initial status of a new customer order"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Line item statuses",
+      "description": ""
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Line item initial status",
+      "description": "The initial status of a line item in a new customer order"
     },
     "Shipment.Status": {
       "description": "Shipment statuses",
