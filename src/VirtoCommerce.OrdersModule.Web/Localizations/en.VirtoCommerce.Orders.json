@@ -359,7 +359,7 @@
   "settings": {
     "Order.Status": {
       "description": "Customer order statuses",
-      "title": "Customer order statuses"
+      "title": "The list of available statuses for customer orders"
     },
     "Order.InitialStatus": {
       "title": "Customer order initial status",
@@ -367,7 +367,7 @@
     },
     "OrderLineItem.Statuses": {
       "title": "Line item statuses",
-      "description": ""
+      "description": "The list of available statuses for order line items"
     },
     "OrderLineItem.InitialStatus": {
       "title": "Line item initial status",
