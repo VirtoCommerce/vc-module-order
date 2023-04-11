@@ -51,8 +51,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
-                    DefaultValue = CustomerOrderStatus.New,
-                    AllowedValues = new[]
+                    AllowedValues = new object[]
                     {
                         CustomerOrderStatus.New,
                         CustomerOrderStatus.NotPayed,
@@ -65,6 +64,30 @@ namespace VirtoCommerce.OrdersModule.Core
                     }
                 };
 
+                public static SettingDescriptor OrderInitialStatus { get; } = new()
+                {
+                    Name = "Order.InitialStatus",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|General",
+                    DefaultValue = CustomerOrderStatus.New,
+                };
+
+                public static SettingDescriptor OrderLineItemStatuses { get; } = new()
+                {
+                    Name = "OrderLineItem.Statuses",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|General",
+                    IsDictionary = true,
+                    AllowedValues = new object[] { "Pending", "InProgress", "Shipped", "Delivered", "Cancelled" },
+                };
+
+                public static SettingDescriptor OrderLineItemInitialStatus { get; } = new()
+                {
+                    Name = "OrderLineItem.InitialStatus",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|General",
+                };
+
                 public static SettingDescriptor ShipmentStatus = new SettingDescriptor
                 {
                     Name = "Shipment.Status",
@@ -72,7 +95,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                     IsDictionary = true,
                     DefaultValue = "New",
-                    AllowedValues = new[] { "New", "PickPack", "Cancelled", "ReadyToSend", "Sent" }
+                    AllowedValues = new object[] { "New", "PickPack", "Cancelled", "ReadyToSend", "Sent" }
                 };
 
                 public static SettingDescriptor PaymentInStatus = new SettingDescriptor
@@ -82,7 +105,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                     IsDictionary = true,
                     DefaultValue = "New",
-                    AllowedValues = new[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
+                    AllowedValues = new object[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
                 };
 
                 public static SettingDescriptor RefundStatus { get; } = new SettingDescriptor
@@ -92,7 +115,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                     IsDictionary = true,
                     DefaultValue = "Pending",
-                    AllowedValues = new[] { "Pending", "Rejected", "Processed" }
+                    AllowedValues = new object[] { "Pending", "Rejected", "Processed" }
                 };
 
                 public static SettingDescriptor OrderCustomerOrderNewNumberTemplate = new SettingDescriptor
@@ -196,6 +219,9 @@ namespace VirtoCommerce.OrdersModule.Core
                     get
                     {
                         yield return OrderStatus;
+                        yield return OrderInitialStatus;
+                        yield return OrderLineItemStatuses;
+                        yield return OrderLineItemInitialStatus;
                         yield return ShipmentStatus;
                         yield return PaymentInStatus;
                         yield return RefundStatus;

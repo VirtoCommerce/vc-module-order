@@ -552,6 +552,10 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<string>("Status")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("numeric(18,4)");
 

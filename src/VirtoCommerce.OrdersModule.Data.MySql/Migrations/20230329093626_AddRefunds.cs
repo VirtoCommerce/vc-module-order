@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -22,7 +22,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(128)", maxLength: 128, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Amount = table.Column<decimal>(type: "Money(65,30)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     ReasonCode = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReasonMessage = table.Column<string>(type: "longtext", nullable: true)
@@ -50,7 +50,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Currency = table.Column<string>(type: "varchar(3)", maxLength: 3, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Sum = table.Column<decimal>(type: "Money(65,30)", nullable: false),
+                    Sum = table.Column<decimal>(type: "decimal(18,4)", precision: 18, scale: 4, nullable: false),
                     IsCancelled = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CancelledState = table.Column<string>(type: "varchar(32)", maxLength: 32, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),

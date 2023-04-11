@@ -19,11 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{57E0491D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{1EA54EEA-DB8B-43F2-BB85-AEA2977EFBBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.OrdersModule.Data.SqlServer", "src\VirtoCommerce.OrdersModule.Data.SqlServer\VirtoCommerce.OrdersModule.Data.SqlServer.csproj", "{61BBA64F-F098-4CDC-959A-CF8BDB584D00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule.Data.SqlServer", "src\VirtoCommerce.OrdersModule.Data.SqlServer\VirtoCommerce.OrdersModule.Data.SqlServer.csproj", "{61BBA64F-F098-4CDC-959A-CF8BDB584D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.OrdersModule.Data.MySql", "src\VirtoCommerce.OrdersModule.Data.MySql\VirtoCommerce.OrdersModule.Data.MySql.csproj", "{761DF756-0D22-471E-AF2F-E7D3B6C57501}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule.Data.MySql", "src\VirtoCommerce.OrdersModule.Data.MySql\VirtoCommerce.OrdersModule.Data.MySql.csproj", "{761DF756-0D22-471E-AF2F-E7D3B6C57501}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.OrdersModule.Data.PostgreSql", "src\VirtoCommerce.OrdersModule.Data.PostgreSql\VirtoCommerce.OrdersModule.Data.PostgreSql.csproj", "{629AD871-0B05-4CC0-B462-BDC87A30B894}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.OrdersModule.Data.PostgreSql", "src\VirtoCommerce.OrdersModule.Data.PostgreSql\VirtoCommerce.OrdersModule.Data.PostgreSql.csproj", "{629AD871-0B05-4CC0-B462-BDC87A30B894}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
