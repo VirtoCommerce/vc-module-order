@@ -358,8 +358,8 @@
   },
   "settings": {
     "Order.Status": {
-      "description": "Customer order statuses",
-      "title": "The list of available statuses for customer orders"
+      "title": "Customer order statuses",
+      "description": "The list of available statuses for customer orders"
     },
     "Order.InitialStatus": {
       "title": "Customer order initial status",
