@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 
@@ -10,9 +11,10 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230406145631_AddOrderLineItemStatus")]
+    partial class AddOrderLineItemStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -977,8 +979,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(128)");
 
                     b.Property<decimal>("Amount")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("Money(65,30)");
 
                     b.Property<string>("CancelReason")
                         .HasMaxLength(2048)
@@ -1053,8 +1054,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(64)");
 
                     b.Property<decimal>("Sum")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("Money(65,30)");
 
                     b.Property<string>("VendorId")
                         .HasMaxLength(256)
