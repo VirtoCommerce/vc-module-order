@@ -977,7 +977,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(128)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("Money(65,30)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("CancelReason")
                         .HasMaxLength(2048)
@@ -1052,7 +1053,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(64)");
 
                     b.Property<decimal>("Sum")
-                        .HasColumnType("Money(65,30)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("VendorId")
                         .HasMaxLength(256)
