@@ -318,6 +318,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Fee = shipment.FeeWithTax;
             retVal.Status = "New";
             retVal.VendorId = shipment.VendorId;
+            retVal.Comment = shipment.Comment;
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = ToOrderModel(shipment.DeliveryAddress);
@@ -354,6 +355,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new ArgumentNullException(nameof(payment));
 
             var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+            retVal.Purpose = payment.Purpose;
             retVal.Currency = payment.Currency;
             retVal.DiscountAmount = payment.DiscountAmount;
             retVal.Price = payment.Price;
@@ -364,6 +366,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Sum = payment.Amount;
             retVal.PaymentStatus = PaymentStatus.New;
             retVal.VendorId = payment.VendorId;
+            retVal.Comment = payment.Comment;
             if (payment.BillingAddress != null)
             {
                 retVal.BillingAddress = ToOrderModel(payment.BillingAddress);
