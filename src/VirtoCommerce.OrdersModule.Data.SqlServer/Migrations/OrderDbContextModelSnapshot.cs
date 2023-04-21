@@ -514,8 +514,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("OuterId")
                         .HasMaxLength(128)
