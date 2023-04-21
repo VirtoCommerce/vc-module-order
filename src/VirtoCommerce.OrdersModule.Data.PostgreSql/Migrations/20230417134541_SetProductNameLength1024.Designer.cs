@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VirtoCommerce.OrdersModule.Data.Repositories;
@@ -11,9 +12,10 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230417134541_SetProductNameLength1024")]
+    partial class SetProductNameLength1024
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -249,6 +251,11 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.Property<string>("PurchaseOrderNumber")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("bytea");
 
                     b.Property<decimal>("ShippingTotal")
                         .HasColumnType("Money");
@@ -547,6 +554,10 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<string>("Status")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("numeric(18,4)");
 
@@ -649,6 +660,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("RefundId")
+                        .HasColumnType("character varying(128)");
+
                     b.Property<string>("ShipmentId")
                         .HasColumnType("character varying(128)");
 
@@ -669,6 +683,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.HasIndex("PaymentInId");
 
+                    b.HasIndex("RefundId");
+
                     b.HasIndex("ShipmentId");
 
                     b.HasIndex("ObjectType", "CustomerOrderId")
@@ -682,6 +698,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.HasIndex("ObjectType", "PaymentInId")
                         .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_PaymentInId");
+
+                    b.HasIndex("ObjectType", "RefundId")
+                        .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_RefundId");
 
                     b.HasIndex("ObjectType", "ShipmentId")
                         .HasDatabaseName("IX_OrderDynamicProperty_ObjectType_ShipmentId");
@@ -916,6 +935,149 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.HasIndex("ShipmentId");
 
                     b.ToTable("OrderPaymentIn", (string)null);
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.RefundEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("Money");
+
+                    b.Property<string>("CancelReason")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<DateTime?>("CancelledDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CancelledState")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
+
+                    b.Property<string>("CustomerOrderId")
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("OuterId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("ParentOperationId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("ReasonCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReasonMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RejectReasonMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<decimal>("Sum")
+                        .HasColumnType("Money");
+
+                    b.Property<string>("VendorId")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerOrderId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.ToTable("OrderRefund", (string)null);
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.RefundItemEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LineItemId")
+                        .IsRequired()
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OuterId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RefundId")
+                        .IsRequired()
+                        .HasColumnType("character varying(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LineItemId");
+
+                    b.HasIndex("RefundId");
+
+                    b.ToTable("OrderRefundItem", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ShipmentEntity", b =>
@@ -1378,6 +1540,11 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasForeignKey("PaymentInId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.RefundEntity", "Refund")
+                        .WithMany("DynamicPropertyObjectValues")
+                        .HasForeignKey("RefundId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.ShipmentEntity", "Shipment")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("ShipmentId")
@@ -1388,6 +1555,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.Navigation("LineItem");
 
                     b.Navigation("PaymentIn");
+
+                    b.Navigation("Refund");
 
                     b.Navigation("Shipment");
                 });
@@ -1418,6 +1587,42 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.Navigation("CustomerOrder");
 
                     b.Navigation("Shipment");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.RefundEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
+                        .WithMany()
+                        .HasForeignKey("CustomerOrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "Payment")
+                        .WithMany("Refunds")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("CustomerOrder");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.RefundItemEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
+                        .WithMany("RefundItems")
+                        .HasForeignKey("LineItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.RefundEntity", "Refund")
+                        .WithMany("Items")
+                        .HasForeignKey("RefundId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("LineItem");
+
+                    b.Navigation("Refund");
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ShipmentEntity", b =>
@@ -1526,6 +1731,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.Navigation("FeeDetails");
 
+                    b.Navigation("RefundItems");
+
                     b.Navigation("ShipmentItems");
 
                     b.Navigation("TaxDetails");
@@ -1541,9 +1748,18 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.Navigation("FeeDetails");
 
+                    b.Navigation("Refunds");
+
                     b.Navigation("TaxDetails");
 
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.RefundEntity", b =>
+                {
+                    b.Navigation("DynamicPropertyObjectValues");
+
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ShipmentEntity", b =>

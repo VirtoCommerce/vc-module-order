@@ -531,8 +531,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
 
                     b.Property<string>("OuterId")
                         .HasMaxLength(128)

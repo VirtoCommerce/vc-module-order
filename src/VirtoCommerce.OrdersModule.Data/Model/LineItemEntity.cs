@@ -52,7 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(64)]
         public string ProductType { get; set; }
         [Required]
-        [StringLength(256)]
+        [StringLength(1024)]
         public string Name { get; set; }
 
         [StringLength(2048)]
