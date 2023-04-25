@@ -49,10 +49,10 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly IPlatformMemoryCache _platformMemoryCache;
         private readonly Mock<IChangeLogService> _changeLogServiceMock;
         private readonly Mock<ICacheEntry> _cacheEntryMock;
-        private readonly Mock<IEventPublisher> _eventPublisherMock;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ICustomerOrderSearchService _customerOrderSearchService;
         private readonly Mock<ILogger<PlatformMemoryCache>> _logMock;
+        private readonly Mock<ILogger<InProcessBus>> _logEventMock;
 
         public CustomerOrderServiceImplIntegrationTests()
         {
@@ -65,12 +65,12 @@ namespace VirtoCommerce.OrdersModule.Tests
             _paymentMethodsSearchService.Setup(s => s.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>())).ReturnsAsync(new PaymentMethodsSearchResult());
             _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
-            _eventPublisherMock = new Mock<IEventPublisher>();
             _dynamicPropertyServiceMock = new Mock<IDynamicPropertyService>();
             _cacheEntryMock = new Mock<ICacheEntry>();
             _cacheEntryMock.SetupGet(c => c.ExpirationTokens).Returns(new List<IChangeToken>());
             _changeLogServiceMock = new Mock<IChangeLogService>();
             _logMock = new Mock<ILogger<PlatformMemoryCache>>();
+            _logEventMock = new Mock<ILogger<InProcessBus>>();
             var cachingOptions = new OptionsWrapper<CachingOptions>(new CachingOptions { CacheEnabled = true });
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
@@ -95,6 +95,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _paymentMethodsSearchService.Object);
             container.AddSingleton(x => _platformMemoryCache);
             container.AddSingleton(x => _changeLogServiceMock.Object);
+            container.AddSingleton(x => _logEventMock.Object);
 
             var serviceProvider = container.BuildServiceProvider();
             _customerOrderService = serviceProvider.GetService<ICustomerOrderService>();
