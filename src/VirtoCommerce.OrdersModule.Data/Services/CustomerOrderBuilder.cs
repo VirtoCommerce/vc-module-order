@@ -10,8 +10,10 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Settings;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 using LineItem = VirtoCommerce.OrdersModule.Core.Model.LineItem;
+using OrderSettings = VirtoCommerce.OrdersModule.Core.ModuleConstants.Settings.General;
 using Shipment = VirtoCommerce.OrdersModule.Core.Model.Shipment;
 using ShipmentItem = VirtoCommerce.OrdersModule.Core.Model.ShipmentItem;
 
@@ -20,10 +22,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
     public class CustomerOrderBuilder : ICustomerOrderBuilder
     {
         private readonly ICustomerOrderService _customerOrderService;
+        private readonly ISettingsManager _settingsManager;
 
-        public CustomerOrderBuilder(ICustomerOrderService customerOrderService)
+        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager)
         {
             _customerOrderService = customerOrderService;
+            _settingsManager = settingsManager;
         }
 
         #region ICustomerOrderConverter Members
@@ -266,7 +270,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 retVal.Discounts = lineItem.Discounts.Select(ToOrderModel).ToList();
             }
+
             retVal.TaxDetails = lineItem.TaxDetails;
+            retVal.Status = GetDefaultLineItemStatus();
+
             return retVal;
         }
 
@@ -311,6 +318,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Fee = shipment.FeeWithTax;
             retVal.Status = "New";
             retVal.VendorId = shipment.VendorId;
+            retVal.Comment = shipment.Comment;
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = ToOrderModel(shipment.DeliveryAddress);
@@ -347,6 +355,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new ArgumentNullException(nameof(payment));
 
             var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+            retVal.Purpose = payment.Purpose;
             retVal.Currency = payment.Currency;
             retVal.DiscountAmount = payment.DiscountAmount;
             retVal.Price = payment.Price;
@@ -357,6 +366,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Sum = payment.Amount;
             retVal.PaymentStatus = PaymentStatus.New;
             retVal.VendorId = payment.VendorId;
+            retVal.Comment = payment.Comment;
             if (payment.BillingAddress != null)
             {
                 retVal.BillingAddress = ToOrderModel(payment.BillingAddress);
@@ -438,7 +448,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual string GetDefaultOrderStatus()
         {
-            return "New";
+            return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
+        }
+
+        protected virtual string GetDefaultLineItemStatus()
+        {
+            return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderLineItemInitialStatus);
         }
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)

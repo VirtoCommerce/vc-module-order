@@ -514,8 +514,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
                     b.Property<string>("OuterId")
                         .HasMaxLength(128)
@@ -551,6 +551,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("decimal(18,4)");

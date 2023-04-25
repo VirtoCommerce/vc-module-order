@@ -7,7 +7,8 @@ angular.module('virtoCommerce.orderModule')
         'platformWebApp.authService',
         'virtoCommerce.paymentModule.paymentMethods',
         'virtoCommerce.customerModule.members',
-    function ($scope, bladeNavigationService, settings, statusTranslationService, authService, paymentMethods, members) {
+        'virtoCommerce.orderModule.refundReasonsService',
+        function ($scope, bladeNavigationService, settings, statusTranslationService, authService, paymentMethods, members, refundReasonsService) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
@@ -16,6 +17,18 @@ angular.module('virtoCommerce.orderModule')
         blade.subtitle = 'orders.blades.refund-details.subtitle';
 
         blade.realOperationsCollection = _.flatten(_.pluck(blade.customerOrder.inPayments, 'refunds'));
+
+        blade.remove = function (refund) {
+            var payment = _.findWhere(blade.customerOrder.inPayments, { id: refund.paymentId });
+            if (payment) {
+                var index = _.findIndex(payment.refunds, function (x) {
+                    return x.id === refund.id;
+                });
+                if (index >= 0) {
+                    payment.refunds.splice(index, 1);
+                }
+            }
+        }
 
         paymentMethods.search({storeId: blade.customerOrder.storeId}, function (data) {
                 blade.paymentMethods = data.results;
@@ -61,4 +74,8 @@ angular.module('virtoCommerce.orderModule')
             };
             bladeNavigationService.showBlade(newBlade, blade);
         };
+
+        $scope.getRefundReasons = function () {
+            return refundReasonsService.getRefundReasons();
+        }
     }]);

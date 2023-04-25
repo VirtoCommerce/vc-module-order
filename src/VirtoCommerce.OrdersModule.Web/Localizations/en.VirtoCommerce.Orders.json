@@ -25,6 +25,7 @@
       "customerOrder-items": {
         "labels": {
           "item": "Item",
+          "status": "Status",
           "quantity": "Qty",
           "available": "Avail",
           "await": "Await",
@@ -110,12 +111,6 @@
           "reasonCode": "Refund reason",
           "message": "Refund message"
         },
-        "reason-codes": {
-          "duplicate": "Duplicate",
-          "fraudulent": "Fraudulent",
-          "requestedbycustomer": "Requested by Customer",
-          "other": "Other"
-        },
         "placeholders": {
           "amount": "Enter...",
           "reasonCode": "Select...",
@@ -128,7 +123,8 @@
         "labels": {
           "status": "Status",
           "amount": "Amount",
-          "vendor": "Vendor"
+          "vendor": "Vendor",
+          "reasonCode": "Refund reason"
         },
         "refund-status": {
           "pending": "Pending",
@@ -138,7 +134,8 @@
         },
         "placeholders": {
           "status": "Select...",
-          "vendor": "Select..."
+          "vendor": "Select...",
+          "reasonCode": "Select..."
         }
       },
       "transactions-list": {
@@ -307,6 +304,13 @@
         "partially sent": "Partially sent",
         "completed": "Completed"
       },
+      "line-item-status": {
+        "pending": "Pending",
+        "inprogress": "In Progress",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
       "shipment-status": {
         "new": "New",
         "pickpack": "Pick pack",
@@ -329,6 +333,12 @@
         "pending": "Pending",
         "rejected": "Rejected",
         "processed": "Processed"
+      },
+      "reason-codes": {
+        "duplicate": "Duplicate",
+        "fraudulent": "Fraudulent",
+        "requestedbycustomer": "Requested by Customer",
+        "other": "Other"
       }
     },
     "commands": {
@@ -348,8 +358,20 @@
   },
   "settings": {
     "Order.Status": {
-      "description": "Customer order statuses",
-      "title": "Customer order statuses"
+      "title": "Customer order statuses",
+      "description": "The list of available statuses for customer orders"
+    },
+    "Order.InitialStatus": {
+      "title": "Customer order initial status",
+      "description": "The initial status of a new customer order"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Line item statuses",
+      "description": "The list of available statuses for order line items"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Line item initial status",
+      "description": "The initial status of a line item in a new customer order"
     },
     "Shipment.Status": {
       "description": "Shipment statuses",

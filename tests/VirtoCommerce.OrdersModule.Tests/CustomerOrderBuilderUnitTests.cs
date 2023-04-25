@@ -6,21 +6,13 @@ using FluentAssertions;
 using Moq;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
+using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
     public class CustomerOrderBuilderUnitTests
     {
-        private readonly Mock<ICustomerOrderService> _customerOrderServiceMock;
-
-        public CustomerOrderBuilderUnitTests()
-        {
-            _customerOrderServiceMock = new Mock<ICustomerOrderService>();
-        }
-
-
-
         [Fact]
         public async Task PlaceCustomerOrderFromCartAsync_Cart_ComparingWithOrder()
         {
@@ -104,9 +96,9 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
 
-        private CustomerOrderBuilder GetCustomerOrderBuilder()
+        private static CustomerOrderBuilder GetCustomerOrderBuilder()
         {
-            return new CustomerOrderBuilder(_customerOrderServiceMock.Object);
+            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object);
         }
     }
 }

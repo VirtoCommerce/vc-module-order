@@ -1,11 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.227.0</version>
+  <version>3.231.0</version>
   <version-tag />
   <platformVersion>3.282.0</platformVersion>
-  <title>Orders module</title>
-  <description>Document based flexible orders management system</description>
+  <dependencies>
+    <dependency id="VirtoCommerce.Cart" version="3.219.0" />
+    <dependency id="VirtoCommerce.Core" version="3.200.0" />
+    <dependency id="VirtoCommerce.Customer" version="3.200.0" />
+    <dependency id="VirtoCommerce.Inventory" version="3.200.0" />
+    <dependency id="VirtoCommerce.Notifications" version="3.200.0" />
+    <dependency id="VirtoCommerce.Payment" version="3.208.0" />
+    <dependency id="VirtoCommerce.Search" version="3.202.0" />
+    <dependency id="VirtoCommerce.Shipping" version="3.200.0" />
+    <dependency id="VirtoCommerce.Store" version="3.200.0" />
+  </dependencies>
+  <title>Order Management</title>
+  <description>Document based flexible order management system</description>
   <authors>
     <author>Virto Commerce</author>
   </authors>
@@ -19,17 +30,6 @@
   <tags>order system</tags>
   <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>
-  <dependencies>
-    <dependency id="VirtoCommerce.Core" version="3.200.0" />
-    <dependency id="VirtoCommerce.Customer" version="3.200.0" />
-    <dependency id="VirtoCommerce.Store" version="3.200.0" />
-    <dependency id="VirtoCommerce.Payment" version="3.200.0" />
-    <dependency id="VirtoCommerce.Shipping" version="3.200.0" />
-    <dependency id="VirtoCommerce.Notifications" version="3.200.0" />
-    <dependency id="VirtoCommerce.Cart" version="3.210.0" />
-    <dependency id="VirtoCommerce.Inventory" version="3.200.0" />
-    <dependency id="VirtoCommerce.Search" version="3.202.0" />
-  </dependencies>
   <groups>
     <group>commerce</group>
   </groups>
