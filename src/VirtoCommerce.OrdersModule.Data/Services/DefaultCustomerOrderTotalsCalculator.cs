@@ -146,7 +146,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.FeeTotal = currency.RoundingPolicy.RoundMoney(order.FeeTotal, currency);
             order.FeeTotalWithTax = currency.RoundingPolicy.RoundMoney(order.FeeTotalWithTax, currency);
             order.ShippingTotal = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
-            order.ShippingTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingTotal, currency);
+            order.ShippingTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingTotalWithTax, currency);
             order.ShippingSubTotal = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotal, currency);
             order.ShippingSubTotalWithTax = currency.RoundingPolicy.RoundMoney(order.ShippingSubTotalWithTax, currency);
             order.PaymentTotal = currency.RoundingPolicy.RoundMoney(order.PaymentTotal, currency);
@@ -156,7 +156,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.PaymentDiscountTotal = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotal, currency);
             order.PaymentDiscountTotalWithTax = currency.RoundingPolicy.RoundMoney(order.PaymentDiscountTotalWithTax, currency);
 
-            order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal - order.DiscountTotal;
+            order.Total = order.SubTotal + order.ShippingSubTotal + order.TaxTotal + order.PaymentSubTotal + order.FeeTotal - order.DiscountTotal;
             order.Sum = order.Total;
         }
 
@@ -192,8 +192,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             shipment.PriceWithTax = shipment.Price * taxFactor;
             shipment.DiscountAmountWithTax = shipment.DiscountAmount * taxFactor;
             shipment.FeeWithTax = shipment.Fee * taxFactor;
-            shipment.Total = shipment.Price - shipment.DiscountAmount;
-            shipment.TotalWithTax = shipment.PriceWithTax - shipment.DiscountAmountWithTax;
+            shipment.Total = shipment.Price + shipment.Fee - shipment.DiscountAmount;
+            shipment.TotalWithTax = shipment.PriceWithTax + shipment.FeeWithTax - shipment.DiscountAmountWithTax;
             shipment.TaxTotal = shipment.Total * shipment.TaxPercentRate;
             shipment.Sum = shipment.Total;
         }
