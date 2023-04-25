@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Options;
 using Moq;
 using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
-using VirtoCommerce.Platform.Caching;
 using Xunit;
 
 namespace VirtoCommerce.OrdersModule.Tests
@@ -15,13 +12,8 @@ namespace VirtoCommerce.OrdersModule.Tests
     {
         private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
         {
-            var repositoryFactory = new Mock<System.Func<CoreModule.Data.Repositories.ICoreRepository>>().Object;
-            var eventPublisher = new Mock<Platform.Core.Events.IEventPublisher>().Object;
-            var memoryCacheOptions = new MemoryCacheOptions();
-            var memoryCache = new MemoryCache(Options.Create(memoryCacheOptions));
-            var platformMemoryCache = new PlatformMemoryCache(memoryCache, Options.Create(new CachingOptions()), null);
             var currencyServiceMock = new Mock<ICurrencyService>();
-            currencyServiceMock.Setup(c => c.GetAllCurrenciesAsync()).ReturnsAsync(new List<Currency>() { currency });
+            currencyServiceMock.Setup(c => c.GetAllCurrenciesAsync()).ReturnsAsync(new List<Currency> { currency });
             return new DefaultCustomerOrderTotalsCalculator(currencyServiceMock.Object);
         }
 
@@ -52,7 +44,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             totalsCalculator.CalculateTotals(order);
 
-            Assert.Equal(1399.47m, order.Total);
+            Assert.Equal(1400.00m, order.Total);
 
             order.Items.Clear();
             order.Shipments.Clear();
@@ -69,7 +61,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5 };
             var item3 = new LineItem { Price = 88.45m, DiscountAmount = 10.78m, TaxPercentRate = 0.12m, Fee = 0.08m, Quantity = 12 };
             var payment = new PaymentIn { Price = 44.52m, DiscountAmount = 10, TaxPercentRate = 0.12m };
-            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m };
+            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m, Fee = 20m };
 
             var order = new CustomerOrder
             {
@@ -102,10 +94,10 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             Assert.Equal(5.6m, shipment.DiscountAmountWithTax);
             Assert.Equal(24.64m, shipment.PriceWithTax);
-            Assert.Equal(0.0m, shipment.FeeWithTax);
-            Assert.Equal(17.0m, shipment.Total);
-            Assert.Equal(19.04m, shipment.TotalWithTax);
-            Assert.Equal(2.04m, shipment.TaxTotal);
+            Assert.Equal(22.40m, shipment.FeeWithTax);
+            Assert.Equal(37.0m, shipment.Total);
+            Assert.Equal(41.44m, shipment.TotalWithTax);
+            Assert.Equal(4.44m, shipment.TaxTotal);
 
             Assert.Equal(34.52m, payment.Total);
             Assert.Equal(49.8624m, payment.PriceWithTax);
@@ -121,13 +113,13 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(24.64m, order.ShippingSubTotalWithTax);
             Assert.Equal(44.52m, order.PaymentSubTotal);
             Assert.Equal(49.86m, order.PaymentSubTotalWithTax);
-            Assert.Equal(149.94m, order.TaxTotal);
+            Assert.Equal(152.34m, order.TaxTotal);
             Assert.Equal(176.47m, order.DiscountTotal);
             Assert.Equal(197.65m, order.DiscountTotalWithTax);
-            Assert.Equal(13.64m, order.FeeTotal);
-            Assert.Equal(15.28m, order.FeeTotalWithTax);
+            Assert.Equal(33.64m, order.FeeTotal);
+            Assert.Equal(37.68m, order.FeeTotalWithTax);
             Assert.Equal(14.68m, order.FeeWithTax);
-            Assert.Equal(1399.47m, order.Total);
+            Assert.Equal(1435.51m, order.Total);
         }
     }
 }

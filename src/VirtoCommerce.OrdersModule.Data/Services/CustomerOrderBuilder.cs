@@ -306,7 +306,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.DiscountAmount = shipment.DiscountAmount;
             retVal.Price = shipment.Price;
             retVal.Fee = shipment.Fee;
-            retVal.Fee = shipment.FeeWithTax;
+            retVal.FeeWithTax = shipment.FeeWithTax;
             retVal.Status = "New";
             if (shipment.DeliveryAddress != null)
             {
