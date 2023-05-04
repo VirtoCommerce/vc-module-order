@@ -30,6 +30,12 @@
                             <input ng-model="blade.currentEntity.reasonMessage" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.refund-add.placeholders.message' | translate }}">
                         </div>
                     </div>
+                    <div class="form-group __info list">
+                        <label class="form-label">{{ 'orders.blades.refund-add.labels.transactionId' | translate }}</label>
+                        <div class="form-input">
+                            <input required ng-model="blade.currentEntity.transactionId" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.refund-add.placeholders.transactionId' | translate }}">
+                        </div>
+                    </div>
                 </fieldset>
             </form>
         </div>

@@ -1056,6 +1056,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
                     b.Property<string>("VendorId")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -1065,6 +1070,9 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.HasIndex("CustomerOrderId");
 
                     b.HasIndex("PaymentId");
+
+                    b.HasIndex("TransactionId", "CustomerOrderId")
+                        .IsUnique();
 
                     b.ToTable("OrderRefund", (string)null);
                 });

@@ -1020,6 +1020,11 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<decimal>("Sum")
                         .HasColumnType("Money");
 
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<string>("VendorId")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -1029,6 +1034,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.HasIndex("CustomerOrderId");
 
                     b.HasIndex("PaymentId");
+
+                    b.HasIndex("TransactionId", "CustomerOrderId")
+                        .IsUnique()
+                        .HasFilter("[CustomerOrderId] IS NOT NULL");
 
                     b.ToTable("OrderRefund", (string)null);
                 });

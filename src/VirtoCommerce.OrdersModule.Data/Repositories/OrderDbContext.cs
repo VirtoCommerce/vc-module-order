@@ -136,6 +136,8 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<RefundEntity>().HasOne(x => x.Payment).WithMany(x => x.Refunds)
                 .HasForeignKey(x => x.PaymentId).OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<RefundEntity>().HasIndex(x => new { x.TransactionId, x.CustomerOrderId }).IsUnique();
+
             modelBuilder.Entity<RefundEntity>().ToTable("OrderRefund");
 
             #endregion
