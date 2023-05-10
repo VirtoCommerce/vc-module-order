@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.Sql("UPDATE public.\"OrderRefund\" SET \"TransactionId\" = \"Id\";");
+            migrationBuilder.Sql("UPDATE \"OrderRefund\" SET \"TransactionId\" = \"Id\";");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderRefund_TransactionId_CustomerOrderId",

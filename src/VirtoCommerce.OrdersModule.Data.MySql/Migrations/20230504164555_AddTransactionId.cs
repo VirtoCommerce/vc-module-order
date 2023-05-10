@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                 defaultValue: "")
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.Sql("update orderrefund set TransactionId = Id;");
+            migrationBuilder.Sql("UPDATE OrderRefund SET TransactionId = Id;");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderRefund_TransactionId_CustomerOrderId",

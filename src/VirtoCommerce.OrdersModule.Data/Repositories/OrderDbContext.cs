@@ -131,10 +131,10 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             modelBuilder.Entity<RefundEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
 
             modelBuilder.Entity<RefundEntity>().HasOne(x => x.CustomerOrder).WithMany()
-                .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(x => x.CustomerOrderId);
 
             modelBuilder.Entity<RefundEntity>().HasOne(x => x.Payment).WithMany(x => x.Refunds)
-                .HasForeignKey(x => x.PaymentId).OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.PaymentId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RefundEntity>().HasIndex(x => new { x.TransactionId, x.CustomerOrderId }).IsUnique();
 

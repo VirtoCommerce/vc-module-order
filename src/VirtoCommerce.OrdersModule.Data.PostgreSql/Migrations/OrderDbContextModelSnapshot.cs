@@ -1599,13 +1599,12 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
                         .WithMany()
-                        .HasForeignKey("CustomerOrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CustomerOrderId");
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "Payment")
                         .WithMany("Refunds")
                         .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CustomerOrder");
 
