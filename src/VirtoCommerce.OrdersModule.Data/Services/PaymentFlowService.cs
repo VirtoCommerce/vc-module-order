@@ -230,6 +230,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             refund.Currency = payment.Currency;
             refund.CustomerOrderId = payment.OrderId;
             refund.VendorId = payment.VendorId;
+            refund.TransactionId = request.TransactionId;
 
             return refund;
         }

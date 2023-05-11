@@ -1056,6 +1056,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasPrecision(18, 4)
                         .HasColumnType("decimal(18,4)");
 
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
                     b.Property<string>("VendorId")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");
@@ -1065,6 +1070,9 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.HasIndex("CustomerOrderId");
 
                     b.HasIndex("PaymentId");
+
+                    b.HasIndex("TransactionId", "CustomerOrderId")
+                        .IsUnique();
 
                     b.ToTable("OrderRefund", (string)null);
                 });
@@ -1638,13 +1646,12 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
                         .WithMany()
-                        .HasForeignKey("CustomerOrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CustomerOrderId");
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "Payment")
                         .WithMany("Refunds")
                         .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CustomerOrder");
 

@@ -24,6 +24,10 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(256)]
         public string VendorId { get; set; }
 
+        [Required]
+        [StringLength(128)]
+        public string TransactionId { get; set; }
+
         public string CustomerOrderId { get; set; }
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
@@ -55,6 +59,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             refund.CustomerOrderId = CustomerOrderId;
             refund.Amount = Amount;
             refund.VendorId = VendorId;
+            refund.TransactionId = TransactionId;
             refund.ReasonMessage = ReasonMessage;
             refund.PaymentId = PaymentId;
 
@@ -92,6 +97,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             CustomerOrderId = refund.CustomerOrderId;
             Amount = refund.Amount;
             VendorId = refund.VendorId;
+            TransactionId = refund.TransactionId;
 
             if (refund.Status.IsNullOrEmpty())
             {
@@ -134,6 +140,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             base.Patch(refund);
 
             refund.VendorId = VendorId;
+            refund.TransactionId = TransactionId;
             refund.Amount = Amount;
             refund.CustomerOrderId = CustomerOrderId;
             refund.ReasonCode = ReasonCode;

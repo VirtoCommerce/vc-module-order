@@ -11,8 +11,9 @@ angular.module('virtoCommerce.orderModule')
 
         blade.initialize = function () {
             blade.currentEntity = {
-                amout: blade.payment.sum,
-                reasonCode: refundReasonsService.refundCodes[0]
+                amount: blade.payment.sum,
+                reasonCode: refundReasonsService.refundCodes[0],
+                transactionId: blade.payment.number
             };
 
             blade.isLoading = false;
@@ -34,6 +35,7 @@ angular.module('virtoCommerce.orderModule')
                 amount: blade.currentEntity.amount,
                 reasonCode: blade.currentEntity.reasonCode,
                 reasonMessage: blade.currentEntity.reasonMessage,
+                transactionId: blade.currentEntity.transactionId
             }, function (data) {
                 blade.isLoading = false;
 
