@@ -19,6 +19,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string VendorId { get; set; }
 
+        public string TransactionId { get; set; }
+
         public string CustomerOrderId { get; set; }
 
         public string PaymentId { get; set; }

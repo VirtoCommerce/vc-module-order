@@ -416,7 +416,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             if (!Discounts.IsNullCollection())
             {
-                var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
+                var discountComparer = AnonymousComparer.Create((DiscountEntity x) => $"{x.PromotionId}-{x.CouponCode}");
                 Discounts.Patch(operation.Discounts, discountComparer,
                     (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }

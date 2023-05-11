@@ -109,12 +109,14 @@
         "labels": {
           "amount": "Refund amount",
           "reasonCode": "Refund reason",
-          "message": "Refund message"
+          "message": "Refund message",
+          "transactionId": "Transaction Id"
         },
         "placeholders": {
           "amount": "Enter...",
           "reasonCode": "Select...",
-          "message": "Enter..."
+          "message": "Enter...",
+          "transactionId": "Enter..."
         }
       },
       "refund-details": {

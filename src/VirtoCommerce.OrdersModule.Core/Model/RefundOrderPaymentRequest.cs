@@ -5,5 +5,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string ReasonCode { get; set; }
 
         public string ReasonMessage { get; set; }
+
+        public string TransactionId { get; set; }
     }
 }

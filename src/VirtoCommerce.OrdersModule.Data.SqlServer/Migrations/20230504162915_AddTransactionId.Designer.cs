@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 
@@ -11,9 +12,10 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230504162915_AddTransactionId")]
+    partial class AddTransactionId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1600,12 +1602,13 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
                         .WithMany()
-                        .HasForeignKey("CustomerOrderId");
+                        .HasForeignKey("CustomerOrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "Payment")
                         .WithMany("Refunds")
                         .HasForeignKey("PaymentId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CustomerOrder");
 
