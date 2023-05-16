@@ -1,5 +1,3 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -16,18 +14,6 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                 type: "varchar(128)",
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "CustomerOrder",
-                type: "timestamp(6)",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp(6)",
-                oldRowVersion: true,
-                oldNullable: true)
-                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
 
             migrationBuilder.CreateTable(
                 name: "OrderCapture",
@@ -184,18 +170,6 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
             migrationBuilder.DropColumn(
                 name: "CaptureId",
                 table: "OrderDynamicPropertyObjectValue");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "CustomerOrder",
-                type: "timestamp(6)",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp(6)",
-                oldRowVersion: true,
-                oldNullable: true)
-                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
         }
     }
 }
