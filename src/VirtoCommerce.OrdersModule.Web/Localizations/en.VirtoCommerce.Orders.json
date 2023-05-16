@@ -110,13 +110,15 @@
           "amount": "Refund amount",
           "reasonCode": "Refund reason",
           "message": "Refund message",
-          "transactionId": "Transaction Id"
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id"
         },
         "placeholders": {
           "amount": "Enter...",
           "reasonCode": "Select...",
           "message": "Enter...",
-          "transactionId": "Enter..."
+          "transactionId": "Enter...",
+          "outerId": "Enter..."
         }
       },
       "refund-details": {
@@ -138,6 +140,33 @@
           "status": "Select...",
           "vendor": "Select...",
           "reasonCode": "Select..."
+        }
+      },
+      "capture-add": {
+        "title": "Create a capture",
+        "labels": {
+          "amount": "Capture amount",
+          "message": "Capture message",
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "message": "Enter...",
+          "transactionId": "Enter...",
+          "outerId": "Enter..."
+        }
+      },
+      "capture-details": {
+        "title": "Capture #{{number}}",
+        "subtitle": "Edit payment details and related documents",
+        "labels": {
+          "amount": "Amount",
+          "vendor": "Vendor"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "vendor": "Select..."
         }
       },
       "transactions-list": {

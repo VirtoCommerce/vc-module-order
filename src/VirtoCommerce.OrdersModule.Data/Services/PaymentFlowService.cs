@@ -102,8 +102,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-
-
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
@@ -120,6 +118,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 return result;
             }
+
+            var capture = CreateCapture(paymentInfo.Payment, paymentInfo.Store, request);
+
+            if (paymentInfo.Payment.Captures == null)
+            {
+                paymentInfo.Payment.Captures = new List<Capture>();
+            }
+            paymentInfo.Payment.Captures.Add(capture);
 
             var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
             var captureResult = default(CapturePaymentRequestResult);
@@ -139,6 +145,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // save order
             if (captureResult.IsSuccess)
             {
+                capture.OuterId = captureResult.OuterId;
+                capture.Status = "Processed";
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                 await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
@@ -187,6 +195,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             FillPaymentRequestBase(paymentInfo, result);
 
             result.CaptureAmount = request.Amount ?? paymentInfo.Payment.Sum;
+            result.OuterId = request.OuterId;
 
             if (!string.IsNullOrEmpty(request.CaptureDetails))
             {
@@ -208,6 +217,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
             result.Reason = request.ReasonCode;
             result.Notes = request.ReasonMessage;
+            result.OuterId = request.OuterId;
 
             return result;
         }
@@ -225,14 +235,37 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
             refund.ReasonMessage = request.ReasonMessage;
             refund.Comment = request.ReasonMessage;
+            refund.OuterId = request.OuterId;
+            refund.TransactionId = request.TransactionId;
 
             refund.Status = RefundStatus.Pending.ToString();
             refund.Currency = payment.Currency;
             refund.CustomerOrderId = payment.OrderId;
             refund.VendorId = payment.VendorId;
-            refund.TransactionId = request.TransactionId;
 
             return refund;
+        }
+
+        protected virtual Capture CreateCapture(PaymentIn payment, Store store, CaptureOrderPaymentRequest request)
+        {
+            var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
+
+            var numberTemplate = store.Settings.GetSettingValue(
+                Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate.Name,
+                Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate.DefaultValue);
+            capture.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+
+            capture.Amount = request.Amount ?? payment.Sum;
+            capture.Comment = request.CaptureDetails;
+            capture.OuterId = request.OuterId;
+            capture.TransactionId = request.TransactionId;
+
+            capture.Status = "Pending";
+            capture.Currency = payment.Currency;
+            capture.CustomerOrderId = payment.OrderId;
+            capture.VendorId = payment.VendorId;
+
+            return capture;
         }
 
         private static void FillPaymentRequestBase(OrderPaymentInfo paymentInfo, PaymentRequestBase result)
