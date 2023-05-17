@@ -86,7 +86,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (refundResult.IsSuccess)
             {
-                refund.OuterId = refundResult.OuterId;
+                refund.OuterId = request.OuterId;
                 refund.Status = refundResult.NewRefundStatus.ToString();
                 await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
@@ -145,7 +145,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // save order
             if (captureResult.IsSuccess)
             {
-                capture.OuterId = captureResult.OuterId;
+                capture.OuterId = request.OuterId;
                 capture.Status = "Processed";
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                 await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
