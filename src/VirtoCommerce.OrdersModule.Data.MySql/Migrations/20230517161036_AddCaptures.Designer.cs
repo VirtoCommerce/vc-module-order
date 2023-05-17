@@ -11,7 +11,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20230516181658_AddCaptures")]
+    [Migration("20230517161036_AddCaptures")]
     partial class AddCaptures
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,7 +124,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(128)");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("Money(65,30)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("CancelReason")
                         .HasMaxLength(2048)
@@ -190,7 +191,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(64)");
 
                     b.Property<decimal>("Sum")
-                        .HasColumnType("Money(65,30)");
+                        .HasPrecision(18, 4)
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("TransactionId")
                         .IsRequired()
