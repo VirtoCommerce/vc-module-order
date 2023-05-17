@@ -67,6 +67,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 paymentInfo.Payment.Refunds = new List<Refund>();
             }
             paymentInfo.Payment.Refunds.Add(refund);
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             // call payment method refund
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
@@ -126,6 +127,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 paymentInfo.Payment.Captures = new List<Capture>();
             }
             paymentInfo.Payment.Captures.Add(capture);
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
             var captureResult = default(CapturePaymentRequestResult);
