@@ -87,19 +87,18 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (refundResult.IsSuccess)
             {
-                refund.OuterId = request.OuterId;
                 refund.Status = refundResult.NewRefundStatus.ToString();
-                await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
-
                 result.RefundStatus = refund.Status;
                 result.Succeeded = true;
             }
             else
             {
+                refund.Status = RefundStatus.Rejected.ToString();
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = refundResult.ErrorMessage;
             }
 
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
             return result;
         }
 
@@ -147,20 +146,19 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // save order
             if (captureResult.IsSuccess)
             {
-                capture.OuterId = request.OuterId;
                 capture.Status = "Processed";
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
-                await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
-
                 result.PaymentStatus = paymentInfo.Payment.Status;
                 result.Succeeded = true;
             }
             else
             {
+                capture.Status = "Rejected";
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = captureResult.ErrorMessage;
             }
 
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
             return result;
         }
 
