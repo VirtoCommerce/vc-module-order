@@ -45,7 +45,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         {
             if (operation is not Capture capture)
             {
-                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Refund)}", nameof(operation));
+                throw new ArgumentException($"{nameof(operation)} argument must be of type {nameof(Capture)}", nameof(operation));
             }
 
             base.ToModel(capture);
@@ -118,7 +118,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         {
             if (target is not CaptureEntity capture)
             {
-                throw new ArgumentException($"{nameof(target)} argument must be of type {nameof(RefundEntity)}", nameof(target));
+                throw new ArgumentException($"{nameof(target)} argument must be of type {nameof(CaptureEntity)}", nameof(target));
             }
 
             base.Patch(capture);

@@ -5,7 +5,7 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.orderModule.order_res_customerOrders',
     function ($scope, bladeNavigationService, customerOrders) {
         var blade = $scope.blade;
-        blade.title = 'orders.blades.refund-add.title';
+        blade.title = 'orders.blades.capture-add.title';
         blade.subtitle = blade.payment.number;
 
         blade.initialize = function () {
@@ -49,10 +49,6 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.setError('Error ' + error.status, blade);
             })
         };
-
-        $scope.getRefundReasons = function () {
-            return refundReasonsService.getRefundReasons();
-        }
 
         blade.initialize();
     }]);
