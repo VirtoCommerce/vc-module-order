@@ -59,44 +59,21 @@ angular.module('virtoCommerce.orderModule')
         blade.toolbarCommands.push({
             name: 'orders.blades.payment-detail.labels.capture-payment',
             icon: 'fas fa-file-text',
-            index: 1,
+            index: 2,
             permission: blade.capturePermission,
             executeMethod: function () {
-                var amount = currencyFilter(blade.currentEntity.sum, blade.currentEntity.currency).replace(/\s/g, '');
-
-                var dialog = {
-                    id: "confirmCapture",
-                    title: "orders.dialogs.payment-capture.title",
-                    message: "orders.dialogs.payment-capture.message",
-                    messageValues: { amount: amount },
-                    callback: function (capture) {
-                        if (capture) {
-                            blade.isLoading = true;
-
-                            customerOrders.capturePayment({
-                                paymentId: blade.currentEntity.id
-                            }, function (data) {
-                                blade.isLoading = false;
-
-                                if (data.succeeded) {
-                                    blade.currentEntity.status = 'Paid';
-
-                                    blade.refresh();
-                                    blade.parentBlade.refresh();
-                                }
-                                else {
-                                    bladeNavigationService.setError(data.errorMessage, blade);
-                                }
-                            }, function (error) {
-                                blade.isLoading = false;
-
-                                bladeNavigationService.setError('Error ' + error.status, blade);
-                            })
-                        }
-                    }
+                var newBlade = {
+                    id: 'capture-add',
+                    title: 'orders.blades.capture-add.title',
+                    payment: blade.currentEntity,
+                    parentRefresh: function () {
+                        blade.refresh();
+                        blade.parentBlade.refresh();
+                    },
+                    controller: 'virtoCommerce.orderModule.captureAddController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/capture-add.html'
                 };
-
-                dialogService.showConfirmationDialog(dialog);
+                bladeNavigationService.showBlade(newBlade, blade);
             },
             canExecuteMethod: function () {
                 return _.find(blade.captureStatuses, function (x) {

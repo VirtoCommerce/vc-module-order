@@ -150,6 +150,14 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "RE{0:yyMMdd}-{1:D5}"
                 };
 
+                public static SettingDescriptor CaptureNewNumberTemplate { get; } = new SettingDescriptor
+                {
+                    Name = "Order.CaptureNewNumberTemplate",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|Orders",
+                    DefaultValue = "CA{0:yyMMdd}-{1:D5}"
+                };
+
                 public static SettingDescriptor SendOrderNotifications = new SettingDescriptor
                 {
                     Name = "Order.SendOrderNotifications",

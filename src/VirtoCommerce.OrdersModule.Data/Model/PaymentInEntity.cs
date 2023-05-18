@@ -84,6 +84,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ObservableCollection<RefundEntity> Refunds { get; set; } = new NullCollection<RefundEntity>();
 
+        public virtual ObservableCollection<CaptureEntity> Captures { get; set; } = new NullCollection<CaptureEntity>();
+
         public virtual ObservableCollection<OrderDynamicPropertyObjectValueEntity> DynamicPropertyObjectValues { get; set; }
             = new NullCollection<OrderDynamicPropertyObjectValueEntity>();
 
@@ -142,6 +144,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             payment.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
 
             payment.Refunds = Refunds.Select(x => x.ToModel(AbstractTypeFactory<Refund>.TryCreateInstance())).ToList();
+            payment.Captures = Captures.Select(x => x.ToModel(AbstractTypeFactory<Capture>.TryCreateInstance())).ToList();
 
             payment.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
             {
@@ -206,14 +209,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 GatewayCode = payment.PaymentMethod != null ? payment.PaymentMethod.Code : payment.GatewayCode;
             }
 
-            if (payment.BillingAddress != null)
-            {
-                Addresses = new ObservableCollection<AddressEntity>(new[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) });
-            }
-            else
-            {
-                Addresses = new ObservableCollection<AddressEntity>();
-            }
+            Addresses = payment.BillingAddress != null
+                ? new ObservableCollection<AddressEntity>(new[] { AbstractTypeFactory<AddressEntity>.TryCreateInstance().FromModel(payment.BillingAddress) })
+                : new ObservableCollection<AddressEntity>();
 
             if (payment.TaxDetails != null)
             {
@@ -238,6 +236,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (payment.Refunds != null)
             {
                 Refunds = new ObservableCollection<RefundEntity>(payment.Refunds.Select(x => AbstractTypeFactory<RefundEntity>.TryCreateInstance().FromModel(x, pkMap)));
+            }
+
+            if (payment.Captures != null)
+            {
+                Captures = new ObservableCollection<CaptureEntity>(payment.Captures.Select(x => AbstractTypeFactory<CaptureEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
 
             if (payment.Status.IsNullOrEmpty())
@@ -333,6 +336,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (!Refunds.IsNullCollection())
             {
                 Refunds.Patch(payment.Refunds, (sourceRefund, targetRefund) => sourceRefund.Patch(targetRefund));
+            }
+
+            if (!Captures.IsNullCollection())
+            {
+                Captures.Patch(payment.Captures, (sourceCapture, targetCapture) => sourceCapture.Patch(targetCapture));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
