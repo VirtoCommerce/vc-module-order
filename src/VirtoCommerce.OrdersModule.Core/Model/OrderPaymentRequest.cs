@@ -6,6 +6,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string PaymentId { get; set; }
 
+        public string TransactionId { get; set; }
+
+        public string OuterId { get; set; }
+
         public decimal? Amount { get; set; }
     }
 }

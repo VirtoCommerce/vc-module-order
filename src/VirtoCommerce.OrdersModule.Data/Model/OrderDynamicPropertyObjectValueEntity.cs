@@ -22,6 +22,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string RefundId { get; set; }
         public virtual RefundEntity Refund { get; set; }
 
+        public string CaptureId { get; set; }
+        public virtual CaptureEntity Capture { get; set; }
+
         #endregion        
     }
 }

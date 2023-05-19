@@ -86,6 +86,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<PaymentGatewayTransaction> Transactions { get; set; }
 
         public ICollection<Refund> Refunds { get; set; }
+        public ICollection<Capture> Captures { get; set; }
 
         public virtual void ReduceDetails(string responseGroup)
         {
@@ -102,6 +103,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
             {
                 Refunds = null;
+            }
+            if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
+            {
+                Captures = null;
             }
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
@@ -134,6 +139,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
 
             result.Refunds = Refunds?.Select(x => x.Clone()).OfType<Refund>().ToList();
+            result.Captures = Captures?.Select(x => x.Clone()).OfType<Capture>().ToList();
 
             return result;
         }

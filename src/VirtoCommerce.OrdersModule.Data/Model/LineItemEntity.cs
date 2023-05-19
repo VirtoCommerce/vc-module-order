@@ -121,6 +121,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ObservableCollection<RefundItemEntity> RefundItems { get; set; } = new NullCollection<RefundItemEntity>();
 
+        public virtual ObservableCollection<CaptureItemEntity> CaptureItems { get; set; } = new NullCollection<CaptureItemEntity>();
+
         #endregion
 
         public virtual LineItem ToModel(LineItem lineItem)

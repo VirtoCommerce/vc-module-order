@@ -117,6 +117,149 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.ToTable("OrderAddress", (string)null);
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CaptureEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("Money");
+
+                    b.Property<string>("CancelReason")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<DateTime?>("CancelledDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancelledState")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("CustomerOrderId")
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<string>("OuterId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ParentOperationId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<decimal>("Sum")
+                        .HasColumnType("Money");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("VendorId")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerOrderId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("TransactionId", "CustomerOrderId")
+                        .IsUnique()
+                        .HasFilter("[CustomerOrderId] IS NOT NULL");
+
+                    b.ToTable("OrderCapture", (string)null);
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CaptureItemEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("CaptureId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LineItemId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OuterId")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaptureId");
+
+                    b.HasIndex("LineItemId");
+
+                    b.ToTable("OrderCaptureItem", (string)null);
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -599,6 +742,9 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<bool?>("BooleanValue")
                         .HasColumnType("bit");
 
+                    b.Property<string>("CaptureId")
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
@@ -674,6 +820,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CaptureId");
 
                     b.HasIndex("CustomerOrderId");
 
@@ -1458,6 +1606,41 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Navigation("Shipment");
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CaptureEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
+                        .WithMany()
+                        .HasForeignKey("CustomerOrderId");
+
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", "Payment")
+                        .WithMany("Captures")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("CustomerOrder");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CaptureItemEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CaptureEntity", "Capture")
+                        .WithMany("Items")
+                        .HasForeignKey("CaptureId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
+                        .WithMany("CaptureItems")
+                        .HasForeignKey("LineItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Capture");
+
+                    b.Navigation("LineItem");
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.DiscountEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
@@ -1532,6 +1715,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.OrderDynamicPropertyObjectValueEntity", b =>
                 {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CaptureEntity", "Capture")
+                        .WithMany("DynamicPropertyObjectValues")
+                        .HasForeignKey("CaptureId");
+
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("CustomerOrderId")
@@ -1556,6 +1743,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .WithMany("DynamicPropertyObjectValues")
                         .HasForeignKey("ShipmentId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Capture");
 
                     b.Navigation("CustomerOrder");
 
@@ -1710,6 +1899,13 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Navigation("Shipment");
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CaptureEntity", b =>
+                {
+                    b.Navigation("DynamicPropertyObjectValues");
+
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>
                 {
                     b.Navigation("Addresses");
@@ -1731,6 +1927,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", b =>
                 {
+                    b.Navigation("CaptureItems");
+
                     b.Navigation("Discounts");
 
                     b.Navigation("DynamicPropertyObjectValues");
@@ -1747,6 +1945,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.PaymentInEntity", b =>
                 {
                     b.Navigation("Addresses");
+
+                    b.Navigation("Captures");
 
                     b.Navigation("Discounts");
 
