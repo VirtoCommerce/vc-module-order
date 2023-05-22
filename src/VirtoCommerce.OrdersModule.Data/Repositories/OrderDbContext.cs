@@ -157,6 +157,38 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #endregion
 
+            #region Capture
+
+            modelBuilder.Entity<CaptureEntity>().HasKey(x => x.Id);
+            modelBuilder.Entity<CaptureEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<CaptureEntity>().HasOne(x => x.CustomerOrder).WithMany()
+                .HasForeignKey(x => x.CustomerOrderId);
+
+            modelBuilder.Entity<CaptureEntity>().HasOne(x => x.Payment).WithMany(x => x.Captures)
+                .HasForeignKey(x => x.PaymentId).OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<CaptureEntity>().HasIndex(x => new { x.TransactionId, x.CustomerOrderId }).IsUnique();
+
+            modelBuilder.Entity<CaptureEntity>().ToTable("OrderCapture");
+
+            #endregion
+
+            #region CaptureItem
+
+            modelBuilder.Entity<CaptureItemEntity>().HasKey(x => x.Id);
+            modelBuilder.Entity<CaptureItemEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<CaptureItemEntity>().HasOne(x => x.LineItem).WithMany(x => x.CaptureItems)
+                .HasForeignKey(x => x.LineItemId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+
+            modelBuilder.Entity<CaptureItemEntity>().HasOne(x => x.Capture).WithMany(x => x.Items)
+                .HasForeignKey(x => x.CaptureId).OnDelete(DeleteBehavior.Restrict).IsRequired();
+
+            modelBuilder.Entity<CaptureItemEntity>().ToTable("OrderCaptureItem");
+
+            #endregion
+
             #region Discount
 
             modelBuilder.Entity<DiscountEntity>().HasKey(x => x.Id);

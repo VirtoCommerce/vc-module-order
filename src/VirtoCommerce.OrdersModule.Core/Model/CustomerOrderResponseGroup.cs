@@ -14,6 +14,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         WithPrices = 1 << 5,
         WithDynamicProperties = 1 << 6,
         WithRefunds = 1 << 7,
-        Full = WithItems | WithInPayments | WithShipments | WithAddresses | WithDiscounts | WithPrices | WithDynamicProperties | WithRefunds
+        WithCaptures = 1 << 8,
+        Full = WithItems | WithInPayments | WithShipments | WithAddresses | WithDiscounts | WithPrices | WithDynamicProperties | WithRefunds | WithCaptures
     }
 }

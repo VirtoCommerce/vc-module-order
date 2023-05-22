@@ -1,18 +1,16 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.refundAddController', [
+    .controller('virtoCommerce.orderModule.captureAddController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
         'virtoCommerce.orderModule.order_res_customerOrders',
-        'virtoCommerce.orderModule.refundReasonsService',
-    function ($scope, bladeNavigationService, customerOrders, refundReasonsService) {
+    function ($scope, bladeNavigationService, customerOrders) {
         var blade = $scope.blade;
-        blade.title = 'orders.blades.refund-add.title';
+        blade.title = 'orders.blades.capture-add.title';
         blade.subtitle = blade.payment.number;
 
         blade.initialize = function () {
             blade.currentEntity = {
                 amount: blade.payment.sum,
-                reasonCode: refundReasonsService.refundCodes[0],
                 transactionId: blade.payment.number
             };
 
@@ -30,11 +28,10 @@ angular.module('virtoCommerce.orderModule')
         $scope.saveChanges = function () {
             blade.isLoading = true;
 
-            customerOrders.refundPayment({
+            customerOrders.capturePayment({
                 paymentId: blade.payment.id,
                 amount: blade.currentEntity.amount,
-                reasonCode: blade.currentEntity.reasonCode,
-                reasonMessage: blade.currentEntity.reasonMessage,
+                captureDetails: blade.currentEntity.captureDetails,
                 transactionId: blade.currentEntity.transactionId,
                 outerId: blade.currentEntity.outerId
             }, function (data) {
@@ -52,10 +49,6 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.setError('Error ' + error.status, blade);
             })
         };
-
-        $scope.getRefundReasons = function () {
-            return refundReasonsService.getRefundReasons();
-        }
 
         blade.initialize();
     }]);

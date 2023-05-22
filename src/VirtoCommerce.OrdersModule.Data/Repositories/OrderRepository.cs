@@ -30,6 +30,8 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<PaymentGatewayTransactionEntity> Transactions => DbContext.Set<PaymentGatewayTransactionEntity>();
         public IQueryable<RefundEntity> Refunds => DbContext.Set<RefundEntity>();
         public IQueryable<RefundItemEntity> RefundItems => DbContext.Set<RefundItemEntity>();
+        public IQueryable<CaptureEntity> Captures => DbContext.Set<CaptureEntity>();
+        public IQueryable<CaptureItemEntity> CaptureItems => DbContext.Set<CaptureItemEntity>();
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
@@ -141,6 +143,23 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                     {
                         await OrderDynamicPropertyObjectValues.Where(x => refundIds.Contains(x.RefundId)).LoadAsync();
+                    }
+                }
+            }
+
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
+            {
+                var captures = await Captures.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
+
+                if (captures.Any())
+                {
+                    var captureIds = captures.Select(x => x.Id).ToArray();
+
+                    await CaptureItems.Where(x => captureIds.Contains(x.CaptureId)).LoadAsync();
+
+                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+                    {
+                        await OrderDynamicPropertyObjectValues.Where(x => captureIds.Contains(x.CaptureId)).LoadAsync();
                     }
                 }
             }

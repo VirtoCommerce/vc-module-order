@@ -218,6 +218,29 @@ angular.module(moduleName, [
         };
         knownOperations.registerOperation(refundOperation);
 
+        var captureOperation = {
+            type: 'Capture',
+            description: 'orders.blades.newOperation-wizard.menu.capture-operation',
+            detailBlade: {
+                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/capture-detail.html',
+                metaFields: [
+                    {
+                        name: 'number',
+                        isRequired: true,
+                        title: "orders.blades.payment-detail.labels.payment-number",
+                        valueType: "ShortText"
+                    },
+                    {
+                        name: 'createdDate',
+                        isReadOnly: true,
+                        title: "orders.blades.payment-detail.labels.from",
+                        valueType: "DateTime"
+                    }
+                ]
+            }
+        };
+        knownOperations.registerOperation(captureOperation);
+
         var shipmentOperation = {
             type: 'Shipment',
             description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
@@ -329,6 +352,7 @@ angular.module(moduleName, [
         widgetService.registerWidget(operationCommentWidget, 'shipmentDetailWidgets');
         widgetService.registerWidget(operationCommentWidget, 'paymentDetailWidgets');
         widgetService.registerWidget(operationCommentWidget, 'refundDetailWidgets');
+        widgetService.registerWidget(operationCommentWidget, 'captureDetailWidgets');
 
 
         var shipmentAddressWidget = {
@@ -375,6 +399,7 @@ angular.module(moduleName, [
         widgetService.registerWidget(operationsWidget, 'shipmentDetailWidgets');
         widgetService.registerWidget(operationsWidget, 'paymentDetailWidgets');
         widgetService.registerWidget(operationsWidget, 'refundDetailWidgets');
+        widgetService.registerWidget(operationsWidget, 'captureDetailWidgets');
 
         var dynamicPropertyWidget = {
             controller: 'platformWebApp.dynamicPropertyWidgetController',
@@ -385,6 +410,7 @@ angular.module(moduleName, [
         widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderDetailWidgets');
         widgetService.registerWidget(dynamicPropertyWidget, 'paymentDetailWidgets');
         widgetService.registerWidget(dynamicPropertyWidget, 'refundDetailWidgets');
+        widgetService.registerWidget(dynamicPropertyWidget, 'captureDetailWidgets');
 
 
         var operationsTreeWidget = {
