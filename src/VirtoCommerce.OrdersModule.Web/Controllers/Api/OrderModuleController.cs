@@ -464,28 +464,28 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteOrdersByIds([FromQuery] string[] ids)
         {
-            var restrictedOrderIds = new List<string>();
+            var unauthorizedRequest = false;
 
             foreach (var id in ids)
             {
                 var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(id);
+                if (customerOrder == null)
+                {
+                    continue;
+                }
+
                 var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Delete));
-                if (authorizationResult.Succeeded && customerOrder != null)
+                if (authorizationResult.Succeeded)
                 {
                     await _customerOrderService.DeleteAsync(new[] { id });
                 }
                 else
                 {
-                    restrictedOrderIds.Add(id);
+                    unauthorizedRequest = true;
                 }
             }
 
-            if (ids.Length == restrictedOrderIds.Count)
-            {
-                return Unauthorized();
-            }
-
-            return NoContent();
+            return unauthorizedRequest ? Unauthorized() : NoContent();
         }
 
         /// <summary>
