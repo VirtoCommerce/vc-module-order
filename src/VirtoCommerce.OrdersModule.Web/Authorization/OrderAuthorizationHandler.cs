@@ -8,6 +8,7 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Data.Authorization;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Security.Authorization;
@@ -30,6 +31,13 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
         {
             await base.HandleRequirementAsync(context, requirement);
+
+            var result = context.User.IsInRole(PlatformConstants.Security.SystemRoles.Administrator);
+
+            if (!result)
+            {
+                result = context.User.HasClaim(PlatformConstants.Security.Claims.PermissionClaimType, requirement.Permission);
+            }
 
             if (!context.HasSucceeded)
             {

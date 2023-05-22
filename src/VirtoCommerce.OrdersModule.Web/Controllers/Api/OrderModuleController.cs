@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
+using KeyValuePair = VirtoCommerce.OrdersModule.Web.Model.KeyValuePair;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -459,11 +461,30 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="ids">customer order ids for delete</param>
         [HttpDelete]
         [Route("")]
-        [Authorize(ModuleConstants.Security.Permissions.Delete)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteOrdersByIds([FromQuery] string[] ids)
         {
-            await _customerOrderService.DeleteAsync(ids);
+            var restrictedOrderIds = new List<string>();
+
+            foreach (var id in ids)
+            {
+                var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(id);
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Delete));
+                if (authorizationResult.Succeeded && customerOrder != null)
+                {
+                    await _customerOrderService.DeleteAsync(new[] { id });
+                }
+                else
+                {
+                    restrictedOrderIds.Add(id);
+                }
+            }
+
+            if (ids.Length == restrictedOrderIds.Count)
+            {
+                return Unauthorized();
+            }
+
             return NoContent();
         }
 
