@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
-using VirtoCommerce.OrdersModule.Data.Authorization;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -24,17 +23,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         }
 
         [HttpPost]
+        [Authorize(ModuleConstants.Security.Permissions.UpdateShipments)]
         public async Task<ActionResult> UpdateShipment([FromBody] Shipment shipment)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(
-                user: User,
-                resource: null,
-                requirement: new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.UpdateShipments));
-            if (!authorizationResult.Succeeded)
-            {
-                return Unauthorized();
-            }
-
             var source = new CancellationTokenSource();
             var token = source.Token;
 
