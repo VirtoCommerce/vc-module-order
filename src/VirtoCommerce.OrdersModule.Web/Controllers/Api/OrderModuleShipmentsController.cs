@@ -13,13 +13,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     public class OrderModuleShipmentsController : Controller
     {
         private readonly IShipmentService _shipmentService;
-        private readonly IAuthorizationService _authorizationService;
 
-        public OrderModuleShipmentsController(IShipmentService shipmentService,
-            IAuthorizationService authorizationService)
+        public OrderModuleShipmentsController(IShipmentService shipmentService)
         {
             _shipmentService = shipmentService;
-            _authorizationService = authorizationService;
         }
 
         [HttpPost]
