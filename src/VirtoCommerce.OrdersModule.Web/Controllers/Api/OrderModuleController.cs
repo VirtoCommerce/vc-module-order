@@ -367,33 +367,29 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> UpdateOrder([FromBody] CustomerOrder customerOrder)
         {
             var order = await _customerOrderServiceCrud.GetByIdAsync(customerOrder.Id);
-            if (order != null)
-            {
-                var authorizationResult = await _authorizationService.AuthorizeAsync(User, order,
-                    new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
-                if (!authorizationResult.Succeeded)
-                {
-                    return Unauthorized();
-                }
-
-                var validationResult = await ValidateAsync(customerOrder);
-                if (!validationResult.IsValid)
-                {
-                    return BadRequest(new
-                    {
-                        Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
-                        Errors = validationResult.Errors
-                    });
-                }
-
-                await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
-                return NoContent();
-            }
-            else
+            if (order == null)
             {
                 return NotFound();
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
+            if (!authorizationResult.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            var validationResult = await ValidateAsync(customerOrder);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    Errors = validationResult.Errors
+                });
+            }
+
+            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            return NoContent();
         }
 
         /// <summary>
