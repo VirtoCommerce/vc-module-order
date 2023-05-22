@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
@@ -366,24 +367,34 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateOrder([FromBody] CustomerOrder customerOrder)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
-            if (!authorizationResult.Succeeded)
+            var order = await _customerOrderServiceCrud.GetByIdAsync(customerOrder.Id);
+            if (order != null)
             {
-                return Unauthorized();
-            }
-
-            var validationResult = await ValidateAsync(customerOrder);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(new
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, order,
+                    new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
+                if (!authorizationResult.Succeeded)
                 {
-                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
-                    Errors = validationResult.Errors
-                });
+                    return Unauthorized();
+                }
+
+                var validationResult = await ValidateAsync(customerOrder);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                        Errors = validationResult.Errors
+                    });
+                }
+
+                await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
-            return NoContent();
         }
 
         /// <summary>
