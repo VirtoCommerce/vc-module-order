@@ -465,12 +465,31 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="ids">customer order ids for delete</param>
         [HttpDelete]
         [Route("")]
-        [Authorize(ModuleConstants.Security.Permissions.Delete)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> DeleteOrdersByIds([FromQuery] string[] ids)
         {
-            await _customerOrderService.DeleteAsync(ids);
-            return NoContent();
+            var unauthorizedRequest = false;
+
+            foreach (var id in ids)
+            {
+                var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(id);
+                if (customerOrder == null)
+                {
+                    continue;
+                }
+
+                var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Delete));
+                if (authorizationResult.Succeeded)
+                {
+                    await _customerOrderService.DeleteAsync(new[] { id });
+                }
+                else
+                {
+                    unauthorizedRequest = true;
+                }
+            }
+
+            return unauthorizedRequest ? Unauthorized() : NoContent();
         }
 
         /// <summary>
