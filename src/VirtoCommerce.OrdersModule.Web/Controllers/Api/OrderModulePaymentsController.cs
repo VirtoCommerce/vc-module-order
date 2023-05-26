@@ -57,7 +57,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             var result = await _paymentSearchService.SearchAsync(criteria);
@@ -81,7 +81,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
             var result = await _paymentSearchService.SearchAsync(searchCriteria);
 
@@ -112,7 +112,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
             var validationResult = await ValidateAsync(payment);
             if (!validationResult.IsValid)
@@ -151,7 +151,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
             var result = await _paymentSearchService.SearchAsync(searchCriteria);
             await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
