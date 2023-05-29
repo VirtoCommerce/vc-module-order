@@ -94,6 +94,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>();
             serviceCollection.AddTransient<OrderExportImport>();
             serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandler>();
+            serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandlerV2>();
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
@@ -176,11 +177,21 @@ namespace VirtoCommerce.OrdersModule.Web
                                                                         }, new OnlyOrderResponsibleScope(), new OrderSelectedStoreScope());
 
             var inProcessBus = appBuilder.ApplicationServices.GetService<IHandlerRegistrar>();
-            inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<AdjustInventoryOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<CancelPaymentOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<LogChangesOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.CreateScope().ServiceProvider.GetService<SendNotificationsOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<IndexCustomerOrderChangedEventHandler>().Handle(message));
+
+
+            if (Configuration.IsDefaultPlatformInventoryHandlerV2())
+            {
+                inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<AdjustInventoryOrderChangedEventHandlerV2>().Handle(message));
+            }
+            else
+            {
+                inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<AdjustInventoryOrderChangedEventHandler>().Handle(message));
+            }
+
 
             if (fullTextSearchEnabled)
             {

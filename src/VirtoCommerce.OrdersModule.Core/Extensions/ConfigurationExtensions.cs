@@ -10,5 +10,11 @@ namespace VirtoCommerce.OrdersModule.Core.Extensions
             var value = configuration["Search:OrderFullTextSearchEnabled"];
             return value.TryParse(false);
         }
+
+        public static bool IsDefaultPlatformInventoryHandlerV2(this IConfiguration configuration)
+        {
+            var value = configuration["InventoryWorkflow"];
+            return value == "VirtoCommerce.OrdersModule.Data.Handlers.AdjustInventoryOrderChangedEventHandlerV2";
+        }
     }
 }
