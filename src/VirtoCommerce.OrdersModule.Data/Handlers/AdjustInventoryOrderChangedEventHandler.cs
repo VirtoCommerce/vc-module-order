@@ -130,7 +130,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 requestItems.Add(requestItem);
             });
 
-            request.Items = await FilterByProducts(requestItems);
+            request.Items = await FilterByTrackInventory(requestItems);
 
             if (request.Items.Any())
             {
@@ -178,12 +178,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 requestItems.Add(requestItem);
             });
 
-            request.Items = await FilterByProducts(requestItems);
+            request.Items = await FilterByTrackInventory(requestItems);
 
             return request;
         }
 
-        protected virtual async Task<List<StockRequestItem>> FilterByProducts(IList<StockRequestItem> items)
+        protected virtual async Task<IList<StockRequestItem>> FilterByTrackInventory(IList<StockRequestItem> items)
         {
             var result = new List<StockRequestItem>();
 
@@ -191,11 +191,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 var productIds = items.Select(x => x.ProductId).ToArray();
                 var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
-                var existingProductIds = catalogProducts
+
+                var trackInventoryProductIds = catalogProducts
                     .Where(x => x.TrackInventory.HasValue && x.TrackInventory.Value)
                     .Select(x => x.Id);
 
-                result.AddRange(items.Where(x => existingProductIds.Contains(x.ProductId)));
+                result.AddRange(items.Where(x => trackInventoryProductIds.Contains(x.ProductId)));
             }
 
             return result;
@@ -205,9 +206,19 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var store = await _storeService.GetByIdAsync(storeId);
 
-            return store == null
-                ? new List<string>()
-                : (new List<string> { store.MainFulfillmentCenterId }).Concat(store.AdditionalFulfillmentCenterIds).ToList();
+            if (store == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            var result = new List<string>(store.AdditionalFulfillmentCenterIds ?? Array.Empty<string>());
+
+            if (!string.IsNullOrEmpty(store.MainFulfillmentCenterId))
+            {
+                result.Insert(0, store.MainFulfillmentCenterId);
+            }
+
+            return result;
         }
     }
 }
