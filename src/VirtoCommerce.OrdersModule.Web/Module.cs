@@ -94,7 +94,6 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>();
             serviceCollection.AddTransient<OrderExportImport>();
             serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandler>();
-            serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandler>();
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
@@ -182,7 +181,6 @@ namespace VirtoCommerce.OrdersModule.Web
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<LogChangesOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.CreateScope().ServiceProvider.GetService<SendNotificationsOrderChangedEventHandler>().Handle(message));
             inProcessBus.RegisterHandler<OrderChangedEvent>((message, token) => appBuilder.ApplicationServices.GetService<IndexCustomerOrderChangedEventHandler>().Handle(message));
-
 
             if (fullTextSearchEnabled)
             {
