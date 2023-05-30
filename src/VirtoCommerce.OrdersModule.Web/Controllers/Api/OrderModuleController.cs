@@ -129,7 +129,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             var result = await _searchService.SearchAsync(criteria);
@@ -154,7 +154,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
             var result = await _searchService.SearchAsync(searchCriteria);
 
@@ -178,7 +178,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
             var result = await _searchService.SearchAsync(searchCriteria);
 
@@ -255,7 +255,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             var inPayment = customerOrder.InPayments.FirstOrDefault(x => x.Id == paymentId);
@@ -375,7 +375,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             var validationResult = await ValidateAsync(customerOrder);
@@ -489,7 +489,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 }
             }
 
-            return unauthorizedRequest ? Unauthorized() : NoContent();
+            return unauthorizedRequest ? Forbid() : NoContent();
         }
 
         /// <summary>
@@ -646,7 +646,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
                 if (!authorizationResult.Succeeded)
                 {
-                    return Unauthorized();
+                    return Forbid();
                 }
 
                 //Load general change log for order
@@ -684,7 +684,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
-                return Unauthorized();
+                return Forbid();
             }
 
             //Load general change log for order
