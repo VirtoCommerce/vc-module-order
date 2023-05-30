@@ -102,61 +102,61 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual async Task<ReserveStockRequest> GetReserveRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var customerOrder = changedEntry.NewEntry;
-            var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
-            var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var order = changedEntry.NewEntry;
+            var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var reserveStockRequest = AbstractTypeFactory<ReserveStockRequest>.TryCreateInstance();
-            reserveStockRequest.OuterType = typeof(LineItem).FullName;
-            reserveStockRequest.ParentId = customerOrder.Id;
-            var stockRequestItems = new List<StockRequestItem>();
+            var request = AbstractTypeFactory<ReserveStockRequest>.TryCreateInstance();
+            request.OuterType = typeof(LineItem).FullName;
+            request.ParentId = order.Id;
+            var requestItems = new List<StockRequestItem>();
 
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
+            newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
                 if (changedEntry.EntryState != EntryState.Added && state != EntryState.Added)
                 {
                     return;
                 }
 
-                if (changedItem.Quantity == 0)
+                if (newItem.Quantity == 0)
                 {
                     return;
                 }
 
-                var stockRequestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
-                stockRequestItem.OuterId = changedItem.Id;
-                stockRequestItem.ProductId = changedItem.ProductId;
-                stockRequestItem.Quantity = changedItem.Quantity;
-                stockRequestItems.Add(stockRequestItem);
+                var requestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
+                requestItem.OuterId = newItem.Id;
+                requestItem.ProductId = newItem.ProductId;
+                requestItem.Quantity = newItem.Quantity;
+                requestItems.Add(requestItem);
             });
 
-            reserveStockRequest.Items = await FilterByProducts(stockRequestItems);
+            request.Items = await FilterByProducts(requestItems);
 
-            if (reserveStockRequest.Items.Any())
+            if (request.Items.Any())
             {
-                var fulfillmentCenterIds = await GetFulfillmentCenterIdsAsync(customerOrder.StoreId);
+                var fulfillmentCenterIds = await GetFulfillmentCenterIdsAsync(order.StoreId);
                 if (!fulfillmentCenterIds.Any())
                 {
-                    _logger.LogInformation("GetReserveRequests: No fulfillment centers, store - {Store}, store - {Order}", customerOrder.StoreId, changedEntry.NewEntry.Id);
+                    _logger.LogInformation("GetReserveRequests: No fulfillment centers, store - {Store}, store - {Order}", order.StoreId, changedEntry.NewEntry.Id);
                 }
-                reserveStockRequest.FulfillmentCenterIds = fulfillmentCenterIds;
+                request.FulfillmentCenterIds = fulfillmentCenterIds;
             }
 
-            return reserveStockRequest;
+            return request;
         }
 
         protected virtual async Task<ReleaseStockRequest> GetReleaseRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var customerOrder = changedEntry.NewEntry;
-            var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
-            var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var order = changedEntry.NewEntry;
+            var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var releaseStockRequest = AbstractTypeFactory<ReleaseStockRequest>.TryCreateInstance();
-            releaseStockRequest.OuterType = typeof(LineItem).FullName;
-            releaseStockRequest.ParentId = customerOrder.Id;
-            var stockRequestItems = new List<StockRequestItem>();
+            var request = AbstractTypeFactory<ReleaseStockRequest>.TryCreateInstance();
+            request.OuterType = typeof(LineItem).FullName;
+            request.ParentId = order.Id;
+            var requestItems = new List<StockRequestItem>();
 
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
+            newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
                 if (changedEntry.EntryState != EntryState.Deleted
                     && state != EntryState.Deleted
@@ -167,39 +167,35 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     return;
                 }
 
-                if (originalItem.Quantity <= 0)
+                if (oldItem.Quantity <= 0)
                 {
                     return;
                 }
 
-                var stockRequestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
-                stockRequestItem.OuterId = changedItem.Id;
-                stockRequestItem.ProductId = changedItem.ProductId;
-                stockRequestItems.Add(stockRequestItem);
+                var requestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
+                requestItem.OuterId = newItem.Id;
+                requestItem.ProductId = newItem.ProductId;
+                requestItems.Add(requestItem);
             });
 
-            releaseStockRequest.Items = await FilterByProducts(stockRequestItems);
+            request.Items = await FilterByProducts(requestItems);
 
-            return releaseStockRequest;
+            return request;
         }
 
-        private async Task<List<StockRequestItem>> FilterByProducts(IList<StockRequestItem> releaseStockRequests)
+        protected virtual async Task<List<StockRequestItem>> FilterByProducts(IList<StockRequestItem> items)
         {
             var result = new List<StockRequestItem>();
 
-            if (releaseStockRequests.Any())
+            if (items.Any())
             {
-                var productIds = releaseStockRequests.Select(x => x.ProductId).ToArray();
+                var productIds = items.Select(x => x.ProductId).ToArray();
                 var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
+                var existingProductIds = catalogProducts
+                    .Where(x => x.TrackInventory.HasValue && x.TrackInventory.Value)
+                    .Select(x => x.Id);
 
-                result.AddRange(from releaseStockRequest
-                                in releaseStockRequests
-                                let product = catalogProducts
-                                    .FirstOrDefault(x => x.Id == releaseStockRequest.ProductId &&
-                                                         x.TrackInventory.HasValue &&
-                                                         x.TrackInventory.Value)
-                                where product != null
-                                select releaseStockRequest);
+                result.AddRange(items.Where(x => existingProductIds.Contains(x.ProductId)));
             }
 
             return result;
