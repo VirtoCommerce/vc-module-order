@@ -81,20 +81,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public virtual async Task ProcessInventoryChanges(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var reserveStockRequest = await GetReserveRequests(changedEntry);
-            var releaseStockRequest = await GetReleaseRequests(changedEntry);
 
-            if (reserveStockRequest.Items.IsNullOrEmpty() && releaseStockRequest.Items.IsNullOrEmpty())
-            {
-                _logger.LogInformation("ProcessInventoryChanges: No transaction request, order - {Order}", changedEntry.NewEntry.Id);
-                return;
-            }
-
-            if (!reserveStockRequest.Items.IsNullOrEmpty())
+            if (reserveStockRequest.Items.Any())
             {
                 await _reservationService.ReserveStockAsync(reserveStockRequest);
             }
 
-            if (!releaseStockRequest.Items.IsNullOrEmpty())
+            var releaseStockRequest = await GetReleaseRequests(changedEntry);
+
+            if (releaseStockRequest.Items.Any())
             {
                 await _reservationService.ReleaseStockAsync(releaseStockRequest);
             }
