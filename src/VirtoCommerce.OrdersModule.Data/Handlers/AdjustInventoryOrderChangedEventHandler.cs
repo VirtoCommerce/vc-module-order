@@ -27,7 +27,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly ISettingsManager _settingsManager;
         private readonly ICrudService<Store> _storeService;
         private readonly IItemService _itemService;
-        private readonly IReservationService _reservationService;
+        private readonly IInventoryReservationService _reservationService;
         private readonly ILogger<AdjustInventoryOrderChangedEventHandler> _logger;
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             ICrudService<Store> storeService,
             ISettingsManager settingsManager,
             IItemService itemService,
-            IReservationService reservationService,
+            IInventoryReservationService reservationService,
             ILogger<AdjustInventoryOrderChangedEventHandler> logger)
         {
             _settingsManager = settingsManager;
@@ -84,27 +84,26 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (reserveStockRequest.Items.Any())
             {
-                await _reservationService.ReserveStockAsync(reserveStockRequest);
+                await _reservationService.ReserveAsync(reserveStockRequest);
             }
 
             var releaseStockRequest = await GetReleaseRequests(changedEntry);
 
             if (releaseStockRequest.Items.Any())
             {
-                await _reservationService.ReleaseStockAsync(releaseStockRequest);
+                await _reservationService.ReleaseAsync(releaseStockRequest);
             }
         }
 
-        protected virtual async Task<ReserveStockRequest> GetReserveRequests(GenericChangedEntry<CustomerOrder> changedEntry)
+        protected virtual async Task<InventoryReserveRequest> GetReserveRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var order = changedEntry.NewEntry;
             var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
             var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var request = AbstractTypeFactory<ReserveStockRequest>.TryCreateInstance();
-            request.OuterType = typeof(LineItem).FullName;
+            var request = AbstractTypeFactory<InventoryReserveRequest>.TryCreateInstance();
             request.ParentId = order.Id;
-            var requestItems = new List<StockRequestItem>();
+            var requestItems = new List<InventoryReservationRequestItem>();
 
             newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
@@ -118,8 +117,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     return;
                 }
 
-                var requestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
-                requestItem.OuterId = newItem.Id;
+                var requestItem = AbstractTypeFactory<InventoryReservationRequestItem>.TryCreateInstance();
+                requestItem.ItemType = typeof(LineItem).FullName;
+                requestItem.ItemId = newItem.Id;
                 requestItem.ProductId = newItem.ProductId;
                 requestItem.Quantity = newItem.Quantity;
                 requestItems.Add(requestItem);
@@ -140,16 +140,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return request;
         }
 
-        protected virtual async Task<ReleaseStockRequest> GetReleaseRequests(GenericChangedEntry<CustomerOrder> changedEntry)
+        protected virtual async Task<InventoryReleaseRequest> GetReleaseRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
             var order = changedEntry.NewEntry;
             var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
             var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var request = AbstractTypeFactory<ReleaseStockRequest>.TryCreateInstance();
-            request.OuterType = typeof(LineItem).FullName;
+            var request = AbstractTypeFactory<InventoryReleaseRequest>.TryCreateInstance();
             request.ParentId = order.Id;
-            var requestItems = new List<StockRequestItem>();
+            var requestItems = new List<InventoryReservationRequestItem>();
 
             newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
@@ -167,8 +166,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     return;
                 }
 
-                var requestItem = AbstractTypeFactory<StockRequestItem>.TryCreateInstance();
-                requestItem.OuterId = newItem.Id;
+                var requestItem = AbstractTypeFactory<InventoryReservationRequestItem>.TryCreateInstance();
+                requestItem.ItemType = typeof(LineItem).FullName;
+                requestItem.ItemId = newItem.Id;
                 requestItem.ProductId = newItem.ProductId;
                 requestItems.Add(requestItem);
             });
@@ -178,9 +178,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return request;
         }
 
-        protected virtual async Task<IList<StockRequestItem>> FilterByTrackInventory(IList<StockRequestItem> items)
+        protected virtual async Task<IList<InventoryReservationRequestItem>> FilterByTrackInventory(IList<InventoryReservationRequestItem> items)
         {
-            var result = new List<StockRequestItem>();
+            var result = new List<InventoryReservationRequestItem>();
 
             if (items.Any())
             {
