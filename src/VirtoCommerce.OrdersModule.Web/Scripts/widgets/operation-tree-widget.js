@@ -33,10 +33,9 @@ angular.module('virtoCommerce.orderModule')
 
     $scope.selectOperation = function (node) {
         $scope.currentOperationId = node.operation.id;
+        bladeNavigationService.closeChildrenBlades(blade);
 
-        if (node.operation.id === blade.customerOrder.id) {
-            bladeNavigationService.closeChildrenBlades(blade);
-        } else {
+        if (node.operation.id !== blade.customerOrder.id) {
             var newBlade = node.detailBlade;
             angular.extend(newBlade, {
                 customerOrder: blade.customerOrder,
