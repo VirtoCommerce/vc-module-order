@@ -128,6 +128,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type CustomerOrder", nameof(operation));
             }
 
+            order.RowVersion = RowVersion;
             order.ShoppingCartId = ShoppingCartId;
             order.CustomerId = CustomerId;
             order.CustomerName = CustomerName;
@@ -207,6 +208,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             base.FromModel(order, pkMap);
 
+            RowVersion = order.RowVersion;
             ShoppingCartId = order.ShoppingCartId;
             CustomerId = order.CustomerId;
             CustomerName = order.CustomerName;
@@ -318,6 +320,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                     nameof(target));
             }
 
+            operation.RowVersion = RowVersion;
             operation.ShoppingCartId = ShoppingCartId;
             operation.CustomerId = CustomerId;
             operation.CustomerName = CustomerName;

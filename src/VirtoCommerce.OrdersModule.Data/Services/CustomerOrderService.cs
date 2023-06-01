@@ -58,6 +58,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return orders.ToArray();
         }
 
+        public override Task SaveChangesAsync(IEnumerable<CustomerOrder> models)
+        {
+            return SaveChangesAsync(models.ToArray());
+        }
+
         public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
         {
             var pkMap = new PrimaryKeyResolvingMap();
@@ -77,6 +82,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
+                        if (HasOrderModified(modifiedOrder, originalEntity))
+                        {
+                            var originalModifiedBy = originalEntity.ModifiedBy;
+                            var originalModifiedDate = originalEntity.ModifiedDate;
+
+                            throw new InvalidOperationException($"The order has been modified by {originalModifiedBy} on {originalModifiedDate}. Please reload the latest data and try again.");
+                        }
+
+                        // ((VirtoCommerce.OrdersModule.Data.Repositories.OrderRepository)repository).DbContext.Entry(originalEntity).Property(e => e.RowVersion).OriginalValue = modifiedOrder.RowVersion;
+
                         var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
                         _totalsCalculator.CalculateTotals(oldModel);
 
@@ -113,6 +128,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     }
                 }
 
+
+
+
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
                 await repository.UnitOfWork.CommitAsync();
@@ -132,6 +150,43 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
+        }
+
+        /// <summary>
+        /// Check that the order has been modified by another employee before the update operation.
+        /// If a mismatch occurs, throws an InvalidOperationException with a human-readable message indicating who modified the order
+        /// and advising the user to reload the latest data and retry the operation.
+        /// </summary>
+        /// <param name="modifiedOrder"></param>
+        /// <param name="originalOrder"></param>
+        /// <returns></returns>
+        protected virtual bool HasOrderModified(CustomerOrder modifiedOrder, CustomerOrderEntity originalOrder)
+        {
+            return modifiedOrder.RowVersion != null &&
+                !ByteArrayEquals(modifiedOrder.RowVersion, originalOrder.RowVersion);
+        }
+
+        private bool ByteArrayEquals(byte[] array1, byte[] array2)
+        {
+            if (array1 == null && array2 == null)
+            {
+                return true;
+            }
+
+            if (array1 == null || array2 == null || array1.Length != array2.Length)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < array1.Length; i++)
+            {
+                if (array1[i] != array2[i])
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public virtual async Task DeleteAsync(string[] ids)
