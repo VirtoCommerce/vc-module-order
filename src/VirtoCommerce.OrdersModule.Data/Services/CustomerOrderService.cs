@@ -157,35 +157,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
-        /// <summary>
-        /// Checks that the order has been modified by another employee before the update operation.
-        /// If returns true, throws an InvalidOperationException with a human-readable message
-        /// indicating who modified the order and advising the user to reload the latest data and retry the operation.
-        /// </summary>
-        /// <param name="modifiedOrder"></param>
-        /// <param name="originalOrder"></param>
-        /// <returns></returns>
-        protected virtual bool HasOrderModified(CustomerOrder modifiedOrder, CustomerOrderEntity originalOrder)
-        {
-            return modifiedOrder.RowVersion != null &&
-                !ByteArrayEquals(modifiedOrder.RowVersion, originalOrder.RowVersion);
-        }
-
-        private bool ByteArrayEquals(byte[] array1, byte[] array2)
-        {
-            if (array1 == null && array2 == null)
-            {
-                return true;
-            }
-
-            if (array1 == null || array2 == null || array1.Length != array2.Length)
-            {
-                return false;
-            }
-
-            return array1.SequenceEqual(array2);
-        }
-
         public virtual async Task DeleteAsync(string[] ids)
         {
             var orders = await GetByIdsAsync(ids, CustomerOrderResponseGroup.Full.ToString());
