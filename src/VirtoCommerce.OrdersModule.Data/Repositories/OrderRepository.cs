@@ -232,7 +232,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         {
             if (rowVersion != null)
             {
-                base.DbContext.Entry(entity).Property(e => e.RowVersion).OriginalValue = rowVersion;
+                DbContext.Entry(entity).Property(e => e.RowVersion).OriginalValue = rowVersion;
             }
         }
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -125,18 +124,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     }
                 }
 
-
-
-
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
+
                 try
                 {
                     await repository.UnitOfWork.CommitAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
-                    throw new InvalidOperationException($"The order has been modified by another user. Please reload the latest data and try again.");
+                    throw new InvalidOperationException("The order has been modified by another user. Please reload the latest data and try again.", ex);
                 }
 
                 pkMap.ResolvePrimaryKeys();
