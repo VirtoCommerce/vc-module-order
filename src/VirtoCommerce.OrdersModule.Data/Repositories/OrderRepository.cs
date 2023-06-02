@@ -228,6 +228,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
+        public void PatchRowVersion(CustomerOrderEntity entity, byte[] rowVersion)
+        {
+            base.DbContext.Entry(entity).Property(e => e.RowVersion).OriginalValue = rowVersion;
+        }
+
         public virtual async Task RemoveOrdersByIdsAsync(string[] ids)
         {
             var orders = await GetCustomerOrdersByIdsAsync(ids);

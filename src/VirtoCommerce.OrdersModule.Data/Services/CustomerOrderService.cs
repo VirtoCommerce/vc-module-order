@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -82,15 +84,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
-                        if (HasOrderModified(modifiedOrder, originalEntity))
-                        {
-                            var originalModifiedBy = originalEntity.ModifiedBy;
-                            var originalModifiedDate = originalEntity.ModifiedDate;
-
-                            throw new InvalidOperationException($"The order has been modified by {originalModifiedBy} on {originalModifiedDate}. Please reload the latest data and try again.");
-                        }
-
-                        // ((VirtoCommerce.OrdersModule.Data.Repositories.OrderRepository)repository).DbContext.Entry(originalEntity).Property(e => e.RowVersion).OriginalValue = modifiedOrder.RowVersion;
+                        // Patch RowVersion to throw concurrency exception if someone updated order before
+                        // https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#optimistic-concurrency
+                        // https://stackoverflow.com/questions/75454812/entity-framework-core-manually-changing-rowversion-of-entity-has-no-effect-on-c
+                        repository.PatchRowVersion(originalEntity, modifiedOrder.RowVersion);
 
                         var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
                         _totalsCalculator.CalculateTotals(oldModel);
@@ -133,7 +130,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
-                await repository.UnitOfWork.CommitAsync();
+                try
+                {
+                    await repository.UnitOfWork.CommitAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new InvalidOperationException($"The order has been modified by another user. Please reload the latest data and try again.");
+                }
+
                 pkMap.ResolvePrimaryKeys();
                 ClearCache(orders);
             }
@@ -153,9 +158,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         }
 
         /// <summary>
-        /// Check that the order has been modified by another employee before the update operation.
-        /// If a mismatch occurs, throws an InvalidOperationException with a human-readable message indicating who modified the order
-        /// and advising the user to reload the latest data and retry the operation.
+        /// Checks that the order has been modified by another employee before the update operation.
+        /// If returns true, throws an InvalidOperationException with a human-readable message
+        /// indicating who modified the order and advising the user to reload the latest data and retry the operation.
         /// </summary>
         /// <param name="modifiedOrder"></param>
         /// <param name="originalOrder"></param>
@@ -178,15 +183,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return false;
             }
 
-            for (int i = 0; i < array1.Length; i++)
-            {
-                if (array1[i] != array2[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return array1.SequenceEqual(array2);
         }
 
         public virtual async Task DeleteAsync(string[] ids)
