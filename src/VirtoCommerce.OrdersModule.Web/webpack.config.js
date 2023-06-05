@@ -9,9 +9,10 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const rootPath = path.resolve(__dirname, "dist");
 
 function getEntrypoints() {
+    const options = { nosort: true, dotRelative: true, posix: true };
     const result = [
-        ...glob.sync("./Scripts/**/*.js", { nosort: true }),
-        ...glob.sync("./Content/**/*.css", { nosort: true })
+        ...glob.sync("./Scripts/**/*.js", options),
+        ...glob.sync("./Content/**/*.css", options)
     ];
 
     return result;

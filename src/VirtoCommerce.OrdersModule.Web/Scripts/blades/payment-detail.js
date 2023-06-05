@@ -20,6 +20,10 @@ angular.module('virtoCommerce.orderModule')
         blade.capturePermission = 'order:capture_payment';
         blade.refundPermission = 'order:refund';
 
+        blade.customInitialize = function () {
+            blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled);
+        };
+
         if (blade.isNew) {
             blade.title = 'orders.blades.payment-detail.title-new';
 
@@ -33,6 +37,7 @@ angular.module('virtoCommerce.orderModule')
             blade.title = 'orders.blades.payment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
             blade.subtitle = 'orders.blades.payment-detail.subtitle';
+            blade.customInitialize();
         }
                 
         blade.realOperationsCollection = blade.customerOrder.inPayments;
@@ -111,10 +116,6 @@ angular.module('virtoCommerce.orderModule')
         function translateBladeStatuses(data) {
             blade.statuses = statusTranslationService.translateStatuses(data, 'PaymentIn');
         }
-
-        blade.customInitialize = function () {
-            blade.isLocked = blade.currentEntity.status == 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
-        };
 
         blade.setEntityStatus = function (status) {
             blade.currentEntity.status = status;

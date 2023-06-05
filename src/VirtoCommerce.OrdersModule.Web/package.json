@@ -12,7 +12,8 @@
     "css-loader": "^6.5.1",
     "mini-css-extract-plugin": "^2.5.1",
     "webpack": "^5.68.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.10.0",
+    "glob": "^10.2.6"
   },
   "webpack": {
     "stats": "verbose"

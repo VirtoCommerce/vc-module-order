@@ -23,10 +23,6 @@ angular.module('virtoCommerce.orderModule')
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
-            $timeout(function () {
-                blade.customInitialize();
-            }, 10);
-
             blade.isLoading = false;
         };
 

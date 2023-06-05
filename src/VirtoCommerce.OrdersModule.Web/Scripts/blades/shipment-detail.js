@@ -15,6 +15,10 @@ angular.module('virtoCommerce.orderModule')
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.shippingMethods = [];
 
+        blade.customInitialize = function () {
+            blade.isLocked = blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
+        };
+
         if (blade.isNew) {
             blade.title = 'orders.blades.shipment-detail.title-new';
 
@@ -28,6 +32,7 @@ angular.module('virtoCommerce.orderModule')
             blade.title = 'orders.blades.shipment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
             blade.subtitle = 'orders.blades.shipment-detail.subtitle';
+            blade.customInitialize();
         }
 
         blade.realOperationsCollection = blade.customerOrder.shipments;
@@ -72,10 +77,6 @@ angular.module('virtoCommerce.orderModule')
                 template: 'Modules/$(VirtoCommerce.Inventory)/Scripts/blades/fulfillment-center-list.tpl.html'
             };
             bladeNavigationService.showBlade(newBlade, blade);
-        };
-
-        blade.customInitialize = function () {
-            blade.isLocked = blade.currentEntity.status == 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
         blade.updateRecalculationFlag = function () {

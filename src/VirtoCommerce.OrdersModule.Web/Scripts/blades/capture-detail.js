@@ -49,5 +49,7 @@ angular.module('virtoCommerce.orderModule')
                 template: 'Modules/$(VirtoCommerce.Customer)/Scripts/blades/member-list.tpl.html'
             };
             bladeNavigationService.showBlade(newBlade, blade);
-        };
+            };
+
+            blade.customInitialize();
     }]);
