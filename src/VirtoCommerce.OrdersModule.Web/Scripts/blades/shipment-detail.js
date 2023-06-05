@@ -16,7 +16,7 @@ angular.module('virtoCommerce.orderModule')
         blade.shippingMethods = [];
 
         blade.customInitialize = function () {
-            blade.isLocked = blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
+            blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
         if (blade.isNew) {
