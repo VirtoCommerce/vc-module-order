@@ -11,11 +11,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
+        public byte[] RowVersion { get; set; }
+
         public string CustomerId { get; set; }
 
         public string CustomerName { get; set; }
 
-        [Obsolete("Use StoreId instead")]
         public string ChannelId { get; set; }
 
         public string StoreId { get; set; }
@@ -26,10 +27,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string OrganizationName { get; set; }
 
-        [Obsolete("Use CustomerId instead")]
         public string EmployeeId { get; set; }
 
-        [Obsolete("Use CustomerName instead")]
         public string EmployeeName { get; set; }
 
         /// <summary>
