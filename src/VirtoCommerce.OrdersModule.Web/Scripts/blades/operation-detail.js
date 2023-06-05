@@ -154,7 +154,7 @@ angular.module('virtoCommerce.orderModule')
                                 var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
                                 blade.realOperationsCollection.splice(idx, 1);
 
-                                if (blade.currentEntity.operationType === 'Refund') {
+                                if (blade.currentEntity.operationType === 'Refund' || blade.currentEntity.operationType === 'Capture') {
                                     blade.remove(blade.origEntity);
                                 }
 
