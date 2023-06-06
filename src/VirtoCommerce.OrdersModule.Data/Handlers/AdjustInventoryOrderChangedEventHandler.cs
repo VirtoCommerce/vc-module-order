@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
+using Microsoft.Extensions.Logging;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.InventoryModule.Core.Model;
@@ -12,43 +13,43 @@ using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
-    public class ProductInventoryChange
-    {
-        public string ProductId { get; set; }
-        public string FulfillmentCenterId { get; set; }
-        public int QuantityDelta { get; set; }
-    }
-
-
     /// <summary>
     /// Adjust inventory for ordered items 
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        private readonly IInventoryService _inventoryService;
         private readonly ISettingsManager _settingsManager;
-        private readonly IStoreService _storeService;
+        private readonly ICrudService<Store> _storeService;
         private readonly IItemService _itemService;
+        private readonly IInventoryReservationService _reservationService;
+        private readonly ILogger<AdjustInventoryOrderChangedEventHandler> _logger;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="inventoryService">Inventory service to use for adjusting inventories.</param>
         /// <param name="storeService">Implementation of store service.</param>
         /// <param name="settingsManager">Implementation of settings manager.</param>
         /// <param name="itemService">Implementation of item service</param>
-        public AdjustInventoryOrderChangedEventHandler(IInventoryService inventoryService, IStoreService storeService, ISettingsManager settingsManager, IItemService itemService)
+        /// <param name="reservationService">Implementation of service for reserve product stocks</param>
+        /// <param name="logger">Logger</param>
+        public AdjustInventoryOrderChangedEventHandler(
+            ICrudService<Store> storeService,
+            ISettingsManager settingsManager,
+            IItemService itemService,
+            IInventoryReservationService reservationService,
+            ILogger<AdjustInventoryOrderChangedEventHandler> logger)
         {
-            _inventoryService = inventoryService;
             _settingsManager = settingsManager;
             _storeService = storeService;
             _itemService = itemService;
+            _reservationService = reservationService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -56,247 +57,160 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// </summary>
         /// <param name="message">Order changed event to handle.</param>
         /// <returns>A task that allows to <see langword="await"/> this method.</returns>
-        public virtual async Task Handle(OrderChangedEvent message)
+        public virtual Task Handle(OrderChangedEvent message)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.OrderAdjustInventory.Name, true))
+            if (!_settingsManager.GetValue(ModuleConstants.Settings.General.OrderAdjustInventory.Name, true))
             {
-                foreach (var changedEntry in message.ChangedEntries)
+                return Task.CompletedTask;
+            }
+
+            foreach (var changedEntry in message.ChangedEntries)
+            {
+                var customerOrder = changedEntry.OldEntry;
+                //Do not process prototypes
+                if (!customerOrder.IsPrototype)
                 {
-                    var customerOrder = changedEntry.OldEntry;
-                    //Do not process prototypes
-                    if (!customerOrder.IsPrototype)
-                    {
-                        var itemChanges = await GetProductInventoryChangesFor(changedEntry);
-                        if (itemChanges.Any())
-                        {
-                            //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
-                            BackgroundJob.Enqueue(() => TryAdjustOrderInventoryBackgroundJob(itemChanges));
-                        }
-                    }
+                    //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
+                    BackgroundJob.Enqueue(() => ProcessInventoryChanges(changedEntry));
                 }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public virtual async Task ProcessInventoryChanges(GenericChangedEntry<CustomerOrder> changedEntry)
+        {
+            var reserveStockRequest = await GetReserveRequests(changedEntry);
+
+            if (reserveStockRequest.Items.Any())
+            {
+                await _reservationService.ReserveAsync(reserveStockRequest);
+            }
+
+            var releaseStockRequest = await GetReleaseRequests(changedEntry);
+
+            if (releaseStockRequest.Items.Any())
+            {
+                await _reservationService.ReleaseAsync(releaseStockRequest);
             }
         }
 
-        [DisableConcurrentExecution(10)]
-        // "DisableConcurrentExecutionAttribute" prevents to start simultaneous job payloads.
-        // Should have short timeout, because this attribute implemented by following manner: newly started job falls into "processing" state immediately.
-        // Then it tries to receive job lock during timeout. If the lock received, the job starts payload.
-        // When the job is awaiting desired timeout for lock release, it stucks in "processing" anyway. (Therefore, you should not to set long timeouts (like 24*60*60), this will cause a lot of stucked jobs and performance degradation.)
-        // Then, if timeout is over and the lock NOT acquired, the job falls into "scheduled" state (this is default fail-retry scenario).
-        // Failed job goes to "Failed" state (by default) after retries exhausted.
-        public async Task TryAdjustOrderInventoryBackgroundJob(ProductInventoryChange[] productInventoryChanges)
+        protected virtual async Task<InventoryReserveRequest> GetReserveRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            await TryAdjustOrderInventory(productInventoryChanges);
-        }
+            var order = changedEntry.NewEntry;
+            var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-        /// <summary>
-        /// Forms a list of product inventory changes for inventory adjustment. This method is intended for unit-testing only,
-        /// and there should be no need to call it from the production code.
-        /// </summary>
-        /// <param name="changedEntry">The entry that describes changes made to order.</param>
-        /// <returns>Array of required product inventory changes.</returns>
-        public virtual async Task<ProductInventoryChange[]> GetProductInventoryChangesFor(GenericChangedEntry<CustomerOrder> changedEntry)
-        {
-            var customerOrder = changedEntry.NewEntry;
-            var customerOrderShipments = customerOrder.Shipments?.ToArray();
+            var request = AbstractTypeFactory<InventoryReserveRequest>.TryCreateInstance();
+            request.ParentId = order.Id;
+            var requestItems = new List<InventoryReservationRequestItem>();
 
-            var oldLineItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
-            var newLineItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
-
-            var itemChanges = new List<ProductInventoryChange>();
-            newLineItems.CompareTo(oldLineItems, EqualityComparer<LineItem>.Default, (state, changedItem, originalItem) =>
+            newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
-                var newQuantity = changedItem.Quantity;
-                var oldQuantity = originalItem.Quantity;
-
-                if (changedEntry.EntryState == EntryState.Added || state == EntryState.Added)
+                if (changedEntry.EntryState != EntryState.Added && state != EntryState.Added)
                 {
-                    oldQuantity = 0;
-                }
-                else if (changedEntry.EntryState == EntryState.Deleted
-                || state == EntryState.Deleted
-                || changedEntry.NewEntry.Status == ModuleConstants.CustomerOrderStatus.Cancelled && changedEntry.OldEntry != null && changedEntry.OldEntry.Status != ModuleConstants.CustomerOrderStatus.Cancelled)
-                {
-                    newQuantity = 0;
+                    return;
                 }
 
-                if (oldQuantity != newQuantity)
+                if (newItem.Quantity == 0)
                 {
-                    var itemChange = AbstractTypeFactory<ProductInventoryChange>.TryCreateInstance();
-                    itemChange.ProductId = changedItem.ProductId;
-                    itemChange.QuantityDelta = newQuantity - oldQuantity;
-                    itemChanges.Add(itemChange);
+                    return;
                 }
+
+                var requestItem = AbstractTypeFactory<InventoryReservationRequestItem>.TryCreateInstance();
+                requestItem.ItemType = typeof(LineItem).FullName;
+                requestItem.ItemId = newItem.Id;
+                requestItem.ProductId = newItem.ProductId;
+                requestItem.Quantity = newItem.Quantity;
+                requestItems.Add(requestItem);
             });
 
+            request.Items = await FilterByTrackInventory(requestItems);
 
-            var allLineItems = newLineItems.Concat(oldLineItems).ToList();
-            foreach (var item in itemChanges)
+            if (request.Items.Any())
             {
-                var lineItem = allLineItems.FirstOrDefault(x => x.ProductId == item.ProductId);
-                if (lineItem != null)
+                var fulfillmentCenterIds = await GetFulfillmentCenterIdsAsync(order.StoreId);
+                if (!fulfillmentCenterIds.Any())
                 {
-                    item.FulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(lineItem, customerOrder.StoreId, customerOrderShipments);
+                    _logger.LogInformation("GetReserveRequests: No fulfillment centers, store - {Store}, store - {Order}", order.StoreId, changedEntry.NewEntry.Id);
                 }
-
+                request.FulfillmentCenterIds = fulfillmentCenterIds;
             }
-            //Do not return unchanged records
-            return await Task.FromResult(itemChanges.Where(x => x.QuantityDelta != 0).ToArray());
+
+            return request;
         }
 
-
-        public virtual async Task TryAdjustOrderInventory(ProductInventoryChange[] productInventoryChanges)
+        protected virtual async Task<InventoryReleaseRequest> GetReleaseRequests(GenericChangedEntry<CustomerOrder> changedEntry)
         {
-            var inventoryAdjustments = new HashSet<InventoryInfo>();
+            var order = changedEntry.NewEntry;
+            var oldItems = changedEntry.OldEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
+            var newItems = changedEntry.NewEntry.Items?.ToArray() ?? Array.Empty<LineItem>();
 
-            var productIds = productInventoryChanges.Select(x => x.ProductId).Distinct().ToArray();
-            var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
-            var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(productIds)).ToList();
+            var request = AbstractTypeFactory<InventoryReleaseRequest>.TryCreateInstance();
+            request.ParentId = order.Id;
+            var requestItems = new List<InventoryReservationRequestItem>();
 
-            foreach (var inventoryChange in productInventoryChanges)
+            newItems.CompareTo(oldItems, EqualityComparer<LineItem>.Default, (state, newItem, oldItem) =>
             {
-                var fulfillmentCenterId = inventoryChange.FulfillmentCenterId;
-                var productId = inventoryChange.ProductId;
-                var quantityDelta = inventoryChange.QuantityDelta;
-
-                var inventoryInfo = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId) && x.ProductId.EqualsInvariant(productId));
-                if (inventoryInfo == null)
+                if (changedEntry.EntryState != EntryState.Deleted
+                    && state != EntryState.Deleted
+                    && (changedEntry.NewEntry.Status != ModuleConstants.CustomerOrderStatus.Cancelled ||
+                        changedEntry.OldEntry == null ||
+                        changedEntry.OldEntry.Status == ModuleConstants.CustomerOrderStatus.Cancelled))
                 {
-                    continue;
+                    return;
                 }
 
-                var catalogProduct = catalogProducts.FirstOrDefault(x => x.Id.EqualsInvariant(productId));
-                if (catalogProduct == null || !catalogProduct.TrackInventory.HasValue || !catalogProduct.TrackInventory.Value)
+                if (oldItem.Quantity <= 0)
                 {
-                    continue;
+                    return;
                 }
 
-                // "quantityDelta" - the count of additional items that should be taken from the inventory.
-                inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity - quantityDelta);
-
-                inventoryAdjustments.Add(inventoryInfo);
-            }
-
-            if (inventoryAdjustments.Any())
-            {
-                await _inventoryService.SaveChangesAsync(inventoryAdjustments);
-            }
-        }
-
-        [Obsolete("This method is not used anymore. Please use the TryAdjustOrderInventory(OrderLineItemChange[]) method instead.")]
-        protected virtual async Task TryAdjustOrderInventory(GenericChangedEntry<CustomerOrder> changedEntry)
-        {
-            var customerOrder = changedEntry.OldEntry;
-            //Skip prototypes
-            if (customerOrder.IsPrototype)
-                return;
-
-            var origLineItems = new LineItem[] { };
-            var changedLineItems = new LineItem[] { };
-
-            if (changedEntry.EntryState == EntryState.Added)
-            {
-                changedLineItems = changedEntry.NewEntry.Items.ToArray();
-            }
-            else if (changedEntry.EntryState == EntryState.Deleted)
-            {
-                origLineItems = changedEntry.OldEntry.Items.ToArray();
-            }
-            else
-            {
-                origLineItems = changedEntry.OldEntry.Items.ToArray();
-                changedLineItems = changedEntry.NewEntry.Items.ToArray();
-            }
-
-            var inventoryAdjustments = new HashSet<InventoryInfo>();
-            //Load all inventories records for all changes and old order items
-            var inventoryInfos = await _inventoryService.GetProductsInventoryInfosAsync(origLineItems.Select(x => x.ProductId).Concat(changedLineItems.Select(x => x.ProductId)).Distinct().ToArray());
-            changedLineItems.CompareTo(origLineItems, EqualityComparer<LineItem>.Default, async (state, changed, orig) =>
-            {
-                await AdjustInventory(inventoryInfos, inventoryAdjustments, customerOrder, state, changed, orig);
+                var requestItem = AbstractTypeFactory<InventoryReservationRequestItem>.TryCreateInstance();
+                requestItem.ItemType = typeof(LineItem).FullName;
+                requestItem.ItemId = newItem.Id;
+                requestItem.ProductId = newItem.ProductId;
+                requestItems.Add(requestItem);
             });
-            //Save inventories adjustments
-            if (inventoryAdjustments != null)
-            {
-                await _inventoryService.SaveChangesAsync(inventoryAdjustments);
-            }
+
+            request.Items = await FilterByTrackInventory(requestItems);
+
+            return request;
         }
 
-        protected virtual async Task AdjustInventory(IEnumerable<InventoryInfo> inventories, HashSet<InventoryInfo> changedInventories, CustomerOrder order, EntryState action, LineItem changedLineItem, LineItem origLineItem)
+        protected virtual async Task<IList<InventoryReservationRequestItem>> FilterByTrackInventory(IList<InventoryReservationRequestItem> items)
         {
-            var fulfillmentCenterId = await GetFullfilmentCenterForLineItemAsync(origLineItem, order.StoreId, order.Shipments?.ToArray());
-            var inventoryInfo = inventories.Where(x => x.FulfillmentCenterId == (fulfillmentCenterId ?? x.FulfillmentCenterId))
-                .FirstOrDefault(x => x.ProductId.EqualsInvariant(origLineItem.ProductId));
-            if (inventoryInfo != null)
+            var result = new List<InventoryReservationRequestItem>();
+
+            if (items.Any())
             {
-                int delta;
+                var productIds = items.Select(x => x.ProductId).ToArray();
+                var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
 
-                if (action == EntryState.Added)
-                {
-                    delta = -origLineItem.Quantity;
-                }
-                else if (action == EntryState.Deleted)
-                {
-                    delta = origLineItem.Quantity;
-                }
-                else
-                {
-                    delta = origLineItem.Quantity - changedLineItem.Quantity;
-                }
+                var trackInventoryProductIds = catalogProducts
+                    .Where(x => x.TrackInventory.HasValue && x.TrackInventory.Value)
+                    .Select(x => x.Id);
 
-                if (delta != 0)
-                {
-                    changedInventories.Add(inventoryInfo);
-                    inventoryInfo.InStockQuantity += delta;
-                    inventoryInfo.InStockQuantity = Math.Max(0, inventoryInfo.InStockQuantity);
-                }
+                result.AddRange(items.Where(x => trackInventoryProductIds.Contains(x.ProductId)));
             }
+
+            return result;
         }
 
-        /// <summary>
-        /// Returns a fulfillment center identifier much suitable for given order line item
-        /// </summary>
-        /// <param name="lineItem"></param>
-        /// <param name="orderStoreId"></param>
-        /// <param name="orderShipments"></param>
-        /// <returns></returns>
-        protected virtual async Task<string> GetFullfilmentCenterForLineItemAsync(LineItem lineItem, string orderStoreId, Shipment[] orderShipments)
+        protected virtual async Task<IList<string>> GetFulfillmentCenterIdsAsync(string storeId)
         {
-            if (lineItem == null)
+            var store = await _storeService.GetByIdAsync(storeId);
+
+            if (store == null)
             {
-                throw new ArgumentNullException(nameof(lineItem));
+                return Array.Empty<string>();
             }
 
-            var result = lineItem.FulfillmentCenterId;
+            var result = new List<string>(store.AdditionalFulfillmentCenterIds ?? Array.Empty<string>());
 
-            if (string.IsNullOrEmpty(result))
+            if (!string.IsNullOrEmpty(store.MainFulfillmentCenterId))
             {
-                //Try to find a concrete shipment for given line item 
-                var shipment = orderShipments?.Where(x => x.Items != null)
-                    .FirstOrDefault(s => s.Items.Any(i => i.LineItemId == lineItem.Id));
-                if (shipment == null)
-                {
-                    shipment = orderShipments?.FirstOrDefault();
-                }
-
-                result = shipment?.FulfillmentCenterId;
-            }
-
-            //Use a default fulfillment center defined for store
-            if (string.IsNullOrEmpty(result))
-            {
-                var inventoryInfos = (await _inventoryService.GetProductsInventoryInfosAsync(new[] { lineItem.ProductId })).ToList();
-                var store = await _storeService.GetByIdAsync(orderStoreId, StoreResponseGroup.StoreFulfillmentCenters.ToString());
-                if (store != null)
-                {
-                    result = inventoryInfos.FirstOrDefault(x => x.FulfillmentCenterId == store.MainFulfillmentCenterId && x.InStockQuantity > 0)?.FulfillmentCenterId;
-
-                    if (string.IsNullOrEmpty(result))
-                    {
-                        var ffcIds = inventoryInfos.Where(x => x.InStockQuantity > 0).Select(x => x.FulfillmentCenterId);
-                        result = store.AdditionalFulfillmentCenterIds.FirstOrDefault(x => ffcIds.Contains(x));
-                    }
-                }
+                result.Insert(0, store.MainFulfillmentCenterId);
             }
 
             return result;
