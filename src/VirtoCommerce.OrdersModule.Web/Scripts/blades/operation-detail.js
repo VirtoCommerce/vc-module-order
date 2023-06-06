@@ -208,7 +208,23 @@ angular.module('virtoCommerce.orderModule')
                 dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
             },
             canExecuteMethod: function () {
-                return blade.currentEntity && (!blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined');
+                var result = false;
+
+                if (blade.currentEntity) {
+                    switch (blade.currentEntity.operationType) {
+                        case 'CustomerOrder':
+                            result = !blade.currentEntity.isCancelled && blade.currentEntity.status !== 'Completed';
+                            break;
+                        case 'PaymentIn':
+                            result = !blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined';
+                            break;
+                        default:
+                            result = !blade.currentEntity.isCancelled;
+                            break;
+                    }
+                }
+
+                return result;
             },
             permission: blade.updatePermission
         }
