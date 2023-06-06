@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.238.0</version>
+  <version>3.239.0</version>
   <version-tag />
   <platformVersion>3.282.0</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Cart" version="3.219.0" />
     <dependency id="VirtoCommerce.Core" version="3.200.0" />
     <dependency id="VirtoCommerce.Customer" version="3.200.0" />
-    <dependency id="VirtoCommerce.Inventory" version="3.200.0" />
+    <dependency id="VirtoCommerce.Inventory" version="3.216.0" />
     <dependency id="VirtoCommerce.Notifications" version="3.200.0" />
     <dependency id="VirtoCommerce.Payment" version="3.208.0" />
     <dependency id="VirtoCommerce.Search" version="3.202.0" />
