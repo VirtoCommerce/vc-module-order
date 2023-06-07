@@ -75,7 +75,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
             {
                 if (_organizationIds.IsNullOrEmpty() && !string.IsNullOrEmpty(OrganizationId))
                 {
-                    _organizationIds = new[] { CustomerId };
+                    _organizationIds = new[] { OrganizationId };
                 }
                 return _organizationIds;
             }
