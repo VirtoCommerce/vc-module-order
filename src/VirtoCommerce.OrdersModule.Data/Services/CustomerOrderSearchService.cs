@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -67,6 +66,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             query = WithParentOperationConditions(query, criteria);
 
             query = WithCustomerConditions(query, criteria);
+
+            query = WithOrganizationConditions(query, criteria);
 
             query = WithSubscriptionConditions(query, criteria);
 
@@ -135,6 +136,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (criteria.EmployeeId != null)
             {
                 query = query.Where(x => x.EmployeeId == criteria.EmployeeId);
+            }
+
+            return query;
+        }
+
+        private static IQueryable<CustomerOrderEntity> WithOrganizationConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (!criteria.OrganizationIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.OrganizationIds.Contains(x.OrganizationId));
             }
 
             return query;
