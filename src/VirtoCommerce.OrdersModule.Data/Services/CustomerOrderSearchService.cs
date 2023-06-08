@@ -145,7 +145,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             if (!criteria.OrganizationIds.IsNullOrEmpty())
             {
-                query = query.Where(x => criteria.OrganizationIds.Contains(x.CustomerId));
+                query = query.Where(x => criteria.OrganizationIds.Contains(x.OrganizationId));
             }
 
             return query;
