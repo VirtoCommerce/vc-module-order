@@ -76,6 +76,10 @@ angular.module('virtoCommerce.orderModule')
                 return members.search(criteria);
             };
 
+            $scope.$watch("blade.currentEntity.documentLoaded", function () {
+                blade.customInitialize();
+            }, true);
+
             blade.customInitialize = function () {
                 if (!blade.currentEntity) {
                     return;

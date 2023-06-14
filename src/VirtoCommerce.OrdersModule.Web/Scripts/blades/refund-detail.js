@@ -52,11 +52,6 @@ angular.module('virtoCommerce.orderModule')
             function translateBladeStatuses(data) {
                 blade.statuses = statusTranslationService.translateStatuses(data, 'Refund');
             }
-
-            blade.customInitialize = function () {
-                blade.isLocked = false;
-            };
-
             blade.setEntityStatus = function (status) {
                 blade.currentEntity.status = status;
             };
@@ -78,5 +73,14 @@ angular.module('virtoCommerce.orderModule')
             $scope.getRefundReasons = function () {
                 return refundReasonsService.getRefundReasons();
             }
+
+            $scope.$watch("blade.currentEntity.documentLoaded", function () {
+                blade.customInitialize();
+            }, true);
+
+            blade.customInitialize = function () {
+                blade.isLocked = false;
+            };
+
             blade.customInitialize();
         }]);

@@ -23,6 +23,7 @@ angular.module('virtoCommerce.orderModule')
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
+            $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
 
