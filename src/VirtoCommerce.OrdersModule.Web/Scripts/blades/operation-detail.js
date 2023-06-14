@@ -216,7 +216,9 @@ angular.module('virtoCommerce.orderModule')
                             result = !blade.currentEntity.isCancelled && blade.currentEntity.status !== 'Completed';
                             break;
                         case 'PaymentIn':
-                            result = !blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined';
+                            result = !(blade.currentEntity.isCancelled
+                                || blade.currentEntity.cancelledState === 'Completed'
+                                || blade.currentEntity.cancelledState === 'Requested');
                             break;
                         default:
                             result = !blade.currentEntity.isCancelled;

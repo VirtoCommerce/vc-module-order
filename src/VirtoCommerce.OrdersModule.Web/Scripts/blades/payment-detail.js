@@ -21,7 +21,10 @@ angular.module('virtoCommerce.orderModule')
         blade.refundPermission = 'order:refund';
 
         blade.customInitialize = function () {
-            blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled);
+            blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
+                || blade.currentEntity.cancelledState === 'Requested'
+                || blade.currentEntity.cancelledState === 'Completed'
+                || blade.currentEntity.isCancelled);
         };
 
         if (blade.isNew) {
