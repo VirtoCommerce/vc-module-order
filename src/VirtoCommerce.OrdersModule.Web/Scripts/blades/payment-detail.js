@@ -151,7 +151,9 @@ angular.module('virtoCommerce.orderModule')
             }, true);
 
             blade.customInitialize = function () {
-                if (!blade.currentEntity) return;
+                if (!blade.currentEntity) {
+					return;
+				}
                 blade.isLocked = blade.currentEntity.status === 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
             };
 
