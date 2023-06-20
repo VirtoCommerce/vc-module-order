@@ -131,9 +131,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     await repository.UnitOfWork.CommitAsync();
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw new InvalidOperationException("The order has been modified by another user. Please reload the latest data and try again.", ex);
+                    throw new DbUpdateConcurrencyException("The order has been modified by another user. Please reload the latest data and try again.");
                 }
 
                 pkMap.ResolvePrimaryKeys();
