@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-.controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus',
-    function ($scope, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus) {
+    .controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus', '$rootScope',
+    function ($scope,dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus, $rootScope) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -23,10 +23,7 @@ angular.module('virtoCommerce.orderModule')
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
-            $timeout(function () {
-                blade.customInitialize();
-            });
-
+            $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
 
@@ -137,11 +134,32 @@ angular.module('virtoCommerce.orderModule')
                     callback: function (remove) {
                         if (remove) {
                             if (blade.id === 'operationDetail') {
-                                var idx = _.findIndex(blade.customerOrder.childrenOperations, function (x) { return x.id === blade.origEntity.id; });
-                                blade.customerOrder.childrenOperations.splice(idx, 1);
+                                function removeChildrenOperation(childrenOperations, operationId) {
+                                    if (childrenOperations && childrenOperations.length) {
+                                        var index = _.findIndex(childrenOperations, function (x) {
+                                            return x.id === operationId;
+                                        });
+                                        if (index >= 0) {
+                                            childrenOperations.splice(index, 1);
+                                            return;
+                                        }
+                                        else {
+                                            for (var operation of childrenOperations) {
+                                                removeChildrenOperation(operation.childrenOperations, operationId);
+                                            }
+                                        }
+                                    }
+                                }
+                                removeChildrenOperation(blade.customerOrder.childrenOperations, blade.origEntity.id);
+
                                 var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
                                 blade.realOperationsCollection.splice(idx, 1);
 
+                                if (blade.currentEntity.operationType === 'Refund' || blade.currentEntity.operationType === 'Capture') {
+                                    blade.remove(blade.origEntity);
+                                }
+
+                                $rootScope.$broadcast('update-operation-tree');
                                 bladeNavigationService.closeBlade(blade);
                             }
                             else {
@@ -199,7 +217,9 @@ angular.module('virtoCommerce.orderModule')
                             result = !blade.currentEntity.isCancelled && blade.currentEntity.status !== 'Completed';
                             break;
                         case 'PaymentIn':
-                            result = !blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined';
+                            result = !(blade.currentEntity.isCancelled
+                                || blade.currentEntity.cancelledState === 'Completed'
+                                || blade.currentEntity.cancelledState === 'Requested');
                             break;
                         default:
                             result = !blade.currentEntity.isCancelled;
