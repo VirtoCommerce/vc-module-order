@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -57,11 +56,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var orders = await base.GetByIdsAsync(orderIds);
             return orders.ToArray();
-        }
-
-        public override Task SaveChangesAsync(IEnumerable<CustomerOrder> models)
-        {
-            return SaveChangesAsync(models.ToArray());
         }
 
         public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
@@ -121,16 +115,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
-
-                try
-                {
-                    await repository.UnitOfWork.CommitAsync();
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    throw new InvalidOperationException("The order has been modified by another user. Please reload the latest data and try again.", ex);
-                }
-
+                await repository.UnitOfWork.CommitAsync();
                 pkMap.ResolvePrimaryKeys();
                 ClearCache(orders);
             }

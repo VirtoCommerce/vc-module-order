@@ -333,7 +333,7 @@
     },
     "commands": {
       "new-document": "New document",
-      "cancel-document": "Cancel document",
+      "cancel-document": "Remove document",
       "add-selected": "Add selected",
       "add-item": "Add item"
     }
