@@ -83,11 +83,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
-                        // Patch RowVersion to throw concurrency exception if someone updated order before
-                        // https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#optimistic-concurrency
-                        // https://stackoverflow.com/questions/75454812/entity-framework-core-manually-changing-rowversion-of-entity-has-no-effect-on-c
-                        repository.PatchRowVersion(originalEntity, modifiedOrder.RowVersion);
-
                         var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
                         _totalsCalculator.CalculateTotals(oldModel);
 
