@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
@@ -59,11 +58,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return orders.ToArray();
         }
 
-        public override Task SaveChangesAsync(IEnumerable<CustomerOrder> models)
-        {
-            return SaveChangesAsync(models.ToArray());
-        }
-
         public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
         {
             var pkMap = new PrimaryKeyResolvingMap();
@@ -83,11 +77,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                     if (originalEntity != null)
                     {
-                        // Patch RowVersion to throw concurrency exception if someone updated order before
-                        // https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#optimistic-concurrency
-                        // https://stackoverflow.com/questions/75454812/entity-framework-core-manually-changing-rowversion-of-entity-has-no-effect-on-c
-                        repository.PatchRowVersion(originalEntity, modifiedOrder.RowVersion);
-
                         var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
                         _totalsCalculator.CalculateTotals(oldModel);
 
@@ -126,16 +115,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 //Raise domain events
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
-
-                try
-                {
-                    await repository.UnitOfWork.CommitAsync();
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    throw new InvalidOperationException("The order has been modified by another user. Please reload the latest data and try again.", ex);
-                }
-
+                await repository.UnitOfWork.CommitAsync();
                 pkMap.ResolvePrimaryKeys();
                 ClearCache(orders);
             }

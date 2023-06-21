@@ -1,4 +1,4 @@
-/* Prices */
+﻿/* Prices */
 .list.__prices {
     background: #fbfdfe;
     height: 100%;
@@ -372,7 +372,6 @@
     padding: 5px 0 5px 20px;
     position: relative;
     white-space: normal;
-    min-height: 1rem;
 }
 
 .order-tree .tree-el .tree-ico {

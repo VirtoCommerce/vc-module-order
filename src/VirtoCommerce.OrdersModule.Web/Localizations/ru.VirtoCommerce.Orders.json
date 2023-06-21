@@ -274,7 +274,7 @@
     },
     "commands": {
       "new-document": "Новый документ",
-      "cancel-document": "Отменить документ",
+      "cancel-document": "Закрыть документ",
       "add-selected": "Добавить выбранные",
       "add-item": "Добавить товар"
     }

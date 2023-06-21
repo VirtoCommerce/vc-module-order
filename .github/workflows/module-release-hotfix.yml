@@ -42,7 +42,6 @@ jobs:
       id: changelog
       uses: VirtoCommerce/vc-github-actions/changelog-generator@master
 
-
   publish-github-release:
     needs:
       [build, test, get-metadata]
