@@ -23,10 +23,7 @@ angular.module('virtoCommerce.orderModule')
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
-            $timeout(function () {
-                blade.customInitialize();
-            });
-
+            $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
 
@@ -199,7 +196,9 @@ angular.module('virtoCommerce.orderModule')
                             result = !blade.currentEntity.isCancelled && blade.currentEntity.status !== 'Completed';
                             break;
                         case 'PaymentIn':
-                            result = !blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined';
+                            result = !(blade.currentEntity.isCancelled
+                                || blade.currentEntity.cancelledState === 'Completed'
+                                || blade.currentEntity.cancelledState === 'Requested');
                             break;
                         default:
                             result = !blade.currentEntity.isCancelled;

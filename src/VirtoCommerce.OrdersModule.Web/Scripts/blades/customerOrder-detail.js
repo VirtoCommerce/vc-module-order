@@ -76,9 +76,15 @@ angular.module('virtoCommerce.orderModule')
                 return members.search(criteria);
             };
 
-            blade.customInitialize = function () {
-                blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
+            $scope.$on("blade.currentEntity.documentLoaded", function () {
+                blade.customInitialize();
+            }, true);
 
+            blade.customInitialize = function () {
+                if (!blade.currentEntity) {
+                    return;
+                }
+                blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
                 //var orderLineItemsBlade = {
                 //    id: 'customerOrderItems',
                 //    currentEntity: blade.currentEntity,
@@ -90,5 +96,5 @@ angular.module('virtoCommerce.orderModule')
                 // bladeNavigationService.showBlade(orderLineItemsBlade, blade);
             };
 
-
+            blade.customInitialize();
         }]);
