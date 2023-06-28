@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -8,21 +7,19 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.ExportImport;
-using VirtoCommerce.Platform.Core.GenericCrud;
-using VirtoCommerce.Platform.Data.ExportImport;
 
 namespace VirtoCommerce.OrdersModule.Data.ExportImport
 {
     public sealed class OrderExportImport
     {
-        private readonly ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder> _customerOrderSearchService;
+        private readonly ICustomerOrderSearchService _customerOrderSearchService;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly JsonSerializer _jsonSerializer;
         private const int _batchSize = 50;
 
         public OrderExportImport(ICustomerOrderSearchService customerOrderSearchService, ICustomerOrderService customerOrderService, JsonSerializer jsonSerializer)
         {
-            _customerOrderSearchService = (ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>)customerOrderSearchService;
+            _customerOrderSearchService = customerOrderSearchService;
             _customerOrderService = customerOrderService;
             _jsonSerializer = jsonSerializer;
         }
@@ -43,7 +40,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                 progressCallback(progressInfo);
 
                 await writer.WritePropertyNameAsync("CustomerOrders");
-                await writer.SerializeJsonArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) =>
+                await writer.SerializeArrayWithPagingAsync(_jsonSerializer, _batchSize, async (skip, take) =>
                 {
                     var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
                     searchCriteria.Take = take;
@@ -71,11 +68,11 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
             using (var streamReader = new StreamReader(inputStream))
             using (var reader = new JsonTextReader(streamReader))
             {
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     if (reader.TokenType == JsonToken.PropertyName && reader.Value.ToString() == "CustomerOrders")
                     {
-                        await reader.DeserializeJsonArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, items => _customerOrderService.SaveChangesAsync(items.ToArray()), processedCount =>
+                        await reader.DeserializeArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, _customerOrderService.SaveChangesAsync, processedCount =>
                         {
                             progressInfo.Description = $"{processedCount} orders have been imported";
                             progressCallback(progressInfo);

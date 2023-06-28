@@ -57,7 +57,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             //Arrange
             var id = Guid.NewGuid().ToString();
             var newOrder = new CustomerOrder { Id = id };
-            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
+            var newOrderEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
             var service = GetCustomerOrderServiceWithPlatformMemoryCache();
             _orderRepositoryMock.Setup(x => x.Add(newOrderEntity))
                 .Callback(() =>
@@ -84,7 +84,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             {
                 Id = id
             };
-            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
+            var newOrderEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
             var service = GetCustomerOrderServiceWithPlatformMemoryCache();
             _orderRepositoryMock.Setup(x => x.Add(newOrderEntity))
                 .Callback(() =>
@@ -118,7 +118,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             {
                 Id = id
             };
-            var newOrderEntity = (CustomerOrderEntity)AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
+            var newOrderEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newOrder, new PrimaryKeyResolvingMap());
             var service = GetCustomerOrderServiceWithPlatformMemoryCache();
 
             _orderRepositoryMock.Setup(o => o.GetCustomerOrdersByIdsAsync(new[] { id }, It.IsAny<string>()))
@@ -159,21 +159,21 @@ namespace VirtoCommerce.OrdersModule.Tests
         private CustomerOrderService GetCustomerOrderService(IPlatformMemoryCache platformMemoryCache, IOrderRepository orderRepository)
         {
             _shippingMethodsSearchServiceMock
-                .Setup(x => x.SearchShippingMethodsAsync(It.IsAny<ShippingMethodsSearchCriteria>()))
+                .Setup(x => x.SearchAsync(It.IsAny<ShippingMethodsSearchCriteria>(), It.IsAny<bool>()))
                 .ReturnsAsync(new ShippingMethodsSearchResult());
 
             _paymentMethodsSearchServiceMock
-                .Setup(x => x.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>()))
+                .Setup(x => x.SearchAsync(It.IsAny<PaymentMethodsSearchCriteria>(), It.IsAny<bool>()))
                 .ReturnsAsync(new PaymentMethodsSearchResult());
 
             return new CustomerOrderService(() => orderRepository,
+                platformMemoryCache,
+                _eventPublisherMock.Object,
                 _uniqueNumberGeneratorMock.Object,
                 _storeServiceMock.Object,
-                _eventPublisherMock.Object,
                 _customerOrderTotalsCalculatorMock.Object,
                 _shippingMethodsSearchServiceMock.Object,
-                _paymentMethodsSearchServiceMock.Object,
-                platformMemoryCache);
+                _paymentMethodsSearchServiceMock.Object);
         }
     }
 }

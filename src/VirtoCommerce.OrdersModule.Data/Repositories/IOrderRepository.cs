@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Data.Model;
@@ -13,11 +14,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         IQueryable<AddressEntity> Addresses { get; }
         IQueryable<LineItemEntity> LineItems { get; }
 
-        Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null);
-        Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids);
-        Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids);
+        Task<IList<CustomerOrderEntity>> GetCustomerOrdersByIdsAsync(IList<string> ids, string responseGroup = null);
+        Task<IList<PaymentInEntity>> GetPaymentsByIdsAsync(IList<string> ids);
+        Task<IList<ShipmentEntity>> GetShipmentsByIdsAsync(IList<string> ids);
 
-        Task RemoveOrdersByIdsAsync(string[] ids);
+        Task RemoveOrdersByIdsAsync(IList<string> ids);
 
         /// <summary>
         /// Patch RowVersion to throw DBConcurrencyException exception if someone updated order before.

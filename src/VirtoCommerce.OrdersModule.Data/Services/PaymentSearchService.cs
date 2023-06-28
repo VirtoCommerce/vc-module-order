@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -18,15 +17,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class PaymentSearchService : SearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn, PaymentInEntity>, IPaymentSearchService
     {
-        public PaymentSearchService(Func<IOrderRepository> repositoryFactory, IPlatformMemoryCache platformMemoryCache, IPaymentService paymentService)
-          : base(repositoryFactory, platformMemoryCache, (ICrudService<PaymentIn>)paymentService)
+        public PaymentSearchService(
+            Func<IOrderRepository> repositoryFactory,
+            IPlatformMemoryCache platformMemoryCache,
+            IPaymentService crudService,
+            IOptions<CrudOptions> crudOptions)
+            : base(repositoryFactory, platformMemoryCache, crudService, crudOptions)
         {
         }
 
-        public virtual Task<PaymentSearchResult> SearchPaymentsAsync(PaymentSearchCriteria criteria)
-        {
-            return SearchAsync(criteria);
-        }
 
         protected override IQueryable<PaymentInEntity> BuildQuery(IRepository repository, PaymentSearchCriteria criteria)
         {

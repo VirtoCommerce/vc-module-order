@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -27,17 +26,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
         }
 
-        public Task SaveChangesAsync(Shipment[] shipments, CancellationToken token)
+        protected override Task<IList<ShipmentEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
-            return base.SaveChangesAsync(shipments);
+            return ((IOrderRepository)repository).GetShipmentsByIdsAsync(ids);
         }
 
-        protected override async Task<IEnumerable<ShipmentEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
-        {
-            return await ((IOrderRepository)repository).GetShipmentsByIdsAsync(ids.ToArray());
-        }
-
-        protected override void ClearCache(IEnumerable<Shipment> models)
+        protected override void ClearCache(IList<Shipment> models)
         {
             GenericSearchCachingRegion<CustomerOrder>.ExpireRegion();
 

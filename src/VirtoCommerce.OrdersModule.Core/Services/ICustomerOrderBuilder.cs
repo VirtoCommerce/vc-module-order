@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model;
 
-namespace VirtoCommerce.OrdersModule.Data.Services
+namespace VirtoCommerce.OrdersModule.Core.Services
 {
     public interface ICustomerOrderBuilder
     {

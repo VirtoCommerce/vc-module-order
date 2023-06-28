@@ -1,16 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Core.Services
 {
-    public interface IPaymentService
+    public interface IPaymentService : ICrudService<PaymentIn>
     {
-        [Obsolete(@"Need to remove after inherit IPaymentService from ICrudService<PaymentIn>")]
-        Task<PaymentIn[]> GetByIdsAsync(string[] ids, string responseGroup = null);
-        [Obsolete(@"Need to remove after inherit IPaymentService from ICrudService<PaymentIn>")]
-        Task<PaymentIn> GetByIdAsync(string ids, string responseGroup = null);
-        Task SaveChangesAsync(PaymentIn[] payments);
-        Task DeleteAsync(string[] ids);
     }
 }

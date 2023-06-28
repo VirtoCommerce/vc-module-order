@@ -26,6 +26,7 @@ using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -59,10 +60,10 @@ namespace VirtoCommerce.OrdersModule.Tests
             _storeServiceMock = new Mock<IStoreService>();
             _shippingMethodRegistrarMock = new Mock<IShippingMethodsRegistrar>();
             _shippingMethodsSearchServiceMock = new Mock<IShippingMethodsSearchService>();
-            _shippingMethodsSearchServiceMock.Setup(s => s.SearchShippingMethodsAsync(It.IsAny<ShippingMethodsSearchCriteria>())).ReturnsAsync(new ShippingMethodsSearchResult());
+            _shippingMethodsSearchServiceMock.Setup(s => s.SearchAsync(It.IsAny<ShippingMethodsSearchCriteria>(), It.IsAny<bool>())).ReturnsAsync(new ShippingMethodsSearchResult());
             _paymentMethodRegistrarMock = new Mock<IPaymentMethodsRegistrar>();
             _paymentMethodsSearchService = new Mock<IPaymentMethodsSearchService>();
-            _paymentMethodsSearchService.Setup(s => s.SearchPaymentMethodsAsync(It.IsAny<PaymentMethodsSearchCriteria>())).ReturnsAsync(new PaymentMethodsSearchResult());
+            _paymentMethodsSearchService.Setup(s => s.SearchAsync(It.IsAny<PaymentMethodsSearchCriteria>(), It.IsAny<bool>())).ReturnsAsync(new PaymentMethodsSearchResult());
             _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
             _dynamicPropertyServiceMock = new Mock<IDynamicPropertyService>();
@@ -96,6 +97,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _platformMemoryCache);
             container.AddSingleton(x => _changeLogServiceMock.Object);
             container.AddSingleton(x => _logEventMock.Object);
+            container.AddOptions<CrudOptions>();
 
             var serviceProvider = container.BuildServiceProvider();
             _customerOrderService = serviceProvider.GetService<ICustomerOrderService>();
@@ -128,7 +130,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             await _customerOrderService.SaveChangesAsync(new[] { order });
 
             var criteria = new CustomerOrderSearchCriteria() { Take = 1, Ids = new[] { orderId } };
-            var orders = await _customerOrderSearchService.SearchCustomerOrdersAsync(criteria);
+            var orders = await _customerOrderSearchService.SearchAsync(criteria);
             order = orders.Results.FirstOrDefault();
 
             order.Status = "Authorized";
