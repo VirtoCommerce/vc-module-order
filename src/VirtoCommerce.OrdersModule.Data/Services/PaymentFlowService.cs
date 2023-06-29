@@ -207,14 +207,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     if (captureResult.IsSuccess)
                     {
-                        capture.Status = "Processed";
+                        capture.Status = CaptureStatus.Processed.ToString();
                         paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                         result.PaymentStatus = paymentInfo.Payment.Status;
                         result.Succeeded = true;
                     }
                     else
                     {
-                        capture.Status = "Rejected";
+                        capture.Status = CaptureStatus.Rejected.ToString();
                         result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                         result.ErrorMessage = captureResult.ErrorMessage;
                     }
@@ -336,7 +336,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.OuterId = request.OuterId;
             capture.TransactionId = request.TransactionId;
 
-            capture.Status = "Pending";
+            capture.Status = CaptureStatus.Pending.ToString();
             capture.Currency = payment.Currency;
             capture.CustomerOrderId = payment.OrderId;
             capture.VendorId = payment.VendorId;
