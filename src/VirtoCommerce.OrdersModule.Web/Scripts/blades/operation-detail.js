@@ -23,10 +23,7 @@ angular.module('virtoCommerce.orderModule')
         blade.initialize = function (operation) {
             blade.origEntity = operation;
             blade.currentEntity = angular.copy(operation);
-            $timeout(function () {
-                blade.customInitialize();
-            });
-
+            $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
 
@@ -158,7 +155,7 @@ angular.module('virtoCommerce.orderModule')
                                 var idx = _.findIndex(blade.realOperationsCollection, function (x) { return x.id === blade.origEntity.id; });
                                 blade.realOperationsCollection.splice(idx, 1);
 
-                                if (blade.currentEntity.operationType === 'Refund') {
+                                if (blade.currentEntity.operationType === 'Refund' || blade.currentEntity.operationType === 'Capture') {
                                     blade.remove(blade.origEntity);
                                 }
 
@@ -212,7 +209,25 @@ angular.module('virtoCommerce.orderModule')
                 dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.Orders)/Scripts/dialogs/cancelOperation-dialog.tpl.html', 'virtoCommerce.orderModule.confirmCancelDialogController');
             },
             canExecuteMethod: function () {
-                return blade.currentEntity && (!blade.currentEntity.isCancelled || blade.currentEntity.cancelledState === 'Undefined');
+                var result = false;
+
+                if (blade.currentEntity) {
+                    switch (blade.currentEntity.operationType) {
+                        case 'CustomerOrder':
+                            result = !blade.currentEntity.isCancelled && blade.currentEntity.status !== 'Completed';
+                            break;
+                        case 'PaymentIn':
+                            result = !(blade.currentEntity.isCancelled
+                                || blade.currentEntity.cancelledState === 'Completed'
+                                || blade.currentEntity.cancelledState === 'Requested');
+                            break;
+                        default:
+                            result = !blade.currentEntity.isCancelled;
+                            break;
+                    }
+                }
+
+                return result;
             },
             permission: blade.updatePermission
         }
