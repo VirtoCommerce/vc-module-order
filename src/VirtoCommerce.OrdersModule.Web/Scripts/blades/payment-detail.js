@@ -15,7 +15,7 @@ angular.module('virtoCommerce.orderModule')
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
             blade.paymentMethods = [];
 
-            blade.captureStatuses = ['Authorized'];
+            blade.captureStatuses = ['Authorized', 'Paid'];
             blade.refundStatuses = ['PartiallyRefunded', 'Paid'];
             blade.capturePermission = 'order:capture_payment';
             blade.refundPermission = 'order:refund';
