@@ -80,6 +80,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 async () =>
                 {
                     await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Paid, PaymentStatus.PartiallyRefunded);
                 },
                 async () =>
                 {
@@ -179,6 +180,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 async () =>
                 {
                     await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
                 },
                 async () =>
                 {
