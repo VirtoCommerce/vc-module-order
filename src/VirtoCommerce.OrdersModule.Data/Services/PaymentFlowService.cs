@@ -343,7 +343,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return capture;
         }
 
-        protected async Task HandleConcurrentUpdate(Func<Task> initialAction, Func<Task> saveToDbAction, Func<Task> callbackAction, int maxAttempts = 3)
+        protected static async Task HandleConcurrentUpdate(Func<Task> initialAction, Func<Task> saveToDbAction, Func<Task> callbackAction, int maxAttempts = 3)
         {
             var attemptCount = 0;
             var isSaveSuccessful = false;
