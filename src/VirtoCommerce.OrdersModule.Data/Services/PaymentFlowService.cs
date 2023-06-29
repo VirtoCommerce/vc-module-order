@@ -183,7 +183,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 async () =>
                 {
                     GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(paymentInfo.CustomerOrder.Id);
-                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized);
+                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
                 }
             );
 
@@ -229,7 +229,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(paymentInfo.CustomerOrder.Id);
 
-                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized);
+                    paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
                     capture = paymentInfo.Payment.Captures.First(c => c.TransactionId == request.TransactionId);
                 }
             );
