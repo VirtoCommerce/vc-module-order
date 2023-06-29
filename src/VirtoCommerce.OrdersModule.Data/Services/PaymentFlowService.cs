@@ -147,7 +147,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Step 1. Validat, Add a new capture request and save to DB
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized);
+            //Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
+            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
