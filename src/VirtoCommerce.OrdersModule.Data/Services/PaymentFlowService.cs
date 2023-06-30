@@ -230,7 +230,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 captureResult = await ProcessCapture(request);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 result.Succeeded = false;
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
