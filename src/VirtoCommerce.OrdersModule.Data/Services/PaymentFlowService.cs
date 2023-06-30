@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().RetryAsync(3);
+            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, retryNumber => TimeSpan.FromMilliseconds(500));
 
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
             {
@@ -224,7 +224,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
-            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().RetryAsync(3);
+            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, retryNumber => TimeSpan.FromMilliseconds(500));
 
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
             {
