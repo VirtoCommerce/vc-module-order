@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
 
         protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => new[] { PaymentStatus.Authorized, PaymentStatus.Paid };
-        protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded };
+        protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded };
 
         public PaymentFlowService(
             ICrudService<CustomerOrder> customerOrderService,
