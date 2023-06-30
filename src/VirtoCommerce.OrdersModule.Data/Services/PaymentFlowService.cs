@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 refundResult = await ProcessRefund(request);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 result.Succeeded = false;
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
@@ -133,6 +133,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.Succeeded = false;
             }
 
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+
             return result;
         }
 
@@ -200,7 +202,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 capture.Status = CaptureStatus.Rejected.ToString();
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = captureResult.ErrorMessage;
+                result.Succeeded = false;
             }
+
+            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             return result;
         }
