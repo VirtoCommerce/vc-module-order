@@ -30,6 +30,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
         protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
 
+        protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => new[] { PaymentStatus.Authorized, PaymentStatus.Paid };
+        protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded };
+
         public PaymentFlowService(
             ICrudService<CustomerOrder> customerOrderService,
             ICrudService<PaymentIn> paymentService,
@@ -84,7 +87,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Paid, PaymentStatus.PartiallyRefunded);
+            var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
@@ -115,7 +118,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual async Task<RefundPaymentRequestResult> ProcessRefund(RefundOrderPaymentRequest request)
         {
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Paid, PaymentStatus.PartiallyRefunded);
+            var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
             return paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
         }
@@ -124,7 +127,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Paid, PaymentStatus.PartiallyRefunded);
+            var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
             var refund = paymentInfo.Payment.Refunds.First(c => c.TransactionId == request.TransactionId);
 
             if (refundResult.IsSuccess)
@@ -153,7 +156,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
             //Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
+            var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
 
             // validate payment
             var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
@@ -184,7 +187,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         public virtual async Task<CapturePaymentRequestResult> ProcessCapture(CaptureOrderPaymentRequest request)
         {
             //Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
+            var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
 
             var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
 
@@ -195,7 +198,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
-            var paymentInfo = await GetPaymentInfoAsync(request, PaymentStatus.Authorized, PaymentStatus.Paid);
+            var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
             var capture = paymentInfo.Payment.Captures.First(c => c.TransactionId == request.TransactionId);
 
             if (captureResult.IsSuccess)
