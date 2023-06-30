@@ -98,6 +98,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return result;
             }
 
+            var refund = CreateRefund(paymentInfo.Payment, paymentInfo.Store, request);
+
+            if (paymentInfo.Payment.Refunds == null)
+            {
+                paymentInfo.Payment.Refunds = new List<Refund>();
+            }
+            paymentInfo.Payment.Refunds.Add(refund);
+
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             result.Succeeded = true;
