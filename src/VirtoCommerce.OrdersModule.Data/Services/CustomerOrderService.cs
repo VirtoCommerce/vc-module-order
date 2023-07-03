@@ -135,9 +135,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     throw new DbUpdateConcurrencyException("The order has been modified by another user. Please reload the latest data and try again.");
                 }
+                finally
+                {
+                    ClearCache(orders);
+                }
 
                 pkMap.ResolvePrimaryKeys();
-                ClearCache(orders);
             }
 
             // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
