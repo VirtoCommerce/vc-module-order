@@ -49,12 +49,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, retryNumber => TimeSpan.FromMilliseconds(500));
-
-            var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
-            {
-                return await CreateRefundDocument(request);
-            });
+            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
+            var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateRefundDocument(request));
 
             if (!result.Succeeded)
             {
@@ -75,10 +71,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return result;
             }
 
-            result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
-            {
-                return await SaveResultToRefundDocument(request, refundResult);
-            });
+            result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await SaveResultToRefundDocument(request, refundResult));
 
             return result;
         }
@@ -90,11 +83,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
 
             // validate payment
-            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
+            var validationResult = await _validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();
-                result.Succeeded = false;
                 result.ErrorMessage = error?.ErrorMessage;
                 result.ErrorCode = error?.ErrorCode;
 
@@ -103,12 +95,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             var refund = CreateRefund(paymentInfo.Payment, paymentInfo.Store, request);
 
-            if (paymentInfo.Payment.Refunds == null)
-            {
-                paymentInfo.Payment.Refunds = new List<Refund>();
-            }
+            paymentInfo.Payment.Refunds ??= new List<Refund>();
             paymentInfo.Payment.Refunds.Add(refund);
-
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             result.Succeeded = true;
@@ -120,10 +108,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
+
             return paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
         }
 
-        protected async virtual Task<RefundOrderPaymentResult> SaveResultToRefundDocument(RefundOrderPaymentRequest request, RefundPaymentRequestResult refundResult)
+        protected virtual async Task<RefundOrderPaymentResult> SaveResultToRefundDocument(RefundOrderPaymentRequest request, RefundPaymentRequestResult refundResult)
         {
             var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
@@ -141,7 +130,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 refund.Status = RefundStatus.Rejected.ToString();
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = refundResult.ErrorMessage;
-                result.Succeeded = false;
             }
 
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
@@ -150,33 +138,29 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         }
 
 
+        // Validate, add new capture request, save to DB
         public virtual async Task<CaptureOrderPaymentResult> CreateCaptureDocument(CaptureOrderPaymentRequest request)
         {
-            // Step 1. Validat, Add a new capture request and save to DB
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
-            //Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
+            // Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
             var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
 
             // validate payment
-            var validationResult = _validator.Validate(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
+            var validationResult = await _validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();
-                result.Succeeded = false;
                 result.ErrorMessage = error?.ErrorMessage;
                 result.ErrorCode = error?.ErrorCode;
+
                 return result;
             }
 
             var capture = CreateCapture(paymentInfo.Payment, paymentInfo.Store, request);
 
-            if (paymentInfo.Payment.Captures == null)
-            {
-                paymentInfo.Payment.Captures = new List<Capture>();
-            }
+            paymentInfo.Payment.Captures ??= new List<Capture>();
             paymentInfo.Payment.Captures.Add(capture);
-
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             result.Succeeded = true;
@@ -186,9 +170,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CapturePaymentRequestResult> ProcessCapture(CaptureOrderPaymentRequest request)
         {
-            //Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
+            // Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
             var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
-
             var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
 
             return paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
@@ -213,7 +196,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 capture.Status = CaptureStatus.Rejected.ToString();
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = captureResult.ErrorMessage;
-                result.Succeeded = false;
             }
 
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
@@ -224,12 +206,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
-            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, retryNumber => TimeSpan.FromMilliseconds(500));
-
-            var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
-            {
-                return await CreateCaptureDocument(request);
-            });
+            var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
+            var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateCaptureDocument(request));
 
             if (!result.Succeeded)
             {
@@ -250,10 +228,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return result;
             }
 
-            result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
-            {
-                return await SaveResultToCaptureDocument(request, captureResult);
-            });
+            result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await SaveResultToCaptureDocument(request, captureResult));
 
             return result;
         }
@@ -362,35 +337,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.VendorId = payment.VendorId;
 
             return capture;
-        }
-
-        protected static async Task HandleConcurrentUpdate(Func<Task> initialAction, Func<Task> saveToDbAction, Func<Task> callbackAction, int maxAttempts = 3)
-        {
-            var attemptCount = 0;
-            var isSaveSuccessful = false;
-
-            while (!isSaveSuccessful && attemptCount < maxAttempts)
-            {
-                try
-                {
-                    await initialAction(); // Execute the initial business logic action
-                    await saveToDbAction(); // Execute the save to DB action
-
-                    isSaveSuccessful = true; // Mark the save operation as successful
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    // Execute the callback action after the concurrency exception occurs
-                    await callbackAction();
-
-                    attemptCount++; // Increment the attempt count
-
-                    if (attemptCount == maxAttempts)
-                    {
-                        throw; // Throw the original exception if all retries are unsuccessful
-                    }
-                }
-            }
         }
 
         private static void FillPaymentRequestBase(OrderPaymentInfo paymentInfo, PaymentRequestBase result)

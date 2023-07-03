@@ -2,13 +2,6 @@ using System.Collections.Generic;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public enum CaptureStatus
-    {
-        Pending,
-        Processed,
-        Rejected,
-    }
-
     public class Capture : OrderOperation
     {
         public override string ObjectType { get; set; } = typeof(Capture).FullName;
