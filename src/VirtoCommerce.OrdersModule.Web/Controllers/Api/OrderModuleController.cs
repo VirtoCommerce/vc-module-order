@@ -720,6 +720,66 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Content(JsonConvert.SerializeObject(result, _outputJsonSerializerSettings), "application/json");
         }
 
+        [HttpGet]
+        [Route("mock/paid/{id}")]
+        public ActionResult<bool> IsOrderPaid(string id)
+        {
+            return Ok(GetSuccessed());
+        }
+
+        [HttpGet]
+        [Route("mock/split/{id}")]
+        public ActionResult<string[]> SplitOrder(string id)
+        {
+            return Ok(new[] {
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            });
+        }
+
+        [HttpGet]
+        [Route("mock/send/{id}")]
+        public ActionResult<bool> IsOrderSendToSupplier(string id)
+        {
+            return Ok(GetSuccessed());
+        }
+
+        [HttpGet]
+        [Route("mock/confirmed/{id}")]
+        public ActionResult<bool> IsOrderConfirmedBySupplier(string id)
+        {
+            return Ok(GetSuccessed());
+        }
+
+        [HttpGet]
+        [Route("mock/shipped/{id}")]
+        public ActionResult<bool> IsOrderShippedBySupplier(string id)
+        {
+            return Ok(GetSuccessed());
+        }
+
+        [HttpGet]
+        [Route("mock/complete/{id}")]
+        public async Task<ActionResult<bool>> CompleteOrder(string id)
+        {
+            var order = await _customerOrderServiceCrud.GetByIdAsync(id);
+            order.Status = "Completed";
+            await _customerOrderServiceCrud.SaveChangesAsync(new[] { order });
+            return Ok(true);
+        }
+
+        private bool GetSuccessed()
+        {
+            var result = true;
+
+            var rand = new Random();
+            result = rand.Next(1, 4) == 2;
+
+            return result;
+        }
+
         private byte[] GeneratePdf(string htmlContent)
         {
             var doc = new HtmlToPdfDocument()
