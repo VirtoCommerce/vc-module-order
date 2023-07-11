@@ -244,11 +244,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="order"></param>
         protected virtual async Task SetNotificationParametersAsync(Notification notification, CustomerOrder order)
         {
-            var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-
             if (notification is EmailNotification emailNotification)
             {
-                emailNotification.From = store.EmailWithName;
+                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                emailNotification.From = store?.EmailWithName;
                 emailNotification.To = await GetOrderRecipientEmailAsync(order);
             }
 
