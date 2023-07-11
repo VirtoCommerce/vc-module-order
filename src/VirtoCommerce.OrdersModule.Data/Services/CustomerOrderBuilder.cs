@@ -8,6 +8,8 @@ using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
+using VirtoCommerce.PaymentModule.Core.Model.Search;
+using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Settings;
@@ -23,11 +25,13 @@ namespace VirtoCommerce.OrdersModule.Data.Services
     {
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
+        private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
 
-        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager)
+        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService)
         {
             _customerOrderService = customerOrderService;
             _settingsManager = settingsManager;
+            _paymentMethodSearchService = paymentMethodSearchService;
         }
 
         #region ICustomerOrderConverter Members
@@ -131,7 +135,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.HandlingTotal = cart.HandlingTotal;
             order.HandlingTotalWithTax = cart.HandlingTotalWithTax;
 
-            order.Status = GetDefaultOrderStatus();
+            order.Status = GetInitialOrderStatusAsync(cart);
 
             return order;
         }
@@ -446,9 +450,36 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
+        [Obsolete("Not being called. Use GetInitialOrderStatusAsync(ShoppingCart cart)")]
         protected virtual string GetDefaultOrderStatus()
         {
             return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
+        }
+
+        protected virtual string GetInitialOrderStatusAsync(ShoppingCart cart)
+        {
+            var status = _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
+
+            var paymentMethodCode = cart.Payments?.FirstOrDefault()?.PaymentGatewayCode;
+
+            if (!string.IsNullOrEmpty(paymentMethodCode))
+            {
+#pragma warning disable CS0618
+                var searchPaymentMethodsResult = _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria
+                {
+                    StoreId = cart.StoreId,
+                    Codes = new List<string> { paymentMethodCode },
+                }).GetAwaiter().GetResult();
+#pragma warning disable CS0618
+
+                var paymentMethod = searchPaymentMethodsResult.Results.FirstOrDefault();
+                if (paymentMethod is not null && paymentMethod.AllowDeferredPayment)
+                {
+                    status = _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialProcessingStatus);
+                }
+            }
+
+            return status;
         }
 
         protected virtual string GetDefaultLineItemStatus()
