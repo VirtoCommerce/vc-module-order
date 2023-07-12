@@ -72,6 +72,14 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = CustomerOrderStatus.New,
                 };
 
+                public static SettingDescriptor OrderInitialProcessingStatus { get; } = new()
+                {
+                    Name = "Order.InitialProcessingStatus",
+                    ValueType = SettingValueType.ShortText,
+                    GroupName = "Orders|General",
+                    DefaultValue = CustomerOrderStatus.Processing,
+                };
+
                 public static SettingDescriptor OrderLineItemStatuses { get; } = new()
                 {
                     Name = "OrderLineItem.Statuses",
@@ -228,6 +236,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     {
                         yield return OrderStatus;
                         yield return OrderInitialStatus;
+                        yield return OrderInitialProcessingStatus;
                         yield return OrderLineItemStatuses;
                         yield return OrderLineItemInitialStatus;
                         yield return ShipmentStatus;

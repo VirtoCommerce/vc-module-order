@@ -6,6 +6,7 @@ using FluentAssertions;
 using Moq;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
+using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
 
@@ -98,7 +99,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         private static CustomerOrderBuilder GetCustomerOrderBuilder()
         {
-            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object);
+            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object, new Mock<IPaymentMethodsSearchService>().Object);
         }
     }
 }
