@@ -396,6 +396,10 @@
       "title": "Customer order initial status",
       "description": "The initial status of a new customer order"
     },
+    "Order.InitialProcessingStatus": {
+      "title": "Customer order initial processing status",
+      "description": "The processing status of a new customer order"
+    },
     "OrderLineItem.Statuses": {
       "title": "Line item statuses",
       "description": "The list of available statuses for order line items"
