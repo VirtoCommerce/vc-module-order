@@ -458,7 +458,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual async Task<string> GetInitialOrderStatusAsync(ShoppingCart cart)
         {
-            var status = await _settingsManager?.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialStatus);
+            var status = await _settingsManager.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialStatus);
 
             var paymentMethodCode = cart.Payments?.FirstOrDefault()?.PaymentGatewayCode;
 
@@ -476,7 +476,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 var paymentMethod = searchPaymentMethodsResult.Results.FirstOrDefault();
                 if (paymentMethod is not null && paymentMethod.AllowDeferredPayment)
                 {
-                    status = await _settingsManager?.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialProcessingStatus);
+                    status = await _settingsManager.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialProcessingStatus);
                 }
             }
 
