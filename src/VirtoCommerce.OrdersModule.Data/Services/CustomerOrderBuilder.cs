@@ -469,6 +469,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     StoreId = cart.StoreId,
                     Codes = new List<string> { paymentMethodCode },
+                    WithoutTransient = true,
                 });
 #pragma warning disable CS0618
 
