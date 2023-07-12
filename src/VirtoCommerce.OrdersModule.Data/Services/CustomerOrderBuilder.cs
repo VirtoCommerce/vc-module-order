@@ -135,7 +135,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.HandlingTotal = cart.HandlingTotal;
             order.HandlingTotalWithTax = cart.HandlingTotalWithTax;
 
-            order.Status = GetInitialOrderStatusAsync(cart);
+            order.Status = GetInitialOrderStatusAsync(cart).GetAwaiter().GetResult();
 
             return order;
         }
@@ -456,26 +456,26 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
         }
 
-        protected virtual string GetInitialOrderStatusAsync(ShoppingCart cart)
+        protected virtual async Task<string> GetInitialOrderStatusAsync(ShoppingCart cart)
         {
-            var status = _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
+            var status = await _settingsManager?.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialStatus);
 
             var paymentMethodCode = cart.Payments?.FirstOrDefault()?.PaymentGatewayCode;
 
             if (!string.IsNullOrEmpty(paymentMethodCode))
             {
 #pragma warning disable CS0618
-                var searchPaymentMethodsResult = _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria
+                var searchPaymentMethodsResult = await _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria
                 {
                     StoreId = cart.StoreId,
                     Codes = new List<string> { paymentMethodCode },
-                }).GetAwaiter().GetResult();
+                });
 #pragma warning disable CS0618
 
                 var paymentMethod = searchPaymentMethodsResult.Results.FirstOrDefault();
                 if (paymentMethod is not null && paymentMethod.AllowDeferredPayment)
                 {
-                    status = _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialProcessingStatus);
+                    status = await _settingsManager?.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialProcessingStatus);
                 }
             }
 
