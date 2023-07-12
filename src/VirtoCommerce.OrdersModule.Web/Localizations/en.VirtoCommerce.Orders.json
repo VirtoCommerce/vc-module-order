@@ -397,8 +397,8 @@
       "description": "The initial status of a new customer order"
     },
     "Order.InitialProcessingStatus": {
-      "title": "Customer order initial processing status",
-      "description": "The processing status of a new customer order"
+      "title": "Initial status for orders with terminated payment",
+      "description": "This status is used for all orders, where the payment was not processed"
     },
     "OrderLineItem.Statuses": {
       "title": "Line item statuses",
