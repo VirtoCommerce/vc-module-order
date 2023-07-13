@@ -732,10 +732,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public ActionResult<string[]> SplitOrder(string id)
         {
             return Ok(new[] {
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                Guid.NewGuid()
+                $"{id}-1",
+                $"{id}-2",
+                $"{id}-3",
+                $"{id}-4"
             });
         }
 
