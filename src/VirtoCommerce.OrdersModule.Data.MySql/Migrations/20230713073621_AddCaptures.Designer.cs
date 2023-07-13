@@ -11,7 +11,7 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20230517161036_AddCaptures")]
+    [Migration("20230713073621_AddCaptures")]
     partial class AddCaptures
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
