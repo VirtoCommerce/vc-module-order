@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace VirtoCommerce.OrdersModule.Web.Model
+namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class DashboardStatisticsResult
     {

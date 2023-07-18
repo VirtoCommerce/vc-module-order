@@ -24,8 +24,20 @@ namespace VirtoCommerce.OrdersModule.Core
                 public const string UpdateShipments = "order:update_shipments";
                 public const string CapturePayment = "order:capture_payment";
                 public const string RefundPayment = "order:refund";
+                public const string ViewDashboardStatistic = "order:dashboardstatistic:view";
 
-                public static string[] AllPermissions { get; } = { Read, Create, Update, Access, Delete, ReadPrices, UpdateShipments, CapturePayment, RefundPayment };
+                public static string[] AllPermissions { get; } = {
+                    Read,
+                    Create,
+                    Update,
+                    Access,
+                    Delete,
+                    ReadPrices,
+                    UpdateShipments,
+                    CapturePayment,
+                    RefundPayment,
+                    ViewDashboardStatistic
+                };
             }
         }
 
