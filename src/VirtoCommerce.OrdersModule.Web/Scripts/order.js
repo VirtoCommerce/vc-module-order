@@ -337,7 +337,7 @@ angular.module(moduleName, [
                 }
 
                 function checkPermissionToViewDashbaord() {
-                    return authService.checkPermission('order:dashboardstatistic:view');
+                    return authService.checkPermission('order:dashboardstatistics:view');
                 }
 
                 var customerOrderTotalsWidget = {
@@ -561,7 +561,7 @@ angular.module(moduleName, [
                 $rootScope.$on('loginStatusChanged', function (event, authContext) {
                     $localStorage.ordersDashboardStatistics = null;
 
-                    if (authService.checkPermission('order:dashboardstatistic:view')) {
+                    if (authService.checkPermission('order:dashboardstatistics:view')) {
                         var now = new Date();
                         var startDate = new Date();
                         startDate.setFullYear(now.getFullYear() - 1);
