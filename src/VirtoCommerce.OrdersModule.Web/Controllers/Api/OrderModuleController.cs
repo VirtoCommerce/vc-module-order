@@ -497,7 +497,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="end">end interval date</param>
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
-        [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistic)]
+        [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
             start ??= DateTime.UtcNow.AddYears(-1);
