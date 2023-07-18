@@ -152,7 +152,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual async Task<List<Money>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
         {
             var avgValues = await repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                .Select(o => new { Currency = o.Currency, Total = decimal.Parse(o.Total.ToString()) })
+                .Select(o => new { Currency = o.Currency, Total = o.Total })
                 .GroupBy(x => x.Currency, (key, result) => new { Currency = key, AvgValue = result.Average(y => y.Total) })
                 .ToArrayAsync();
             var avgOrderValue = avgValues.Select(x => new Money(x.Currency, x.AvgValue)).ToList();
