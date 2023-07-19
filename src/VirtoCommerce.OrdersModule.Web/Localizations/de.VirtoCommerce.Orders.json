@@ -141,6 +141,7 @@
         "subtitle": "Bearbeiten von Sendungsposten",
         "labels": {
           "item": "Artikel",
+          "status": "Status",
           "quantity": "Anz.",
           "price": "Preis",
           "total": "Total"
