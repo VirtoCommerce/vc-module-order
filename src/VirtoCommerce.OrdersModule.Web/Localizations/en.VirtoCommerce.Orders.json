@@ -298,7 +298,7 @@
         "lines-per-order": "Lines per order",
         "revenue-per-customer": "Revenue per customer",
         "title": "Order Statistics",
-        "not-authorized": "Not Authorized. You do not currently have access to this feature. Please contact your account addministrator for access."
+        "not-authorized": "Not Authorized. You do not currently have access to this feature. Please contact your account administrator for access."
       }
     },
     "dialogs": {
