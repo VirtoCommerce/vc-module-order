@@ -36,7 +36,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     UpdateShipments,
                     CapturePayment,
                     RefundPayment,
-                    ViewDashboardStatistics
+                    ViewDashboardStatistics,
                 };
             }
         }

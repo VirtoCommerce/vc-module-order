@@ -37,17 +37,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             using (var repository = _repositoryFactory())
             {
                 retVal.OrderCount = await CalculateOrderCount(repository, start, end);
-
                 retVal.AvgOrderValue = await CalculateAvgOrderValue(repository, start, end);
-
                 retVal.Revenue = await CalculateRevenue(repository, start, end);
-
                 retVal.RevenuePerCustomer = await CalculateRevenueRevenuePerCustomer(repository, start, end);
-
                 retVal.ItemsPurchased = await CalculateItemsPurchased(repository, start, end);
-
                 retVal.LineItemsPerOrder = await CalculateLineItemsPerOrder(repository, start, end);
-
                 retVal.CustomersCount = await CalculateCustomersCount(repository, start, end);
 
                 await CalculateMetricsPerQuarter(repository, start, end, retVal);
@@ -58,42 +52,56 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual Task<int> CalculateCustomersCount(IOrderRepository repository, DateTime start, DateTime end)
         {
-            return repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                       .Select(x => x.CustomerId).Distinct().CountAsync();
+            return repository.CustomerOrders
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Select(x => x.CustomerId)
+                .Distinct()
+                .CountAsync();
         }
 
         protected virtual async Task<double> CalculateLineItemsPerOrder(IOrderRepository repository, DateTime start, DateTime end)
         {
-            var itemsCount = await repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                .Where(x => !x.IsCancelled).Select(x => x.Items.Count).ToArrayAsync();
+            var itemsCount = await repository.CustomerOrders
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Where(x => !x.IsCancelled)
+                .Select(x => x.Items.Count)
+                .ToArrayAsync();
+
             var lineItemsPerOrder = itemsCount.Any() ? itemsCount.DefaultIfEmpty(0).Average() : 0;
             return lineItemsPerOrder;
         }
 
         protected virtual Task<int> CalculateItemsPurchased(IOrderRepository repository, DateTime start, DateTime end)
         {
-            return repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                                                                                .Where(x => !x.IsCancelled).SelectMany(x => x.Items).CountAsync();
+            return repository.CustomerOrders
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Where(x => !x.IsCancelled)
+                .SelectMany(x => x.Items)
+                .CountAsync();
         }
 
         protected virtual Task<List<Money>> CalculateRevenueRevenuePerCustomer(IOrderRepository repository, DateTime start, DateTime end)
         {
-            var revenues = repository.InPayments.Where(x => x.CreatedDate >= start && x.CreatedDate <= end && !x.IsCancelled)
-                                        .GroupBy(x => new { x.Currency, x.CustomerId }, (key, result) => new { key.Currency, key.CustomerId, Sum = result.Sum(y => y.Sum) })
-                                        .GroupBy(x => x.Currency, (key, result) =>
-                                            new
-                                            {
-                                                Currency = key,
-                                                AvgValue = result.Average(x => x.Sum)
-                                            });
+            var revenues = repository.InPayments
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end && !x.IsCancelled)
+                .GroupBy(x => new { x.Currency, x.CustomerId }, (key, result) => new { key.Currency, key.CustomerId, Sum = result.Sum(y => y.Sum) })
+                .GroupBy(x => x.Currency, (key, result) =>
+                    new
+                    {
+                        Currency = key,
+                        AvgValue = result.Average(x => x.Sum)
+                    });
+
             return revenues.Select(x => new Money(x.Currency, x.AvgValue)).ToListAsync();
         }
 
         protected virtual async Task CalculateMetricsPerQuarter(IOrderRepository repository, DateTime start, DateTime end, DashboardStatisticsResult retVal)
         {
-            var currencies = await repository.InPayments.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                        .Where(x => !x.IsCancelled)
-                        .GroupBy(x => x.Currency, (key, result) => key).ToListAsync();
+            var currencies = await repository.InPayments
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Where(x => !x.IsCancelled)
+                .GroupBy(x => x.Currency, (key, result) => key)
+                .ToListAsync();
 
             DateTime endDate;
             foreach (var currency in currencies)
@@ -122,24 +130,26 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         Year = startDate.Year
                     };
                     retVal.AvgOrderValuePeriodDetails.Add(periodStat);
-
-
                 }
             }
         }
 
         protected virtual Task<decimal> CalculateOrderAmount(DateTime startDate, DateTime endDate, string currency, IOrderRepository repository)
         {
-            return repository.InPayments.Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && !x.IsCancelled && x.Currency == currency)
-                            .GroupBy(x => 1, (key, result) => result.Sum(x => x.Sum)).FirstOrDefaultAsync();
+            return repository.InPayments
+                .Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && !x.IsCancelled && x.Currency == currency)
+                .GroupBy(x => 1, (key, result) => result.Sum(x => x.Sum))
+                .FirstOrDefaultAsync();
         }
 
         protected virtual async Task<List<Money>> CalculateRevenue(IOrderRepository repository, DateTime start, DateTime end)
         {
-            var revenues = await repository.InPayments.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                                        .Where(x => !x.IsCancelled)
-                                        .GroupBy(x => x.Currency, (key, result) => new { Currency = key, Value = result.Sum(y => y.Sum) })
-                                        .ToArrayAsync();
+            var revenues = await repository.InPayments
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Where(x => !x.IsCancelled)
+                .GroupBy(x => x.Currency, (key, result) => new { Currency = key, Value = result.Sum(y => y.Sum) })
+                .ToArrayAsync();
+
             var revenueMoney = revenues.Select(x => new Money(x.Currency, x.Value)).ToList();
             return revenueMoney;
         }
@@ -151,18 +161,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual async Task<List<Money>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
         {
-            var avgValues = await repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
-                .Select(o => new { Currency = o.Currency, Total = o.Total })
+            var avgValues = await repository.CustomerOrders
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
+                .Select(o => new { o.Currency, o.Total })
                 .GroupBy(x => x.Currency, (key, result) => new { Currency = key, AvgValue = result.Average(y => y.Total) })
                 .ToArrayAsync();
+
             var avgOrderValue = avgValues.Select(x => new Money(x.Currency, x.AvgValue)).ToList();
             return avgOrderValue;
         }
 
         protected virtual Task<decimal> CalculateAvgOrderValue(DateTime start, DateTime end, string currency, IOrderRepository repository)
         {
-            return repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end && x.Currency == currency)
-                            .GroupBy(x => 1, (key, result) => result.Average(x => x.Total)).FirstOrDefaultAsync();
+            return repository.CustomerOrders
+                .Where(x => x.CreatedDate >= start && x.CreatedDate <= end && x.Currency == currency)
+                .GroupBy(x => 1, (key, result) => result.Average(x => x.Total))
+                .FirstOrDefaultAsync();
         }
     }
 }
