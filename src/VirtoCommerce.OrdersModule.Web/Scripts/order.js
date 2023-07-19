@@ -561,7 +561,8 @@ angular.module(moduleName, [
                 $rootScope.$on('loginStatusChanged', function (event, authContext) {
                     $localStorage.ordersDashboardStatistics = null;
 
-                    if (authService.checkPermission('order:dashboardstatistics:view')) {
+                    if (authContext.isAuthenticated &&
+                        authService.checkPermission('order:dashboardstatistics:view')) {
                         var now = new Date();
                         var startDate = new Date();
                         startDate.setFullYear(now.getFullYear() - 1);
