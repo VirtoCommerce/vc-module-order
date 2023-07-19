@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<QuarterPeriodMoney> AvgOrderValuePeriodDetails { get; set; }
 
         public int ItemsPurchased { get; set; }
-        public double LineitemsPerOrder { get; set; }
+        public double LineItemsPerOrder { get; set; }
     }
 
     public class Money

@@ -461,7 +461,7 @@ angular.module(moduleName, [
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
-                    template: 'order-statistics-lineitemsPerOrder.html',
+                    template: 'order-statistics-lineItemsPerOrder.html',
                     isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({

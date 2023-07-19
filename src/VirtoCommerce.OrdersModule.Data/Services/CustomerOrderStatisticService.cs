@@ -46,7 +46,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
                 retVal.ItemsPurchased = await CalculateItemsPurchased(repository, start, end);
 
-                retVal.LineitemsPerOrder = await CalculateLineItemsPerOrder(repository, start, end);
+                retVal.LineItemsPerOrder = await CalculateLineItemsPerOrder(repository, start, end);
 
                 retVal.CustomersCount = await CalculateCustomersCount(repository, start, end);
 
@@ -66,8 +66,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var itemsCount = await repository.CustomerOrders.Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
                 .Where(x => !x.IsCancelled).Select(x => x.Items.Count).ToArrayAsync();
-            var lineitemsPerOrder = itemsCount.Any() ? itemsCount.DefaultIfEmpty(0).Average() : 0;
-            return lineitemsPerOrder;
+            var lineItemsPerOrder = itemsCount.Any() ? itemsCount.DefaultIfEmpty(0).Average() : 0;
+            return lineItemsPerOrder;
         }
 
         protected virtual Task<int> CalculateItemsPurchased(IOrderRepository repository, DateTime start, DateTime end)
