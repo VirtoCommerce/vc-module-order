@@ -76,9 +76,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
 
             var parameters = new[]
             {
-                new NpgsqlParameter($"p0", start),
-                new NpgsqlParameter($"p1", end),
-                new NpgsqlParameter($"p2", currency)
+                new NpgsqlParameter("p0", start),
+                new NpgsqlParameter("p1", end),
+                new NpgsqlParameter("p2", currency)
             };
 
             var results = await ExecuteRawSqlQuery(sqlQuery, parameters);
