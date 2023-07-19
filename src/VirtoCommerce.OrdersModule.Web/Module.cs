@@ -115,9 +115,6 @@ namespace VirtoCommerce.OrdersModule.Web
 
             switch (databaseProvider)
             {
-                case "MySql":
-                    serviceCollection.AddTransient<ICustomerOrderStatisticService, CustomerOrderStatisticService>();
-                    break;
                 case "PostgreSql":
                     serviceCollection.AddTransient<ICustomerOrderStatisticService, PostgreSqlCustomerOrderStatisticService>();
                     break;

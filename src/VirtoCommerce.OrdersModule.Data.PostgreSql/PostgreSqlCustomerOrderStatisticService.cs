@@ -28,7 +28,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
             {
                 command.CommandText = sqlQuery;
                 command.Parameters.AddRange(parameters);
-                _dbContext.Database.OpenConnection();
+                await _dbContext.Database.OpenConnectionAsync();
 
                 using (var reader = await command.ExecuteReaderAsync())
                 {
@@ -57,8 +57,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
 
             var parameters = new[]
             {
-                new NpgsqlParameter($"p0", start),
-                new NpgsqlParameter($"p1", end)
+                new NpgsqlParameter("p0", start),
+                new NpgsqlParameter("p1", end)
             };
 
             var results = await ExecuteRawSqlQuery(sqlQuery, parameters);
@@ -100,8 +100,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
 
             var parameters = new[]
             {
-                new NpgsqlParameter($"p0", start),
-                new NpgsqlParameter($"p1", end)
+                new NpgsqlParameter("p0", start),
+                new NpgsqlParameter("p1", end)
             };
 
             var results = await ExecuteRawSqlQuery(sqlQuery, parameters);

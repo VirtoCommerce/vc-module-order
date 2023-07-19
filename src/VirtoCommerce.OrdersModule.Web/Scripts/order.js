@@ -336,7 +336,7 @@ angular.module(moduleName, [
                     return authService.checkPermission('order:read_prices');
                 }
 
-                function checkPermissionToViewDashbaord() {
+                function checkPermissionToViewDashboard() {
                     return authService.checkPermission('order:dashboardstatistics:view');
                 }
 
@@ -432,55 +432,55 @@ angular.module(moduleName, [
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-revenue.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-customersCount.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-revenuePerCustomer.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-orderValue.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-itemsPurchased.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [2, 1],
                     template: 'order-statistics-lineitemsPerOrder.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [3, 2],
                     template: 'order-statistics-revenueByQuarter.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [3, 2],
                     template: 'order-statistics-orderValueByQuarter.html',
-                    isVisible: checkPermissionToViewDashbaord
+                    isVisible: checkPermissionToViewDashboard
                 }, 'mainDashboard');
                 widgetService.registerWidget({
                     controller: statisticsController,
                     size: [6, 1],
                     template: 'order-statistics-not-authorized.html',
-                    isVisible: function (blade) { return !checkPermissionToViewDashbaord(); }
+                    isVisible: function (blade) { return !checkPermissionToViewDashboard(); }
                 }, 'mainDashboard');
 
                 customerOrders.indexedSearchEnabled(function (data) {
