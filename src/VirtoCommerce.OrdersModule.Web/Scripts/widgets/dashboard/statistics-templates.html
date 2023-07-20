@@ -1,3 +1,11 @@
+<script type="text/ng-template" id="order-statistics-not-authorized.html">
+    <div class="gridster-cnt">
+        <div class="cnt-inner">
+            <div class="list-t">{{'orders.widgets.statistics-templates.title' | translate}}</div>
+            <div class="list-t" style="text-wrap: wrap; color: red;">{{'orders.widgets.statistics-templates.not-authorized' | translate}}</div>
+        </div>
+    </div>
+</script>
 <script type="text/ng-template" id="order-statistics-revenue.html">
     <div class="gridster-cnt">
         <div class="cnt-inner">
@@ -44,10 +52,10 @@
         </div>
     </div>
 </script>
-<script type="text/ng-template" id="order-statistics-lineitemsPerOrder.html">
+<script type="text/ng-template" id="order-statistics-lineItemsPerOrder.html">
     <div class="gridster-cnt">
         <div class="cnt-inner">
-            <div class="list-count">{{$storage.ordersDashboardStatistics.lineitemsPerOrder| number : 1}}</div>
+            <div class="list-count">{{$storage.ordersDashboardStatistics.lineItemsPerOrder| number : 1}}</div>
             <div class="list-t">{{'orders.widgets.statistics-templates.lines-per-order' | translate}}</div>
         </div>
     </div>

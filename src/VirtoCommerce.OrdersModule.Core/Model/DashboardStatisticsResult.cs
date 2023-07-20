@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace VirtoCommerce.OrdersModule.Web.Model
+namespace VirtoCommerce.OrdersModule.Core.Model
 {
     public class DashboardStatisticsResult
     {
@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Web.Model
         public ICollection<QuarterPeriodMoney> AvgOrderValuePeriodDetails { get; set; }
 
         public int ItemsPurchased { get; set; }
-        public double LineitemsPerOrder { get; set; }
+        public double LineItemsPerOrder { get; set; }
     }
 
     public class Money
