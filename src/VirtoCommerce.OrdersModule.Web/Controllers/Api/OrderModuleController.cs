@@ -775,7 +775,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var result = true;
 
             var rand = new Random();
-            result = rand.Next(1, 4) == 2;
+            result = rand.Next(1, 3) == 2;
 
             return result;
         }
