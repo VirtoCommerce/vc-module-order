@@ -57,9 +57,9 @@ namespace VirtoCommerce.OrdersModule.Web
 
         public void Initialize(IServiceCollection serviceCollection)
         {
+            var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
             serviceCollection.AddDbContext<OrderDbContext>((provider, options) =>
             {
-                var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var connectionString = Configuration.GetConnectionString(ModuleInfo.Id) ?? Configuration.GetConnectionString("VirtoCommerce");
 
                 switch (databaseProvider)
@@ -112,6 +112,16 @@ namespace VirtoCommerce.OrdersModule.Web
             });
 
             serviceCollection.AddTransient<IIndexedCustomerOrderSearchService, IndexedCustomerOrderSearchService>();
+
+            switch (databaseProvider)
+            {
+                case "PostgreSql":
+                    serviceCollection.AddTransient<ICustomerOrderStatisticService, PostgreSqlCustomerOrderStatisticService>();
+                    break;
+                default:
+                    serviceCollection.AddTransient<ICustomerOrderStatisticService, CustomerOrderStatisticService>();
+                    break;
+            }
 
             if (Configuration.IsOrderFullTextSearchEnabled())
             {

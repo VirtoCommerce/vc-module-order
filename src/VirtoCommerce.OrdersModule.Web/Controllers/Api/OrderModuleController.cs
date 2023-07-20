@@ -28,9 +28,7 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
-using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Services;
-using VirtoCommerce.OrdersModule.Web.BackgroundJobs;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
@@ -57,7 +55,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IStoreService _storeService;
         private readonly IPlatformMemoryCache _platformMemoryCache;
-        private readonly Func<IOrderRepository> _repositoryFactory;
+        private readonly ICustomerOrderStatisticService _customerOrderStatisticService;
         private readonly ICustomerOrderBuilder _customerOrderBuilder;
         private readonly IShoppingCartService _cartService;
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
@@ -79,7 +77,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , IStoreService storeService
             , IUniqueNumberGenerator numberGenerator
             , IPlatformMemoryCache platformMemoryCache
-            , Func<IOrderRepository> repositoryFactory
+            , ICustomerOrderStatisticService customerOrderStatisticService
             , ICustomerOrderBuilder customerOrderBuilder
             , IShoppingCartService cartService
             , IChangeLogSearchService changeLogSearchService
@@ -101,7 +99,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _uniqueNumberGenerator = numberGenerator;
             _storeService = storeService;
             _platformMemoryCache = platformMemoryCache;
-            _repositoryFactory = repositoryFactory;
+            _customerOrderStatisticService = customerOrderStatisticService;
             _customerOrderBuilder = customerOrderBuilder;
             _cartService = cartService;
             _changeLogSearchService = changeLogSearchService;
@@ -499,6 +497,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="end">end interval date</param>
         [HttpGet]
         [Route("~/api/order/dashboardStatistics")]
+        [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
             start ??= DateTime.UtcNow.AddYears(-1);
@@ -506,12 +505,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             // Hack: to compinsate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);
+
             var cacheKey = CacheKey.With(GetType(), string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd")));
             var retVal = await _platformMemoryCache.GetOrCreateExclusiveAsync(cacheKey, async (cacheEntry) =>
             {
                 cacheEntry.AddExpirationToken(OrderSearchCacheRegion.CreateChangeToken());
-                var collectStaticJob = new CollectOrderStatisticJob(_repositoryFactory);
-                var result = await collectStaticJob.CollectStatisticsAsync(start.Value, end.Value);
+
+                var result = await _customerOrderStatisticService.CollectStatisticsAsync(start.Value, end.Value);
                 return result;
             });
 

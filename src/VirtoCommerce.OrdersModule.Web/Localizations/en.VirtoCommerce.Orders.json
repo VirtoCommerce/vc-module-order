@@ -268,7 +268,9 @@
         "average-order-value": "Average order value",
         "items-purchased": "Items purchased",
         "lines-per-order": "Lines per order",
-        "revenue-per-customer": "Revenue per customer"
+        "revenue-per-customer": "Revenue per customer",
+        "title": "Order Statistics",
+        "not-authorized": "Not Authorized. You do not currently have access to this feature. Please contact your account administrator for access."
       }
     },
     "dialogs": {
