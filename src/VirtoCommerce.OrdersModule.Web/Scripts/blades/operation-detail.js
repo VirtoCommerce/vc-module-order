@@ -91,13 +91,13 @@ angular.module('virtoCommerce.orderModule')
                         bladeNavigationService.closeChildrenBlades(blade);
                         },
                     function (error) {
-                        if (error.status == 409) {
+                        if (error.status === 409) {
                             const dialog = {
                                 title: "orders.dialogs.concurrency-сonflict.title",
                                 message: "orders.dialogs.concurrency-сonflict.message",
                                 callback: function () {
                                     blade.isNew = false;
-                                    blade.isConcurrencyConflict = true;
+                                    blade.isConcurrencyConflict = false;
                                     blade.refresh();
                                     blade.parentBlade.refresh();
                                     bladeNavigationService.closeChildrenBlades(blade);
