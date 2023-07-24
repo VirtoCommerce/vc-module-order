@@ -50,7 +50,11 @@ angular.module('virtoCommerce.orderModule')
         };
 
         function isDirty() {
-            return blade.origEntity && !objCompareService.equal(blade.origEntity, blade.currentEntity) && !blade.isNew && blade.hasUpdatePermission();
+            return blade.origEntity &&
+                !objCompareService.equal(blade.origEntity, blade.currentEntity) &&
+                !blade.isNew &&
+                !blade.isConcurrencyConflict &&
+                blade.hasUpdatePermission();
         }
 
         function canSave() {
@@ -81,11 +85,32 @@ angular.module('virtoCommerce.orderModule')
             } else {
                 blade.isLoading = true;
                 customerOrders.update(blade.customerOrder, function () {
-                    blade.isNew = false;
-                    blade.refresh();
-                    blade.parentBlade.refresh();
-                    bladeNavigationService.closeChildrenBlades(blade);
-                });
+                        blade.isNew = false;
+                        blade.refresh();
+                        blade.parentBlade.refresh();
+                        bladeNavigationService.closeChildrenBlades(blade);
+                        },
+                    function (error) {
+                        if (error.status == 409) {
+                            const dialog = {
+                                title: "orders.dialogs.concurrency-сonflict.title",
+                                message: "orders.dialogs.concurrency-сonflict.message",
+                                callback: function () {
+                                    blade.isNew = false;
+                                    blade.isConcurrencyConflict = true;
+                                    blade.refresh();
+                                    blade.parentBlade.refresh();
+                                    bladeNavigationService.closeChildrenBlades(blade);
+                                },
+                                callbackOnDismiss: function () {
+                                    blade.isConcurrencyConflict = true;
+                                }
+                            }
+
+                            dialogService.showErrorDialog(dialog);
+                        }
+                    }
+                );
             }
         };
 
