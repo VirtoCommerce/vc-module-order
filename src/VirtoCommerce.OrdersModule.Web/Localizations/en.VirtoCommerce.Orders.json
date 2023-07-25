@@ -303,6 +303,10 @@
       }
     },
     "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Concurrency conflict detected",
+        "message": "The order has been modified by another user. Click OK to reload the latest data and try again."
+      },
       "orders-delete": {
         "title": "Delete confirmation",
         "message": "Are you sure you want to delete the selected customer orders?"
