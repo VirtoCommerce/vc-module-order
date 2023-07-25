@@ -222,6 +222,10 @@
       }
     },
     "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Parallelitätskonflikt erkannt",
+        "message": "Die Bestellung wurde von einem anderen Benutzer geändert. Klicken Sie auf OK, um die neuesten Daten neu zu laden und es erneut zu versuchen."
+      },
       "orders-delete": {
         "title": "Bestätigung löschen",
         "message": "Möchten Sie die ausgewählten Bestellungen wirklich löschen?"
