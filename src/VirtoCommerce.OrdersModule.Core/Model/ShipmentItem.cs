@@ -28,6 +28,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string OuterId { get; set; }
 
+        public string Status { get; set; }
+
         #region ICloneable members
 
         public virtual object Clone()

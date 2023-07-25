@@ -11,6 +11,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string BarCode { get; set; }
 
+        [StringLength(128)]
+        public string Status { get; set; }
+
         public int Quantity { get; set; }
 
         #region Navigation Properties
@@ -32,6 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string OuterId { get; set; }
 
+
         public virtual ShipmentItem ToModel(ShipmentItem shipmentItem)
         {
             if (shipmentItem == null)
@@ -45,6 +49,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipmentItem.OuterId = OuterId;
 
             shipmentItem.BarCode = BarCode;
+            shipmentItem.Status = Status;
             shipmentItem.Quantity = Quantity;
 
             shipmentItem.LineItemId = LineItemId;
@@ -70,6 +75,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             OuterId = shipmentItem.OuterId;
 
             BarCode = shipmentItem.BarCode;
+            Status = shipmentItem.Status;
             Quantity = shipmentItem.Quantity;
 
             pkMap.AddPair(shipmentItem, this);
@@ -88,6 +94,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentNullException(nameof(target));
 
             target.BarCode = BarCode;
+            target.Status = Status;
             target.ShipmentId = ShipmentId;
             target.ShipmentPackageId = ShipmentPackageId;
             target.Quantity = Quantity;

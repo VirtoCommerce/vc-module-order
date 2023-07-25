@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -386,7 +387,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 });
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            try
+            {
+                await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict();
+            }
+
             return NoContent();
         }
 
