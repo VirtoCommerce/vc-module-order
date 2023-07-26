@@ -1,11 +1,9 @@
-using System.Threading;
-using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Core.Services
 {
-    public interface IShipmentService
+    public interface IShipmentService : ICrudService<Shipment>
     {
-        Task SaveChangesAsync(Shipment[] shipments, CancellationToken token);
     }
 }

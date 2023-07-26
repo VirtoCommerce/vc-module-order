@@ -1,5 +1,5 @@
-libwkhtmltox.so
 libwkhtmltox.dylib
+Antlr4.Runtime.Standard.dll
 AspNet.Security.OAuth.Validation.dll
 AspNet.Security.OpenIdConnect.Extensions.dll
 AspNet.Security.OpenIdConnect.Primitives.dll
@@ -104,6 +104,7 @@ System.IdentityModel.Tokens.Jwt.dll
 System.Runtime.Caching.dll
 System.Security.Cryptography.ProtectedData.dll
 System.Text.Json.dll
+TimeZoneConverter.dll
 VirtoCommerce.Platform.Assets.AzureBlobStorage.dll
 VirtoCommerce.Platform.Assets.FileSystem.dll
 VirtoCommerce.Platform.Caching.dll

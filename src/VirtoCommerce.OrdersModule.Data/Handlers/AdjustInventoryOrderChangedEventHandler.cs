@@ -13,9 +13,8 @@ using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.StoreModule.Core.Model;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -24,8 +23,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     /// </summary>
     public class AdjustInventoryOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
+        private readonly IStoreService _storeService;
         private readonly ISettingsManager _settingsManager;
-        private readonly ICrudService<Store> _storeService;
         private readonly IItemService _itemService;
         private readonly IInventoryReservationService _reservationService;
         private readonly ILogger<AdjustInventoryOrderChangedEventHandler> _logger;
@@ -39,14 +38,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="reservationService">Implementation of service for reserve product stocks</param>
         /// <param name="logger">Logger</param>
         public AdjustInventoryOrderChangedEventHandler(
-            ICrudService<Store> storeService,
+            IStoreService storeService,
             ISettingsManager settingsManager,
             IItemService itemService,
             IInventoryReservationService reservationService,
             ILogger<AdjustInventoryOrderChangedEventHandler> logger)
         {
-            _settingsManager = settingsManager;
             _storeService = storeService;
+            _settingsManager = settingsManager;
             _itemService = itemService;
             _reservationService = reservationService;
             _logger = logger;
@@ -57,11 +56,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// </summary>
         /// <param name="message">Order changed event to handle.</param>
         /// <returns>A task that allows to <see langword="await"/> this method.</returns>
-        public virtual Task Handle(OrderChangedEvent message)
+        public virtual async Task Handle(OrderChangedEvent message)
         {
-            if (!_settingsManager.GetValue(ModuleConstants.Settings.General.OrderAdjustInventory.Name, true))
+            if (!await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.OrderAdjustInventory))
             {
-                return Task.CompletedTask;
+                return;
             }
 
             foreach (var changedEntry in message.ChangedEntries)
@@ -74,8 +73,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     BackgroundJob.Enqueue(() => ProcessInventoryChanges(changedEntry));
                 }
             }
-
-            return Task.CompletedTask;
         }
 
         public virtual async Task ProcessInventoryChanges(GenericChangedEntry<CustomerOrder> changedEntry)
@@ -185,7 +182,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             if (items.Any())
             {
                 var productIds = items.Select(x => x.ProductId).ToArray();
-                var catalogProducts = await _itemService.GetByIdsAsync(productIds, ItemResponseGroup.None.ToString());
+                var catalogProducts = await _itemService.GetNoCloneAsync(productIds, ItemResponseGroup.None.ToString());
 
                 var trackInventoryProductIds = catalogProducts
                     .Where(x => x.TrackInventory.HasValue && x.TrackInventory.Value)
@@ -199,7 +196,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual async Task<IList<string>> GetFulfillmentCenterIdsAsync(string storeId)
         {
-            var store = await _storeService.GetByIdAsync(storeId);
+            var store = await _storeService.GetNoCloneAsync(storeId);
 
             if (store == null)
             {

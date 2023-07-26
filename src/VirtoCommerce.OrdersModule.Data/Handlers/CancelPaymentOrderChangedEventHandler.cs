@@ -35,7 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         public virtual async Task TryToCancelOrderPaymentsAsync(PaymentToCancelJobArgument[] jobArguments)
         {
-            var ordersByIdDict = (await _orderService.GetByIdsAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
+            var ordersByIdDict = (await _orderService.GetAsync(jobArguments.Select(x => x.CustomerOrderId).Distinct().ToArray()))
                                 .ToDictionary(x => x.Id).WithDefaultValue(null);
             var changedOrders = new List<CustomerOrder>();
             foreach (var jobArgument in jobArguments)

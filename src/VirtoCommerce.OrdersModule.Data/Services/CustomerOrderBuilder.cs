@@ -83,14 +83,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             // Copy Addresses
-            if (cart.Addresses != null)
-            {
-                order.Addresses = ToOrderModel(cart.Addresses);
-            }
-            else
-            {
-                order.Addresses = new List<Address>();
-            }
+            order.Addresses = cart.Addresses != null
+                ? ToOrderModel(cart.Addresses)
+                : new List<Address>();
 
             CopyOtherAddress(cart, order);
 
@@ -186,9 +181,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 var shipmentItem = ToOrderModel(cartShipmentItem);
 
-                if (cartLineItemsMap.ContainsKey(cartShipmentItem.LineItemId))
+                if (cartLineItemsMap.TryGetValue(cartShipmentItem.LineItemId, out var lineItem))
                 {
-                    shipmentItem.LineItem = cartLineItemsMap[cartShipmentItem.LineItemId];
+                    shipmentItem.LineItem = lineItem;
                     shipments.Add(shipmentItem);
                 }
             }
@@ -228,7 +223,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual LineItem ToOrderModel(CartModule.Core.Model.LineItem lineItem)
         {
             if (lineItem == null)
+            {
                 throw new ArgumentNullException(nameof(lineItem));
+            }
 
             var retVal = AbstractTypeFactory<LineItem>.TryCreateInstance();
 
@@ -284,7 +281,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual Discount ToOrderModel(Discount discount)
         {
             if (discount == null)
+            {
                 throw new ArgumentNullException(nameof(discount));
+            }
 
             var retVal = AbstractTypeFactory<Discount>.TryCreateInstance();
 
@@ -345,7 +344,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual ShipmentItem ToOrderModel(CartModule.Core.Model.ShipmentItem shipmentItem)
         {
             if (shipmentItem == null)
+            {
                 throw new ArgumentNullException(nameof(shipmentItem));
+            }
 
             var retVal = AbstractTypeFactory<ShipmentItem>.TryCreateInstance();
             retVal.BarCode = shipmentItem.BarCode;
@@ -356,7 +357,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual PaymentIn ToOrderModel(Payment payment)
         {
             if (payment == null)
+            {
                 throw new ArgumentNullException(nameof(payment));
+            }
 
             var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
             retVal.Purpose = payment.Purpose;
@@ -386,7 +389,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual Address ToOrderModel(CoreModule.Core.Common.Address address)
         {
             if (address == null)
+            {
                 throw new ArgumentNullException(nameof(address));
+            }
 
             var retVal = AbstractTypeFactory<Address>.TryCreateInstance();
             retVal.Name = address.Name;
@@ -453,30 +458,27 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         [Obsolete("Not being called. Use GetInitialOrderStatusAsync(ShoppingCart cart)")]
         protected virtual string GetDefaultOrderStatus()
         {
-            return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderInitialStatus);
+            return _settingsManager?.GetValue<string>(OrderSettings.OrderInitialStatus);
         }
 
         protected virtual async Task<string> GetInitialOrderStatusAsync(ShoppingCart cart)
         {
-            var status = await _settingsManager.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialStatus);
+            var status = await _settingsManager.GetValueAsync<string>(OrderSettings.OrderInitialStatus);
 
             var paymentMethodCode = cart.Payments?.FirstOrDefault()?.PaymentGatewayCode;
-
             if (!string.IsNullOrEmpty(paymentMethodCode))
             {
-#pragma warning disable CS0618
-                var searchPaymentMethodsResult = await _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria
+                var searchPaymentMethodsResult = await _paymentMethodSearchService.SearchAsync(new PaymentMethodsSearchCriteria
                 {
                     StoreId = cart.StoreId,
                     Codes = new List<string> { paymentMethodCode },
                     WithoutTransient = true,
                 });
-#pragma warning disable CS0618
 
                 var paymentMethod = searchPaymentMethodsResult.Results.FirstOrDefault();
                 if (paymentMethod is not null && paymentMethod.AllowDeferredPayment)
                 {
-                    status = await _settingsManager.GetValueByDescriptorAsync<string>(OrderSettings.OrderInitialProcessingStatus);
+                    status = await _settingsManager.GetValueAsync<string>(OrderSettings.OrderInitialProcessingStatus);
                 }
             }
 
@@ -485,7 +487,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual string GetDefaultLineItemStatus()
         {
-            return _settingsManager?.GetValueByDescriptor<string>(OrderSettings.OrderLineItemInitialStatus);
+            return _settingsManager?.GetValue<string>(OrderSettings.OrderLineItemInitialStatus);
         }
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)

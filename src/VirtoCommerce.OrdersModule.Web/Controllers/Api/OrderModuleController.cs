@@ -9,6 +9,7 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -28,7 +29,6 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
-using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
@@ -36,7 +36,6 @@ using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Json;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -50,8 +49,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     public class OrderModuleController : Controller
     {
         private readonly ICustomerOrderService _customerOrderService;
-        private readonly ICrudService<CustomerOrder> _customerOrderServiceCrud;
-        private readonly ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder> _searchService;
+        private readonly ICustomerOrderSearchService _searchService;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IStoreService _storeService;
         private readonly IPlatformMemoryCache _platformMemoryCache;
@@ -94,8 +92,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             , ISettingsManager settingsManager)
         {
             _customerOrderService = customerOrderService;
-            _customerOrderServiceCrud = (ICrudService<CustomerOrder>)customerOrderService;
-            _searchService = (ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>)searchService;
+            _searchService = searchService;
             _uniqueNumberGenerator = numberGenerator;
             _storeService = storeService;
             _platformMemoryCache = platformMemoryCache;
@@ -230,10 +227,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="bankCardInfo">banking card information</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
-        [Consumes("application/json", new[] { "application/json-patch+json" })] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
+        [Consumes("application/json", "application/json-patch+json")] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
         public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
         {
-            var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
             {
@@ -321,9 +318,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.Create)]
         public async Task<ActionResult<CustomerOrder>> CreateOrderFromCart(string cartId)
         {
-            CustomerOrder retVal = null;
+            CustomerOrder retVal;
 
-            using (await AsyncLock.GetLockByKey(cartId).LockAsync())
+            using (await AsyncLock.GetLockByKey(cartId).GetReleaserAsync())
             {
                 var cart = await _cartService.GetByIdAsync(cartId);
                 retVal = await _customerOrderBuilder.PlaceCustomerOrderFromCartAsync(cart);
@@ -364,7 +361,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         public async Task<ActionResult> UpdateOrder([FromBody] CustomerOrder customerOrder)
         {
-            var order = await _customerOrderServiceCrud.GetByIdAsync(customerOrder.Id);
+            var order = await _customerOrderService.GetByIdAsync(customerOrder.Id);
             if (order == null)
             {
                 return NotFound();
@@ -386,7 +383,15 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 });
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            try
+            {
+                await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict();
+            }
+
             return NoContent();
         }
 
@@ -399,7 +404,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/shipments/new")]
         public async Task<ActionResult<Shipment>> GetNewShipment(string id)
         {
-            var order = await _customerOrderServiceCrud.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            var order = await _customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
@@ -407,7 +412,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 retVal.Currency = order.Currency;
                 retVal.Status = "New";
 
-                var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
                 var numberTemplate = store.Settings.GetSettingValue(
                     ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate.Name,
                     ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate.DefaultValue);
@@ -437,7 +442,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/payments/new")]
         public async Task<ActionResult<PaymentIn>> GetNewPayment(string id)
         {
-            var order = await _customerOrderServiceCrud.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            var order = await _customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order != null)
             {
                 var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
@@ -446,7 +451,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 retVal.CustomerId = order.CustomerId;
                 retVal.Status = retVal.PaymentStatus.ToString();
 
-                var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
                 var numberTemplate = store.Settings.GetSettingValue(
                     ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate.Name,
                     ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate.DefaultValue);
@@ -470,7 +475,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             foreach (var id in ids)
             {
-                var customerOrder = await _customerOrderServiceCrud.GetByIdAsync(id);
+                var customerOrder = await _customerOrderService.GetByIdAsync(id);
                 if (customerOrder == null)
                 {
                     continue;
@@ -503,7 +508,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             start ??= DateTime.UtcNow.AddYears(-1);
             end ??= DateTime.UtcNow;
 
-            // Hack: to compinsate for incorrect Local dates to UTC
+            // Hack: to compensate for incorrect Local dates to UTC
             end = end.Value.AddDays(2);
 
             var cacheKey = CacheKey.With(GetType(), string.Join(":", "Statistic", start.Value.ToString("yyyy-MM-dd"), end.Value.ToString("yyyy-MM-dd")));
@@ -543,7 +548,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
             //if order not found by order number search by order id
             var orders = await _searchService.SearchAsync(searchCriteria);
-            var customerOrder = orders.Results.FirstOrDefault() ?? await _customerOrderServiceCrud.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = orders.Results.FirstOrDefault() ?? await _customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
             {
@@ -627,10 +632,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             if (message.Body.IsNullOrEmpty())
             {
-                throw new InvalidOperationException($"Document could not be rendered because InvoiceEmailNotification template is empty.");
+                throw new InvalidOperationException("Document could not be rendered because InvoiceEmailNotification template is empty.");
             }
 
-            byte[] result = GeneratePdf(message.Body);
+            var result = GeneratePdf(message.Body);
 
             return new FileContentResult(result, "application/pdf");
         }
@@ -640,7 +645,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<OperationLog[]>> GetOrderChanges(string id)
         {
             var result = Array.Empty<OperationLog>();
-            var order = await _customerOrderServiceCrud.GetByIdAsync(id);
+            var order = await _customerOrderService.GetByIdAsync(id);
             if (order != null)
             {
                 var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
@@ -671,10 +676,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         {
             if (historySearchCriteria.OrderId == null)
             {
-                throw new InvalidOperationException($"Order ID can not be null");
+                throw new InvalidOperationException("Order ID can not be null");
             }
 
-            var order = await _customerOrderServiceCrud.GetByIdAsync(historySearchCriteria.OrderId);
+            var order = await _customerOrderService.GetByIdAsync(historySearchCriteria.OrderId);
 
             if (order == null)
             {
@@ -722,7 +727,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         private byte[] GeneratePdf(string htmlContent)
         {
-            var doc = new HtmlToPdfDocument()
+            var doc = new HtmlToPdfDocument
             {
                 GlobalSettings = {
                     PaperSize = EnumUtility.SafeParse(_htmlToPdfOptions.PaperSize, PaperKind.A4),
@@ -730,7 +735,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                     DPI = _htmlToPdfOptions.DPI
                 },
                 Objects = {
-                    new ObjectSettings() {
+                    new ObjectSettings {
                         HtmlContent = htmlContent,
                         WebSettings = { DefaultEncoding = _htmlToPdfOptions.DefaultEncoding, MinimumFontSize = _htmlToPdfOptions.MinimumFontSize },
                     }
@@ -741,14 +746,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return result;
         }
 
-        private Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+        private async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
+            if (await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
             {
-                return _customerOrderValidator.ValidateAsync(customerOrder);
+                return await _customerOrderValidator.ValidateAsync(customerOrder);
             }
 
-            return Task.FromResult(new ValidationResult());
+            return new ValidationResult();
         }
     }
 }
