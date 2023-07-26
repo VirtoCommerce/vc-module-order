@@ -13,17 +13,17 @@ using VirtoCommerce.OrdersModule.Data.Validators;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class PaymentFlowService : IPaymentFlowService
     {
-        private readonly ICrudService<CustomerOrder> _customerOrderService;
-        private readonly ICrudService<PaymentIn> _paymentService;
-        private readonly ICrudService<Store> _storeService;
+        private readonly ICustomerOrderService _customerOrderService;
+        private readonly IPaymentService _paymentService;
+        private readonly IStoreService _storeService;
         private readonly IValidator<OrderPaymentInfo> _validator;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
 
@@ -34,9 +34,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded };
 
         public PaymentFlowService(
-            ICrudService<CustomerOrder> customerOrderService,
-            ICrudService<PaymentIn> paymentService,
-            ICrudService<Store> storeService,
+            ICustomerOrderService customerOrderService,
+            IPaymentService paymentService,
+            IStoreService storeService,
             IValidator<OrderPaymentInfo> validator,
             IUniqueNumberGenerator uniqueNumberGenerator)
         {

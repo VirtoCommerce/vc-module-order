@@ -1,16 +1,10 @@
-using System;
-using System.Threading.Tasks;
+using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
+using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Core.Services
 {
-    /// <summary>
-    /// This interface should implement <![CDATA[<see cref="SearchService<CustomerOrder>"/>]]> without methods.
-    /// Methods left for compatibility and should be removed after upgrade to inheritance
-    /// </summary>
-    public interface ICustomerOrderSearchService
+    public interface ICustomerOrderSearchService : ISearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder>
     {
-        [Obsolete(@"Need to remove after inherit ICustomerOrderSearchService from SearchService<CustomerOrder>")]
-        Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria);
     }
 }

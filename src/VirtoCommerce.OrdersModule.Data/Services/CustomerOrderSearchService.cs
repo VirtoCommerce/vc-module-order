@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -17,15 +17,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class CustomerOrderSearchService : SearchService<CustomerOrderSearchCriteria, CustomerOrderSearchResult, CustomerOrder, CustomerOrderEntity>, ICustomerOrderSearchService
     {
-        public CustomerOrderSearchService(Func<IOrderRepository> repositoryFactory, ICustomerOrderService customerOrderService, IPlatformMemoryCache platformMemoryCache)
-            : base(repositoryFactory, platformMemoryCache, (ICrudService<CustomerOrder>)customerOrderService)
+        public CustomerOrderSearchService(
+            Func<IOrderRepository> repositoryFactory,
+            IPlatformMemoryCache platformMemoryCache,
+            ICustomerOrderService crudService,
+            IOptions<CrudOptions> crudOptions)
+            : base(repositoryFactory, platformMemoryCache, crudService, crudOptions)
         {
         }
 
-        public virtual Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria)
-        {
-            return SearchAsync(criteria);
-        }
 
         protected override IQueryable<CustomerOrderEntity> BuildQuery(IRepository repository, CustomerOrderSearchCriteria criteria)
         {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
-using StackExchange.Redis;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.NotificationsModule.Core.Extensions;
@@ -14,13 +13,14 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Notifications;
+using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -28,20 +28,20 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     {
         private readonly INotificationSearchService _notificationSearchService;
         private readonly INotificationSender _notificationSender;
-        private readonly ICrudService<Store> _storeService;
+        private readonly IStoreService _storeService;
         private readonly IMemberService _memberService;
         private readonly ISettingsManager _settingsManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ICrudService<CustomerOrder> _orderService;
+        private readonly ICustomerOrderService _orderService;
 
         public SendNotificationsOrderChangedEventHandler(
             INotificationSender notificationSender,
-            ICrudService<Store> storeService,
+            IStoreService storeService,
             IMemberService memberService,
             ISettingsManager settingsManager,
             UserManager<ApplicationUser> userManager,
             INotificationSearchService notificationSearchService,
-            ICrudService<CustomerOrder> orderService)
+            ICustomerOrderService orderService)
         {
             _notificationSender = notificationSender;
             _storeService = storeService;
@@ -52,9 +52,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _orderService = orderService;
         }
 
-        public virtual Task Handle(OrderChangedEvent message)
+        public virtual async Task Handle(OrderChangedEvent message)
         {
-            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.SendOrderNotifications))
+            if (await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.SendOrderNotifications))
             {
                 var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
                 if (jobArguments.Any())
@@ -62,7 +62,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     BackgroundJob.Enqueue(() => TryToSendOrderNotificationsAsync(jobArguments));
                 }
             }
-            return Task.CompletedTask;
         }
 
         protected virtual OrderNotificationJobArgument[] GetJobArgumentsForChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry)
@@ -84,7 +83,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 result.Add(OrderNotificationJobArgument.FromChangedEntry(changedEntry, typeof(NewOrderStatusEmailNotification)));
             }
 
-            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.PaymentShipmentStatusChangedNotifications))
+            if (_settingsManager.GetValue<bool>(ModuleConstants.Settings.General.PaymentShipmentStatusChangedNotifications))
             {
                 var changedPayments = GetEntriesWithChangedStatus(changedEntry.OldEntry.InPayments, changedEntry.NewEntry.InPayments);
                 if (changedPayments.Any())
@@ -103,7 +102,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             }
 
-            if (_settingsManager.GetValueByDescriptor<bool>(ModuleConstants.Settings.General.OrderPaidAndOrderSentNotifications))
+            if (_settingsManager.GetValue<bool>(ModuleConstants.Settings.General.OrderPaidAndOrderSentNotifications))
             {
                 if (IsOrderPaid(changedEntry))
                 {
@@ -245,11 +244,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         /// <param name="order"></param>
         protected virtual async Task SetNotificationParametersAsync(Notification notification, CustomerOrder order)
         {
-            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-
             if (notification is EmailNotification emailNotification)
             {
-                emailNotification.From = store.EmailWithName;
+                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                emailNotification.From = store?.EmailWithName;
                 emailNotification.To = await GetOrderRecipientEmailAsync(order);
             }
 
@@ -288,7 +286,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 return user?.Email;
             }
 
-            return customer?.Emails?.FirstOrDefault();
+            return customer.Emails?.FirstOrDefault();
         }
 
         protected virtual async Task<Member> GetCustomerAsync(string customerId)
@@ -319,12 +317,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         public string NewStatus { get; set; }
         public string OldStatus { get; set; }
         public IList<OrderOperationStatusChangedEntry> OrderOperations { get; set; }
-        public static OrderNotificationJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, Type notificationtType)
+
+        public static OrderNotificationJobArgument FromChangedEntry(GenericChangedEntry<CustomerOrder> changedEntry, Type notificationType)
         {
             var result = new OrderNotificationJobArgument
             {
                 CustomerOrderId = changedEntry.NewEntry?.Id ?? changedEntry.OldEntry?.Id,
-                NotificationTypeName = notificationtType.Name,
+                NotificationTypeName = notificationType.Name,
                 StoreId = changedEntry.NewEntry.StoreId,
                 CustomerId = changedEntry.NewEntry.CustomerId,
                 NewStatus = changedEntry.NewEntry.Status,
@@ -334,5 +333,4 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return result;
         }
     }
-
 }

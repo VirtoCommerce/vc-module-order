@@ -25,7 +25,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
         private readonly ISettingsManager _settingsManager;
-        private static ConcurrentDictionary<string, List<string>> _auditablePropertiesListByTypeDict = new ConcurrentDictionary<string, List<string>>();
+        private static readonly ConcurrentDictionary<string, List<string>> _auditablePropertiesListByTypeDict = new();
 
         public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService, ISettingsManager settingsManager)
         {
@@ -34,9 +34,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _settingsManager = settingsManager;
         }
 
-        public virtual Task Handle(OrderChangedEvent message)
+        public virtual async Task Handle(OrderChangedEvent message)
         {
-            var logOrderChangesEnabled = _settingsManager.GetValue(ModuleConstants.Settings.General.LogOrderChanges.Name, (bool)ModuleConstants.Settings.General.LogOrderChanges.DefaultValue);
+            var logOrderChangesEnabled = await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.LogOrderChanges);
 
             if (logOrderChangesEnabled && message.ChangedEntries.Any())
             {
@@ -63,7 +63,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(operationLogs.ToArray()));
                 }
             }
-            return Task.CompletedTask;
         }
 
         // (!) Do not make this method async, it causes improper user recorded into the log! It happens because the user stored in the current thread. If the thread switched, the user info will lost.
@@ -99,9 +98,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
                 }
 
-                List<string> auditableProperties;
                 var type = changedEntry.OldEntry.GetType();
-                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out auditableProperties))
+                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
                 {
                     auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
                                                               .Select(x => x.Name)
@@ -225,4 +223,3 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
     }
 }
-

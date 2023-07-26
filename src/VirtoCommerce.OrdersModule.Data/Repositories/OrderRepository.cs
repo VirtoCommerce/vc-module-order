@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,8 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
     public class OrderRepository : DbContextRepositoryBase<OrderDbContext>, IOrderRepository
     {
 #pragma warning disable S109
-        public OrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork = null) : base(dbContext, unitOfWork)
+        public OrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork = null)
+            : base(dbContext, unitOfWork)
         {
         }
 
@@ -35,7 +37,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
-        public virtual async Task<CustomerOrderEntity[]> GetCustomerOrdersByIdsAsync(string[] ids, string responseGroup = null)
+        public virtual async Task<IList<CustomerOrderEntity>> GetCustomerOrdersByIdsAsync(IList<string> ids, string responseGroup = null)
         {
             if (ids.IsNullOrEmpty())
             {
@@ -175,7 +177,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
-        public virtual async Task<PaymentInEntity[]> GetPaymentsByIdsAsync(string[] ids)
+        public virtual async Task<IList<PaymentInEntity>> GetPaymentsByIdsAsync(IList<string> ids)
         {
             if (ids.IsNullOrEmpty())
             {
@@ -201,7 +203,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             return result;
         }
 
-        public virtual async Task<ShipmentEntity[]> GetShipmentsByIdsAsync(string[] ids)
+        public virtual async Task<IList<ShipmentEntity>> GetShipmentsByIdsAsync(IList<string> ids)
         {
             if (ids.IsNullOrEmpty())
             {
@@ -236,7 +238,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             }
         }
 
-        public virtual async Task RemoveOrdersByIdsAsync(string[] ids)
+        public virtual async Task RemoveOrdersByIdsAsync(IList<string> ids)
         {
             var orders = await GetCustomerOrdersByIdsAsync(ids);
             foreach (var order in orders)

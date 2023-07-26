@@ -10,66 +10,58 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class PaymentService : CrudService<PaymentIn, PaymentInEntity, PaymentChangeEvent, PaymentChangedEvent>, IPaymentService
     {
-        private new readonly Func<IOrderRepository> _repositoryFactory;
+        private readonly Func<IOrderRepository> _repositoryFactory;
         private readonly ICustomerOrderService _customerOrderService;
-        private readonly ICrudService<CustomerOrder> _customerOrderServiceCrud;
-
 
         public PaymentService(
-            Func<IOrderRepository> orderRepositoryFactory, IPlatformMemoryCache platformMemoryCache, IEventPublisher eventPublisher,
+            Func<IOrderRepository> repositoryFactory,
+            IPlatformMemoryCache platformMemoryCache,
+            IEventPublisher eventPublisher,
             ICustomerOrderService customerOrderService)
-             : base(orderRepositoryFactory, platformMemoryCache, eventPublisher)
+            : base(repositoryFactory, platformMemoryCache, eventPublisher)
         {
-            _repositoryFactory = orderRepositoryFactory;
+            _repositoryFactory = repositoryFactory;
             _customerOrderService = customerOrderService;
-            _customerOrderServiceCrud = (ICrudService<CustomerOrder>)customerOrderService;
         }
 
-        public virtual async Task<PaymentIn[]> GetByIdsAsync(string[] ids, string responseGroup = null)
+        public override Task SaveChangesAsync(IList<PaymentIn> models)
         {
-            var orders = await base.GetByIdsAsync(ids);
-            return orders.ToArray();
-        }
-
-        public virtual Task SaveChangesAsync(PaymentIn[] payments)
-        {
-            if (payments == null)
+            if (models == null)
             {
-                throw new ArgumentNullException(nameof(payments));
+                throw new ArgumentNullException(nameof(models));
             }
 
-            return DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
+            return DoBulkActionsWithOrderAggregate(models, (order, payment) =>
             {
                 order.InPayments.Remove(payment);
                 order.InPayments.Add(payment);
             });
         }
 
-        public virtual async Task DeleteAsync(string[] ids)
+        public override async Task DeleteAsync(IList<string> ids, bool softDelete = false)
         {
             if (ids == null)
             {
                 throw new ArgumentNullException(nameof(ids));
             }
-            using (var repository = _repositoryFactory())
+
+            using var repository = _repositoryFactory();
+            var paymentEntities = await repository.GetPaymentsByIdsAsync(ids);
+            var payments = paymentEntities.Select(ToModel).ToArray();
+
+            await DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
             {
-                var paymentEntities = await repository.GetPaymentsByIdsAsync(ids);
-                var payments = paymentEntities.Select(x => x.ToModel(AbstractTypeFactory<PaymentIn>.TryCreateInstance())).OfType<PaymentIn>().ToArray();
-                await DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
-               {
-                   order.InPayments.Remove(payment);
-               });
-            }
+                order.InPayments.Remove(payment);
+            });
         }
 
-        protected virtual async Task DoBulkActionsWithOrderAggregate(PaymentIn[] payments, Action<CustomerOrder, PaymentIn> action)
+        protected virtual async Task DoBulkActionsWithOrderAggregate(IList<PaymentIn> payments, Action<CustomerOrder, PaymentIn> action)
         {
             if (payments.Any(x => string.IsNullOrEmpty(x.OrderId)))
             {
@@ -78,7 +70,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var oderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
             if (oderIds.Any())
             {
-                var ordersAggregates = await _customerOrderServiceCrud.GetByIdsAsync(oderIds);
+                var ordersAggregates = await _customerOrderService.GetAsync(oderIds);
                 foreach (var payment in payments)
                 {
                     var orderAggregateRoot = ordersAggregates.FirstOrDefault(x => x.Id == payment.OrderId);
@@ -92,9 +84,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        protected override async Task<IEnumerable<PaymentInEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected override Task<IList<PaymentInEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
-            return await ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids.ToArray());
+            return ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids);
         }
     }
 }
