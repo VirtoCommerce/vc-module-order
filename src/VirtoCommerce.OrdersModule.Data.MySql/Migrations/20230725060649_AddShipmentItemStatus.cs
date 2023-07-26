@@ -17,18 +17,6 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                 maxLength: 128,
                 nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "CustomerOrder",
-                type: "timestamp(6)",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp(6)",
-                oldRowVersion: true,
-                oldNullable: true)
-                .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -36,18 +24,6 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
             migrationBuilder.DropColumn(
                 name: "Status",
                 table: "OrderShipmentItem");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RowVersion",
-                table: "CustomerOrder",
-                type: "timestamp(6)",
-                rowVersion: true,
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp(6)",
-                oldRowVersion: true,
-                oldNullable: true)
-                .OldAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn);
         }
     }
 }

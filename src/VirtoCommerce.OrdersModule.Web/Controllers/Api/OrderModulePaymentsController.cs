@@ -10,7 +10,6 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -19,10 +18,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     [Authorize]
     public class OrderModulePaymentsController : Controller
     {
-        private readonly ISearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn> _paymentSearchService;
+        private readonly IPaymentSearchService _paymentSearchService;
         private readonly IPaymentService _paymentService;
         private readonly IAuthorizationService _authorizationService;
-        private readonly ICrudService<CustomerOrder> _customerOrderService;
+        private readonly ICustomerOrderService _customerOrderService;
         private readonly IValidator<PaymentIn> _paymentInValidator;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentFlowService _paymentFlowService;
@@ -37,10 +36,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             IPaymentFlowService paymentFlowService
          )
         {
-            _paymentSearchService = (ISearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn>)paymentSearchService;
+            _paymentSearchService = paymentSearchService;
             _paymentService = paymentService;
             _authorizationService = authorizationService;
-            _customerOrderService = (ICrudService<CustomerOrder>)customerOrderService;
+            _customerOrderService = customerOrderService;
             _paymentInValidator = paymentInValidator;
             _settingsManager = settingsManager;
             _paymentFlowService = paymentFlowService;
@@ -178,14 +177,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        private Task<ValidationResult> ValidateAsync(PaymentIn paymentIn)
+        private async Task<ValidationResult> ValidateAsync(PaymentIn paymentIn)
         {
-            if (_settingsManager.GetValue(ModuleConstants.Settings.General.CustomerOrderValidation.Name, (bool)ModuleConstants.Settings.General.CustomerOrderValidation.DefaultValue))
+            if (await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
             {
-                return _paymentInValidator.ValidateAsync(paymentIn);
+                return await _paymentInValidator.ValidateAsync(paymentIn);
             }
 
-            return Task.FromResult(new ValidationResult());
+            return new ValidationResult();
         }
     }
 }

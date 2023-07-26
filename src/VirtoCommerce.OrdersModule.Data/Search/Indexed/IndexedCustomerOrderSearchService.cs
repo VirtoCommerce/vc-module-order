@@ -34,7 +34,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             if (!_configuration.IsOrderFullTextSearchEnabled())
             {
-                throw new SearchException("Indexed order search is disabled. To enable it add 'Search:OrderFullTextSearchEnabled' configuraion key to app settings and set it to true.");
+                throw new SearchException("Indexed order search is disabled. To enable it add 'Search:OrderFullTextSearchEnabled' configuration key to app settings and set it to true.");
             }
 
             var requestBuilder = _searchRequestBuilderRegistrar.GetRequestBuilderByDocumentType(ModuleConstants.OrderIndexDocumentType);
@@ -69,12 +69,12 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
 
             var itemIds = documents.Select(x => x.Id).ToArray();
-            var items = await _customerOrderService.GetByIdsAsync(itemIds, criteria.ResponseGroup);
+            var items = await _customerOrderService.GetAsync(itemIds, criteria.ResponseGroup);
             var itemsMap = items.ToDictionary(x => x.Id, x => x);
 
             // Preserve documents order
             var orders = documents
-                .Select(x => itemsMap.ContainsKey(x.Id) ? itemsMap[x.Id] : null)
+                .Select(x => itemsMap.TryGetValue(x.Id, out var item) ? item : null)
                 .Where(x => x != null)
                 .ToArray();
 

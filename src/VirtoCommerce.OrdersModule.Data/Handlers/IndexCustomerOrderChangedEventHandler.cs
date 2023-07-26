@@ -10,9 +10,9 @@ using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.SearchModule.Core.BackgroundJobs;
+using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
-using VirtoCommerce.SearchModule.Data.BackgroundJobs;
-using VirtoCommerce.SearchModule.Data.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -20,19 +20,25 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
     {
         private readonly ISettingsManager _settingsManager;
         private readonly IConfiguration _configuration;
+        private readonly IIndexingJobService _indexingJobService;
         private readonly IEnumerable<IndexDocumentConfiguration> _indexingConfigurations;
 
-        public IndexCustomerOrderChangedEventHandler(ISettingsManager settingsManager, IConfiguration configuration, IEnumerable<IndexDocumentConfiguration> indexingConfigurations)
+        public IndexCustomerOrderChangedEventHandler(
+            ISettingsManager settingsManager,
+            IConfiguration configuration,
+            IIndexingJobService indexingJobService,
+            IEnumerable<IndexDocumentConfiguration> indexingConfigurations)
         {
             _settingsManager = settingsManager;
             _configuration = configuration;
+            _indexingJobService = indexingJobService;
             _indexingConfigurations = indexingConfigurations;
         }
 
         public async Task Handle(OrderChangedEvent message)
         {
             if (!_configuration.IsOrderFullTextSearchEnabled() ||
-                !await _settingsManager.GetValueAsync(ModuleConstants.Settings.General.EventBasedIndexation.Name, false))
+                !await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.EventBasedIndexation))
             {
                 return;
             }
@@ -41,8 +47,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 .Select(x => new IndexEntry { Id = x.OldEntry.Id, EntryState = x.EntryState, Type = ModuleConstants.OrderIndexDocumentType })
                 .ToArray() ?? Array.Empty<IndexEntry>();
 
-            IndexingJobs.EnqueueIndexAndDeleteDocuments(indexEntries,
-                JobPriority.Normal, _indexingConfigurations.GetBuildersForProvider(typeof(CustomerOrderChangesProvider)).ToList());
+            _indexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries,
+                JobPriority.Normal, _indexingConfigurations.GetDocumentBuilders(ModuleConstants.OrderIndexDocumentType, typeof(CustomerOrderChangesProvider)).ToList());
         }
     }
 }

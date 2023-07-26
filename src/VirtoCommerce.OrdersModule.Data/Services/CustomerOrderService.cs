@@ -28,43 +28,37 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class CustomerOrderService : CrudService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService, IMemberOrdersService
     {
-        private new readonly Func<IOrderRepository> _repositoryFactory;
-        private readonly IStoreService _storeService;
-
+        private readonly Func<IOrderRepository> _repositoryFactory;
+        private readonly IPlatformMemoryCache _platformMemoryCache;
+        private readonly IEventPublisher _eventPublisher;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
+        private readonly IStoreService _storeService;
+        private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
-        private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
 
         public CustomerOrderService(
-            Func<IOrderRepository> orderRepositoryFactory, IUniqueNumberGenerator uniqueNumberGenerator
-            , IStoreService storeService
-            , IEventPublisher eventPublisher, ICustomerOrderTotalsCalculator totalsCalculator
-            , IShippingMethodsSearchService shippingMethodsSearchService, IPaymentMethodsSearchService paymentMethodSearchService,
-            IPlatformMemoryCache platformMemoryCache)
-                : base(orderRepositoryFactory, platformMemoryCache, eventPublisher)
+            Func<IOrderRepository> repositoryFactory,
+            IPlatformMemoryCache platformMemoryCache,
+            IEventPublisher eventPublisher,
+            IUniqueNumberGenerator uniqueNumberGenerator,
+            IStoreService storeService,
+            ICustomerOrderTotalsCalculator totalsCalculator,
+            IShippingMethodsSearchService shippingMethodsSearchService,
+            IPaymentMethodsSearchService paymentMethodSearchService)
+            : base(repositoryFactory, platformMemoryCache, eventPublisher)
         {
-            _repositoryFactory = orderRepositoryFactory;
+            _repositoryFactory = repositoryFactory;
+            _platformMemoryCache = platformMemoryCache;
+            _eventPublisher = eventPublisher;
+            _uniqueNumberGenerator = uniqueNumberGenerator;
             _storeService = storeService;
             _totalsCalculator = totalsCalculator;
             _shippingMethodsSearchService = shippingMethodsSearchService;
-
             _paymentMethodSearchService = paymentMethodSearchService;
-            _uniqueNumberGenerator = uniqueNumberGenerator;
         }
 
-        public virtual async Task<CustomerOrder[]> GetByIdsAsync(string[] orderIds, string responseGroup = null)
-        {
-            var orders = await base.GetByIdsAsync(orderIds);
-            return orders.ToArray();
-        }
-
-        public override Task SaveChangesAsync(IEnumerable<CustomerOrder> models)
-        {
-            return SaveChangesAsync(models.ToArray());
-        }
-
-        public virtual async Task SaveChangesAsync(CustomerOrder[] orders)
+        public override async Task SaveChangesAsync(IList<CustomerOrder> models)
         {
             var pkMap = new PrimaryKeyResolvingMap();
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
@@ -72,14 +66,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             using (var repository = _repositoryFactory())
             {
-                var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
-                var dataExistOrders = await repository.GetCustomerOrdersByIdsAsync(orderIds, CustomerOrderResponseGroup.Full.ToString());
-                foreach (var modifiedOrder in orders)
+                var orderIds = models.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
+                var existingEntities = await repository.GetCustomerOrdersByIdsAsync(orderIds, CustomerOrderResponseGroup.Full.ToString());
+                foreach (var modifiedOrder in models)
                 {
                     await EnsureThatAllOperationsHaveNumber(modifiedOrder);
                     await LoadOrderDependenciesAsync(modifiedOrder);
 
-                    var originalEntity = dataExistOrders.FirstOrDefault(x => x.Id == modifiedOrder.Id);
+                    var originalEntity = existingEntities?.FirstOrDefault(x => x.Id == modifiedOrder.Id);
 
                     if (originalEntity != null)
                     {
@@ -107,7 +101,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         //originalEntity is fully loaded and contains changes from order
                         var newModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
 
-                        //newmodel is fully loaded,so we can CalculateTotals for order
+                        //newModel is fully loaded,so we can CalculateTotals for order
                         _totalsCalculator.CalculateTotals(newModel);
                         //Double convert and patch are required, because of partial order update when some properties are used in totals calculation are missed
                         var newModifiedEntity = AbstractTypeFactory<CustomerOrderEntity>.TryCreateInstance().FromModel(newModel, pkMap);
@@ -137,7 +131,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
                 finally
                 {
-                    ClearCache(orders);
+                    ClearCache(models);
                 }
 
                 pkMap.ResolvePrimaryKeys();
@@ -157,13 +151,13 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
-        public virtual async Task DeleteAsync(string[] ids)
+        public override async Task DeleteAsync(IList<string> ids, bool softDelete = false)
         {
-            var orders = await GetByIdsAsync(ids, CustomerOrderResponseGroup.Full.ToString());
+            var orders = await GetAsync(ids, CustomerOrderResponseGroup.Full.ToString());
             using (var repository = _repositoryFactory())
             {
                 //Raise domain events before deletion
-                var changedEntries = orders.Select(x => new GenericChangedEntry<CustomerOrder>(x, EntryState.Deleted));
+                var changedEntries = orders.Select(x => new GenericChangedEntry<CustomerOrder>(x, EntryState.Deleted)).ToList();
                 await _eventPublisher.Publish(new OrderChangeEvent(changedEntries));
 
                 await repository.RemoveOrdersByIdsAsync(ids);
@@ -180,7 +174,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var cacheKey = CacheKey.With(GetType(), nameof(IsFirstTimeBuyer), customerId);
             var result = _platformMemoryCache.GetOrCreateExclusive(cacheKey, cacheEntry =>
             {
-                cacheEntry.AddExpirationToken(CreateCacheToken(new[] { customerId }));
+                cacheEntry.AddExpirationToken(CreateCacheToken(customerId));
 
                 using var repository = _repositoryFactory();
                 return !repository.CustomerOrders.Any(x => x.CustomerId == customerId);
@@ -196,8 +190,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new ArgumentNullException(nameof(order));
             }
 
-            var searchShippingMethodsTask = _shippingMethodsSearchService.SearchShippingMethodsAsync(new ShippingMethodsSearchCriteria { StoreId = order.StoreId });
-            var searchPaymentMethodsTask = _paymentMethodSearchService.SearchPaymentMethodsAsync(new PaymentMethodsSearchCriteria { StoreId = order.StoreId });
+            var searchShippingMethodsTask = _shippingMethodsSearchService.SearchAsync(new ShippingMethodsSearchCriteria { StoreId = order.StoreId });
+            var searchPaymentMethodsTask = _paymentMethodSearchService.SearchAsync(new PaymentMethodsSearchCriteria { StoreId = order.StoreId });
 
             await Task.WhenAll(searchShippingMethodsTask, searchPaymentMethodsTask);
             if (!searchShippingMethodsTask.Result.Results.IsNullOrEmpty() && !order.Shipments.IsNullOrEmpty())
@@ -218,7 +212,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual async Task EnsureThatAllOperationsHaveNumber(CustomerOrder order)
         {
-            var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
 
             foreach (var operation in order.GetFlatObjectsListWithInterface<IOperation>())
             {
@@ -244,13 +238,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        protected async override Task<IEnumerable<CustomerOrderEntity>> LoadEntities(IRepository repository, IEnumerable<string> ids, string responseGroup)
+        protected override Task<IList<CustomerOrderEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
-            return await ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids.ToArray(), responseGroup);
+            return ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids, responseGroup);
         }
 
-        protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity,
-            CustomerOrder model)
+        protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity, CustomerOrder model)
         {
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
@@ -265,7 +258,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return model;
         }
 
-        protected override void ClearCache(IEnumerable<CustomerOrder> models)
+        protected override void ClearCache(IList<CustomerOrder> models)
         {
             GenericSearchCachingRegion<CustomerOrder>.ExpireRegion();
 

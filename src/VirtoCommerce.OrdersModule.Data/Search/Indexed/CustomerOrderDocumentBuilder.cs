@@ -6,7 +6,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.SearchModule.Core.Extenstions;
+using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -21,7 +21,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         private readonly IStoreService _storeService;
         private readonly IFulfillmentCenterService _fulfillmentCenterService;
 
-        public CustomerOrderDocumentBuilder(ICustomerOrderService customerOrderService, IDynamicPropertySearchService dynamicPropertySearchService, IStoreService storeService, IFulfillmentCenterService fulfillmentCenterService)
+        public CustomerOrderDocumentBuilder(
+            ICustomerOrderService customerOrderService,
+            IDynamicPropertySearchService dynamicPropertySearchService,
+            IStoreService storeService,
+            IFulfillmentCenterService fulfillmentCenterService)
         {
             _customerOrderService = customerOrderService;
             _dynamicPropertySearchService = dynamicPropertySearchService;
@@ -33,7 +37,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             var result = new List<IndexDocument>();
 
-            var orders = await _customerOrderService.GetByIdsAsync(documentIds.ToArray());
+            var orders = await _customerOrderService.GetNoCloneAsync(documentIds);
 
             foreach (var order in orders)
             {
@@ -47,13 +51,13 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             var document = new IndexDocument(order.Id);
 
-            document.AddFilterableAndSearchableValue("Number", order.Number);
-            document.AddFilterableAndSearchableValue("EmployeeName", order.EmployeeName);
-            document.AddFilterableAndSearchableValue("OrganizationName", order.OrganizationName);
-            document.AddFilterableAndSearchableValue("CustomerName", order.CustomerName);
-            document.AddFilterableAndSearchableValue("PurchaseOrderNumber", order.PurchaseOrderNumber);
+            document.AddFilterableStringAndContentString("Number", order.Number);
+            document.AddFilterableStringAndContentString("EmployeeName", order.EmployeeName);
+            document.AddFilterableStringAndContentString("OrganizationName", order.OrganizationName);
+            document.AddFilterableStringAndContentString("CustomerName", order.CustomerName);
+            document.AddFilterableStringAndContentString("PurchaseOrderNumber", order.PurchaseOrderNumber);
 
-            document.AddSearchableValue(order.Comment);
+            document.AddContentString(order.Comment);
 
             document.AddFilterableValue("CreatedDate", order.CreatedDate, IndexDocumentFieldValueType.DateTime);
             document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate, IndexDocumentFieldValueType.DateTime);
@@ -72,7 +76,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
             else if (!order.StoreId.IsNullOrEmpty())
             {
-                var store = await _storeService.GetByIdAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
                 document.AddFilterableValue("StoreName", store?.Name, IndexDocumentFieldValueType.String);
             }
 
@@ -92,32 +96,30 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             foreach (var lineItem in order.Items ?? Enumerable.Empty<LineItem>())
             {
-                document.AddSearchableValue(lineItem.Comment);
+                document.AddContentString(lineItem.Comment);
             }
 
             foreach (var payment in order.InPayments ?? Enumerable.Empty<PaymentIn>())
             {
                 IndexAddress(payment.BillingAddress, document);
-                document.AddSearchableValue(payment.Number);
-                document.AddSearchableValue(payment.Comment);
+                document.AddContentString(payment.Number);
+                document.AddContentString(payment.Comment);
             }
 
             foreach (var shipment in order.Shipments ?? Enumerable.Empty<Shipment>())
             {
                 IndexAddress(shipment.DeliveryAddress, document);
-                document.AddSearchableValue(shipment.Number);
-                document.AddSearchableValue(shipment.Comment);
+                document.AddContentString(shipment.Number);
+                document.AddContentString(shipment.Comment);
 
                 if (!shipment.FulfillmentCenterName.IsNullOrEmpty())
                 {
-                    document.AddSearchableValue(shipment.FulfillmentCenterName);
+                    document.AddContentString(shipment.FulfillmentCenterName);
                 }
                 else if (!shipment.FulfillmentCenterId.IsNullOrEmpty())
                 {
-                    var fulfillmentCenter = (await _fulfillmentCenterService.GetByIdsAsync(new[] { shipment.FulfillmentCenterId }))
-                        .FirstOrDefault();
-
-                    document.AddSearchableValue(fulfillmentCenter?.Name);
+                    var fulfillmentCenter = await _fulfillmentCenterService.GetNoCloneAsync(shipment.FulfillmentCenterId);
+                    document.AddContentString(fulfillmentCenter?.Name);
                 }
             }
 
@@ -130,7 +132,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             if (address != null)
             {
-                document.AddSearchableValue($"{address.AddressType} {address}");
+                document.AddContentString($"{address.AddressType} {address}");
             }
         }
 
@@ -179,7 +181,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 {
                     foreach (var value in values)
                     {
-                        document.AddSearchableValue(value.ToString());
+                        document.AddContentString(value.ToString());
                     }
                 }
             }
@@ -187,12 +189,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             // replace empty value for Boolean property with default 'False'
             if (property.ValueType == DynamicPropertyValueType.Boolean && values.IsNullOrEmpty())
             {
-                document.Add(new IndexDocumentField(propertyName, false)
+                document.Add(new IndexDocumentField(propertyName, false, IndexDocumentFieldValueType.Boolean)
                 {
                     IsRetrievable = true,
                     IsFilterable = true,
                     IsCollection = isCollection,
-                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
                 });
 
                 return;
@@ -200,12 +201,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             if (!values.IsNullOrEmpty())
             {
-                document.Add(new IndexDocumentField(propertyName, values)
+                document.Add(new IndexDocumentField(propertyName, values, property.ValueType.ToIndexedDocumentFieldValueType())
                 {
                     IsRetrievable = true,
                     IsFilterable = true,
                     IsCollection = isCollection,
-                    ValueType = property.ValueType.ToIndexedDocumentFieldValueType()
                 });
             }
         }
