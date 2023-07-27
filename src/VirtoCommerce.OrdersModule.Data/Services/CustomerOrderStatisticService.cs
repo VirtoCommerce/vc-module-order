@@ -80,7 +80,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 .CountAsync();
         }
 
-        protected virtual Task<List<Money>> CalculateRevenueRevenuePerCustomer(IOrderRepository repository, DateTime start, DateTime end)
+        protected virtual Task<List<DashboardMoney>> CalculateRevenueRevenuePerCustomer(IOrderRepository repository, DateTime start, DateTime end)
         {
             var revenues = repository.InPayments
                 .Where(x => x.CreatedDate >= start && x.CreatedDate <= end && !x.IsCancelled)
@@ -92,7 +92,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         AvgValue = result.Average(x => x.Sum)
                     });
 
-            return revenues.Select(x => new Money(x.Currency, x.AvgValue)).ToListAsync();
+            return revenues.Select(x => new DashboardMoney(x.Currency, x.AvgValue)).ToListAsync();
         }
 
         protected virtual async Task CalculateMetricsPerQuarter(IOrderRepository repository, DateTime start, DateTime end, DashboardStatisticsResult retVal)
@@ -142,7 +142,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 .FirstOrDefaultAsync();
         }
 
-        protected virtual async Task<List<Money>> CalculateRevenue(IOrderRepository repository, DateTime start, DateTime end)
+        protected virtual async Task<List<DashboardMoney>> CalculateRevenue(IOrderRepository repository, DateTime start, DateTime end)
         {
             var revenues = await repository.InPayments
                 .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
@@ -150,7 +150,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 .GroupBy(x => x.Currency, (key, result) => new { Currency = key, Value = result.Sum(y => y.Sum) })
                 .ToArrayAsync();
 
-            var revenueMoney = revenues.Select(x => new Money(x.Currency, x.Value)).ToList();
+            var revenueMoney = revenues.Select(x => new DashboardMoney(x.Currency, x.Value)).ToList();
             return revenueMoney;
         }
 
@@ -159,7 +159,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return repository.CustomerOrders.CountAsync(x => x.CreatedDate >= start && x.CreatedDate <= end && !x.IsCancelled);
         }
 
-        protected virtual async Task<List<Money>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
+        protected virtual async Task<List<DashboardMoney>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
         {
             var avgValues = await repository.CustomerOrders
                 .Where(x => x.CreatedDate >= start && x.CreatedDate <= end)
@@ -167,7 +167,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 .GroupBy(x => x.Currency, (key, result) => new { Currency = key, AvgValue = result.Average(y => y.Total) })
                 .ToArrayAsync();
 
-            var avgOrderValue = avgValues.Select(x => new Money(x.Currency, x.AvgValue)).ToList();
+            var avgOrderValue = avgValues.Select(x => new DashboardMoney(x.Currency, x.AvgValue)).ToList();
             return avgOrderValue;
         }
 

@@ -47,7 +47,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
             return results;
         }
 
-        protected override async Task<List<Money>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
+        protected override async Task<List<DashboardMoney>> CalculateAvgOrderValue(IOrderRepository repository, DateTime start, DateTime end)
         {
             var sqlQuery = @"SELECT ""Currency"", CAST(avg(CAST(""Total"" AS numeric)) AS money) as ""AverageValue""
                    FROM ""CustomerOrder""
@@ -63,7 +63,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
 
             var results = await ExecuteRawSqlQuery(sqlQuery, parameters);
 
-            return results.Select(x => new Money(x.Currency, x.AverageValue)).ToList();
+            return results.Select(x => new DashboardMoney(x.Currency, x.AverageValue)).ToList();
         }
 
         protected override async Task<decimal> CalculateAvgOrderValue(DateTime start, DateTime end, string currency, IOrderRepository repository)
@@ -86,7 +86,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
             return results.FirstOrDefault()?.AverageValue ?? 0;
         }
 
-        protected override async Task<List<Money>> CalculateRevenueRevenuePerCustomer(IOrderRepository repository, DateTime start, DateTime end)
+        protected override async Task<List<DashboardMoney>> CalculateRevenueRevenuePerCustomer(IOrderRepository repository, DateTime start, DateTime end)
         {
             var sqlQuery = @"SELECT ""Currency"", CAST(avg(CAST(""Sum"" AS numeric)) AS money) AS ""AverageValue""
                         FROM
@@ -106,7 +106,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql
 
             var results = await ExecuteRawSqlQuery(sqlQuery, parameters);
 
-            return results.Select(x => new Money(x.Currency, x.AverageValue)).ToList();
+            return results.Select(x => new DashboardMoney(x.Currency, x.AverageValue)).ToList();
         }
     }
 }
