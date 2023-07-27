@@ -1,8 +1,11 @@
 <script type="text/ng-template" id="order-statistics-not-authorized.html">
-    <div class="gridster-cnt">
-        <div class="cnt-inner">
-            <div class="list-t">{{'orders.widgets.statistics-templates.title' | translate}}</div>
-            <div class="list-t" style="text-wrap: wrap; color: red;">{{'orders.widgets.statistics-templates.not-authorized' | translate}}</div>
+    <div class="vc-gridster">
+        <img class="vc-gridster__img" src="Modules/$(VirtoCommerce.Orders)/Content/order-statistic.svg" alt="">
+        <div class="vc-gridster__info">
+            <div class="vc-gridster__title">{{'orders.widgets.statistics-templates.title' | translate}}</div>
+            <div class="vc-gridster__description">
+                {{'orders.widgets.statistics-templates.not-authorized' | translate}}
+            </div>
         </div>
     </div>
 </script>
