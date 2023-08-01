@@ -8,21 +8,21 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public ICollection<Money> Revenue { get; set; }
+        public ICollection<DashboardMoney> Revenue { get; set; }
         public ICollection<QuarterPeriodMoney> RevenuePeriodDetails { get; set; }
         public int OrderCount { get; set; }
         public int CustomersCount { get; set; }
-        public ICollection<Money> RevenuePerCustomer { get; set; }
-        public ICollection<Money> AvgOrderValue { get; set; }
+        public ICollection<DashboardMoney> RevenuePerCustomer { get; set; }
+        public ICollection<DashboardMoney> AvgOrderValue { get; set; }
         public ICollection<QuarterPeriodMoney> AvgOrderValuePeriodDetails { get; set; }
 
         public int ItemsPurchased { get; set; }
         public double LineItemsPerOrder { get; set; }
     }
 
-    public class Money
+    public class DashboardMoney
     {
-        public Money(string currency, decimal amount)
+        public DashboardMoney(string currency, decimal amount)
         {
             Currency = currency;
             Amount = amount;
@@ -33,7 +33,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
     }
 
 
-    public class QuarterPeriodMoney : Money
+    public class QuarterPeriodMoney : DashboardMoney
     {
         public QuarterPeriodMoney(string currency, decimal amount)
             : base(currency, amount)
