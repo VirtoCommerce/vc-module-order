@@ -14,7 +14,7 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 {
-    public class CustomerOrderDocumentBuilder : IIndexDocumentBuilder
+    public class CustomerOrderDocumentBuilder : IIndexSchemaBuilder, IIndexDocumentBuilder
     {
         private readonly ICustomerOrderService _customerOrderService;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
@@ -31,6 +31,38 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _dynamicPropertySearchService = dynamicPropertySearchService;
             _storeService = storeService;
             _fulfillmentCenterService = fulfillmentCenterService;
+        }
+
+        public Task BuildSchemaAsync(IndexDocument document)
+        {
+            document.AddFilterableStringAndContentString("Number");
+            document.AddFilterableStringAndContentString("EmployeeName");
+            document.AddFilterableStringAndContentString("OrganizationName");
+            document.AddFilterableStringAndContentString("CustomerName");
+            document.AddFilterableStringAndContentString("PurchaseOrderNumber");
+
+            document.AddFilterableDateTime("CreatedDate");
+            document.AddFilterableDateTime("ModifiedDate");
+
+            document.AddFilterableString("CreatedBy");
+            document.AddFilterableString("ModifiedBy");
+            document.AddFilterableString("CustomerId");
+            document.AddFilterableString("EmployeeId");
+            document.AddFilterableString("OrganizationId");
+            document.AddFilterableString("StoreId");
+            document.AddFilterableString("StoreName");
+            document.AddFilterableString("OuterId");
+            document.AddFilterableString("Status");
+            document.AddFilterableString("Currency");
+
+            document.AddFilterableDecimal("Total");
+            document.AddFilterableDecimal("SubTotal");
+            document.AddFilterableDecimal("TaxTotal");
+            document.AddFilterableDecimal("DiscountTotal");
+
+            document.AddFilterableBoolean("IsCancelled");
+
+            return Task.CompletedTask;
         }
 
         public async Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
@@ -59,35 +91,37 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             document.AddContentString(order.Comment);
 
-            document.AddFilterableValue("CreatedDate", order.CreatedDate, IndexDocumentFieldValueType.DateTime);
-            document.AddFilterableValue("ModifiedDate", order.ModifiedDate ?? order.CreatedDate, IndexDocumentFieldValueType.DateTime);
+            document.AddFilterableDateTime("CreatedDate", order.CreatedDate);
+            document.AddFilterableDateTime("ModifiedDate", order.ModifiedDate ?? order.CreatedDate);
 
-            document.AddFilterableValue("CreatedBy", order.CreatedBy, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("ModifiedBy", order.ModifiedBy, IndexDocumentFieldValueType.String);
+            document.AddFilterableString("CreatedBy", order.CreatedBy);
+            document.AddFilterableString("ModifiedBy", order.ModifiedBy);
 
-            document.AddFilterableValue("CustomerId", order.CustomerId, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("EmployeeId", order.EmployeeId, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("OrganizationId", order.OrganizationId, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("StoreId", order.StoreId, IndexDocumentFieldValueType.String);
+            document.AddFilterableString("CustomerId", order.CustomerId);
+            document.AddFilterableString("EmployeeId", order.EmployeeId);
+            document.AddFilterableString("OrganizationId", order.OrganizationId);
+            document.AddFilterableString("StoreId", order.StoreId);
 
             if (!order.StoreName.IsNullOrEmpty())
             {
-                document.AddFilterableValue("StoreName", order.StoreName, IndexDocumentFieldValueType.String);
+                document.AddFilterableString("StoreName", order.StoreName);
             }
             else if (!order.StoreId.IsNullOrEmpty())
             {
                 var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                document.AddFilterableValue("StoreName", store?.Name, IndexDocumentFieldValueType.String);
+                document.AddFilterableString("StoreName", store?.Name);
             }
 
-            document.AddFilterableValue("OuterId", order.OuterId, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("Status", order.Status, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("Currency", order.Currency, IndexDocumentFieldValueType.String);
-            document.AddFilterableValue("Total", order.Total, IndexDocumentFieldValueType.Double);
-            document.AddFilterableValue("SubTotal", order.SubTotal, IndexDocumentFieldValueType.Double);
-            document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Double);
-            document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Double);
-            document.AddFilterableValue("IsCancelled", order.IsCancelled, IndexDocumentFieldValueType.Boolean);
+            document.AddFilterableString("OuterId", order.OuterId);
+            document.AddFilterableString("Status", order.Status);
+            document.AddFilterableString("Currency", order.Currency);
+
+            document.AddFilterableDecimal("Total", order.Total);
+            document.AddFilterableDecimal("SubTotal", order.SubTotal);
+            document.AddFilterableDecimal("TaxTotal", order.TaxTotal);
+            document.AddFilterableDecimal("DiscountTotal", order.DiscountTotal);
+
+            document.AddFilterableBoolean("IsCancelled", order.IsCancelled);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
