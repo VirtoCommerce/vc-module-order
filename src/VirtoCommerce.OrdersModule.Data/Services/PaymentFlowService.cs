@@ -13,7 +13,6 @@ using VirtoCommerce.OrdersModule.Data.Validators;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DistributedLock;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -27,10 +26,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IStoreService _storeService;
         private readonly IValidator<OrderPaymentInfo> _validator;
         private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
-        private readonly IDistributedLockService _distributedLockService;
-
-        private const string CapturePaymentPrefix = $"PaymentFlowService:{nameof(CapturePaymentAsync)}:";
-        private const string RefundPaymentPrefix = $"PaymentFlowService:{nameof(RefundPaymentAsync)}:";
 
         protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
         protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
@@ -43,26 +38,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             IPaymentService paymentService,
             IStoreService storeService,
             IValidator<OrderPaymentInfo> validator,
-            IUniqueNumberGenerator uniqueNumberGenerator,
-            IDistributedLockService distributedLockService)
+            IUniqueNumberGenerator uniqueNumberGenerator)
         {
             _customerOrderService = customerOrderService;
             _paymentService = paymentService;
             _storeService = storeService;
             _validator = validator;
             _uniqueNumberGenerator = uniqueNumberGenerator;
-            _distributedLockService = distributedLockService;
         }
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
-        {
-            var resourceKey = $"{RefundPaymentPrefix}{request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey, () => RefundPaymentInnerAsync(request));
-
-            return result;
-        }
-
-        protected virtual async Task<RefundOrderPaymentResult> RefundPaymentInnerAsync(RefundOrderPaymentRequest request)
         {
             var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateRefundDocument(request));
@@ -219,14 +204,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         }
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
-        {
-            var resourceKey = $"{CapturePaymentPrefix}{request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey, () => CapturePaymentInnerAsync(request));
-
-            return result;
-        }
-
-        protected virtual async Task<CaptureOrderPaymentResult> CapturePaymentInnerAsync(CaptureOrderPaymentRequest request)
         {
             var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateCaptureDocument(request));
