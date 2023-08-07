@@ -33,34 +33,34 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _fulfillmentCenterService = fulfillmentCenterService;
         }
 
-        public Task BuildSchemaAsync(IndexDocument document)
+        public Task BuildSchemaAsync(IndexDocument schema)
         {
-            document.AddFilterableStringAndContentString("Number");
-            document.AddFilterableStringAndContentString("EmployeeName");
-            document.AddFilterableStringAndContentString("OrganizationName");
-            document.AddFilterableStringAndContentString("CustomerName");
-            document.AddFilterableStringAndContentString("PurchaseOrderNumber");
+            schema.AddFilterableStringAndContentString("Number");
+            schema.AddFilterableStringAndContentString("EmployeeName");
+            schema.AddFilterableStringAndContentString("OrganizationName");
+            schema.AddFilterableStringAndContentString("CustomerName");
+            schema.AddFilterableStringAndContentString("PurchaseOrderNumber");
 
-            document.AddFilterableDateTime("CreatedDate");
-            document.AddFilterableDateTime("ModifiedDate");
+            schema.AddFilterableDateTime("CreatedDate");
+            schema.AddFilterableDateTime("ModifiedDate");
 
-            document.AddFilterableString("CreatedBy");
-            document.AddFilterableString("ModifiedBy");
-            document.AddFilterableString("CustomerId");
-            document.AddFilterableString("EmployeeId");
-            document.AddFilterableString("OrganizationId");
-            document.AddFilterableString("StoreId");
-            document.AddFilterableString("StoreName");
-            document.AddFilterableString("OuterId");
-            document.AddFilterableString("Status");
-            document.AddFilterableString("Currency");
+            schema.AddFilterableString("CreatedBy");
+            schema.AddFilterableString("ModifiedBy");
+            schema.AddFilterableString("CustomerId");
+            schema.AddFilterableString("EmployeeId");
+            schema.AddFilterableString("OrganizationId");
+            schema.AddFilterableString("StoreId");
+            schema.AddFilterableString("StoreName");
+            schema.AddFilterableString("OuterId");
+            schema.AddFilterableString("Status");
+            schema.AddFilterableString("Currency");
 
-            document.AddFilterableDecimal("Total");
-            document.AddFilterableDecimal("SubTotal");
-            document.AddFilterableDecimal("TaxTotal");
-            document.AddFilterableDecimal("DiscountTotal");
+            schema.AddFilterableDecimal("Total");
+            schema.AddFilterableDecimal("SubTotal");
+            schema.AddFilterableDecimal("TaxTotal");
+            schema.AddFilterableDecimal("DiscountTotal");
 
-            document.AddFilterableBoolean("IsCancelled");
+            schema.AddFilterableBoolean("IsCancelled");
 
             return Task.CompletedTask;
         }
