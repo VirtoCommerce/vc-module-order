@@ -28,9 +28,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IPaymentFlowService _paymentFlowService;
         private readonly IDistributedLockService _distributedLockService;
 
-        private const string CapturePaymentPrefix = $"{nameof(CapturePayment)}:";
-        private const string RefundPaymentPrefix = $"{nameof(RefundPayment)}:";
-
         public OrderModulePaymentsController(
             IPaymentSearchService paymentSearchService,
             IPaymentService paymentService,
@@ -169,7 +166,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.CapturePayment)]
         public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
-            var resourceKey = $"{CapturePaymentPrefix}{request.OrderId}";
+            var resourceKey = $"{nameof(CapturePayment)}:{request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey, () => _paymentFlowService.CapturePaymentAsync(request));
 
             return Ok(result);
@@ -180,7 +177,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.RefundPayment)]
         public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
         {
-            var resourceKey = $"{RefundPaymentPrefix}{request.OrderId}";
+            var resourceKey = $"{nameof(RefundPayment)}:{request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey, () => _paymentFlowService.RefundPaymentAsync(request));
 
             return Ok(result);
