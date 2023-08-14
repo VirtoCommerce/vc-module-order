@@ -22,6 +22,8 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
         public Task<SearchRequest> BuildRequestAsync(SearchCriteriaBase criteria)
         {
+            // GetFilters() modifies Keyword
+            criteria = criteria.CloneTyped();
             var filters = GetFilters(criteria);
 
             var request = new SearchRequest
