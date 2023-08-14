@@ -4,6 +4,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
@@ -26,6 +27,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         private readonly IValidator<PaymentIn> _paymentInValidator;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentFlowService _paymentFlowService;
+        private readonly PaymentDistributedLockOptions _paymentDistributedLockOptions;
         private readonly IDistributedLockService _distributedLockService;
 
         public OrderModulePaymentsController(
@@ -36,8 +38,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             IValidator<PaymentIn> paymentInValidator,
             ISettingsManager settingsManager,
             IPaymentFlowService paymentFlowService,
-            IDistributedLockService distributedLockService
-         )
+            IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
+            IDistributedLockService distributedLockService)
         {
             _paymentSearchService = paymentSearchService;
             _paymentService = paymentService;
@@ -46,6 +48,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             _paymentInValidator = paymentInValidator;
             _settingsManager = settingsManager;
             _paymentFlowService = paymentFlowService;
+            _paymentDistributedLockOptions = paymentDistributedLockOptions.Value;
             _distributedLockService = distributedLockService;
         }
 
@@ -167,7 +170,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
             var resourceKey = $"{nameof(CapturePayment)}:{request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey, () => _paymentFlowService.CapturePaymentAsync(request));
+            var result = await _distributedLockService.ExecuteAsync(resourceKey,
+                () => _paymentFlowService.CapturePaymentAsync(request),
+                _paymentDistributedLockOptions.ExpirationTime,
+                _paymentDistributedLockOptions.WaitTime,
+                _paymentDistributedLockOptions.RetryTime);
 
             return Ok(result);
         }
@@ -178,7 +185,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
         {
             var resourceKey = $"{nameof(RefundPayment)}:{request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey, () => _paymentFlowService.RefundPaymentAsync(request));
+            var result = await _distributedLockService.ExecuteAsync(resourceKey,
+                () => _paymentFlowService.RefundPaymentAsync(request),
+                _paymentDistributedLockOptions.ExpirationTime,
+                _paymentDistributedLockOptions.WaitTime,
+                _paymentDistributedLockOptions.RetryTime);
 
             return Ok(result);
         }
