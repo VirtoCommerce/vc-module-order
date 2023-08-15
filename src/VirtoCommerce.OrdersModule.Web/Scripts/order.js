@@ -337,7 +337,8 @@ angular.module(moduleName, [
                 }
 
                 function checkPermissionToViewDashboard() {
-                    return authService.checkPermission('order:dashboardstatistics:view');
+                    return authService.checkPermission('order:dashboardstatistics:view') ||
+                        $localStorage.ordersDashboardStatistics != null;
                 }
 
                 var customerOrderTotalsWidget = {
