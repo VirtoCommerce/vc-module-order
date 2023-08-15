@@ -136,7 +136,7 @@ namespace VirtoCommerce.OrdersModule.Web
                 });
             }
 
-            serviceCollection.AddOptions<PaymentDistributedLockOptions>().Bind(Configuration.GetSection("Orders:PaymentDistributionLockOptions")).ValidateDataAnnotations();
+            serviceCollection.AddOptions<PaymentDistributedLockOptions>().Bind(Configuration.GetSection("Orders:PaymentDistributedLockOptions")).ValidateDataAnnotations();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)
