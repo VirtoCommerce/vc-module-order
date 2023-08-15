@@ -169,7 +169,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.CapturePayment)]
         public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
-            var resourceKey = $"{nameof(CapturePayment)}:{request.OrderId}";
+            var resourceKey = $"{nameof(CapturePayment)}:{request.PaymentId ?? request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey,
                 () => _paymentFlowService.CapturePaymentAsync(request),
                 _paymentDistributedLockOptions.LockTimeout,
@@ -184,7 +184,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.RefundPayment)]
         public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
         {
-            var resourceKey = $"{nameof(RefundPayment)}:{request.OrderId}";
+            var resourceKey = $"{nameof(RefundPayment)}:{request.PaymentId ?? request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey,
                 () => _paymentFlowService.RefundPaymentAsync(request),
                 _paymentDistributedLockOptions.LockTimeout,
