@@ -172,9 +172,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var resourceKey = $"{nameof(CapturePayment)}:{request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey,
                 () => _paymentFlowService.CapturePaymentAsync(request),
-                _paymentDistributedLockOptions.ExpirationTime,
-                _paymentDistributedLockOptions.WaitTime,
-                _paymentDistributedLockOptions.RetryTime);
+                _paymentDistributedLockOptions.LockTimeout,
+                _paymentDistributedLockOptions.TryLockTimeout,
+                _paymentDistributedLockOptions.RetryInterval);
 
             return Ok(result);
         }
@@ -187,9 +187,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var resourceKey = $"{nameof(RefundPayment)}:{request.OrderId}";
             var result = await _distributedLockService.ExecuteAsync(resourceKey,
                 () => _paymentFlowService.RefundPaymentAsync(request),
-                _paymentDistributedLockOptions.ExpirationTime,
-                _paymentDistributedLockOptions.WaitTime,
-                _paymentDistributedLockOptions.RetryTime);
+                _paymentDistributedLockOptions.LockTimeout,
+                _paymentDistributedLockOptions.TryLockTimeout,
+                _paymentDistributedLockOptions.RetryInterval);
 
             return Ok(result);
         }
