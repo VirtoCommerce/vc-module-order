@@ -147,6 +147,7 @@ namespace VirtoCommerce.OrdersModule.Web
             dynamicPropertyRegistrar.RegisterType<CustomerOrder>();
             dynamicPropertyRegistrar.RegisterType<PaymentIn>();
             dynamicPropertyRegistrar.RegisterType<Shipment>();
+            dynamicPropertyRegistrar.RegisterType<Capture>();
             dynamicPropertyRegistrar.RegisterType<Refund>();
             dynamicPropertyRegistrar.RegisterType<LineItem>();
 
