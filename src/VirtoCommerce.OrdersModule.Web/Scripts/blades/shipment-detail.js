@@ -15,10 +15,6 @@ angular.module('virtoCommerce.orderModule')
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.shippingMethods = [];
 
-            blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send'
-                || blade.currentEntity.cancelledState === 'Completed'
-                || blade.currentEntity.cancelledState === 'Requested'
-                || blade.currentEntity.isCancelled;
         if (blade.isNew) {
             blade.title = 'orders.blades.shipment-detail.title-new';
 
@@ -29,6 +25,11 @@ angular.module('virtoCommerce.orderModule')
 
             customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);
         } else {
+            blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send'
+                || blade.currentEntity.cancelledState === 'Completed'
+                || blade.currentEntity.cancelledState === 'Requested'
+                || blade.currentEntity.isCancelled;
+
             blade.title = 'orders.blades.shipment-detail.title';
             blade.titleValues = { number: blade.currentEntity.number };
             blade.subtitle = 'orders.blades.shipment-detail.subtitle';
@@ -113,7 +114,10 @@ angular.module('virtoCommerce.orderModule')
         }, true);
 
         blade.customInitialize = function () {
-            blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
+            if (!blade.currentEntity) {
+                return;
+            }
+            blade.isLocked = blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
         blade.customInitialize();
