@@ -5,10 +5,6 @@ angular.module('virtoCommerce.orderModule')
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
             blade.paymentMethods = [];
 
-            blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
-                || blade.currentEntity.cancelledState === 'Requested'
-                || blade.currentEntity.cancelledState === 'Completed'
-                || blade.currentEntity.isCancelled);
             if (blade.isNew) {
                 blade.title = 'orders.blades.payment-detail.title-new';
 
@@ -19,6 +15,11 @@ angular.module('virtoCommerce.orderModule')
 
                 customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
             } else {
+                blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
+                    || blade.currentEntity.cancelledState === 'Requested'
+                    || blade.currentEntity.cancelledState === 'Completed'
+                    || blade.currentEntity.isCancelled);
+
                 blade.title = 'orders.blades.payment-detail.title';
                 blade.titleValues = { number: blade.currentEntity.number };
                 blade.subtitle = 'orders.blades.payment-detail.subtitle';
