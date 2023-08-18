@@ -20,10 +20,6 @@ angular.module('virtoCommerce.orderModule')
             blade.capturePermission = 'order:capture_payment';
             blade.refundPermission = 'order:refund';
 
-            blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
-                || blade.currentEntity.cancelledState === 'Requested'
-                || blade.currentEntity.cancelledState === 'Completed'
-                || blade.currentEntity.isCancelled);
             if (blade.isNew) {
                 blade.title = 'orders.blades.payment-detail.title-new';
 
@@ -34,6 +30,11 @@ angular.module('virtoCommerce.orderModule')
 
                 customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
             } else {
+                blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
+                    || blade.currentEntity.cancelledState === 'Requested'
+                    || blade.currentEntity.cancelledState === 'Completed'
+                    || blade.currentEntity.isCancelled);
+
                 blade.title = 'orders.blades.payment-detail.title';
                 blade.titleValues = { number: blade.currentEntity.number };
                 blade.subtitle = 'orders.blades.payment-detail.subtitle';
@@ -104,7 +105,7 @@ angular.module('virtoCommerce.orderModule')
                 },
                 canExecuteMethod: function () {
                     return _.find(blade.captureStatuses, function (x) {
-                        return x === blade.currentEntity.status
+                        return !blade.currentEntity || x === blade.currentEntity.status
                     });
                 }
             });
@@ -130,7 +131,7 @@ angular.module('virtoCommerce.orderModule')
                 },
                 canExecuteMethod: function () {
                     return _.find(blade.refundStatuses, function (x) {
-                        return x === blade.currentEntity.status
+                        return !blade.currentEntity || x === blade.currentEntity.status
                     });
                 }
             });
