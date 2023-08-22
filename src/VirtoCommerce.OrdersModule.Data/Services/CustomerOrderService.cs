@@ -64,6 +64,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
             var changedEntities = new List<CustomerOrderEntity>();
 
+            await BeforeSaveChanges(models);
+
             using (var repository = _repositoryFactory())
             {
                 var orderIds = orders.Where(x => !x.IsTransient()).Select(x => x.Id).ToArray();
@@ -131,6 +133,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 changedEntry.NewEntry = changedModel;
             }
 
+            await AfterSaveChangesAsync(models, changedEntries);
+
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
 
@@ -146,6 +150,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 await repository.RemoveOrdersByIdsAsync(ids);
 
                 await repository.UnitOfWork.CommitAsync();
+
                 ClearCache(orders);
                 //Raise domain events after deletion
                 await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
