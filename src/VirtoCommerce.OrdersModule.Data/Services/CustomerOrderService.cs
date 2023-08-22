@@ -64,7 +64,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var changedEntries = new List<GenericChangedEntry<CustomerOrder>>();
             var changedEntities = new List<CustomerOrderEntity>();
 
-            await BeforeSaveChanges(models);
+            await BeforeSaveChanges(orders);
 
             using (var repository = _repositoryFactory())
             {
@@ -133,7 +133,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 changedEntry.NewEntry = changedModel;
             }
 
-            await AfterSaveChangesAsync(models, changedEntries);
+            await AfterSaveChangesAsync(orders, changedEntries);
 
             await _eventPublisher.Publish(new OrderChangedEvent(changedEntries));
         }
