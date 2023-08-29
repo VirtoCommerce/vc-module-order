@@ -533,7 +533,7 @@ angular.module(moduleName, [
                         templateUrl: 'filter-employeeSelector.html'
                     },
                     {
-                        name: 'employeeId',
+                        name: 'withPrototypes',
                         title: "orders.blades.customerOrder-detail.labels.withPrototypes",
                         templateUrl: 'filter-withPrototypes.html'
                     }
