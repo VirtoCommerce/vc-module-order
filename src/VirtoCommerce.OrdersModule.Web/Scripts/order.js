@@ -504,6 +504,11 @@ angular.module(moduleName, [
                         name: 'employeeId',
                         title: "orders.blades.shipment-detail.labels.employee",
                         templateUrl: 'filter-employeeSelector.html'
+                    },
+                    {
+                        name: 'withPrototypes',
+                        title: "orders.blades.customerOrder-detail.labels.withPrototypes",
+                        templateUrl: 'filter-withPrototypes.html'
                     }
                 ]);
 

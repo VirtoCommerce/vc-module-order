@@ -14,7 +14,8 @@
           "from": "Из",
           "channel": "Канал",
           "customer": "Покупатель",
-          "invoice": "Получить счет в PDF"
+          "invoice": "Получить счет в PDF",
+          "withPrototypes": "Показать шаблоны"
         },
         "placeholders": {
           "employee": "Выбрать исполнителя",

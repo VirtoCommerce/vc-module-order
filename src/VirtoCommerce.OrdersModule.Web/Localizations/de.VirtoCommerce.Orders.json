@@ -14,7 +14,8 @@
           "from": "Von",
           "channel": "Kanal",
           "customer": "Kunde",
-          "invoice": "Erhalten Sie die Rechnung als PDF"
+          "invoice": "Erhalten Sie die Rechnung als PDF",
+          "withPrototypes": "Mit vorlagen"
         },
         "placeholders": {
           "employee": "Wählen Sie den Zuständiger aus",
