@@ -62,6 +62,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             schema.AddFilterableDecimal("DiscountTotal");
 
             schema.AddFilterableBoolean("IsCancelled");
+            schema.AddFilterableBoolean("IsPrototype");
 
             return schema.AddDynamicProperties(_dynamicPropertySearchService, typeof(CustomerOrder).FullName);
         }
@@ -123,6 +124,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableDecimal("DiscountTotal", order.DiscountTotal);
 
             document.AddFilterableBoolean("IsCancelled", order.IsCancelled);
+            document.AddFilterableBoolean("IsPrototype", order.IsPrototype);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
