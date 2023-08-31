@@ -84,6 +84,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableValue("TaxTotal", order.TaxTotal, IndexDocumentFieldValueType.Double);
             document.AddFilterableValue("DiscountTotal", order.DiscountTotal, IndexDocumentFieldValueType.Double);
             document.AddFilterableValue("IsCancelled", order.IsCancelled, IndexDocumentFieldValueType.Boolean);
+            document.AddFilterableValue("IsPrototype", order.IsPrototype, IndexDocumentFieldValueType.Boolean);
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
