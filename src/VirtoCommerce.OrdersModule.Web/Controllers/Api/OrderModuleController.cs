@@ -170,6 +170,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Ids = new[] { id };
             searchCriteria.ResponseGroup = respGroup;
+            searchCriteria.WithPrototypes = true;
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {

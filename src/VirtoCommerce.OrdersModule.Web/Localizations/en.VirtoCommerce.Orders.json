@@ -14,7 +14,8 @@
           "from": "Created at",
           "channel": "Channel",
           "customer": "Customer",
-          "invoice": "Get invoice PDF"
+          "invoice": "Get invoice PDF",
+          "withPrototypes": "With templates"
         },
         "placeholders": {
           "employee": "Select assignee",
