@@ -1,11 +1,11 @@
 using System.Reflection;
-using EntityFrameworkCore.Triggers;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Data.Model;
+using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.OrdersModule.Data.Repositories
 {
-    public class OrderDbContext : DbContextWithTriggers
+    public class OrderDbContext : DbContextBase
     {
 #pragma warning disable S109
         private const int MaxLength = 128;
