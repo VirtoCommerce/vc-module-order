@@ -296,9 +296,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
 
-            var numberTemplate = store.Settings.GetSettingValue(
-                Core.ModuleConstants.Settings.General.RefundNewNumberTemplate.Name,
-                Core.ModuleConstants.Settings.General.RefundNewNumberTemplate.DefaultValue);
+            var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.RefundNewNumberTemplate);
             refund.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
 
             refund.Amount = request.Amount ?? payment.Sum;
@@ -320,9 +318,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
 
-            var numberTemplate = store.Settings.GetSettingValue(
-                Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate.Name,
-                Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate.DefaultValue);
+            var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate);
             capture.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
 
             capture.Amount = request.Amount ?? payment.Sum;
