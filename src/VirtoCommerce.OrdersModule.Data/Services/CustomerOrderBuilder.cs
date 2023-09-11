@@ -239,6 +239,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Length = lineItem.Length;
             retVal.MeasureUnit = lineItem.MeasureUnit;
             retVal.Name = lineItem.Name;
+            retVal.ProductOuterId = lineItem.ProductOuterId;
             retVal.PriceId = lineItem.PriceId;
             retVal.ProductId = lineItem.ProductId;
             retVal.ProductType = lineItem.ProductType;
