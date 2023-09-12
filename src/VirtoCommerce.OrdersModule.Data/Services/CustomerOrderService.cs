@@ -235,8 +235,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     var numberTemplate = opType + "{0:yyMMdd}-{1:D5}";
                     if (store != null)
                     {
-#pragma warning disable VC0005
+#pragma warning disable VC0005 // Type or member is obsolete
                         numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", numberTemplate);
+#pragma warning restore VC0005 // Type or member is obsolete
                     }
 
                     operation.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
