@@ -235,6 +235,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     var numberTemplate = opType + "{0:yyMMdd}-{1:D5}";
                     if (store != null)
                     {
+#pragma warning disable VC0005
                         numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", numberTemplate);
                     }
 

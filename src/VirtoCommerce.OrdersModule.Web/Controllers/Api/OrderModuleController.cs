@@ -414,21 +414,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 retVal.Status = "New";
 
                 var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                var numberTemplate = store.Settings.GetSettingValue(
-                    ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate.Name,
-                    ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate.DefaultValue);
+                var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate);
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
 
                 return Ok(retVal);
-
-                ////Detect not whole shipped items
-                ////TODO: LineItem partial shipping
-                //var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
-
-                ////TODO Add check for digital products (don't add to shipment)
-                //retVal.Items = order.Items.Where(x => !shippedLineItemIds.Contains(x.Id))
-                //              .Select(x => new coreModel.ShipmentItem(x)).ToList();
-                //return Ok(retVal.ToWebModel());
             }
 
             return NotFound();
@@ -453,9 +442,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 retVal.Status = retVal.PaymentStatus.ToString();
 
                 var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                var numberTemplate = store.Settings.GetSettingValue(
-                    ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate.Name,
-                    ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate.DefaultValue);
+                var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
                 return Ok(retVal);
             }
@@ -614,8 +601,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            //ToDo
-            //searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var orders = await _searchService.SearchAsync(searchCriteria);
             var order = orders.Results.FirstOrDefault();
