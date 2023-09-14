@@ -235,7 +235,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     var numberTemplate = opType + "{0:yyMMdd}-{1:D5}";
                     if (store != null)
                     {
-                        numberTemplate = store.Settings.GetSettingValue("Order." + objectTypeName + "NewNumberTemplate", numberTemplate);
+                        var descriptor = new SettingDescriptor
+                        {
+                            Name = "Order." + objectTypeName + "NewNumberTemplate",
+                            DefaultValue = numberTemplate,
+                        };
+                        numberTemplate = store.Settings.GetValue<string>(descriptor);
                     }
 
                     operation.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
