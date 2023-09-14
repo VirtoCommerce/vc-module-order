@@ -49,7 +49,7 @@
                                 <div class="form-input __inline">
                                     <div class="form-input">
                                         <ui-select ng-model="data.status">
-                                            <ui-select-match allow-clear="true" placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.status' | translate }}">{{$select.selected.value}}</ui-select-match>
+                                          <ui-select-match allow-clear="true" placeholder="{{ 'orders.blades.customerOrder-detail.placeholders.status' | translate }}">{{data.status}}</ui-select-match>
                                             <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
                                                 <span ng-bind-html="x.value | highlight: $select.search"></span>
                                             </ui-select-choices>
