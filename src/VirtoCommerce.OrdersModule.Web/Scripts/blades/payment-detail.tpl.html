@@ -48,7 +48,7 @@
                                 </label>
                                 <div class="form-input">
                                     <ui-select ng-model="blade.currentEntity.status" ng-change="blade.currentEntity.paymentStatus = $select.selected.key" ng-disabled="blade.isLocked">
-                                        <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.status' | translate }}">{{$select.selected.value}}</ui-select-match>
+                                        <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.status' | translate }}">{{ blade.currentEntity.status }}</ui-select-match>
                                         <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
                                             <span ng-bind-html="x.value | highlight: $select.search"></span>
                                         </ui-select-choices>
