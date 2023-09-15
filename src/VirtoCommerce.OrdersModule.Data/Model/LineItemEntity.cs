@@ -55,6 +55,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(1024)]
         public string Name { get; set; }
 
+        [StringLength(128)]
+        public string ProductOuterId { get; set; }
+
         [StringLength(2048)]
         public string Comment { get; set; }
 
@@ -145,6 +148,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.Sku = Sku;
             lineItem.ProductType = ProductType;
             lineItem.Name = Name;
+            lineItem.ProductOuterId = ProductOuterId;
             lineItem.ImageUrl = ImageUrl;
             lineItem.ShippingMethodCode = ShippingMethodCode;
             lineItem.FulfillmentLocationCode = FulfillmentLocationCode;
@@ -215,6 +219,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             ProductId = lineItem.ProductId;
             Sku = lineItem.Sku;
             ProductType = lineItem.ProductType;
+            ProductOuterId = lineItem.ProductOuterId;
             Name = lineItem.Name;
             ImageUrl = lineItem.ImageUrl;
             ShippingMethodCode = lineItem.ShippingMethodCode;
