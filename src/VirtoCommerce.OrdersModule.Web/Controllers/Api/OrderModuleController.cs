@@ -418,15 +418,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
 
                 return Ok(retVal);
-
-                ////Detect not whole shipped items
-                ////TODO: LineItem partial shipping
-                //var shippedLineItemIds = order.Shipments.SelectMany(x => x.Items).Select(x => x.LineItemId);
-
-                ////TODO Add check for digital products (don't add to shipment)
-                //retVal.Items = order.Items.Where(x => !shippedLineItemIds.Contains(x.Id))
-                //              .Select(x => new coreModel.ShipmentItem(x)).ToList();
-                //return Ok(retVal.ToWebModel());
             }
 
             return NotFound();
@@ -610,8 +601,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = orderNumber;
             searchCriteria.Take = 1;
-            //ToDo
-            //searchCriteria.ResponseGroup = OrderReadPricesPermission.ApplyResponseGroupFiltering(_securityService.GetUserPermissions(User.Identity.Name), null);
 
             var orders = await _searchService.SearchAsync(searchCriteria);
             var order = orders.Results.FirstOrDefault();

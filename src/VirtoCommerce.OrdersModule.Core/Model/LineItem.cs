@@ -80,6 +80,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string CategoryId { get; set; }
 
         public string Name { get; set; }
+        public string ProductOuterId { get; set; }
         public string Comment { get; set; }
         public string Status { get; set; }
 

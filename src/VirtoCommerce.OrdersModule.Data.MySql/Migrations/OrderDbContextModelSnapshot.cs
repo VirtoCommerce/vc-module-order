@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.AddressEntity", b =>
@@ -701,6 +701,10 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<string>("ProductId")
                         .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<string>("ProductOuterId")
                         .HasMaxLength(128)
                         .HasColumnType("varchar(128)");
 
