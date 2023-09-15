@@ -55,7 +55,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy LineItems
             if (cart.Items != null)
             {
-                order.Items = ToOrderModel(cart.Items, cartLineItemsMap);
+                order.Items = ToOrderModel(cart.Items.Where(x => x.SelectedForCheckout).ToList(), cartLineItemsMap);
             }
 
             // Copy Discounts
