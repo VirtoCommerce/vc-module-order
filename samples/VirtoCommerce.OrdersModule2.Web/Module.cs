@@ -65,7 +65,6 @@ namespace VirtoCommerce.OrdersModule2.Web
 
             using var serviceScope = appBuilder.ApplicationServices.CreateScope();
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<Order2DbContext>();
-            dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();
         }
 

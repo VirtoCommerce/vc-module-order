@@ -22,7 +22,8 @@ namespace VirtoCommerce.OrdersModule2.Web.Repositories
         public override async Task<IList<CustomerOrderEntity>> GetCustomerOrdersByIdsAsync(IList<string> ids, string responseGroup = null)
         {
             var retVal = await base.GetCustomerOrdersByIdsAsync(ids, responseGroup);
-            await Invoices.Where(x => ids.Contains(x.CustomerOrder2Id)).LoadAsync();
+            var query = Invoices.Where(x => ids.Contains(x.CustomerOrder2Id));
+            await query.LoadAsync();
             return retVal;
         }
     }

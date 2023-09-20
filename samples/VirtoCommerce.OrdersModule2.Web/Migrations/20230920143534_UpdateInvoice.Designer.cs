@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.OrdersModule2.Web.Repositories;
 
@@ -11,9 +12,10 @@ using VirtoCommerce.OrdersModule2.Web.Repositories;
 namespace VirtoCommerce.OrdersModule2.Web.Migrations
 {
     [DbContext(typeof(Order2DbContext))]
-    partial class Order2DbContextModelSnapshot : ModelSnapshot
+    [Migration("20230920143534_UpdateInvoice")]
+    partial class UpdateInvoice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
