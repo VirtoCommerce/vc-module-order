@@ -212,6 +212,18 @@ angular.module(moduleName, [
                                 isReadOnly: true,
                                 title: "orders.blades.payment-detail.labels.from",
                                 valueType: "DateTime"
+                            },
+                            {
+                                name: 'transactionId',
+                                isReadOnly: true,
+                                title: "orders.blades.refund-detail.labels.transactionId",
+                                valueType: "ShortText"
+                            },
+                            {
+                                name: 'outerId',
+                                isReadOnly: true,
+                                title: "orders.blades.refund-detail.labels.outerId",
+                                valueType: "ShortText"
                             }
                         ]
                     }
