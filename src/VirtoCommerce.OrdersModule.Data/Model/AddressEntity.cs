@@ -9,38 +9,55 @@ namespace VirtoCommerce.OrdersModule.Data.Model
     {
         [StringLength(2048)]
         public string Name { get; set; }
+
         [StringLength(32)]
         public string AddressType { get; set; }
+
         [StringLength(64)]
         public string Organization { get; set; }
+
+        [Required]
         [StringLength(3)]
         public string CountryCode { get; set; }
-        [Required]
+
         [StringLength(64)]
         public string CountryName { get; set; }
+
         [Required]
         [StringLength(128)]
         public string City { get; set; }
+
+        [Required]
         [StringLength(64)]
         public string PostalCode { get; set; }
+
+        [Required]
         [StringLength(2048)]
         public string Line1 { get; set; }
+
         [StringLength(2048)]
         public string Line2 { get; set; }
+
         [StringLength(128)]
         public string RegionId { get; set; }
+
         [StringLength(128)]
         public string RegionName { get; set; }
+
         [Required]
         [StringLength(64)]
         public string FirstName { get; set; }
+
         [Required]
         [StringLength(64)]
         public string LastName { get; set; }
+
         [StringLength(64)]
         public string Phone { get; set; }
+
         [StringLength(254)]
         public string Email { get; set; }
+
         [StringLength(128)]
         public string OuterId { get; set; }
 
