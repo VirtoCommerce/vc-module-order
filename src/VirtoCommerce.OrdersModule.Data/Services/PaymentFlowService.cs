@@ -93,10 +93,23 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return result;
             }
 
-            var refund = CreateRefund(paymentInfo.Payment, paymentInfo.Store, request);
-
             paymentInfo.Payment.Refunds ??= new List<Refund>();
-            paymentInfo.Payment.Refunds.Add(refund);
+
+            // Allows to Update and Retry Rejected Refund document.
+            var refund = paymentInfo.Payment.Refunds.FirstOrDefault(r => r.TransactionId == request.TransactionId
+                && r.Status == RefundStatus.Rejected.ToString());
+
+            if (refund != null)
+            {
+                UpdateRefund(refund, paymentInfo.Payment, paymentInfo.Store, request);
+            }
+            else
+            {
+                refund = CreateRefund(paymentInfo.Payment, paymentInfo.Store, request);
+                paymentInfo.Payment.Refunds.Add(refund);
+            }
+
+
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             result.Succeeded = true;
@@ -157,10 +170,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return result;
             }
 
-            var capture = CreateCapture(paymentInfo.Payment, paymentInfo.Store, request);
-
             paymentInfo.Payment.Captures ??= new List<Capture>();
-            paymentInfo.Payment.Captures.Add(capture);
+
+            // Allows to Update and Retry Rejected Capture document.
+            var capture = paymentInfo.Payment.Captures.FirstOrDefault(c => c.TransactionId == request.TransactionId
+                && c.Status == CaptureStatus.Rejected.ToString());
+
+            if (capture != null)
+            {
+                UpdateCapture(capture, paymentInfo.Payment, paymentInfo.Store, request);
+            }
+            else
+            {
+                capture = CreateCapture(paymentInfo.Payment, paymentInfo.Store, request);
+                paymentInfo.Payment.Captures.Add(capture);
+            }
+
             await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
 
             result.Succeeded = true;
@@ -314,6 +339,21 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return refund;
         }
 
+        protected virtual void UpdateRefund(Refund refund, PaymentIn payment, Store store, RefundOrderPaymentRequest request)
+        {
+            refund.Amount = request.Amount ?? payment.Sum;
+            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
+            refund.ReasonMessage = request.ReasonMessage;
+            refund.Comment = request.ReasonMessage;
+            refund.OuterId = request.OuterId;
+            refund.TransactionId = request.TransactionId;
+
+            refund.Status = RefundStatus.Pending.ToString();
+            refund.Currency = payment.Currency;
+            refund.CustomerOrderId = payment.OrderId;
+            refund.VendorId = payment.VendorId;
+        }
+
         protected virtual Capture CreateCapture(PaymentIn payment, Store store, CaptureOrderPaymentRequest request)
         {
             var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
@@ -332,6 +372,19 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.VendorId = payment.VendorId;
 
             return capture;
+        }
+
+        protected virtual void UpdateCapture(Capture capture, PaymentIn payment, Store store, CaptureOrderPaymentRequest request)
+        {
+            capture.Amount = request.Amount ?? payment.Sum;
+            capture.Comment = request.CaptureDetails;
+            capture.OuterId = request.OuterId;
+            capture.TransactionId = request.TransactionId;
+
+            capture.Status = CaptureStatus.Pending.ToString();
+            capture.Currency = payment.Currency;
+            capture.CustomerOrderId = payment.OrderId;
+            capture.VendorId = payment.VendorId;
         }
 
         private static void FillPaymentRequestBase(OrderPaymentInfo paymentInfo, PaymentRequestBase result)
