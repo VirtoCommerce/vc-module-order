@@ -14,7 +14,7 @@ namespace VirtoCommerce.OrdersModule2.Web.Migrations
                 name: "OrderInvoice",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<string>(nullable: false, maxLength: 128),
                     CancelReason = table.Column<string>(maxLength: 2048, nullable: true),
                     CancelledDate = table.Column<DateTime>(nullable: true),
                     Comment = table.Column<string>(maxLength: 2048, nullable: true),
