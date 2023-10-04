@@ -242,14 +242,6 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false,
                 };
 
-                public static SettingDescriptor CreateAnonymousOrder { get; } = new SettingDescriptor
-                {
-                    Name = "Order.CreateAnonymousOrder.Enable",
-                    ValueType = SettingValueType.Boolean,
-                    GroupName = "Orders|General",
-                    DefaultValue = true
-                };
-
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -272,7 +264,6 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return CustomerOrderValidation;
                         yield return OrderPaidAndOrderSentNotifications;
                         yield return PaymentShipmentStatusChangedNotifications;
-                        yield return CreateAnonymousOrder;
                     }
                 }
             }
@@ -285,7 +276,6 @@ namespace VirtoCommerce.OrdersModule.Core
                     yield return General.OrderPaymentInNewNumberTemplate;
                     yield return General.OrderShipmentNewNumberTemplate;
                     yield return General.RefundNewNumberTemplate;
-                    yield return General.CreateAnonymousOrder;
                 }
             }
 

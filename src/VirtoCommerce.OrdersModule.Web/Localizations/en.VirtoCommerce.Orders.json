@@ -487,10 +487,6 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "Use payments/shipments status changed notifications",
       "description": "Use for payments/shipments status change notifications"
-    },
-    "Order.CreateAnonymousOrder.Enable": {
-      "title": "Allow anonymous users to create orders",
-      "description": "This setting is store level."
     }
   },
   "module": {
