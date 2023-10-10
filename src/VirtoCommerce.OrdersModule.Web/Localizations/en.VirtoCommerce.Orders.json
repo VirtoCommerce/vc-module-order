@@ -436,6 +436,10 @@
       "description": "Incoming payment statuses",
       "title": "Payment statuses"
     },
+    "Refund.Status": {
+      "title": "Refund statuses",
+      "description": "Refund statuses"
+    },
     "Order.CustomerOrderNewNumberTemplate": {
       "description": "This template will be used to generate the ID for a new Customer Order. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
       "title": "Order ID template"
@@ -447,6 +451,10 @@
     "Order.PaymentInNewNumberTemplate": {
       "description": "This template will be used to generate the ID for a new incoming Payment. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
       "title": "Order payment ID template"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "This template will be used to generate the ID for a new order Refund. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
+      "title": "Order refund ID template"
     },
     "Order.SendOrderNotifications": {
       "description": "Sends a notification when the order status changes",
