@@ -129,6 +129,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.FeeTotalWithTax = cart.FeeTotalWithTax;
             order.HandlingTotal = cart.HandlingTotal;
             order.HandlingTotalWithTax = cart.HandlingTotalWithTax;
+            order.IsAnonymous = cart.IsAnonymous;
 
             order.Status = GetInitialOrderStatusAsync(cart).GetAwaiter().GetResult();
 
