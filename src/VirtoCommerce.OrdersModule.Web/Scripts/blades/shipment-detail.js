@@ -23,7 +23,10 @@ angular.module('virtoCommerce.orderModule')
                 foundField.isReadOnly = false;
             }
 
-            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize);
+            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize, function (error) {
+                blade.isLocked = true;
+                bladeNavigationService.setError(error.data, blade);
+            });
         } else {
             blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send'
                 || blade.currentEntity.cancelledState === 'Completed'
@@ -62,6 +65,10 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.fetchEmployees = function (criteria) {
+            if (blade.isLocked) {
+                return [];
+            }
+
             criteria.memberType = 'Employee';
             criteria.deepSearch = true;
             criteria.sort = 'name';
@@ -84,6 +91,10 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.fetchVendors = function (criteria) {
+            if (blade.isLocked) {
+                return [];
+            }
+
             return members.search(criteria);
         }
 
