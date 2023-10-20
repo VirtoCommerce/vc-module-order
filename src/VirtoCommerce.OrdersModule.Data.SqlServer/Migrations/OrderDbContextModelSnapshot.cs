@@ -342,6 +342,9 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<decimal>("HandlingTotalWithTax")
                         .HasColumnType("Money");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
