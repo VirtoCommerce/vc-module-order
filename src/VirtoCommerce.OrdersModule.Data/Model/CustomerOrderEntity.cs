@@ -91,6 +91,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string PurchaseOrderNumber { get; set; }
 
+        public bool IsAnonymous { get; set; }
+
         #region Navigation Properties
 
         public virtual ObservableCollection<TaxDetailEntity> TaxDetails { get; set; } = new NullCollection<TaxDetailEntity>();
@@ -162,6 +164,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             order.PurchaseOrderNumber = PurchaseOrderNumber;
             order.LanguageCode = LanguageCode;
             order.TaxPercentRate = TaxPercentRate;
+            order.IsAnonymous = IsAnonymous;
 
             order.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             order.Items = Items.Select(x => x.ToModel(AbstractTypeFactory<LineItem>.TryCreateInstance())).ToList();
@@ -242,6 +245,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PurchaseOrderNumber = order.PurchaseOrderNumber;
             LanguageCode = order.LanguageCode;
             TaxPercentRate = order.TaxPercentRate;
+            IsAnonymous = order.IsAnonymous;
 
             if (order.Addresses != null)
             {
@@ -335,6 +339,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.SubscriptionId = SubscriptionId;
             operation.PurchaseOrderNumber = PurchaseOrderNumber;
             operation.LanguageCode = LanguageCode;
+            operation.IsAnonymous = IsAnonymous;
 
             // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
             var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) &&
