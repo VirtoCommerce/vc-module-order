@@ -229,6 +229,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// </summary>
         public virtual decimal HandlingTotalWithTax { get; set; }
 
+        public bool IsAnonymous { get; set; }
+
         #region ITaxable Members
 
         /// <summary>

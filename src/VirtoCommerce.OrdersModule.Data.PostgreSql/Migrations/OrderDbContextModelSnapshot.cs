@@ -341,6 +341,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.Property<decimal>("HandlingTotalWithTax")
                         .HasColumnType("Money");
 
+                    b.Property<bool>("IsAnonymous")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
