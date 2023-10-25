@@ -406,21 +406,26 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<Shipment>> GetNewShipment(string id)
         {
             var order = await _customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
-            if (order != null)
+            if (order == null)
             {
-                var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
-                retVal.Id = Guid.NewGuid().ToString();
-                retVal.Currency = order.Currency;
-                retVal.Status = "New";
-
-                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate);
-                retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
-
-                return Ok(retVal);
+                return NotFound();
             }
 
-            return NotFound();
+            var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                return BadRequest(GetNoStoreErrorMessage(order));
+            }
+
+            var retVal = AbstractTypeFactory<Shipment>.TryCreateInstance();
+            retVal.Id = Guid.NewGuid().ToString();
+            retVal.Currency = order.Currency;
+            retVal.Status = "New";
+
+            var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate);
+            retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+
+            return Ok(retVal);
         }
 
         /// <summary>
@@ -433,22 +438,28 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<PaymentIn>> GetNewPayment(string id)
         {
             var order = await _customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
-            if (order != null)
+            if (order == null)
             {
-                var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
-                retVal.Id = Guid.NewGuid().ToString();
-                retVal.Currency = order.Currency;
-                retVal.CustomerId = order.CustomerId;
-                retVal.Status = retVal.PaymentStatus.ToString();
-
-                var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
-                var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
-                retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
-                return Ok(retVal);
+                return NotFound();
             }
 
-            return NotFound();
+            var store = await _storeService.GetNoCloneAsync(order.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                return BadRequest(GetNoStoreErrorMessage(order));
+            }
+
+            var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
+            retVal.Id = Guid.NewGuid().ToString();
+            retVal.Currency = order.Currency;
+            retVal.CustomerId = order.CustomerId;
+            retVal.Status = retVal.PaymentStatus.ToString();
+
+            var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
+            retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+            return Ok(retVal);
         }
+
 
         /// <summary>
         ///  Delete a whole customer orders
@@ -740,6 +751,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
 
             return new ValidationResult();
+        }
+
+        private static string GetNoStoreErrorMessage(CustomerOrder order)
+        {
+            return $"Store {order.StoreId} does not exist in the system. Please create {order.StoreId} store or select another store for the order.";
         }
     }
 }
