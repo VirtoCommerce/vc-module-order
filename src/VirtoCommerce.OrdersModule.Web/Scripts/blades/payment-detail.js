@@ -28,7 +28,10 @@ angular.module('virtoCommerce.orderModule')
                     foundField.isReadOnly = false;
                 }
 
-                customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize);
+                customerOrders.getNewPayment({ id: blade.customerOrder.id }, blade.initialize, function (error) {
+                    blade.isLocked = true;
+                    bladeNavigationService.setError(error.data, blade);
+                });
             } else {
                 blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
                     || blade.currentEntity.cancelledState === 'Requested'
@@ -127,6 +130,10 @@ angular.module('virtoCommerce.orderModule')
             }
 
             blade.fetchVendors = function (criteria) {
+                if (blade.isLocked) {
+                    return [];
+                }
+
                 return members.search(criteria);
             }
 
@@ -154,7 +161,7 @@ angular.module('virtoCommerce.orderModule')
             blade.customInitialize = function () {
                 if (!blade.currentEntity) {
 					return;
-				}
+                }
                 blade.isLocked = blade.currentEntity.status === 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
             };
 
