@@ -97,7 +97,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Refund document.
             var refund = paymentInfo.Payment.Refunds.FirstOrDefault(r => r.TransactionId == request.TransactionId
-                && r.Status == RefundStatus.Rejected.ToString());
+                && r.Status != RefundStatus.Processed.ToString());
 
             if (refund != null)
             {
@@ -174,7 +174,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Capture document.
             var capture = paymentInfo.Payment.Captures.FirstOrDefault(c => c.TransactionId == request.TransactionId
-                && c.Status == CaptureStatus.Rejected.ToString());
+                && c.Status != CaptureStatus.Processed.ToString());
 
             if (capture != null)
             {
