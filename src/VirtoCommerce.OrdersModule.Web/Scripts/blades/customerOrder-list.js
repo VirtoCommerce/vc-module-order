@@ -4,6 +4,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
+    $scope.searchEnabled = false;
     
     $scope.getPricesVisibility = () => authService.checkPermission('order:read_prices');
 
@@ -70,7 +71,9 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                 angular.extend(criteria, filter.current);
             }
 
-            customerOrders.search(criteria, function (data) {
+            var endpoint = $scope.searchEnabled ? customerOrders.indexedSearch : customerOrders.search;
+
+            endpoint(criteria, function (data) {
                 blade.isLoading = false;
 
                 $scope.pageSettings.totalItems = data.totalCount;
@@ -228,6 +231,10 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
 
         return gridOptions;
     };
+
+    customerOrders.indexedSearchEnabled(function (data) {
+        $scope.searchEnabled = data.result;
+    });
 
 
     // actions on load
