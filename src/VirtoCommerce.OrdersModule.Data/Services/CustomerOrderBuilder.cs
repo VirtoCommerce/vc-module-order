@@ -48,6 +48,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual CustomerOrder ConvertCartToOrder(ShoppingCart cart)
         {
             var cartLineItemsMap = new Dictionary<string, LineItem>();
+            var vendorIds = new List<string>();
 
             // Copy Native Properties
             var order = ToOrderModel(cart);
@@ -55,7 +56,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy LineItems
             if (cart.Items != null)
             {
-                order.Items = ToOrderModel(cart.Items.Where(x => x.SelectedForCheckout).ToList(), cartLineItemsMap);
+                var cartLineItems = cart.Items.Where(x => x.SelectedForCheckout).ToArray();
+                order.Items = ToOrderModel(cartLineItems, cartLineItemsMap);
+                vendorIds.AddRange(cartLineItems.Select(x => x.VendorId).Where(x => !string.IsNullOrEmpty(x)).Distinct());
             }
 
             // Copy Discounts
@@ -67,13 +70,19 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy Shipments
             if (cart.Shipments != null)
             {
-                order.Shipments = ToOrderModel(cart.Shipments, cartLineItemsMap);
+                var cartShipments = vendorIds.Any()
+                    ? cart.Shipments.Where(x => string.IsNullOrEmpty(x.VendorId) || vendorIds.Contains(x.VendorId)).ToArray()
+                    : cart.Shipments;
+                order.Shipments = ToOrderModel(cartShipments, cartLineItemsMap);
             }
 
             // Copy Payments
             if (cart.Payments != null)
             {
-                order.InPayments = ToOrderModel(cart, cart.Payments);
+                var cartPayments = vendorIds.Any()
+                    ? cart.Payments.Where(x => string.IsNullOrEmpty(x.VendorId) || vendorIds.Contains(x.VendorId)).ToArray()
+                    : cart.Payments;
+                order.InPayments = ToOrderModel(cart, cartPayments);
             }
 
             // Copy DynamicProperties
