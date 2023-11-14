@@ -2,15 +2,12 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.shipmentDetailController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
-        'platformWebApp.dialogService',
-        'platformWebApp.settings',
         'virtoCommerce.orderModule.order_res_customerOrders',
         'virtoCommerce.inventoryModule.fulfillments',
-        'virtoCommerce.orderModule.statusTranslationService',
         'platformWebApp.authService',
         'virtoCommerce.shippingModule.shippingMethods',
         'virtoCommerce.customerModule.members',
-    function ($scope, bladeNavigationService, dialogService, settings, customerOrders, fulfillments, statusTranslationService, authService, shippingMethods, members) {
+    function ($scope, bladeNavigationService, customerOrders, fulfillments, authService, shippingMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.shippingMethods = [];
@@ -46,23 +43,6 @@ angular.module('virtoCommerce.orderModule')
             }, function (error) {
                 bladeNavigationService.setError('Error ' + error.status, blade);
         });
-
-        settings.getValues({ id: 'Shipment.Status' }, translateBladeStatuses);
-        blade.openStatusSettingManagement = function () {
-            var newBlade = {
-                id: 'settingDetailChild',
-                isApiSave: true,
-                currentEntityId: 'Shipment.Status',
-                parentRefresh: translateBladeStatuses,
-                controller: 'platformWebApp.settingDictionaryController',
-                template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
-            };
-            bladeNavigationService.showBlade(newBlade, blade);
-        };
-
-        function translateBladeStatuses(data) {
-            blade.statuses = statusTranslationService.translateStatuses(data, 'shipment');
-        }
 
         blade.fetchEmployees = function (criteria) {
             if (blade.isLocked) {

@@ -2,15 +2,11 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.paymentDetailController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
-        'platformWebApp.dialogService',
-        'platformWebApp.settings',
         'virtoCommerce.orderModule.order_res_customerOrders',
-        'virtoCommerce.orderModule.statusTranslationService',
         'platformWebApp.authService',
         'virtoCommerce.paymentModule.paymentMethods',
         'virtoCommerce.customerModule.members',
-        'currencyFilter',
-        function ($scope, bladeNavigationService, dialogService, settings, customerOrders, statusTranslationService, authService, paymentMethods, members, currencyFilter) {
+        function ($scope, bladeNavigationService, customerOrders, authService, paymentMethods, members) {
             var blade = $scope.blade;
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
             blade.paymentMethods = [];
@@ -50,19 +46,6 @@ angular.module('virtoCommerce.orderModule')
             }, function (error) {
                 bladeNavigationService.setError('Error ' + error.status, blade);
             });
-
-            settings.getValues({ id: 'PaymentIn.Status' }, translateBladeStatuses);
-            blade.openStatusSettingManagement = function () {
-                var newBlade = {
-                    id: 'settingDetailChild',
-                    isApiSave: true,
-                    currentEntityId: 'PaymentIn.Status',
-                    parentRefresh: translateBladeStatuses,
-                    controller: 'platformWebApp.settingDictionaryController',
-                    template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
-            };
 
             blade.toolbarCommands.push({
                 name: 'orders.blades.payment-detail.labels.capture-payment',
@@ -115,10 +98,6 @@ angular.module('virtoCommerce.orderModule')
                     });
                 }
             });
-
-            function translateBladeStatuses(data) {
-                blade.statuses = statusTranslationService.translateStatuses(data, 'PaymentIn');
-            }
 
             blade.setEntityStatus = function (status) {
                 blade.currentEntity.status = status;

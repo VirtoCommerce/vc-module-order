@@ -3,7 +3,7 @@
     <div class="blade-inner">
         <div class="inner-block" ng-controller="virtoCommerce.orderModule.shipmentDetailController">
             <div class="order-status" ng-if="blade.currentEntity.status">
-                <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
+                <div class="status" ng-bind="blade.currentEntity.status | settingTranslate:'Shipment.Status'"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
             <div class="order-brand" ng-if="!blade.isNew">
@@ -79,18 +79,12 @@
 </div>
 
 <script type="text/ng-template" id="statusSelector.html">
-    <label class="form-label">
-        {{ 'orders.blades.shipment-detail.labels.status' | translate }}
-        <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
-    </label>
-    <div class="form-input">
-        <ui-select ng-model="blade.currentEntity.status" ng-disabled="blade.isLocked">
-            <ui-select-match placeholder="{{ 'orders.blades.shipment-detail.placeholders.status' | translate }}">{{ blade.currentEntity.status }}</ui-select-match>
-            <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
-                <span ng-bind-html="x.value | highlight: $select.search"></span>
-            </ui-select-choices>
-        </ui-select>
-    </div>
+    <va-setting-value-select blade="blade"
+                             label="'orders.blades.shipment-detail.labels.status' | translate"
+                             placeholder="'orders.blades.shipment-detail.placeholders.status' | translate"
+                             setting="'Shipment.Status'"
+                             ng-model="blade.currentEntity.status"
+                             disabled="blade.isLocked"></va-setting-value-select>
 </script>
 
 <script type="text/ng-template" id="shipment-employeeSelector.html">
