@@ -2,13 +2,11 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.refundDetailController', [
         '$scope',
         'platformWebApp.bladeNavigationService',
-        'platformWebApp.settings',
-        'virtoCommerce.orderModule.statusTranslationService',
         'platformWebApp.authService',
         'virtoCommerce.paymentModule.paymentMethods',
         'virtoCommerce.customerModule.members',
         'virtoCommerce.orderModule.refundReasonsService',
-        function ($scope, bladeNavigationService, settings, statusTranslationService, authService, paymentMethods, members, refundReasonsService) {
+        function ($scope, bladeNavigationService, authService, paymentMethods, members, refundReasonsService) {
             var blade = $scope.blade;
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 
@@ -36,22 +34,6 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.setError('Error ' + error.status, blade);
             });
 
-            settings.getValues({ id: 'Refund.Status' }, translateBladeStatuses);
-            blade.openStatusSettingManagement = function () {
-                var newBlade = {
-                    id: 'settingDetailChild',
-                    isApiSave: true,
-                    currentEntityId: 'Refund.Status',
-                    parentRefresh: translateBladeStatuses,
-                    controller: 'platformWebApp.settingDictionaryController',
-                    template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html'
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
-            };
-
-            function translateBladeStatuses(data) {
-                blade.statuses = statusTranslationService.translateStatuses(data, 'Refund');
-            }
             blade.setEntityStatus = function (status) {
                 blade.currentEntity.status = status;
             };

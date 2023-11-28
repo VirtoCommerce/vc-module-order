@@ -63,6 +63,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
+                    IsLocalizable = true,
                     AllowedValues = new object[]
                     {
                         CustomerOrderStatus.New,
@@ -98,6 +99,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
+                    IsLocalizable = true,
                     AllowedValues = new object[] { "Pending", "InProgress", "Shipped", "Delivered", "Cancelled" },
                 };
 
@@ -114,6 +116,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
+                    IsLocalizable = true,
                     DefaultValue = "New",
                     AllowedValues = new object[] { "New", "PickPack", "Cancelled", "ReadyToSend", "Sent" }
                 };
@@ -124,6 +127,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
+                    IsLocalizable = true,
                     DefaultValue = "New",
                     AllowedValues = new object[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
                 };
@@ -134,6 +138,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     ValueType = SettingValueType.ShortText,
                     GroupName = "Orders|General",
                     IsDictionary = true,
+                    IsLocalizable = true,
                     DefaultValue = "Pending",
                     AllowedValues = new object[] { "Pending", "Rejected", "Processed" }
                 };

@@ -3,7 +3,7 @@
     <div class="blade-inner">
         <div class="inner-block" ng-controller="virtoCommerce.orderModule.refundDetailController">
             <div class="order-status" ng-if="blade.currentEntity.status">
-                <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
+                <div class="status" ng-bind="blade.currentEntity.status | settingTranslate:'Refund.Status'"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
 
@@ -14,18 +14,12 @@
                     <div class="form columns clearfix">
                         <div class="column">
                             <div class="form-group">
-                                <label class="form-label">
-                                    {{ 'orders.blades.refund-details.labels.status' | translate }}
-                                    <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
-                                </label>
-                                <div class="form-input">
-                                    <ui-select ng-model="blade.currentEntity.status" ng-change="blade.currentEntity.refundStatus = $select.selected.key" ng-disabled="blade.isLocked">
-                                        <ui-select-match placeholder="{{ 'orders.blades.refund-details.placeholders.status' | translate }}">{{ blade.currentEntity.status }}</ui-select-match>
-                                        <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
-                                            <span ng-bind-html="x.value | highlight: $select.search"></span>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
+                                <va-setting-value-select blade="blade"
+                                                         label="'orders.blades.refund-details.labels.status' | translate"
+                                                         placeholder="'orders.blades.refund-details.placeholders.status' | translate"
+                                                         setting="'Refund.Status'"
+                                                         ng-model="blade.currentEntity.status"
+                                                         disabled="blade.isLocked"></va-setting-value-select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{{ 'orders.blades.refund-details.labels.amount' | translate }}</label>

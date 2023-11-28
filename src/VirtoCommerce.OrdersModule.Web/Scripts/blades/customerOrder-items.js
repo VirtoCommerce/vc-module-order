@@ -1,9 +1,9 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderItemsController', [
         '$scope', '$translate',
-        'platformWebApp.bladeNavigationService', 'platformWebApp.authService', 'platformWebApp.settings',
-        'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.orderModule.prices', 'virtoCommerce.orderModule.statusTranslationService',
-        function ($scope, $translate, bladeNavigationService, authService, settings, items, prices, statusTranslationService) {
+        'platformWebApp.bladeNavigationService', 'platformWebApp.authService',
+        'virtoCommerce.orderModule.catalogItems', 'virtoCommerce.orderModule.prices',
+        function ($scope, $translate, bladeNavigationService, authService, items, prices) {
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
@@ -21,23 +21,16 @@ angular.module('virtoCommerce.orderModule')
                 blade.selectedAll = false;
             };
 
-            settings.getValues({ id: 'OrderLineItem.Statuses' }, translateStatuses);
-
             blade.openStatusSettingManagement = function () {
                 var newBlade = {
                     id: 'settingDetailChild',
                     controller: 'platformWebApp.settingDictionaryController',
                     template: '$(Platform)/Scripts/app/settings/blades/setting-dictionary.tpl.html',
                     currentEntityId: 'OrderLineItem.Statuses',
-                    parentRefresh: translateStatuses,
                     isApiSave: true,
                 };
                 bladeNavigationService.showBlade(newBlade, blade);
             };
-
-            function translateStatuses(data) {
-                blade.statuses = statusTranslationService.translateStatuses(data, 'line-item');
-            }
 
             function addProductsToOrder(products) {
                 angular.forEach(products, function (product) {

@@ -1,14 +1,9 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'platformWebApp.settings', 'virtoCommerce.customerModule.members', '$translate', 'virtoCommerce.orderModule.statusTranslationService', 'platformWebApp.metaFormsService', 'platformWebApp.accounts',
-        function ($scope, $localStorage, settings, members, $translate, statusTranslationService, metaFormsService, securityAccounts) {
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.customerModule.members', '$translate', 'platformWebApp.metaFormsService', 'platformWebApp.accounts',
+        function ($scope, $localStorage, members, $translate, metaFormsService, securityAccounts) {
         var blade = $scope.blade;
 
         blade.metaFields = blade.metaFields ? blade.metaFields : metaFormsService.getMetaFields('orderFilterDetail');
-        
-        function translateBladeStatuses(data) {
-            blade.statuses = statusTranslationService.translateStatuses(data, 'customerOrder');
-        }
-        settings.getValues({ id: 'Order.Status' }, translateBladeStatuses);
 
         blade.fetchEmployees = function (criteria) {
             criteria.memberType = 'Employee';

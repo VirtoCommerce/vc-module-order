@@ -3,7 +3,7 @@
     <div class="blade-inner">
         <div class="inner-block" ng-controller="virtoCommerce.orderModule.paymentDetailController">
             <div class="order-status" ng-if="blade.currentEntity.status">
-                <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
+                <div class="status" ng-bind="blade.currentEntity.status | settingTranslate:'PaymentIn.Status'"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
             <div class="order-brand" ng-if="!blade.isNew">
@@ -42,18 +42,12 @@
                     <div class="form columns clearfix">
                         <div class="column">
                             <div class="form-group">
-                                <label class="form-label">
-                                    {{ 'orders.blades.payment-detail.labels.status' | translate }}
-                                    <a href="" ng-click="blade.openStatusSettingManagement()" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
-                                </label>
-                                <div class="form-input">
-                                    <ui-select ng-model="blade.currentEntity.status" ng-change="blade.currentEntity.paymentStatus = $select.selected.key" ng-disabled="blade.isLocked">
-                                        <ui-select-match placeholder="{{ 'orders.blades.payment-detail.placeholders.status' | translate }}">{{ blade.currentEntity.status }}</ui-select-match>
-                                        <ui-select-choices repeat="x.key as x in blade.statuses | filter: {'value': $select.search}">
-                                            <span ng-bind-html="x.value | highlight: $select.search"></span>
-                                        </ui-select-choices>
-                                    </ui-select>
-                                </div>
+                                <va-setting-value-select blade="blade"
+                                                         label="'orders.blades.payment-detail.labels.status' | translate"
+                                                         placeholder="'orders.blades.payment-detail.placeholders.status' | translate"
+                                                         setting="'PaymentIn.Status'"
+                                                         ng-model="blade.currentEntity.status"
+                                                         disabled="blade.isLocked"></va-setting-value-select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{{ 'orders.blades.payment-detail.labels.amount' | translate }}</label>
