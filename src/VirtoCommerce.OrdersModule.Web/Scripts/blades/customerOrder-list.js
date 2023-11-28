@@ -21,7 +21,7 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                    { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
                    { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
                    { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
-                   { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'statusTranslate:row.entity', width: '*' },
+                   { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'settingTranslate:"Order.Status"', width: '*' },
                    { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', sort: { direction: uiGridConstants.DESC } }
        ]}
     }
