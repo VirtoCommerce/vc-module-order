@@ -1,52 +1,68 @@
 <div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
 <div class="blade-content __medium-wide">
-    <div class="blade-inner">
-        <div class="inner-block" ng-controller="virtoCommerce.orderModule.captureDetailController">
-            <div class="order-status" ng-if="blade.currentEntity.status">
-                <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
-                <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
+  <div class="blade-inner">
+    <div class="inner-block" ng-controller="virtoCommerce.orderModule.captureDetailController">
+      <div class="order-status" ng-if="blade.currentEntity.status">
+        <div class="status" ng-bind="blade.currentEntity | statusTranslate"></div>
+        <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
+      </div>
+
+      <form class="form" name="detailForm">
+        <fieldset ng-disabled="blade.isLocked">
+          <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-metaform>
+
+          <div class="form columns clearfix">
+            <div class="column">
+              <div class="form-group">
+                <label class="form-label">{{ 'orders.blades.capture-details.labels.amount' | translate }}</label>
+                <div class="form-input __currency">
+                  <span class="currency">{{blade.currentEntity.currency}}</span>
+                  <input money mask-money="!blade.isVisiblePrices" required type="text" ng-model="blade.currentEntity.amount">
+                </div>
+              </div>
             </div>
+            <div class="column">
+              <div class="form-group">
+                <label class="form-label">{{ 'orders.blades.capture-details.labels.vendor' | translate }} <a href="" ng-click="blade.openVendorsManagement()" class="form-edit" va-permission="customer:read"><i class="form-ico fa fa-pencil"></i></a></label>
+                <ui-scroll-drop-down ng-model="blade.currentEntity.vendorId"
+                                     data="blade.fetchVendors(criteria)"
+                                     placeholder="'orders.blades.capture-details.placeholders.vendor'">
+                </ui-scroll-drop-down>
+              </div>
+            </div>
+          </div>
 
-            <form class="form" name="detailForm">
-                <fieldset ng-disabled="blade.isLocked">
-                    <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2"></va-metaform>
+          <div class="form columns clearfix">
+            <div class="column">
+              <div class="form-group">
+                <label class="form-label">{{ 'orders.blades.capture-details.labels.closeTransaction' | translate }}</label>
+                <div class="form-input">
+                  <label class="form-label __switch">
+                    <input type="checkbox" ng-model="blade.currentEntity.closeTransaction" />
+                    <span class="switch"></span>
+                  </label>
+                </div>
+              </div>
 
-                    <div class="form columns clearfix">
-                        <div class="column">
-                            <div class="form-group">
-                                <label class="form-label">{{ 'orders.blades.capture-details.labels.amount' | translate }}</label>
-                                <div class="form-input __currency">
-                                    <span class="currency">{{blade.currentEntity.currency}}</span>
-                                    <input money mask-money="!blade.isVisiblePrices" required type="text" ng-model="blade.currentEntity.amount">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">{{ 'orders.blades.capture-details.labels.vendor' | translate }} <a href="" ng-click="blade.openVendorsManagement()" class="form-edit" va-permission="customer:read"><i class="form-ico fa fa-pencil"></i></a></label>
-                                <ui-scroll-drop-down ng-model="blade.currentEntity.vendorId"
-                                                     data="blade.fetchVendors(criteria)"
-                                                     placeholder="'orders.blades.capture-details.placeholders.vendor'">
-                                </ui-scroll-drop-down>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-            <va-widget-container group="captureDetailWidgets" blade="blade" gridster-opts="{width: 526}"></va-widget-container>
-        </div>
+            </div>
+        </fieldset>
+      </form>
+      <va-widget-container group="captureDetailWidgets" blade="blade" gridster-opts="{width: 526}"></va-widget-container>
     </div>
+  </div>
 </div>
 
 
 <script type="text/ng-template" id="price.html">
-    <div class="form-input __currency">
-        <span class="currency">{{blade.currentEntity.currency}}</span>
-        <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.price" ng-change="blade.updateRecalculationFlag()">
-    </div>
+  <div class="form-input __currency">
+    <span class="currency">{{blade.currentEntity.currency}}</span>
+    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.price" ng-change="blade.updateRecalculationFlag()">
+  </div>
 </script>
 <script type="text/ng-template" id="priceWithTax.html">
-    <div class="form-input __currency">
-        <span class="currency">{{blade.currentEntity.currency}}</span>
-        <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
-    </div>
+  <div class="form-input __currency">
+    <span class="currency">{{blade.currentEntity.currency}}</span>
+    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.priceWithTax" ng-change="blade.updateRecalculationFlag()">
+  </div>
 </script>
 

@@ -138,6 +138,9 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
+                    b.Property<bool>("CloseTransaction")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Comment")
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
