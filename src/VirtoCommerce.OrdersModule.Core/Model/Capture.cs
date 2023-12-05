@@ -17,5 +17,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string PaymentId { get; set; }
 
         public virtual ICollection<CaptureItem> Items { get; set; }
+
+        public bool CloseTransaction { get; set; }
     }
 }

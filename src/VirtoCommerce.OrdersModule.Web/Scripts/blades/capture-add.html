@@ -1,36 +1,52 @@
 <div class="blade-static __bottom" ng-include="'$(Platform)/Scripts/common/templates/ok-cancel2.tpl.html'"></div>
 <div class="blade-content __medium-wide">
-    <div class="blade-inner">
-        <div class="inner-block">
-            <form class="form" name="formScope">
-                <fieldset ng-init="setForm(formScope)">
-                    <div class="form-group __info list">
-                        <label class="form-label">{{ 'orders.blades.capture-add.labels.amount' | translate }}</label>
-                        <div class="form-input __currency">
-                            <span class="currency">{{blade.payment.currency}}</span>
-                            <input money type="text" ng-model="blade.currentEntity.amount" placeholder="{{ 'orders.blades.capture-add.placeholders.amount' | translate }}">
-                        </div>
-                    </div>
-                    <div class="form-group __info list">
-                        <label class="form-label">{{ 'orders.blades.capture-add.labels.message' | translate }}</label>
-                        <div class="form-input">
-                            <input ng-model="blade.currentEntity.captureDetails" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.message' | translate }}">
-                        </div>
-                    </div>
-                    <div class="form-group __info list">
-                        <label class="form-label">{{ 'orders.blades.capture-add.labels.transactionId' | translate }}</label>
-                        <div class="form-input">
-                            <input required ng-model="blade.currentEntity.transactionId" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.transactionId' | translate }}">
-                        </div>
-                    </div>
-                    <div class="form-group __info list">
-                        <label class="form-label">{{ 'orders.blades.capture-add.labels.outerId' | translate }}</label>
-                        <div class="form-input">
-                            <input ng-model="blade.currentEntity.outerId" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.outerId' | translate }}">
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+  <div class="blade-inner">
+    <div class="inner-block">
+      <form class="form" name="formScope">
+        <fieldset ng-init="setForm(formScope)">
+          <div class="form-group __info list">
+            <label class="form-label">{{ 'orders.blades.capture-add.labels.amount' | translate }}</label>
+            <div class="form-input __currency">
+              <span class="currency">{{blade.payment.currency}}</span>
+              <input money type="text" ng-model="blade.currentEntity.amount" placeholder="{{ 'orders.blades.capture-add.placeholders.amount' | translate }}">
+            </div>
+          </div>
+          <div class="form-group __info list">
+            <label class="form-label">{{ 'orders.blades.capture-add.labels.message' | translate }}</label>
+            <div class="form-input">
+              <input ng-model="blade.currentEntity.captureDetails" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.message' | translate }}">
+            </div>
+          </div>
+          <div class="form-group __info list">
+            <label class="form-label">{{ 'orders.blades.capture-add.labels.transactionId' | translate }}</label>
+            <div class="form-input">
+              <input required ng-model="blade.currentEntity.transactionId" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.transactionId' | translate }}">
+            </div>
+          </div>
+          <div class="form-group __info list">
+            <label class="form-label">{{ 'orders.blades.capture-add.labels.outerId' | translate }}</label>
+            <div class="form-input">
+              <input ng-model="blade.currentEntity.outerId" focus-on="" ng-maxlength="128" placeholder="{{ 'orders.blades.capture-add.placeholders.outerId' | translate }}">
+            </div>
+          </div>
+          <div class="form-group __info list">
+            <label class="form-label">
+              {{ 'orders.blades.capture-add.labels.closeTransaction' | translate }}
+              <i class="form-ico fa fa-question-circle __link __lightblue" ng-click="blade.setting.closeTransaction_descrVisible=!blade.setting.closeTransaction_descrVisible"></i>
+            </label>
+            <div class="form-input">
+              <label class="form-label __switch">
+                <input type="checkbox" ng-model="blade.currentEntity.closeTransaction" />
+                <span class="switch"></span>
+              </label>
+            </div>
+            <div ng-if="blade.setting.closeTransaction_descrVisible">
+              <div class="list __info list-descr">{{ 'orders.blades.capture-add.descr.closeTransaction' | translate }}</div>
+              <a href="" ng-click="blade.setting.closeTransaction_descrVisible = null;">Hide</a>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     </div>
+  </div>
 </div>
