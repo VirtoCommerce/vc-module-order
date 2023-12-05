@@ -131,6 +131,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             capture.TransactionId = TransactionId;
             capture.Amount = Amount;
             capture.CustomerOrderId = CustomerOrderId;
+            capture.CloseTransaction = CloseTransaction;
 
             if (!Items.IsNullCollection())
             {
