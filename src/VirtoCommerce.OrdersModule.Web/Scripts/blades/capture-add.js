@@ -33,7 +33,8 @@ angular.module('virtoCommerce.orderModule')
                 amount: blade.currentEntity.amount,
                 captureDetails: blade.currentEntity.captureDetails,
                 transactionId: blade.currentEntity.transactionId,
-                outerId: blade.currentEntity.outerId
+                outerId: blade.currentEntity.outerId,
+                closeTransaction: blade.currentEntity.closeTransaction
             }, function (data) {
                 blade.isLoading = false;
 

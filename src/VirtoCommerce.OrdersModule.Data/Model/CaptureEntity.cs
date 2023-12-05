@@ -25,6 +25,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string CustomerOrderId { get; set; }
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
 
+        public bool CloseTransaction { get; set; }
+
         #region Navigation Properties
 
         public string PaymentId { get; set; }
@@ -54,6 +56,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             capture.Amount = Amount;
             capture.VendorId = VendorId;
             capture.TransactionId = TransactionId;
+            capture.CloseTransaction = CloseTransaction;
             capture.PaymentId = PaymentId;
             capture.Status = Status;
 
@@ -90,6 +93,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             VendorId = capture.VendorId;
             TransactionId = capture.TransactionId;
             Status = capture.Status;
+            CloseTransaction = capture.CloseTransaction;
 
             if (capture.Items != null)
             {
@@ -127,6 +131,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             capture.TransactionId = TransactionId;
             capture.Amount = Amount;
             capture.CustomerOrderId = CustomerOrderId;
+            capture.CloseTransaction = CloseTransaction;
 
             if (!Items.IsNullCollection())
             {

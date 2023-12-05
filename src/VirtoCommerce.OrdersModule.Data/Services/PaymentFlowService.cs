@@ -292,13 +292,13 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             result.CaptureAmount = request.Amount ?? paymentInfo.Payment.Sum;
             result.OuterId = request.OuterId;
 
-            if (!string.IsNullOrEmpty(request.CaptureDetails))
+            var parameters = new NameValueCollection
             {
-                result.Parameters = new NameValueCollection
-                {
-                    { nameof(request.CaptureDetails), request.CaptureDetails }
-                };
-            }
+                { nameof(request.CloseTransaction), request.CloseTransaction.ToString() },
+                { nameof(request.CaptureDetails), request.CaptureDetails ?? string.Empty }
+            };
+
+            result.Parameters = parameters;
 
             return result;
         }
@@ -365,6 +365,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.Comment = request.CaptureDetails;
             capture.OuterId = request.OuterId;
             capture.TransactionId = request.TransactionId;
+            capture.CloseTransaction = request.CloseTransaction;
 
             capture.Status = CaptureStatus.Pending.ToString();
             capture.Currency = payment.Currency;
@@ -380,6 +381,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.Comment = request.CaptureDetails;
             capture.OuterId = request.OuterId;
             capture.TransactionId = request.TransactionId;
+            capture.CloseTransaction = request.CloseTransaction;
 
             capture.Status = CaptureStatus.Pending.ToString();
             capture.Currency = payment.Currency;

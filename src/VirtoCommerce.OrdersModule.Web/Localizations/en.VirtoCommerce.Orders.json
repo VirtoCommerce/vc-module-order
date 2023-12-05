@@ -155,13 +155,17 @@
           "amount": "Capture amount",
           "message": "Capture message",
           "transactionId": "Transaction Id",
-          "outerId": "Outer Id"
+          "outerId": "Outer Id",
+          "closeTransaction": "Close transaction"
         },
         "placeholders": {
           "amount": "Enter...",
           "message": "Enter...",
           "transactionId": "Enter...",
           "outerId": "Enter..."
+        },
+        "descr": {
+          "closeTransaction": "Close a transaction, restricting future capture operations against this order."
         }
       },
       "capture-details": {
@@ -169,7 +173,8 @@
         "subtitle": "Edit payment details and related documents",
         "labels": {
           "amount": "Amount",
-          "vendor": "Vendor"
+          "vendor": "Vendor",
+          "closeTransaction": "Close transaction"
         },
         "placeholders": {
           "amount": "Enter...",

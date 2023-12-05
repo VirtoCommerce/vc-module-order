@@ -138,6 +138,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
+                    b.Property<bool>("CloseTransaction")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Comment")
                         .HasMaxLength(2048)
                         .HasColumnType("character varying(2048)");
