@@ -51,6 +51,17 @@ angular.module('virtoCommerce.orderModule')
                 });
             };
 
+            blade.openOrganizationDetails = function () {
+                securityAccounts.get({ id: blade.customerOrder.organizationId }, function (account) {
+                    var organizationId = (account && account.memberId) ? account.memberId : blade.customerOrder.organizationId;
+                    members.get({ id: organizationId }, function (member) {
+                        if (member && member.id) {
+                            showCustomerDetailBlade(member);
+                        }
+                    });
+                });
+            };
+
             blade.fetchEmployees = function (criteria) {
                 criteria.memberType = 'Employee';
                 criteria.deepSearch = true;
