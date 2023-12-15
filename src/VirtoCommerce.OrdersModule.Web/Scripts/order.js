@@ -114,29 +114,10 @@ angular.module(moduleName, [
                         knownChildrenOperations: ['Shipment', 'PaymentIn'],
                         metaFields: [
                             {
-                                name: 'isApproved',
-                                title: "orders.blades.customerOrder-detail.labels.approved",
-                                valueType: "Boolean",
-                                isVisibleFn: function (blade) {
-                                    return !blade.isNew;
-                                }
-                            },
-                            {
-                                name: 'employeeId',
-                                title: "orders.blades.customerOrder-detail.labels.employee",
-                                templateUrl: 'order-employeeSelector.html'
-                            },
-                            {
                                 name: 'number',
                                 isRequired: true,
                                 title: "orders.blades.customerOrder-detail.labels.order-number",
                                 valueType: "ShortText"
-                            },
-                            {
-                                name: 'createdDate',
-                                isReadOnly: true,
-                                title: "orders.blades.customerOrder-detail.labels.from",
-                                valueType: "DateTime"
                             },
                             {
                                 name: 'status',
@@ -148,14 +129,38 @@ angular.module(moduleName, [
                                 templateUrl: 'customerSelector.html'
                             },
                             {
-                                name: 'discountAmount',
-                                title: "orders.blades.customerOrder-items.labels.discount",
-                                templateUrl: 'discountAmount.html'
+                                name: 'organizationName',
+                                title: "orders.blades.customerOrder-detail.labels.organization",
+                                templateUrl: 'organizationSelector.html'
                             },
                             {
                                 name: 'storeId',
                                 title: "orders.blades.customerOrder-detail.labels.store",
                                 templateUrl: 'storeSelector.html'
+                            },
+                            {
+                                name: 'createdDate',
+                                isReadOnly: true,
+                                title: "orders.blades.customerOrder-detail.labels.from",
+                                valueType: "DateTime"
+                            },
+                            {
+                                name: 'employeeId',
+                                title: "orders.blades.customerOrder-detail.labels.employee",
+                                templateUrl: 'order-employeeSelector.html'
+                            },
+                            {
+                                name: 'discountAmount',
+                                title: "orders.blades.customerOrder-items.labels.discount",
+                                templateUrl: 'discountAmount.html'
+                            },
+                            {
+                                name: 'isApproved',
+                                title: "orders.blades.customerOrder-detail.labels.approved",
+                                valueType: "Boolean",
+                                isVisibleFn: function (blade) {
+                                    return !blade.isNew;
+                                }
                             }
                         ]
                     }

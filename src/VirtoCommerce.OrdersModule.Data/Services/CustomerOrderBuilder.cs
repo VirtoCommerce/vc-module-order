@@ -119,6 +119,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             order.CustomerName = cart.CustomerName;
             order.DiscountAmount = cart.DiscountAmount;
             order.OrganizationId = cart.OrganizationId;
+            order.OrganizationName = cart.OrganizationName;
             order.StoreId = cart.StoreId;
             order.TaxPercentRate = cart.TaxPercentRate;
             order.TaxType = cart.TaxType;
