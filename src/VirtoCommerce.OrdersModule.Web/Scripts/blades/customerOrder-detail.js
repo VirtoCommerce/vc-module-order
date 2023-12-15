@@ -41,25 +41,29 @@ angular.module('virtoCommerce.orderModule')
             }
 
             blade.openCustomerDetails = function () {
-                securityAccounts.get({ id: blade.customerOrder.customerId }, function (account) {
-                    var contactId = (account && account.memberId) ? account.memberId : blade.customerOrder.customerId;
-                    members.get({ id: contactId }, function (member) {
-                        if (member && member.id) {
-                            showCustomerDetailBlade(member);
-                        }
+                if (blade.customerOrder.customerId) {
+                    securityAccounts.get({ id: blade.customerOrder.customerId }, function (account) {
+                        var contactId = (account && account.memberId) ? account.memberId : blade.customerOrder.customerId;
+                        members.get({ id: contactId }, function (member) {
+                            if (member && member.id) {
+                                showCustomerDetailBlade(member);
+                            }
+                        });
                     });
-                });
+                }
             };
 
             blade.openOrganizationDetails = function () {
-                securityAccounts.get({ id: blade.customerOrder.organizationId }, function (account) {
-                    var organizationId = (account && account.memberId) ? account.memberId : blade.customerOrder.organizationId;
-                    members.get({ id: organizationId }, function (member) {
-                        if (member && member.id) {
-                            showCustomerDetailBlade(member);
-                        }
+                if (blade.customerOrder.organizationId) {
+                    securityAccounts.get({ id: blade.customerOrder.organizationId }, function (account) {
+                        var organizationId = (account && account.memberId) ? account.memberId : blade.customerOrder.organizationId;
+                        members.get({ id: organizationId }, function (member) {
+                            if (member && member.id) {
+                                showCustomerDetailBlade(member);
+                            }
+                        });
                     });
-                });
+                }
             };
 
             blade.fetchEmployees = function (criteria) {
