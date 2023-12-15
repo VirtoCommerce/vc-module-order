@@ -14,6 +14,7 @@
           "from": "Created at",
           "channel": "Channel",
           "customer": "Customer",
+          "organization": "Organization",
           "invoice": "Get invoice PDF",
           "withPrototypes": "With templates"
         },
