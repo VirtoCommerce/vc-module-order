@@ -89,17 +89,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(GetKeywordPredicate(criteria));
             }
 
-            if (criteria.FulfillmentCenterId != null)
+            if (!string.IsNullOrEmpty(criteria.FulfillmentCenterId))
             {
                 query = query.Where(x => x.FulfillmentCenterId == criteria.FulfillmentCenterId);
             }
 
-            if (criteria.ShipmentMethodCode != null)
+            if (!string.IsNullOrEmpty(criteria.ShipmentMethodCode))
             {
                 query = query.Where(x => x.ShipmentMethodCode == criteria.ShipmentMethodCode);
             }
 
-            if (criteria.ShipmentMethodOption != null)
+            if (!string.IsNullOrEmpty(criteria.ShipmentMethodOption))
             {
                 query = query.Where(x => x.ShipmentMethodOption == criteria.ShipmentMethodOption);
             }
