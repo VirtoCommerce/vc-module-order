@@ -41,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.HasParentOperation.Value ? x.ParentOperationId != null : x.ParentOperationId == null);
             }
 
-            if (criteria.ParentOperationId != null)
+            if (!string.IsNullOrEmpty(criteria.ParentOperationId))
             {
                 query = query.Where(x => x.ParentOperationId == criteria.ParentOperationId);
             }
@@ -55,7 +55,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => x.CustomerOrder.Number == criteria.OrderNumber);
             }
 
-            if (criteria.EmployeeId != null)
+            if (!string.IsNullOrEmpty(criteria.EmployeeId))
             {
                 query = query.Where(x => x.CustomerOrder.EmployeeId == criteria.EmployeeId);
             }
