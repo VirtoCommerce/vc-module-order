@@ -85,6 +85,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         repository.PatchRowVersion(originalEntity, modifiedOrder.RowVersion);
 
                         var oldModel = originalEntity.ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                        await LoadOrderDependenciesAsync(oldModel);
                         _totalsCalculator.CalculateTotals(oldModel);
 
                         // Workaround to trigger update of auditable fields when only updating navigation properties.
@@ -147,6 +148,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 // We need to CalculateTotals for the new Order, because it is empty after entity.ToModel creation
                 _totalsCalculator.CalculateTotals(changedModel);
 
+                await LoadOrderDependenciesAsync(changedModel);
                 changedEntry.NewEntry = changedModel;
             }
 
