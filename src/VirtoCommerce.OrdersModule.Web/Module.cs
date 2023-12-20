@@ -85,6 +85,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
             serviceCollection.AddTransient<IPaymentService, PaymentService>();
             serviceCollection.AddTransient<IShipmentService, ShipmentService>();
+            serviceCollection.AddTransient<IShipmentSearchService, ShipmentSearchService>();
             serviceCollection.AddTransient<ICustomerOrderBuilder, CustomerOrderBuilder>();
             serviceCollection.AddTransient<ICustomerOrderTotalsCalculator, DefaultCustomerOrderTotalsCalculator>();
             serviceCollection.AddTransient<OrderExportImport>();
