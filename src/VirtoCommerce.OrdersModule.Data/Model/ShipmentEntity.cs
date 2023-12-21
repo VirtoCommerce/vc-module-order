@@ -278,97 +278,97 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             return this;
         }
 
-        public override void Patch(OperationEntity operation)
+        public override void Patch(OperationEntity target)
         {
-            var target = operation as ShipmentEntity;
+            var shipmentEntity = target as ShipmentEntity;
             if (target == null)
             {
-                throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(operation));
+                throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(target));
             }
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
-            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
+            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || shipmentEntity.GetNonCalculatablePrices().All(x => x == 0m);
 
-            base.NeedPatchSum = isNeedPatch;
-            base.Patch(operation);
+            NeedPatchSum = isNeedPatch;
+            base.Patch(target);
 
-            target.FulfillmentCenterId = FulfillmentCenterId;
-            target.FulfillmentCenterName = FulfillmentCenterName;
-            target.OrganizationId = OrganizationId;
-            target.OrganizationName = OrganizationName;
-            target.EmployeeId = EmployeeId;
-            target.EmployeeName = EmployeeName;
-            target.ShipmentMethodCode = ShipmentMethodCode;
-            target.ShipmentMethodOption = ShipmentMethodOption;
-            target.Height = Height;
-            target.Length = Length;
-            target.Weight = Weight;
-            target.Height = Height;
-            target.Width = Width;
-            target.MeasureUnit = MeasureUnit;
-            target.WeightUnit = WeightUnit;
-            target.Length = Length;
-            target.TaxType = TaxType;
-            target.TrackingNumber = TrackingNumber;
-            target.TrackingUrl = TrackingUrl;
-            target.DeliveryDate = DeliveryDate;
-            target.VendorId = VendorId;
+            shipmentEntity.FulfillmentCenterId = FulfillmentCenterId;
+            shipmentEntity.FulfillmentCenterName = FulfillmentCenterName;
+            shipmentEntity.OrganizationId = OrganizationId;
+            shipmentEntity.OrganizationName = OrganizationName;
+            shipmentEntity.EmployeeId = EmployeeId;
+            shipmentEntity.EmployeeName = EmployeeName;
+            shipmentEntity.ShipmentMethodCode = ShipmentMethodCode;
+            shipmentEntity.ShipmentMethodOption = ShipmentMethodOption;
+            shipmentEntity.Height = Height;
+            shipmentEntity.Length = Length;
+            shipmentEntity.Weight = Weight;
+            shipmentEntity.Height = Height;
+            shipmentEntity.Width = Width;
+            shipmentEntity.MeasureUnit = MeasureUnit;
+            shipmentEntity.WeightUnit = WeightUnit;
+            shipmentEntity.Length = Length;
+            shipmentEntity.TaxType = TaxType;
+            shipmentEntity.TrackingNumber = TrackingNumber;
+            shipmentEntity.TrackingUrl = TrackingUrl;
+            shipmentEntity.DeliveryDate = DeliveryDate;
+            shipmentEntity.VendorId = VendorId;
 
             if (isNeedPatch)
             {
-                target.Price = Price;
-                target.PriceWithTax = PriceWithTax;
-                target.DiscountAmount = DiscountAmount;
-                target.DiscountAmountWithTax = DiscountAmountWithTax;
-                target.TaxPercentRate = TaxPercentRate;
-                target.TaxTotal = TaxTotal;
-                target.Total = Total;
-                target.TotalWithTax = TotalWithTax;
-                target.Fee = Fee;
-                target.FeeWithTax = FeeWithTax;
+                shipmentEntity.Price = Price;
+                shipmentEntity.PriceWithTax = PriceWithTax;
+                shipmentEntity.DiscountAmount = DiscountAmount;
+                shipmentEntity.DiscountAmountWithTax = DiscountAmountWithTax;
+                shipmentEntity.TaxPercentRate = TaxPercentRate;
+                shipmentEntity.TaxTotal = TaxTotal;
+                shipmentEntity.Total = Total;
+                shipmentEntity.TotalWithTax = TotalWithTax;
+                shipmentEntity.Fee = Fee;
+                shipmentEntity.FeeWithTax = FeeWithTax;
             }
 
             if (!InPayments.IsNullCollection())
             {
-                InPayments.Patch(target.InPayments, (sourcePayment, targetPayment) => sourcePayment.Patch(targetPayment));
+                InPayments.Patch(shipmentEntity.InPayments, (sourcePayment, targetPayment) => sourcePayment.Patch(targetPayment));
             }
 
             if (!Items.IsNullCollection())
             {
-                Items.Patch(target.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
+                Items.Patch(shipmentEntity.Items, (sourceItem, targetItem) => sourceItem.Patch(targetItem));
             }
 
             if (!Discounts.IsNullCollection())
             {
                 var discountComparer = AnonymousComparer.Create((DiscountEntity x) => x.PromotionId);
-                Discounts.Patch(target.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
+                Discounts.Patch(shipmentEntity.Discounts, discountComparer, (sourceDiscount, targetDiscount) => sourceDiscount.Patch(targetDiscount));
             }
 
             if (!Addresses.IsNullCollection())
             {
-                Addresses.Patch(target.Addresses, (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
+                Addresses.Patch(shipmentEntity.Addresses, (sourceAddress, targetAddress) => sourceAddress.Patch(targetAddress));
             }
 
             if (!Packages.IsNullCollection())
             {
-                Packages.Patch(target.Packages, (sourcePackage, targetPackage) => sourcePackage.Patch(targetPackage));
+                Packages.Patch(shipmentEntity.Packages, (sourcePackage, targetPackage) => sourcePackage.Patch(targetPackage));
             }
 
             if (!TaxDetails.IsNullCollection())
             {
                 var taxDetailComparer = AnonymousComparer.Create((TaxDetailEntity x) => x.Name);
-                TaxDetails.Patch(target.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
+                TaxDetails.Patch(shipmentEntity.TaxDetails, taxDetailComparer, (sourceTaxDetail, targetTaxDetail) => sourceTaxDetail.Patch(targetTaxDetail));
             }
 
             if (!FeeDetails.IsNullCollection())
             {
                 var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
-                FeeDetails.Patch(target.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
+                FeeDetails.Patch(shipmentEntity.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
             {
-                DynamicPropertyObjectValues.Patch(target.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
+                DynamicPropertyObjectValues.Patch(shipmentEntity.DynamicPropertyObjectValues, (sourceDynamicPropertyObjectValues, targetDynamicPropertyObjectValues) => sourceDynamicPropertyObjectValues.Patch(targetDynamicPropertyObjectValues));
             }
         }
 

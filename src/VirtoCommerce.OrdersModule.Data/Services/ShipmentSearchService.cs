@@ -15,21 +15,21 @@ using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class PaymentSearchService : SearchService<PaymentSearchCriteria, PaymentSearchResult, PaymentIn, PaymentInEntity>, IPaymentSearchService
+    public class ShipmentSearchService : SearchService<ShipmentSearchCriteria, ShipmentSearchResult, Shipment, ShipmentEntity>, IShipmentSearchService
     {
-        public PaymentSearchService(
+        public ShipmentSearchService(
             Func<IOrderRepository> repositoryFactory,
             IPlatformMemoryCache platformMemoryCache,
-            IPaymentService crudService,
+            IShipmentService crudService,
             IOptions<CrudOptions> crudOptions)
             : base(repositoryFactory, platformMemoryCache, crudService, crudOptions)
         {
         }
 
 
-        protected override IQueryable<PaymentInEntity> BuildQuery(IRepository repository, PaymentSearchCriteria criteria)
+        protected override IQueryable<ShipmentEntity> BuildQuery(IRepository repository, ShipmentSearchCriteria criteria)
         {
-            var query = ((IOrderRepository)repository).InPayments;
+            var query = ((IOrderRepository)repository).Shipments;
 
             if (!criteria.Ids.IsNullOrEmpty())
             {
@@ -70,11 +70,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Statuses.Contains(x.Status));
             }
 
-            if (!criteria.CustomerId.IsNullOrEmpty())
-            {
-                query = query.Where(x => x.CustomerId == criteria.CustomerId);
-            }
-
             if (criteria.StartDate != null)
             {
                 query = query.Where(x => x.CreatedDate >= criteria.StartDate);
@@ -83,26 +78,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (criteria.EndDate != null)
             {
                 query = query.Where(x => x.CreatedDate <= criteria.EndDate);
-            }
-
-            if (criteria.CapturedStartDate != null)
-            {
-                query = query.Where(x => x.CapturedDate >= criteria.CapturedStartDate);
-            }
-
-            if (criteria.CapturedEndDate != null)
-            {
-                query = query.Where(x => x.CapturedDate <= criteria.CapturedEndDate);
-            }
-
-            if (criteria.AuthorizedStartDate != null)
-            {
-                query = query.Where(x => x.AuthorizedDate >= criteria.AuthorizedStartDate);
-            }
-
-            if (criteria.AuthorizedEndDate != null)
-            {
-                query = query.Where(x => x.AuthorizedDate <= criteria.AuthorizedEndDate);
             }
 
             if (!criteria.Numbers.IsNullOrEmpty())
@@ -114,10 +89,25 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(GetKeywordPredicate(criteria));
             }
 
+            if (!string.IsNullOrEmpty(criteria.FulfillmentCenterId))
+            {
+                query = query.Where(x => x.FulfillmentCenterId == criteria.FulfillmentCenterId);
+            }
+
+            if (!string.IsNullOrEmpty(criteria.ShipmentMethodCode))
+            {
+                query = query.Where(x => x.ShipmentMethodCode == criteria.ShipmentMethodCode);
+            }
+
+            if (!string.IsNullOrEmpty(criteria.ShipmentMethodOption))
+            {
+                query = query.Where(x => x.ShipmentMethodOption == criteria.ShipmentMethodOption);
+            }
+
             return query;
         }
 
-        protected override IList<SortInfo> BuildSortExpression(PaymentSearchCriteria criteria)
+        protected override IList<SortInfo> BuildSortExpression(ShipmentSearchCriteria criteria)
         {
             var sortInfos = criteria.SortInfos;
             if (sortInfos.IsNullOrEmpty())
@@ -126,7 +116,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 {
                     new SortInfo
                     {
-                        SortColumn = nameof(PaymentInEntity.CreatedDate),
+                        SortColumn = nameof(ShipmentEntity.CreatedDate),
                         SortDirection = SortDirection.Descending
                     }
                 };
@@ -134,9 +124,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return sortInfos;
         }
 
-        protected virtual Expression<Func<PaymentInEntity, bool>> GetKeywordPredicate(PaymentSearchCriteria criteria)
+        protected virtual Expression<Func<ShipmentEntity, bool>> GetKeywordPredicate(ShipmentSearchCriteria criteria)
         {
-            return payment => payment.Number.Contains(criteria.Keyword);
+            return Shipment => Shipment.Number.Contains(criteria.Keyword);
         }
     }
 }
