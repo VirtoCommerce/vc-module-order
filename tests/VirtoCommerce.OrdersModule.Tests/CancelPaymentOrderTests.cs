@@ -47,7 +47,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             // Assert
             result.Should().HaveCount(1);
-            result.First().PaymentId.Should().Equals(paymentId);
+            result.First().PaymentId.Should().Be(paymentId);
         }
 
 
