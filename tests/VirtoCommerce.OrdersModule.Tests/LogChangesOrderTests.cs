@@ -50,9 +50,9 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             // Assert
             result.Should().HaveCount(1);
-            result.First().Id.Should().Equals(expectedResult.Id);
-            result.First().OperationType.Should().Equals(expectedResult.OperationType);
-            result.First().Detail.Should().Equals(expectedResult.Detail);
+            result.First().ObjectId.Should().Be(expectedResult.ObjectId);
+            result.First().OperationType.Should().Be(expectedResult.OperationType);
+            result.First().Detail.Should().Be(expectedResult.Detail);
         }
 
 
@@ -84,7 +84,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 EntryState.Added,
                 new OperationLog()
                 {
-                    Id = NewOrderTemplate.Id,
+                    ObjectId = NewOrderTemplate.Id,
                     ObjectType = nameof(CustomerOrder),
                     OperationType = EntryState.Added,
                     Detail = $"The new CustomerOrder {NewOrderTemplate.Number} added",
@@ -102,7 +102,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 EntryState.Deleted,
                 new OperationLog()
                 {
-                    Id = NewOrderTemplate.Id,
+                    ObjectId = NewOrderTemplate.Id,
                     ObjectType = nameof(CustomerOrder),
                     OperationType = EntryState.Deleted,
                     Detail = $"The CustomerOrder {NewOrderTemplate.Number} deleted",
@@ -124,7 +124,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 EntryState.Modified,
                 new OperationLog()
                 {
-                    Id = NewOrderTemplate.Id,
+                    ObjectId = NewOrderTemplate.Id,
                     ObjectType = nameof(CustomerOrder),
                     OperationType = EntryState.Modified,
                     Detail = $"Order employee was changed to '{NewOrderTemplate.EmployeeId}'",
@@ -146,7 +146,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 EntryState.Modified,
                 new OperationLog()
                 {
-                    Id = NewOrderTemplate.Id,
+                    ObjectId = NewOrderTemplate.Id,
                     ObjectType = nameof(CustomerOrder),
                     OperationType = EntryState.Modified,
                     Detail = $"The CustomerOrder {NewOrderTemplate.Number} property 'Number' changed from '{OldOrderTemplate.Number}' to '{NewOrderTemplate.Number}'",
