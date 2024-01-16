@@ -1,13 +1,13 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.shipmentDetailController', [
-        '$scope',
+        '$q', '$scope',
         'platformWebApp.bladeNavigationService',
         'virtoCommerce.orderModule.order_res_customerOrders',
         'virtoCommerce.inventoryModule.fulfillments',
         'platformWebApp.authService',
         'virtoCommerce.shippingModule.shippingMethods',
         'virtoCommerce.customerModule.members',
-    function ($scope, bladeNavigationService, customerOrders, fulfillments, authService, shippingMethods, members) {
+    function ($q, $scope, bladeNavigationService, customerOrders, fulfillments, authService, shippingMethods, members) {
         var blade = $scope.blade;
         blade.isVisiblePrices = authService.checkPermission('order:read_prices');
         blade.shippingMethods = [];
@@ -46,7 +46,16 @@ angular.module('virtoCommerce.orderModule')
 
         blade.fetchEmployees = function (criteria) {
             if (blade.isLocked) {
-                return [];
+                // workaround: ui-search has a problem in the fetchNext function
+                var result = [];
+
+                var response = {
+                    $promise: $q(function (resolve) { resolve(result); }),
+                    $resolved: true,
+                    results: result,
+                    totalCount: 0
+                };
+                return response;
             }
 
             criteria.memberType = 'Employee';
@@ -72,7 +81,16 @@ angular.module('virtoCommerce.orderModule')
 
         blade.fetchVendors = function (criteria) {
             if (blade.isLocked) {
-                return [];
+                // workaround: ui-search has a problem in the fetchNext function
+                var result = [];
+
+                var response = {
+                    $promise: $q(function (resolve) { resolve(result); }),
+                    $resolved: true,
+                    results: result,
+                    totalCount: 0
+                };
+                return response;
             }
 
             return members.search(criteria);
