@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 
@@ -11,9 +12,10 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    partial class OrderDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230928041245_AddressRequiredFields")]
+    partial class AddressRequiredFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,9 +141,6 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<string>("CancelledState")
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
-
-                    b.Property<bool>("CloseTransaction")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Comment")
                         .HasMaxLength(2048)
@@ -346,9 +345,6 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 
                     b.Property<decimal>("HandlingTotalWithTax")
                         .HasColumnType("Money");
-
-                    b.Property<bool>("IsAnonymous")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
