@@ -46,7 +46,7 @@ angular.module('virtoCommerce.orderModule')
 
         blade.fetchEmployees = function (criteria) {
             if (blade.isLocked) {
-                // workaround: ui-search has a problem in the fetchNext function
+                // workaround: ui-scroll-drop-down has a problem in the fetchNext function
                 var result = [];
 
                 var response = {
@@ -81,7 +81,7 @@ angular.module('virtoCommerce.orderModule')
 
         blade.fetchVendors = function (criteria) {
             if (blade.isLocked) {
-                // workaround: ui-search has a problem in the fetchNext function
+                // workaround: ui-scroll-drop-down has a problem in the fetchNext function
                 var result = [];
 
                 var response = {
