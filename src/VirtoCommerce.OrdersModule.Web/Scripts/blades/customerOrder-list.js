@@ -36,8 +36,9 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     blade.refresh = function () {
         var criteria = {
             responseGroup: "WithPrices",
-            sort: uiGridHelper.getSortExpression($scope),
-            skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+            keyword: filter.keyword,
+            sort: baseCriteria.sort,
+            skip: baseCriteria.skip,
             take: $scope.pageSettings.itemsPerPageCount
         };
 
@@ -62,7 +63,6 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
             blade.isLoading = false;
         } else {
             blade.isLoading = true;
-            criteria.keyword = filter.keyword;
 
             if (blade.searchCriteria) {
                 angular.extend(criteria, blade.searchCriteria);
