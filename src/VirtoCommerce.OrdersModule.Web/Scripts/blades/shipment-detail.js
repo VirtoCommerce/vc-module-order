@@ -49,13 +49,12 @@ angular.module('virtoCommerce.orderModule')
                 // workaround: ui-scroll-drop-down has a problem in the fetchNext function
                 var result = [];
 
-                var response = {
+                return {
                     $promise: $q(function (resolve) { resolve(result); }),
                     $resolved: true,
                     results: result,
                     totalCount: 0
                 };
-                return response;
             }
 
             criteria.memberType = 'Employee';
@@ -84,13 +83,12 @@ angular.module('virtoCommerce.orderModule')
                 // workaround: ui-scroll-drop-down has a problem in the fetchNext function
                 var result = [];
 
-                var response = {
+                return {
                     $promise: $q(function (resolve) { resolve(result); }),
                     $resolved: true,
                     results: result,
                     totalCount: 0
                 };
-                return response;
             }
 
             return members.search(criteria);
