@@ -37,8 +37,8 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         var criteria = {
             responseGroup: "WithPrices",
             keyword: filter.keyword,
-            sort: baseCriteria.sort,
-            skip: baseCriteria.skip,
+            sort: uiGridHelper.getSortExpression($scope),
+            skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
             take: $scope.pageSettings.itemsPerPageCount
         };
 
