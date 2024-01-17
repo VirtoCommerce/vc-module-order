@@ -34,10 +34,18 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     });
 
     blade.refresh = function () {
+        var criteria = {
+            responseGroup: "WithPrices",
+            keyword: filter.keyword,
+            sort: uiGridHelper.getSortExpression($scope),
+            skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+            take: $scope.pageSettings.itemsPerPageCount
+        };
+
         if (angular.isFunction(blade.refreshCallback)) {
             blade.isLoading = true;
 
-            var result = blade.refreshCallback(blade);
+            var result = blade.refreshCallback(blade, criteria);
 
             if (angular.isDefined(result.$promise)) {
                 result.$promise.then(function (data) {
@@ -55,13 +63,6 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
             blade.isLoading = false;
         } else {
             blade.isLoading = true;
-            var criteria = {
-                responseGroup: "WithPrices",
-                keyword: filter.keyword,
-                sort: uiGridHelper.getSortExpression($scope),
-                skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
-                take: $scope.pageSettings.itemsPerPageCount
-            };
 
             if (blade.searchCriteria) {
                 angular.extend(criteria, blade.searchCriteria);
