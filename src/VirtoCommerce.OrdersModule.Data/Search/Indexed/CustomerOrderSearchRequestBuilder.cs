@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core;
+using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
@@ -43,6 +44,25 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             var result = new List<IFilter>();
 
+            if (criteria.ObjectIds?.Any() == true)
+            {
+                result.Add(new IdsFilter { Values = criteria.ObjectIds });
+            }
+
+            if (criteria is CustomerOrderSearchCriteria orderSearchCriteria)
+            {
+                result.AddRange(GetPermanentFilters(orderSearchCriteria));
+            }
+
+            return result;
+        }
+
+
+
+        protected virtual IList<IFilter> GetPermanentFilters(CustomerOrderSearchCriteria criteria)
+        {
+            var result = new List<IFilter>();
+
             if (!string.IsNullOrEmpty(criteria.Keyword))
             {
                 var parseResult = _searchPhraseParser.Parse(criteria.Keyword);
@@ -50,10 +70,49 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 result.AddRange(parseResult.Filters);
             }
 
-            if (criteria.ObjectIds?.Any() == true)
+            if (criteria.ObjectIds != null)
             {
                 result.Add(new IdsFilter { Values = criteria.ObjectIds });
             }
+
+            if (!criteria.StoreIds.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("storeid", criteria.StoreIds));
+            }
+
+            if (!criteria.Statuses.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("status", criteria.Statuses));
+            }
+
+            if (criteria.StartDate.HasValue && criteria.EndDate.HasValue)
+            {
+                result.Add(FilterHelper.CreateDateRangeFilter("createddate", criteria.StartDate, null, true, true));
+            }
+            else if (criteria.StartDate.HasValue)
+            {
+                result.Add(FilterHelper.CreateDateRangeFilter("createddate", criteria.StartDate, null, true, true));
+            }
+            else if (criteria.EndDate.HasValue)
+            {
+                result.Add(FilterHelper.CreateDateRangeFilter("createddate", null, criteria.EndDate, true, true));
+            }
+
+            if (!criteria.CustomerIds.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("customerid", criteria.CustomerIds));
+            }
+
+            if (!string.IsNullOrEmpty(criteria.EmployeeId))
+            {
+                result.Add(FilterHelper.CreateTermFilter("employeeid", criteria.EmployeeId));
+            }
+
+            if (!criteria.WithPrototypes)
+            {
+                result.Add(FilterHelper.CreateTermFilter("isprototype", "false"));
+            }
+
 
             return result;
         }
