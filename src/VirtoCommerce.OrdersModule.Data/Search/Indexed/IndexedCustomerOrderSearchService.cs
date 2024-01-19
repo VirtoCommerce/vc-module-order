@@ -30,7 +30,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _configuration = configuration;
         }
 
-        public virtual async Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
+        public virtual async Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria)
         {
             if (!_configuration.IsOrderFullTextSearchEnabled())
             {
@@ -46,7 +46,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        protected virtual async Task<CustomerOrderSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria)
+        protected virtual async Task<CustomerOrderSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderSearchCriteria criteria)
         {
             var result = AbstractTypeFactory<CustomerOrderSearchResult>.TryCreateInstance();
 
@@ -59,7 +59,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        protected virtual async Task<IList<CustomerOrder>> ConvertDocumentsAsync(IList<SearchDocument> documents, CustomerOrderIndexedSearchCriteria criteria)
+        protected virtual async Task<IList<CustomerOrder>> ConvertDocumentsAsync(IList<SearchDocument> documents, CustomerOrderSearchCriteria criteria)
         {
             var result = new List<CustomerOrder>();
 

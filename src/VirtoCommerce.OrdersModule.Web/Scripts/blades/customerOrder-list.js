@@ -72,7 +72,11 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                 angular.extend(criteria, filter.current);
             }
 
-            var endpoint = $scope.useIndexedSearch ? customerOrders.indexedSearch : customerOrders.search;
+            var endpoint = customerOrders.search;
+
+            if ($scope.useIndexedSearch && (criteria.keyword || filter.current)) {
+                endpoint = customerOrders.indexedSearch;
+            }
 
             endpoint(criteria, function (data) {
                 blade.isLoading = false;
