@@ -716,7 +716,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         [HttpPost]
         [Route("indexed/search")]
-        public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrderIndexed([FromBody] CustomerOrderSearchCriteria criteria)
+        public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrderIndexed([FromBody] CustomerOrderIndexedSearchCriteria criteria)
         {
             var result = await _indexedSearchService.SearchCustomerOrdersAsync(criteria);
             return Content(JsonConvert.SerializeObject(result, _outputJsonSerializerSettings), "application/json");

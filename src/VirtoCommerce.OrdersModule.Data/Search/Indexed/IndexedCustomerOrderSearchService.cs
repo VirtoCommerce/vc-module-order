@@ -30,7 +30,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _configuration = configuration;
         }
 
-        public virtual async Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderSearchCriteria criteria)
+        public virtual async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
         {
             if (!_configuration.IsOrderFullTextSearchEnabled())
             {
@@ -42,24 +42,25 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             var response = await _searchProvider.SearchAsync(ModuleConstants.OrderIndexDocumentType, request);
 
-            var result = await ConvertResponseAsync(response, criteria);
+            var result = await ConvertResponseAsync(response, criteria, request);
             return result;
         }
 
-        protected virtual async Task<CustomerOrderSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderSearchCriteria criteria)
+        protected virtual async Task<CustomerOrderIndexedSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria, SearchRequest searchRequest)
         {
-            var result = AbstractTypeFactory<CustomerOrderSearchResult>.TryCreateInstance();
+            var result = AbstractTypeFactory<CustomerOrderIndexedSearchResult>.TryCreateInstance();
 
             if (response != null)
             {
                 result.TotalCount = (int)response.TotalCount;
                 result.Results = await ConvertDocumentsAsync(response.Documents, criteria);
+                result.Aggregations = ConvertAggregations(response.Aggregations, searchRequest);
             }
 
             return result;
         }
 
-        protected virtual async Task<IList<CustomerOrder>> ConvertDocumentsAsync(IList<SearchDocument> documents, CustomerOrderSearchCriteria criteria)
+        protected virtual async Task<IList<CustomerOrder>> ConvertDocumentsAsync(IList<SearchDocument> documents, CustomerOrderIndexedSearchCriteria criteria)
         {
             var result = new List<CustomerOrder>();
 
@@ -79,6 +80,44 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 .ToArray();
 
             result.AddRange(orders);
+
+            return result;
+        }
+
+        private static IList<OrderAggregation> ConvertAggregations(IList<AggregationResponse> aggregationResponses, SearchRequest searchRequest)
+        {
+            var result = new List<OrderAggregation>();
+
+            foreach (var aggregationRequest in searchRequest.Aggregations)
+            {
+                var aggregationResponse = aggregationResponses.FirstOrDefault(x => x.Id == aggregationRequest.Id);
+                if (aggregationResponse != null)
+                {
+                    var orderAggregation = new OrderAggregation()
+                    {
+                        Field = aggregationRequest.FieldName,
+                        Items = GetAttributeAggregationItems(aggregationResponse.Values).ToArray(),
+                    };
+
+                    result.Add(orderAggregation);
+                }
+            }
+
+            return result;
+        }
+
+        private static IList<OrderAggregationItem> GetAttributeAggregationItems(IList<AggregationResponseValue> aggregationResponseValues)
+        {
+            var result = aggregationResponseValues
+                .Select(v =>
+                {
+                    return new OrderAggregationItem
+                    {
+                        Value = v.Id,
+                        Count = (int)v.Count
+                    };
+                })
+                .ToList();
 
             return result;
         }
