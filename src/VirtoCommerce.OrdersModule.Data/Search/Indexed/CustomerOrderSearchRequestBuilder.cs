@@ -54,15 +54,45 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 return result;
             }
 
-            var facetExpessions = indexedSearchCriteria.Facet.Split(" ", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            result = facetExpessions
-                .Select(x => new TermAggregationRequest
+            var parseResult = _searchPhraseParser.Parse(indexedSearchCriteria.Facet);
+            if (!string.IsNullOrEmpty(parseResult.Keyword))
+            {
+                var termFacetExpressions = parseResult.Keyword.Split(" ");
+                parseResult.Filters.AddRange(termFacetExpressions.Select(x => new TermFilter
                 {
                     FieldName = x,
-                    Id = x,
-                    Size = 0
+                    Values = new List<string>()
+                }));
+            }
+
+            result = parseResult.Filters
+                .Select<IFilter, AggregationRequest>(filter =>
+                {
+                    return filter switch
+                    {
+                        RangeFilter rangeFilter => new RangeAggregationRequest
+                        {
+                            Id = filter.Stringify(true),
+                            FieldName = rangeFilter.FieldName,
+                            Values = rangeFilter.Values.Select(x => new RangeAggregationRequestValue
+                            {
+                                Id = x.Stringify(),
+                                Lower = x.Lower,
+                                Upper = x.Upper,
+                                IncludeLower = x.IncludeLower,
+                                IncludeUpper = x.IncludeUpper
+                            }).ToList()
+                        },
+                        TermFilter termFilter => new TermAggregationRequest
+                        {
+                            FieldName = termFilter.FieldName,
+                            Id = filter.Stringify(),
+                            Size = 0
+                        },
+                        _ => null,
+                    };
                 })
-                .Cast<AggregationRequest>()
+                .Where(x => x != null)
                 .ToList();
 
             return result;

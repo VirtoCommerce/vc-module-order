@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.InventoryModule.Core.Services;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
@@ -21,17 +24,23 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
         private readonly IStoreService _storeService;
         private readonly IFulfillmentCenterService _fulfillmentCenterService;
+        private readonly ILocalizableSettingService _localizableSettingService;
+        private readonly ISettingsManager _settingsManager;
 
         public CustomerOrderDocumentBuilder(
             ICustomerOrderService customerOrderService,
             IDynamicPropertySearchService dynamicPropertySearchService,
             IStoreService storeService,
-            IFulfillmentCenterService fulfillmentCenterService)
+            IFulfillmentCenterService fulfillmentCenterService,
+            ILocalizableSettingService localizableSettingService,
+            ISettingsManager settingsManager)
         {
             _customerOrderService = customerOrderService;
             _dynamicPropertySearchService = dynamicPropertySearchService;
             _storeService = storeService;
             _fulfillmentCenterService = fulfillmentCenterService;
+            _localizableSettingService = localizableSettingService;
+            _settingsManager = settingsManager;
         }
 
         public Task BuildSchemaAsync(IndexDocument schema)
@@ -115,7 +124,6 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
 
             document.AddFilterableString("OuterId", order.OuterId);
-            document.AddFilterableString("Status", order.Status);
             document.AddFilterableString("Currency", order.Currency);
 
             document.AddFilterableDecimal("Total", order.Total);
@@ -125,6 +133,13 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             document.AddFilterableBoolean("IsCancelled", order.IsCancelled);
             document.AddFilterableBoolean("IsPrototype", order.IsPrototype);
+
+            document.AddFilterableString("Status", order.Status);
+            var localizedStatueses = await GetLocalizedOrderStatusesAsync(order.Status);
+            foreach (var localizedStatus in localizedStatueses)
+            {
+                document.AddFilterableString($"Status_{localizedStatus.Key}", localizedStatus.Value);
+            }
 
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
@@ -173,6 +188,33 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             {
                 document.AddContentString($"{address.AddressType} {address}");
             }
+        }
+
+        private async Task<List<string>> GetLanguagesAsync()
+        {
+            var setting = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.General.Languages.Name);
+            var values = setting?.AllowedValues?.OfType<string>().OrderBy(x => x).ToList() ?? [];
+            return values;
+        }
+
+
+        private async Task<Dictionary<string, string>> GetLocalizedOrderStatusesAsync(string statusValue)
+        {
+            // key: culture name, value: localized value
+            var result = new Dictionary<string, string>();
+
+            var languages = await GetLanguagesAsync();
+
+            foreach (var languageCode in languages)
+            {
+                var localizedValue = await _localizableSettingService.TranslateAsync(statusValue, ModuleConstants.Settings.General.OrderStatus.Name, languageCode);
+                if (localizedValue != null)
+                {
+                    result.TryAdd(languageCode, localizedValue);
+                }
+            }
+
+            return result;
         }
 
         [Obsolete("Will be deleted in stable bundle 7", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]

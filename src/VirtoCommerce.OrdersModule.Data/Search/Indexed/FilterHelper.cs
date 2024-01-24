@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
@@ -48,6 +50,51 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 IncludeLower = includeLower,
                 IncludeUpper = includeUpper,
             };
+        }
+
+
+        public static string Stringify(this IFilter filter)
+        {
+            return filter.Stringify(false);
+        }
+
+        public static string Stringify(this IFilter filter, bool skipCurrency)
+        {
+            var result = filter.ToString();
+            switch (filter)
+            {
+                case RangeFilter rangeFilter:
+                    {
+                        var fieldName = rangeFilter.FieldName;
+                        if (skipCurrency)
+                        {
+                            fieldName = new Regex(@"^(?<fieldName>[A-Za-z0-9\-]+)(_[A-Za-z]{3})?$", RegexOptions.IgnoreCase).Match(fieldName).Groups["fieldName"].Value;
+                        }
+                        result = fieldName.Replace("_", "-") + "-" + string.Join("-", rangeFilter.Values.Select(Stringify));
+                        break;
+                    }
+
+                case TermFilter termFilter:
+                    result = termFilter.FieldName + (!termFilter.Values.IsNullOrEmpty() ? string.Join("_", termFilter.Values) : string.Empty);
+                    break;
+            }
+            return result;
+        }
+
+        public static string Stringify(this RangeFilterValue rageValue)
+        {
+            if (rageValue.Lower == null && rageValue.Upper != null)
+            {
+                return $"under-{rageValue.Upper}";
+            }
+            else if (rageValue.Upper == null && rageValue.Lower != null)
+            {
+                return $"over-{rageValue.Lower}";
+            }
+            else
+            {
+                return $"{rageValue.Lower}-{rageValue.Upper}";
+            }
         }
     }
 }

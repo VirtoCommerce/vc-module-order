@@ -93,13 +93,54 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 var aggregationResponse = aggregationResponses.FirstOrDefault(x => x.Id == aggregationRequest.Id);
                 if (aggregationResponse != null)
                 {
-                    var orderAggregation = new OrderAggregation()
+                    var orderAggregation = default(OrderAggregation);
+
+                    if (aggregationRequest is RangeAggregationRequest rangeAggregationRequest)
                     {
-                        Field = aggregationRequest.FieldName,
-                        Items = GetAttributeAggregationItems(aggregationResponse.Values).ToArray(),
-                    };
+                        orderAggregation = new OrderAggregation()
+                        {
+                            AggregationType = "range",
+                            Field = aggregationRequest.FieldName,
+                            Items = GetAttributeAggregationItems(rangeAggregationRequest, aggregationResponse.Values),
+                        };
+                    }
+                    else if (aggregationRequest is TermAggregationRequest termAggregationRequest)
+                    {
+                        orderAggregation = new OrderAggregation()
+                        {
+                            AggregationType = "attr",
+                            Field = aggregationRequest.FieldName,
+                            Items = GetAttributeAggregationItems(aggregationResponse.Values),
+                        };
+                    }
 
                     result.Add(orderAggregation);
+                }
+            }
+
+            return result;
+        }
+
+        private static IList<OrderAggregationItem> GetAttributeAggregationItems(RangeAggregationRequest rangeAggregationRequest, IList<AggregationResponseValue> resultValues)
+        {
+            var result = new List<OrderAggregationItem>();
+
+            foreach (var requestValue in rangeAggregationRequest.Values)
+            {
+                var resultValue = resultValues.FirstOrDefault(x => x.Id == requestValue.Id);
+                if (resultValue != null)
+                {
+                    var aggregationItem = new OrderAggregationItem
+                    {
+                        Value = resultValue.Id,
+                        Count = (int)resultValue.Count,
+                        RequestedLowerBound = requestValue.Lower,
+                        RequestedUpperBound = requestValue.Upper,
+                        IncludeLower = requestValue.IncludeLower,
+                        IncludeUpper = requestValue.IncludeUpper,
+                    };
+
+                    result.Add(aggregationItem);
                 }
             }
 
