@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SearchModule.Core.Exceptions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
@@ -21,13 +23,25 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         private readonly ISearchProvider _searchProvider;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly IConfiguration _configuration;
+        private readonly ILocalizableSettingService _localizableSettingService;
 
-        public IndexedCustomerOrderSearchService(ISearchRequestBuilderRegistrar searchRequestBuilderRegistrar, ISearchProvider searchProvider, ICustomerOrderService customerOrderService, IConfiguration configuration)
+        private readonly IDictionary<string, string> _fieldBySettingName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "status", ModuleConstants.Settings.General.OrderStatus.Name }
+        };
+
+        public IndexedCustomerOrderSearchService(
+            ISearchRequestBuilderRegistrar searchRequestBuilderRegistrar,
+            ISearchProvider searchProvider,
+            ICustomerOrderService customerOrderService,
+            IConfiguration configuration,
+            ILocalizableSettingService localizableSettingService)
         {
             _searchRequestBuilderRegistrar = searchRequestBuilderRegistrar;
             _searchProvider = searchProvider;
             _customerOrderService = customerOrderService;
             _configuration = configuration;
+            _localizableSettingService = localizableSettingService;
         }
 
         public virtual async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
@@ -54,7 +68,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             {
                 result.TotalCount = (int)response.TotalCount;
                 result.Results = await ConvertDocumentsAsync(response.Documents, criteria);
-                result.Aggregations = ConvertAggregations(response.Aggregations, searchRequest);
+                result.Aggregations = await ConvertAggregationsAsync(response.Aggregations, searchRequest, criteria);
             }
 
             return result;
@@ -84,7 +98,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        private static IList<OrderAggregation> ConvertAggregations(IList<AggregationResponse> aggregationResponses, SearchRequest searchRequest)
+        private async Task<IList<OrderAggregation>> ConvertAggregationsAsync(IList<AggregationResponse> aggregationResponses, SearchRequest searchRequest, CustomerOrderIndexedSearchCriteria criteria)
         {
             var result = new List<OrderAggregation>();
 
@@ -110,7 +124,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                         {
                             AggregationType = "attr",
                             Field = aggregationRequest.FieldName,
-                            Items = GetAttributeAggregationItems(aggregationResponse.Values),
+                            Items = await GetAttributeAggregationItemsAsync(aggregationRequest.FieldName, criteria.LanguageCode, aggregationResponse.Values),
                         };
                     }
 
@@ -149,16 +163,40 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        private static IList<OrderAggregationItem> GetAttributeAggregationItems(IList<AggregationResponseValue> aggregationResponseValues)
+        private async Task<IList<OrderAggregationItem>> GetAttributeAggregationItemsAsync(string fieldName, string languageCode, IList<AggregationResponseValue> aggregationResponseValues)
         {
+            IList<KeyValue> localizedValues = null;
+            if (!string.IsNullOrEmpty(languageCode) && _fieldBySettingName.TryGetValue(fieldName, out var settingName))
+            {
+                localizedValues = await _localizableSettingService.GetValuesAsync(ModuleConstants.Settings.General.OrderStatus.Name, languageCode);
+            }
+
             var result = aggregationResponseValues
-                .Select(v =>
+                .Select(x =>
                 {
-                    return new OrderAggregationItem
+                    var item = new OrderAggregationItem
                     {
-                        Value = v.Id,
-                        Count = (int)v.Count
+                        Value = x.Id,
+                        Count = (int)x.Count,
                     };
+
+                    if (!string.IsNullOrEmpty(languageCode) && !localizedValues.IsNullOrEmpty())
+                    {
+                        var localizedValue = localizedValues.FirstOrDefault(y => y.Key.EqualsInvariant(x.Id));
+
+                        if (localizedValue != null)
+                        {
+                            var label = new OrderAggregationLabel
+                            {
+                                Language = languageCode,
+                                Label = localizedValue.Value,
+                            };
+
+                            item.Labels = new List<OrderAggregationLabel> { label };
+                        }
+                    }
+
+                    return item;
                 })
                 .ToList();
 
