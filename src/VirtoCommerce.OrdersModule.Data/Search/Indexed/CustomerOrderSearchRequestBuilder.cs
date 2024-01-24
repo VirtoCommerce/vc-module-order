@@ -188,21 +188,16 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             {
                 var aggregationFilterFieldName = aggregation.FieldName ?? (aggregation.Filter as INamedFilter)?.FieldName;
 
-                IList<IFilter> childFilters;
-                var clonedFilter = (IFilter)filter.Clone();
-                if (clonedFilter is AndFilter andFilter)
+                var clonedFilter = filter.Clone() as AndFilter;
+                if (clonedFilter == null)
                 {
-                    childFilters = andFilter.ChildFilters;
-                }
-                else
-                {
-                    childFilters = new List<IFilter>() { clonedFilter };
+                    clonedFilter = new AndFilter { ChildFilters = new List<IFilter>() { clonedFilter } };
                 }
 
                 // For multi-select facet mechanism, we should select
                 // search request filters which do not have the same
                 // names such as aggregation filter
-                childFilters = childFilters
+                clonedFilter.ChildFilters = clonedFilter.ChildFilters
                     .Where(x =>
                     {
                         var result = true;

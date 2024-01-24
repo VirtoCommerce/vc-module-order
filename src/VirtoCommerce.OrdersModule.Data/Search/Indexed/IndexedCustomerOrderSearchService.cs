@@ -118,6 +118,8 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 }
             }
 
+            searchRequest.SetAppliedAggregations(result);
+
             return result;
         }
 
