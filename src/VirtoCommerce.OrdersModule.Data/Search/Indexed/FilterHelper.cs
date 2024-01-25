@@ -8,7 +8,7 @@ using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 {
-    public static class FilterHelper
+    public static partial class FilterHelper
     {
         public static IFilter CreateTermFilter(string fieldName, string value)
         {
@@ -54,6 +54,9 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         }
 
         #region Stringify
+        [GeneratedRegex(@"^(?<fieldName>[A-Za-z0-9\-]+)(_[A-Za-z]{3})?$", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex FieldName();
+
         public static string Stringify(this IFilter filter)
         {
             return filter.Stringify(false);
@@ -69,7 +72,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                         var fieldName = rangeFilter.FieldName;
                         if (skipCurrency)
                         {
-                            fieldName = new Regex(@"^(?<fieldName>[A-Za-z0-9\-]+)(_[A-Za-z]{3})?$", RegexOptions.IgnoreCase).Match(fieldName).Groups["fieldName"].Value;
+                            fieldName = FieldName().Match(fieldName).Groups["fieldName"].Value;
                         }
                         result = fieldName.Replace("_", "-") + "-" + string.Join("-", rangeFilter.Values.Select(Stringify));
                         break;
@@ -107,14 +110,9 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// <param name="aggregations">Calculated aggregation results</param>
         public static void SetAppliedAggregations(this SearchRequest searchRequest, IList<OrderAggregation> aggregations)
         {
-            if (searchRequest == null)
-            {
-                throw new ArgumentNullException(nameof(searchRequest));
-            }
-            if (aggregations == null)
-            {
-                throw new ArgumentNullException(nameof(aggregations));
-            }
+            ArgumentNullException.ThrowIfNull(searchRequest);
+
+            ArgumentNullException.ThrowIfNull(aggregations);
 
             foreach (var childFilter in searchRequest.GetChildFilters())
             {
@@ -134,13 +132,19 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             // TermFilter names are equal, RangeFilter can contain underscore in the name
             var fieldName = (filter as INamedFilter)?.FieldName;
             if (string.IsNullOrEmpty(fieldName))
+            {
                 return fieldName;
+            }
 
             if (fieldName.StartsWith("__"))
+            {
                 return fieldName;
+            }
 
             if (filter is RangeFilter)
+            {
                 return fieldName.Split('_')[0];
+            }
 
             return fieldName;
         }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -45,7 +44,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return Task.FromResult(request);
         }
 
-        private IList<AggregationRequest> GetAggregations(SearchCriteriaBase criteria)
+        private List<AggregationRequest> GetAggregations(SearchCriteriaBase criteria)
         {
             var result = new List<AggregationRequest>();
 
@@ -182,9 +181,9 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        public static IList<AggregationRequest> ApplyMultiSelectFacetSearch(IList<AggregationRequest> aggregations, IFilter filter)
+        public static List<AggregationRequest> ApplyMultiSelectFacetSearch(List<AggregationRequest> aggregations, IFilter filter)
         {
-            foreach (var aggregation in aggregations ?? Array.Empty<AggregationRequest>())
+            foreach (var aggregation in aggregations)
             {
                 var aggregationFilterFieldName = aggregation.FieldName ?? (aggregation.Filter as INamedFilter)?.FieldName;
 

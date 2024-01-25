@@ -25,7 +25,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         private readonly IConfiguration _configuration;
         private readonly ILocalizableSettingService _localizableSettingService;
 
-        private readonly IDictionary<string, string> _fieldBySettingName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private readonly Dictionary<string, string> _fieldBySettingName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { "status", ModuleConstants.Settings.General.OrderStatus.Name }
         };
@@ -118,7 +118,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                             Items = GetAttributeAggregationItems(rangeAggregationRequest, aggregationResponse.Values),
                         };
                     }
-                    else if (aggregationRequest is TermAggregationRequest termAggregationRequest)
+                    else if (aggregationRequest is TermAggregationRequest)
                     {
                         orderAggregation = new OrderAggregation()
                         {
@@ -137,7 +137,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             return result;
         }
 
-        private static IList<OrderAggregationItem> GetAttributeAggregationItems(RangeAggregationRequest rangeAggregationRequest, IList<AggregationResponseValue> resultValues)
+        private static List<OrderAggregationItem> GetAttributeAggregationItems(RangeAggregationRequest rangeAggregationRequest, IList<AggregationResponseValue> resultValues)
         {
             var result = new List<OrderAggregationItem>();
 
