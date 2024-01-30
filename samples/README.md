@@ -31,11 +31,9 @@ This sample demonstrates the Virto Commerce Extensibility Framework in action by
 2. Compile `VirtoCommerce.OrdersModule2.Web`.
 3. Build Admin UI code by running the following commands in the `VirtoCommerce.OrdersModule2.Web` folder:
 
-
 ```cmd
 npm ci
 ```
-
 
 ```cmd
 npm run webpack:dev
@@ -51,3 +49,13 @@ mklink /D "c:\vc-platform-3-demo\platform\modules\Order.Ext" "c:\Projects\git\Vi
 6. Run Virto Commerce Platform and enjoy the Virto Commerce Extensibility Framework.
 
 ## Screenshots
+
+![image](https://github.com/VirtoCommerce/vc-module-order/assets/7639413/e9c320e7-611b-47ad-9df5-e08e4862c7e1)
+![image](https://github.com/VirtoCommerce/vc-module-order/assets/7639413/ec24497d-62e4-4622-ace3-60f0e220a0d2)
+![image](https://github.com/VirtoCommerce/vc-module-order/assets/7639413/03338cd7-02ab-4473-bde2-5712a09c4b16)
+![image](https://github.com/VirtoCommerce/vc-module-order/assets/7639413/70dbd44c-19d1-4db2-9842-802a0b4471a7)
+![image](https://github.com/VirtoCommerce/vc-module-order/assets/7639413/fe10182c-b304-4dac-a492-57fa44ba3167)
+
+
+
+
