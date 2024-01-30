@@ -49,11 +49,12 @@ namespace VirtoCommerce.OrdersModule2.Web
             AbstractTypeFactory<PermissionScope>.RegisterType<OrderSelectedStatusScope>();
 
             var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
-            permissionsProvider.WithAvailabeScopesForPermissions(new[]
-            {
+            permissionsProvider.WithAvailabeScopesForPermissions(
+            [
                 // Permission list
                 OrdersModule.Core.ModuleConstants.Security.Permissions.Read
-            }, new OrderSelectedStatusScope());
+            ],
+            new OrderSelectedStatusScope());
 
             AbstractTypeFactory<IOperation>.OverrideType<CustomerOrder, CustomerOrder2>();
             AbstractTypeFactory<CustomerOrderEntity>.OverrideType<CustomerOrderEntity, CustomerOrder2Entity>();
