@@ -50,7 +50,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     {
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ICustomerOrderSearchService _searchService;
-        private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
+        private readonly ITenantUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IStoreService _storeService;
         private readonly IPlatformMemoryCache _platformMemoryCache;
         private readonly ICustomerOrderStatisticService _customerOrderStatisticService;
@@ -73,7 +73,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
               ICustomerOrderService customerOrderService
             , ICustomerOrderSearchService searchService
             , IStoreService storeService
-            , IUniqueNumberGenerator numberGenerator
+            , ITenantUniqueNumberGenerator numberGenerator
             , IPlatformMemoryCache platformMemoryCache
             , ICustomerOrderStatisticService customerOrderStatisticService
             , ICustomerOrderBuilder customerOrderBuilder
@@ -423,7 +423,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             retVal.Status = "New";
 
             var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate);
-            retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+            retVal.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
             return Ok(retVal);
         }
@@ -456,7 +456,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             retVal.Status = retVal.PaymentStatus.ToString();
 
             var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
-            retVal.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+            retVal.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate.ToString());
             return Ok(retVal);
         }
 
