@@ -359,7 +359,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
 
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate);
-            capture.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate.ToString());
+            capture.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
             capture.Amount = request.Amount ?? payment.Sum;
             capture.Comment = request.CaptureDetails;
