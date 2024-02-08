@@ -459,7 +459,7 @@
       "title": "Order payment number template"
     },
     "Order.RefundNewNumberTemplate": {
-      "description": "Used to generate new Customer Order IDs, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "description": "Used to generate new Refund Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
       "title": "Order refund number template"
     },
     "Order.SendOrderNotifications": {
