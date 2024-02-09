@@ -45,7 +45,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<IPaymentMethodsRegistrar> _paymentMethodRegistrarMock;
         private readonly Mock<IPaymentMethodsSearchService> _paymentMethodsSearchService;
         private readonly Mock<ICustomerOrderTotalsCalculator> _customerOrderTotalsCalculatorMock;
-        private readonly Mock<IUniqueNumberGenerator> _uniqueNumberGeneratorMock;
+        private readonly Mock<ITenantUniqueNumberGenerator> _uniqueNumberGeneratorMock;
         private readonly Mock<IDynamicPropertyService> _dynamicPropertyServiceMock;
         private readonly IPlatformMemoryCache _platformMemoryCache;
         private readonly Mock<IChangeLogService> _changeLogServiceMock;
@@ -64,7 +64,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _paymentMethodRegistrarMock = new Mock<IPaymentMethodsRegistrar>();
             _paymentMethodsSearchService = new Mock<IPaymentMethodsSearchService>();
             _paymentMethodsSearchService.Setup(s => s.SearchAsync(It.IsAny<PaymentMethodsSearchCriteria>(), It.IsAny<bool>())).ReturnsAsync(new PaymentMethodsSearchResult());
-            _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
+            _uniqueNumberGeneratorMock = new Mock<ITenantUniqueNumberGenerator>();
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
             _dynamicPropertyServiceMock = new Mock<IDynamicPropertyService>();
             _cacheEntryMock = new Mock<ICacheEntry>();

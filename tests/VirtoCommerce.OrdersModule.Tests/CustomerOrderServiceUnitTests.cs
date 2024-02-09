@@ -32,7 +32,7 @@ namespace VirtoCommerce.OrdersModule.Tests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
         private readonly Mock<IOrderRepository> _orderRepositoryMock;
-        private readonly Mock<IUniqueNumberGenerator> _uniqueNumberGeneratorMock;
+        private readonly Mock<ITenantUniqueNumberGenerator> _uniqueNumberGeneratorMock;
         private readonly Mock<IStoreService> _storeServiceMock;
         private readonly Mock<IEventPublisher> _eventPublisherMock;
         private readonly Mock<ICustomerOrderTotalsCalculator> _customerOrderTotalsCalculatorMock;
@@ -43,7 +43,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _orderRepositoryMock = new Mock<IOrderRepository>();
-            _uniqueNumberGeneratorMock = new Mock<IUniqueNumberGenerator>();
+            _uniqueNumberGeneratorMock = new Mock<ITenantUniqueNumberGenerator>();
             _storeServiceMock = new Mock<IStoreService>();
             _eventPublisherMock = new Mock<IEventPublisher>();
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
