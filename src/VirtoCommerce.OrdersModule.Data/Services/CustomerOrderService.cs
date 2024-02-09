@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly Func<IOrderRepository> _repositoryFactory;
         private readonly IPlatformMemoryCache _platformMemoryCache;
         private readonly IEventPublisher _eventPublisher;
-        private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
+        private readonly ITenantUniqueNumberGenerator _uniqueNumberGenerator;
         private readonly IStoreService _storeService;
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
@@ -41,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             Func<IOrderRepository> repositoryFactory,
             IPlatformMemoryCache platformMemoryCache,
             IEventPublisher eventPublisher,
-            IUniqueNumberGenerator uniqueNumberGenerator,
+            ITenantUniqueNumberGenerator uniqueNumberGenerator,
             IStoreService storeService,
             ICustomerOrderTotalsCalculator totalsCalculator,
             IShippingMethodsSearchService shippingMethodsSearchService,
@@ -245,7 +245,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         numberTemplate = store.Settings.GetValue<string>(descriptor);
                     }
 
-                    operation.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate);
+                    operation.Number = _uniqueNumberGenerator.GenerateNumber(order.StoreId, numberTemplate);
                 }
             }
         }
