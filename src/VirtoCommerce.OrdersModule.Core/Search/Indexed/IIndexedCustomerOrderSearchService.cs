@@ -5,6 +5,6 @@ namespace VirtoCommerce.OrdersModule.Core.Search.Indexed
 {
     public interface IIndexedCustomerOrderSearchService
     {
-        Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria);
+        Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria);
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SearchModule.Core.Exceptions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
@@ -21,16 +23,28 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         private readonly ISearchProvider _searchProvider;
         private readonly ICustomerOrderService _customerOrderService;
         private readonly IConfiguration _configuration;
+        private readonly ILocalizableSettingService _localizableSettingService;
 
-        public IndexedCustomerOrderSearchService(ISearchRequestBuilderRegistrar searchRequestBuilderRegistrar, ISearchProvider searchProvider, ICustomerOrderService customerOrderService, IConfiguration configuration)
+        private readonly Dictionary<string, string> _fieldBySettingName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "status", ModuleConstants.Settings.General.OrderStatus.Name }
+        };
+
+        public IndexedCustomerOrderSearchService(
+            ISearchRequestBuilderRegistrar searchRequestBuilderRegistrar,
+            ISearchProvider searchProvider,
+            ICustomerOrderService customerOrderService,
+            IConfiguration configuration,
+            ILocalizableSettingService localizableSettingService)
         {
             _searchRequestBuilderRegistrar = searchRequestBuilderRegistrar;
             _searchProvider = searchProvider;
             _customerOrderService = customerOrderService;
             _configuration = configuration;
+            _localizableSettingService = localizableSettingService;
         }
 
-        public virtual async Task<CustomerOrderSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
+        public virtual async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
         {
             if (!_configuration.IsOrderFullTextSearchEnabled())
             {
@@ -42,18 +56,19 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             var response = await _searchProvider.SearchAsync(ModuleConstants.OrderIndexDocumentType, request);
 
-            var result = await ConvertResponseAsync(response, criteria);
+            var result = await ConvertResponseAsync(response, criteria, request);
             return result;
         }
 
-        protected virtual async Task<CustomerOrderSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria)
+        protected virtual async Task<CustomerOrderIndexedSearchResult> ConvertResponseAsync(SearchResponse response, CustomerOrderIndexedSearchCriteria criteria, SearchRequest searchRequest)
         {
-            var result = AbstractTypeFactory<CustomerOrderSearchResult>.TryCreateInstance();
+            var result = AbstractTypeFactory<CustomerOrderIndexedSearchResult>.TryCreateInstance();
 
             if (response != null)
             {
                 result.TotalCount = (int)response.TotalCount;
                 result.Results = await ConvertDocumentsAsync(response.Documents, criteria);
+                result.Aggregations = await ConvertAggregationsAsync(response.Aggregations, searchRequest, criteria);
             }
 
             return result;
@@ -79,6 +94,111 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 .ToArray();
 
             result.AddRange(orders);
+
+            return result;
+        }
+
+        private async Task<IList<OrderAggregation>> ConvertAggregationsAsync(IList<AggregationResponse> aggregationResponses, SearchRequest searchRequest, CustomerOrderIndexedSearchCriteria criteria)
+        {
+            var result = new List<OrderAggregation>();
+
+            foreach (var aggregationRequest in searchRequest.Aggregations)
+            {
+                var aggregationResponse = aggregationResponses.FirstOrDefault(x => x.Id == aggregationRequest.Id);
+                if (aggregationResponse != null)
+                {
+                    var orderAggregation = default(OrderAggregation);
+
+                    if (aggregationRequest is RangeAggregationRequest rangeAggregationRequest)
+                    {
+                        orderAggregation = new OrderAggregation()
+                        {
+                            AggregationType = "range",
+                            Field = aggregationRequest.FieldName,
+                            Items = GetAttributeAggregationItems(rangeAggregationRequest, aggregationResponse.Values),
+                        };
+                    }
+                    else if (aggregationRequest is TermAggregationRequest)
+                    {
+                        orderAggregation = new OrderAggregation()
+                        {
+                            AggregationType = "attr",
+                            Field = aggregationRequest.FieldName,
+                            Items = await GetAttributeAggregationItemsAsync(aggregationRequest.FieldName, criteria.LanguageCode, aggregationResponse.Values),
+                        };
+                    }
+
+                    result.Add(orderAggregation);
+                }
+            }
+
+            searchRequest.SetAppliedAggregations(result);
+
+            return result;
+        }
+
+        private static List<OrderAggregationItem> GetAttributeAggregationItems(RangeAggregationRequest rangeAggregationRequest, IList<AggregationResponseValue> resultValues)
+        {
+            var result = new List<OrderAggregationItem>();
+
+            foreach (var requestValue in rangeAggregationRequest.Values)
+            {
+                var resultValue = resultValues.FirstOrDefault(x => x.Id == requestValue.Id);
+                if (resultValue != null)
+                {
+                    var aggregationItem = new OrderAggregationItem
+                    {
+                        Value = resultValue.Id,
+                        Count = (int)resultValue.Count,
+                        RequestedLowerBound = requestValue.Lower,
+                        RequestedUpperBound = requestValue.Upper,
+                        IncludeLower = requestValue.IncludeLower,
+                        IncludeUpper = requestValue.IncludeUpper,
+                    };
+
+                    result.Add(aggregationItem);
+                }
+            }
+
+            return result;
+        }
+
+        private async Task<IList<OrderAggregationItem>> GetAttributeAggregationItemsAsync(string fieldName, string languageCode, IList<AggregationResponseValue> aggregationResponseValues)
+        {
+            IList<KeyValue> localizedValues = null;
+            if (!string.IsNullOrEmpty(languageCode) && _fieldBySettingName.TryGetValue(fieldName, out var settingName))
+            {
+                localizedValues = await _localizableSettingService.GetValuesAsync(ModuleConstants.Settings.General.OrderStatus.Name, languageCode);
+            }
+
+            var result = aggregationResponseValues
+                .Select(x =>
+                {
+                    var item = new OrderAggregationItem
+                    {
+                        Value = x.Id,
+                        Count = (int)x.Count,
+                    };
+
+                    if (!string.IsNullOrEmpty(languageCode) && !localizedValues.IsNullOrEmpty())
+                    {
+                        var localizedValue = localizedValues.FirstOrDefault(y => y.Key.EqualsInvariant(x.Id));
+
+                        if (localizedValue != null)
+                        {
+                            var label = new OrderAggregationLabel
+                            {
+                                Language = languageCode,
+                                Label = localizedValue.Value,
+                            };
+
+                            item.Labels = new List<OrderAggregationLabel> { label };
+                        }
+                    }
+
+                    return item;
+                })
+                .ToList();
 
             return result;
         }

@@ -1,8 +1,7 @@
-using VirtoCommerce.Platform.Core.Common;
-
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
 {
-    public class CustomerOrderIndexedSearchCriteria : SearchCriteriaBase
+    public class CustomerOrderIndexedSearchCriteria : CustomerOrderSearchCriteria
     {
+        public string Facet { get; set; }
     }
 }

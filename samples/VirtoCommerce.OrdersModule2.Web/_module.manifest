@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <module>
     <id>VirtoCommerce.Orders2</id>
-    <version>3.400.0</version>
+    <version>3.800.0</version>
     <version-tag>demo</version-tag>
-    <platformVersion>3.413.0</platformVersion>
+    <platformVersion>3.800.0</platformVersion>
     <dependencies>
-        <dependency id="VirtoCommerce.Orders" version="3.414.0" />
+        <dependency id="VirtoCommerce.Orders" version="3.800.0" />
     </dependencies>
 
     <title>Order extension sample module</title>
@@ -19,7 +19,7 @@
     <projectUrl>http://virtocommerce.com/</projectUrl>
     <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
     <releaseNotes>First version.</releaseNotes>
-    <copyright>Copyright © 2011-2023 Virto Commerce. All rights reserved</copyright>
+    <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
     <tags>orders</tags>
 
     <assemblyFile>VirtoCommerce.OrdersModule2.Web.dll</assemblyFile>
