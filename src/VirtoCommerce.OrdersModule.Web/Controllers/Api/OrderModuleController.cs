@@ -456,7 +456,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             retVal.Status = retVal.PaymentStatus.ToString();
 
             var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
-            retVal.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate.ToString());
+            retVal.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
             return Ok(retVal);
         }
 
