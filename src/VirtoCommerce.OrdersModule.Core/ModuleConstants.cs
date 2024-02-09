@@ -9,7 +9,9 @@ namespace VirtoCommerce.OrdersModule.Core
     [ExcludeFromCodeCoverage]
     public class ModuleConstants
     {
-        public static string OrderIndexDocumentType { get; } = nameof(CustomerOrder);
+        public const string OrderIndexDocumentTypeConstant = nameof(CustomerOrder);
+
+        public static string OrderIndexDocumentType { get; } = OrderIndexDocumentTypeConstant;
 
         public static class Security
         {
