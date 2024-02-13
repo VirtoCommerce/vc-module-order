@@ -258,8 +258,13 @@ angular.module(moduleName, [
                                 isReadOnly: true,
                                 title: "orders.blades.capture-detail.labels.transactionId",
                                 valueType: "ShortText"
-                            }
-                            ,
+                            },
+                            {
+                                name: 'closeTransaction',
+                                isReadOnly: true,
+                                title: 'orders.blades.capture-details.labels.closeTransaction',
+                                valueType: "ShortText"
+                            },
                             {
                                 name: 'outerId',
                                 isReadOnly: true,
