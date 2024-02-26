@@ -68,21 +68,21 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 throw new OperationCanceledException($"{nameof(PaymentIn.OrderId)} must be set.");
             }
-            var oderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
-            if (oderIds.Any())
+            var orderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
+            if (orderIds.Any())
             {
-                var ordersAggregates = await _customerOrderService.GetAsync(oderIds);
+                var ordersAggregates = await _customerOrderService.GetAsync(orderIds);
                 foreach (var payment in payments)
                 {
                     var orderAggregateRoot = ordersAggregates.FirstOrDefault(x => x.Id == payment.OrderId);
                     if (orderAggregateRoot != null)
                     {
-                        orderAggregateRoot.InPayments.Remove(payment);
-                        orderAggregateRoot.InPayments.Add(payment);
+                        action(orderAggregateRoot, payment);
                     }
                 }
                 await _customerOrderService.SaveChangesAsync(ordersAggregates.ToArray());
             }
+            ClearCache(payments);
         }
 
         protected override Task<IList<PaymentInEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
