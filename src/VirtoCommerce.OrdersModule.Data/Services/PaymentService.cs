@@ -69,7 +69,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 throw new OperationCanceledException($"{nameof(PaymentIn.OrderId)} must be set.");
             }
             var orderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
-            if (orderIds.Any())
+            if (orderIds.Length > 0)
             {
                 var ordersAggregates = await _customerOrderService.GetAsync(orderIds);
                 foreach (var payment in payments)
