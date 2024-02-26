@@ -7,6 +7,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
@@ -87,6 +88,21 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override Task<IList<PaymentInEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids);
+        }
+
+        protected override void ClearCache(IList<PaymentIn> models)
+        {
+            base.ClearCache(models);
+
+            // Clear order cache
+            GenericSearchCachingRegion<CustomerOrder>.ExpireRegion();
+
+            var orderIds = models.Select(x => x.OrderId).Distinct().ToArray();
+
+            foreach (var id in orderIds)
+            {
+                GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(id);
+            }
         }
     }
 }
