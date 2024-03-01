@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'virtoCommerce.orderModule.securityAccounts', 'platformWebApp.authService',
-        function ($scope, $window, bladeNavigationService, dialogService, members, memberTypesResolverService, securityAccounts, authService) {
+    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'platformWebApp.authService',
+        function ($scope, $window, bladeNavigationService, dialogService, members, memberTypesResolverService, authService) {
             var blade = $scope.blade;
             blade.currentEntityId = blade.customerOrder.id;
 
@@ -42,20 +42,17 @@ angular.module('virtoCommerce.orderModule')
 
             blade.openCustomerDetails = function () {
                 if (blade.customerOrder.customerId) {
-                    securityAccounts.get({ id: blade.customerOrder.customerId }, function (account) {
-                        var contactId = (account && account.memberId) ? account.memberId : blade.customerOrder.customerId;
-                        members.get({ id: contactId }, function (member) {
-                            if (member && member.id) {
-                                showCustomerDetailBlade(member);
-                            }
-                        });
+                    members.getByUserId({ userId: blade.customerOrder.customerId }, function (member) {
+                        if (member && member.id) {
+                            showCustomerDetailBlade(member);
+                        }
                     });
                 }
             };
 
             blade.openOrganizationDetails = function () {
                 if (blade.customerOrder.organizationId) {
-                        members.get({ id: organizationId }, function (member) {
+                    members.get({ id: blade.customerOrder.organizationId }, function (member) {
                             if (member && member.id) {
                                 showCustomerDetailBlade(member);
                             }
