@@ -7,6 +7,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
+using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
@@ -67,26 +68,41 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 throw new OperationCanceledException($"{nameof(PaymentIn.OrderId)} must be set.");
             }
-            var oderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
-            if (oderIds.Any())
+            var orderIds = payments.Select(x => x.OrderId).Distinct().ToArray();
+            if (orderIds.Length > 0)
             {
-                var ordersAggregates = await _customerOrderService.GetAsync(oderIds);
+                var ordersAggregates = await _customerOrderService.GetAsync(orderIds);
                 foreach (var payment in payments)
                 {
                     var orderAggregateRoot = ordersAggregates.FirstOrDefault(x => x.Id == payment.OrderId);
                     if (orderAggregateRoot != null)
                     {
-                        orderAggregateRoot.InPayments.Remove(payment);
-                        orderAggregateRoot.InPayments.Add(payment);
+                        action(orderAggregateRoot, payment);
                     }
                 }
                 await _customerOrderService.SaveChangesAsync(ordersAggregates.ToArray());
             }
+            ClearCache(payments);
         }
 
         protected override Task<IList<PaymentInEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids);
+        }
+
+        protected override void ClearCache(IList<PaymentIn> models)
+        {
+            base.ClearCache(models);
+
+            // Clear order cache
+            GenericSearchCachingRegion<CustomerOrder>.ExpireRegion();
+
+            var orderIds = models.Select(x => x.OrderId).Distinct().ToArray();
+
+            foreach (var id in orderIds)
+            {
+                GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(id);
+            }
         }
     }
 }
