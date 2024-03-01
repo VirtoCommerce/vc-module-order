@@ -1,5 +1,7 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService', 'platformWebApp.authService',
+    .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService',
+        'platformWebApp.dialogService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
+        'platformWebApp.authService',
         function ($scope, $window, bladeNavigationService, dialogService, members, memberTypesResolverService, authService) {
             var blade = $scope.blade;
             blade.currentEntityId = blade.customerOrder.id;

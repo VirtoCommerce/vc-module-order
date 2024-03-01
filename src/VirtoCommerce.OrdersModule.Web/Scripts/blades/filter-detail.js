@@ -1,5 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.customerModule.members', '$translate', 'platformWebApp.metaFormsService', 
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.customerModule.members',
+        '$translate', 'platformWebApp.metaFormsService',
         function ($scope, $localStorage, members, $translate, metaFormsService) {
         var blade = $scope.blade;
 
