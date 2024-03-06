@@ -5,7 +5,7 @@
                 <div class="status" ng-bind="blade.currentEntity.status | settingTranslate:'Order.Status'"></div>
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
-            <form name="formScope" ng-controller="virtoCommerce.orderModule.customerOrderDetailController">
+            <form name="formScope" class="form" ng-controller="virtoCommerce.orderModule.customerOrderDetailController">
                 <fieldset ng-disabled="blade.isLocked">
                     <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2" ng-init="setForm(formScope)"></va-metaform>
                 </fieldset>
