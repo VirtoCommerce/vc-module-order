@@ -25,7 +25,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IPaymentService _paymentService;
         private readonly IStoreService _storeService;
         private readonly IValidator<OrderPaymentInfo> _validator;
-        private readonly IUniqueNumberGenerator _uniqueNumberGenerator;
+        private readonly ITenantUniqueNumberGenerator _uniqueNumberGenerator;
 
         protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
         protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
@@ -38,7 +38,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             IPaymentService paymentService,
             IStoreService storeService,
             IValidator<OrderPaymentInfo> validator,
-            IUniqueNumberGenerator uniqueNumberGenerator)
+            ITenantUniqueNumberGenerator uniqueNumberGenerator)
         {
             _customerOrderService = customerOrderService;
             _paymentService = paymentService;
@@ -322,7 +322,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
 
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.RefundNewNumberTemplate);
-            refund.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+            refund.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
             refund.Amount = request.Amount ?? payment.Sum;
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
@@ -359,7 +359,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
 
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate);
-            capture.Number = _uniqueNumberGenerator.GenerateNumber(numberTemplate.ToString());
+            capture.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
             capture.Amount = request.Amount ?? payment.Sum;
             capture.Comment = request.CaptureDetails;

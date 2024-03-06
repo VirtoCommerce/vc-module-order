@@ -1,6 +1,7 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.customerModule.members', '$translate', 'platformWebApp.metaFormsService', 'platformWebApp.accounts',
-        function ($scope, $localStorage, members, $translate, metaFormsService, securityAccounts) {
+    .controller('virtoCommerce.orderModule.filterDetailController', ['$scope', '$localStorage', 'virtoCommerce.customerModule.members',
+        '$translate', 'platformWebApp.metaFormsService',
+        function ($scope, $localStorage, members, $translate, metaFormsService) {
         var blade = $scope.blade;
 
         blade.metaFields = blade.metaFields ? blade.metaFields : metaFormsService.getMetaFields('orderFilterDetail');
@@ -37,9 +38,10 @@ angular.module('virtoCommerce.orderModule')
         
         $scope.saveChanges = function () {
             if (blade.currentEntity.customerId) {
-                // Search for accounts by memberId (because customerID in order is an account)
-                securityAccounts.search({ MemberIds: [blade.currentEntity.customerId] }, function (data) {
-                    blade.currentEntity.customerIds = _.pluck(data.users, 'id');
+                members.get({ id: blade.currentEntity.customerId }, function (member) {
+                    blade.currentEntity.customerIds = member.securityAccounts.map(function (account) {
+                        return account.id;
+                    });
                     $scope.applyCriteria();
                 });
             }

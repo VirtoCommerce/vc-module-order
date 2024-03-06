@@ -447,20 +447,20 @@
       "description": "Refund statuses"
     },
     "Order.CustomerOrderNewNumberTemplate": {
-      "description": "This template will be used to generate the ID for a new Customer Order. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
-      "title": "Order ID template"
+      "description": "Used to generate new Customer Order Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order number template"
     },
     "Order.ShipmentNewNumberTemplate": {
-      "description": "This template will be used to generate the ID for a new Shipment. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
-      "title": "Order shipment ID template"
+      "description": "Used to generate new Shipment Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order shipment number template"
     },
     "Order.PaymentInNewNumberTemplate": {
-      "description": "This template will be used to generate the ID for a new incoming Payment. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
-      "title": "Order payment ID template"
+      "description": "Used to generate new Payment Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order payment number template"
     },
     "Order.RefundNewNumberTemplate": {
-      "description": "This template will be used to generate the ID for a new order Refund. Parameters: 0: Date and time (UTC) the ID was generated at, 1: Order ID",
-      "title": "Order refund ID template"
+      "description": "Used to generate new Refund Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order refund number template"
     },
     "Order.SendOrderNotifications": {
       "description": "Sends a notification when the order status changes",
