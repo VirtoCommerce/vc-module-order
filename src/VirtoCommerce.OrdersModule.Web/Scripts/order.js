@@ -279,6 +279,7 @@ angular.module(moduleName, [
                 var shipmentOperation = {
                     type: 'Shipment',
                     description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
+                    treeTemplateUrl: 'shipmentOperationDefault.tpl.html',
                     detailBlade: {
                         template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
                         metaFields: [
