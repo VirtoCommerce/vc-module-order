@@ -13,7 +13,7 @@
                 <i class="tree-ico fa fa-info-circle"></i>
                 {{node.operation.operationType +' #'+node.operation.number}}
             </div>
-            <div class="tree-el __date">
+            <div class="tree-el __date" ng-if="node.operation.createdDate">
                 <i class="tree-ico fa fa-calendar"></i>
                 {{node.operation.createdDate | amParse | date}}
             </div>
@@ -38,7 +38,7 @@
                 <i class="tree-ico fa fa-info-circle"></i>
                 {{node.operation.operationType +' #'+node.operation.number}}
             </div>
-            <div class="tree-el __date">
+            <div class="tree-el __date" ng-if="node.operation.createdDate">
                 <i class="tree-ico fa fa-calendar"></i>
                 {{node.operation.createdDate | amParse | date}}
             </div>
