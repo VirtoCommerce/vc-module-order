@@ -20,9 +20,14 @@ angular.module('virtoCommerce.orderModule')
                 foundField.isReadOnly = false;
             }
 
-            customerOrders.getNewShipment({ id: blade.customerOrder.id }, blade.initialize, function (error) {
-                blade.isLocked = true;
-                bladeNavigationService.setError(error.data, blade);
+            customerOrders.getNewShipment({ id: blade.customerOrder.id },
+                function (data) {
+                    data.createdDate = null;
+                    blade.initialize(data);
+                },
+                function (error) {
+                    blade.isLocked = true;
+                    bladeNavigationService.setError(error.data, blade);
             });
         } else {
             blade.isLocked = !blade.currentEntity || blade.currentEntity.status === 'Send'
@@ -108,6 +113,7 @@ angular.module('virtoCommerce.orderModule')
             if (!blade.currentEntity) {
                 return;
             }
+
             blade.isLocked = blade.currentEntity.status === 'Send' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
         };
 
