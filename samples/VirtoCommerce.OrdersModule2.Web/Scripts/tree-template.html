@@ -1,11 +1,11 @@
-﻿<script type="text/ng-template" id="invoiceOperation.tpl.html">
+<script type="text/ng-template" id="invoiceOperation.tpl.html">
     <div class="tree-block" ng-click="selectOperation(node)" ng-class="{'__selected': currentOperationId == node.operation.id}" style="background: lightgreen">
         <div class="inner">
             <div class="tree-el __title">
                 <i class="tree-ico fa fa-info-circle"></i>
                 {{node.operation.operationType +' #'+node.operation.number}}
             </div>
-            <div class="tree-el __date">
+            <div class="tree-el __date" ng-if="node.operation.createdDate">
                 <i class="tree-ico fa fa-calendar"></i>
                 {{node.operation.createdDate | date}}
             </div>
