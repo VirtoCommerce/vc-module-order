@@ -11,6 +11,7 @@ angular.module(moduleName, [])
             function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService, gridOptionExtension) {
                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                 if (foundTemplate) {
+                    foundTemplate.isLocked = function () { return false; }
                     foundTemplate.detailBlade.metaFields.push(
                         {
                             name: 'newField',

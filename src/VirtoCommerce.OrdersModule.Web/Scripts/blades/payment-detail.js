@@ -6,7 +6,8 @@ angular.module('virtoCommerce.orderModule')
 		'platformWebApp.authService',
 		'virtoCommerce.paymentModule.paymentMethods',
 		'virtoCommerce.customerModule.members',
-		function ($scope, bladeNavigationService, customerOrders, authService, paymentMethods, members) {
+		'virtoCommerce.orderModule.knownOperations',
+		function ($scope, bladeNavigationService, customerOrders, authService, paymentMethods, members, knownOperations) {
 			var blade = $scope.blade;
 			blade.isVisiblePrices = authService.checkPermission('order:read_prices');
 			blade.paymentMethods = [];
@@ -33,11 +34,8 @@ angular.module('virtoCommerce.orderModule')
 						blade.isLocked = true;
 						bladeNavigationService.setError(error.data, blade);
 				});
-			} else {
-				blade.isLocked = !blade.currentEntity || (blade.currentEntity.status === 'Paid'
-					|| blade.currentEntity.cancelledState === 'Requested'
-					|| blade.currentEntity.cancelledState === 'Completed'
-					|| blade.currentEntity.isCancelled);
+            } else {
+                blade.isLocked = knownOperations.isLocked("PaymentIn", blade.currentEntity);
 
 				blade.title = 'orders.blades.payment-detail.title';
 				blade.titleValues = { number: blade.currentEntity.number };
@@ -146,7 +144,7 @@ angular.module('virtoCommerce.orderModule')
 				if (!blade.currentEntity) {
 					return;
 				}
-				blade.isLocked = blade.currentEntity.status === 'Paid' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
+				blade.isLocked = knownOperations.isLocked("PaymentIn", blade.currentEntity);
 			};
 
 			blade.customInitialize();
