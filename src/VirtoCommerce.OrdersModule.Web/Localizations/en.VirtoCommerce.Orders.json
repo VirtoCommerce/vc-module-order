@@ -49,6 +49,10 @@
         "labels": {
           "new-filter": "Add new filter",
           "unnamed-filter": "Unnamed filter",
+          "last-day-filter": "Last 24 hours",
+          "last-week-filter": "Last week",
+          "last-month-filter": "Last month",
+          "last-year-filter": "Last year",
           "number": "Order number",
           "customer": "Customer",
           "confirmed": "Confirmed",
