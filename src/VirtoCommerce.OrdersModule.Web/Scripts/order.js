@@ -47,6 +47,7 @@ angular.module(moduleName, [
                 id: 'operationDetail',
                 knownChildrenOperations: [],
                 metaFields: [],
+                isLocked: false,
                 controller: 'virtoCommerce.orderModule.operationDetailController'
             }, copy.detailBlade);
 
@@ -57,9 +58,18 @@ angular.module(moduleName, [
             return map[type];
         }
 
+        function isLocked(type, entity) {
+            var operation = getOperation(type);
+            if (typeof operation.isLocked === "function" && entity) {
+                return operation.isLocked(entity);
+            }
+            return false;
+        }
+
         return {
             registerOperation: registerOperation,
-            getOperation: getOperation
+            getOperation: getOperation,
+            isLocked: isLocked
         };
     }])
     .run(
@@ -108,6 +118,11 @@ angular.module(moduleName, [
                 knownOperations.registerOperation({
                     type: 'CustomerOrder',
                     treeTemplateUrl: 'orderOperationDefault.tpl.html',
+                    isLocked: function (entity) {
+                        return entity.status === 'Completed' ||
+                            entity.cancelledState === 'Completed' ||
+                            entity.isCancelled;
+                    },
                     detailBlade: {
                         id: 'orderDetail',
                         template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-detail.tpl.html',
@@ -169,7 +184,12 @@ angular.module(moduleName, [
                 var paymentInOperation = {
                     type: 'PaymentIn',
                     description: 'orders.blades.newOperation-wizard.menu.payment-operation.description',
-                    // treeTemplateUrl: 'orderOperationDefault.tpl.html',
+                    isLocked: function (entity) {
+                        return entity.status === 'Paid'
+                            || entity.cancelledState === 'Requested'
+                            || entity.cancelledState === 'Completed'
+                            || entity.isCancelled;
+                    },
                     detailBlade: {
                         template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/payment-detail.tpl.html',
                         metaFields: [
@@ -280,6 +300,12 @@ angular.module(moduleName, [
                     type: 'Shipment',
                     description: 'orders.blades.newOperation-wizard.menu.shipment-operation.description',
                     treeTemplateUrl: 'shipmentOperationDefault.tpl.html',
+                    isLocked: function (entity) {
+                        return entity.status === 'Send'
+                            || entity.cancelledState === 'Completed'
+                            || entity.cancelledState === 'Requested'
+                            || entity.isCancelled;
+                    },
                     detailBlade: {
                         template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/shipment-detail.tpl.html',
                         metaFields: [
