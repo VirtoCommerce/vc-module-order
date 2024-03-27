@@ -161,6 +161,9 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
     if (!$localStorage.orderSearchFilters) {
         $localStorage.orderSearchFilters = [{ name: 'orders.blades.customerOrder-list.labels.new-filter' }];
     }
+
+    addPredefinedFilters($localStorage.orderSearchFilters);
+
     if ($localStorage.orderSearchFilterId) {
         filter.current = _.findWhere($localStorage.orderSearchFilters, { id: $localStorage.orderSearchFilterId });
     }
@@ -241,6 +244,55 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         $scope.useIndexedSearch = data.result;
     });
 
+    function buildPredefinedFilters() {
+        var currentDate = new Date();
+        var day = 24 * 60 * 60 * 1000;
+        var days7 = 7 * day;
+        var days30 = 30 * day;
+        var days365 = 365 * day;
+        var currentDateUtcString = currentDate.toISOString();
+
+        return [
+            {
+                name: 'orders.blades.customerOrder-list.labels.last-day-filter',
+                id: 'last-day',
+                startDate: new Date(currentDate.getTime() - day).toISOString(),
+                endDate: currentDateUtcString
+            },
+            {
+                name: 'orders.blades.customerOrder-list.labels.last-week-filter',
+                id: 'last-week',
+                startDate: new Date(currentDate.getTime() - days7).toISOString(),
+                endDate: currentDateUtcString
+            },
+            {
+                name: 'orders.blades.customerOrder-list.labels.last-month-filter',
+                id: 'last-month',
+                startDate: new Date(currentDate.getTime() - days30).toISOString(),
+                endDate: currentDateUtcString
+            },
+            {
+                name: 'orders.blades.customerOrder-list.labels.last-year-filter',
+                id: 'last-year',
+                startDate: new Date(currentDate.getTime() - days365).toISOString(),
+                endDate: currentDateUtcString
+            }
+        ];
+    }
+
+    function addPredefinedFilters(baseFilters) {
+        var predefinedFilters = buildPredefinedFilters();
+
+        // add or replace predefinded filters in base filters
+        for (var i = 0; i < predefinedFilters.length; i++) {
+            var predefinedFilter = _.findWhere(baseFilters, { id: predefinedFilters[i].id });
+            if (predefinedFilter) {
+                angular.extend(predefinedFilter, predefinedFilters[i]);
+            } else {
+                baseFilters.push(predefinedFilters[i]);
+            }
+        }
+    }
 
     // actions on load
     //No need to call this because page 'pageSettings.currentPage' is watched!!! It would trigger subsequent duplicated req...
