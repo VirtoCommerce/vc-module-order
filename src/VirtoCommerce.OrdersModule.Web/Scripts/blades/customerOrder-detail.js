@@ -1,8 +1,8 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderDetailController', ['$scope', '$window', 'platformWebApp.bladeNavigationService',
         'platformWebApp.dialogService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerModule.memberTypesResolverService',
-        'platformWebApp.authService',
-        function ($scope, $window, bladeNavigationService, dialogService, members, memberTypesResolverService, authService) {
+        'platformWebApp.authService', 'virtoCommerce.orderModule.knownOperations',
+        function ($scope, $window, bladeNavigationService, dialogService, members, memberTypesResolverService, authService, knownOperations) {
             var blade = $scope.blade;
             blade.currentEntityId = blade.customerOrder.id;
 
@@ -78,16 +78,8 @@ angular.module('virtoCommerce.orderModule')
                 if (!blade.currentEntity) {
                     return;
                 }
-                blade.isLocked = blade.currentEntity.status === 'Completed' || blade.currentEntity.cancelledState === 'Completed' || blade.currentEntity.isCancelled;
-                //var orderLineItemsBlade = {
-                //    id: 'customerOrderItems',
-                //    currentEntity: blade.currentEntity,
-                //    recalculateFn: blade.recalculate,
-                //    controller: 'virtoCommerce.orderModule.customerOrderItemsController',
-                //    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
-                //};
-                //Display order items disabled by default
-                // bladeNavigationService.showBlade(orderLineItemsBlade, blade);
+
+                blade.isLocked = knownOperations.isLocked("CustomerOrder", blade.currentEntity);
             };
 
             blade.customInitialize();
