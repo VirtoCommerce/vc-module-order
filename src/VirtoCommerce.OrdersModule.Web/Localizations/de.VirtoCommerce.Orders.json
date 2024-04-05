@@ -47,6 +47,11 @@
         "labels": {
           "new-filter": "Neuen Filter hinzufügen",
           "unnamed-filter": "Unbenannter Filter",
+          "today-filter": "Heute",
+          "last-day-filter": "Gestern",
+          "last-week-filter": "Letzte Woche",
+          "last-month-filter": "Letzter Monat",
+          "last-year-filter": "Letztes Jahr",
           "number": "Bestellnummer",
           "customer": "Kunde",
           "confirmed": "Bestätigt",
@@ -68,8 +73,8 @@
           "name": "Name des Filters",
           "name_": "Wie werden Sie diesen Filter?",
           "criteria": "Filterkriterien",
-          "from": "Erstellt von",
-          "to": "Bis erstellt"
+          "from": "Erstellt am oder nach",
+          "to": "Erstellt vor"
         },
         "placeholders": {
           "all": "Nicht angegeben"
