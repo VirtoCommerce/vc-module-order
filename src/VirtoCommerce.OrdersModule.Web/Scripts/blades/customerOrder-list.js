@@ -246,36 +246,64 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
 
     function buildPredefinedFilters() {
         var currentDate = new Date();
-        var day = 24 * 60 * 60 * 1000;
-        var days7 = 7 * day;
-        var days30 = 30 * day;
-        var days365 = 365 * day;
-        var currentDateUtcString = currentDate.toISOString();
+        currentDate.setHours(0, 0, 0, 0);
+
+        const lastDayStartDate = new Date(currentDate);
+        lastDayStartDate.setDate(currentDate.getDate() - 1);
+
+        const lastWeekStartDate = new Date(currentDate);
+        lastWeekStartDate.setDate(currentDate.getDate() - currentDate.getDay() - 6);
+
+        const lastWeekEndDate = new Date(currentDate);
+        lastWeekEndDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+
+        const lastMonthStartDate = new Date(currentDate);
+        lastMonthStartDate.setMonth(currentDate.getMonth() - 1);
+        lastMonthStartDate.setDate(1);
+
+        const lastMonthEndDate = new Date(currentDate);
+        lastMonthEndDate.setDate(1);
+
+        const lastYearStartDate = new Date(currentDate);
+        lastYearStartDate.setFullYear(currentDate.getFullYear() - 1);
+        lastYearStartDate.setMonth(0);
+        lastYearStartDate.setDate(1);
+
+        const lastYearEndDate = new Date(currentDate);
+        lastYearEndDate.setFullYear(currentDate.getFullYear());
+        lastYearEndDate.setMonth(0);
+        lastYearEndDate.setDate(1);
+
 
         return [
             {
+                name: 'orders.blades.customerOrder-list.labels.today-filter',
+                id: 'today',
+                startDate: currentDate.toISOString()
+            },
+            {
                 name: 'orders.blades.customerOrder-list.labels.last-day-filter',
                 id: 'last-day',
-                startDate: new Date(currentDate.getTime() - day).toISOString(),
-                endDate: currentDateUtcString
+                startDate: lastDayStartDate.toISOString(),
+                endDate: currentDate.toISOString()
             },
             {
                 name: 'orders.blades.customerOrder-list.labels.last-week-filter',
                 id: 'last-week',
-                startDate: new Date(currentDate.getTime() - days7).toISOString(),
-                endDate: currentDateUtcString
+                startDate: lastWeekStartDate.toISOString(),
+                endDate: lastWeekEndDate.toISOString()
             },
             {
                 name: 'orders.blades.customerOrder-list.labels.last-month-filter',
                 id: 'last-month',
-                startDate: new Date(currentDate.getTime() - days30).toISOString(),
-                endDate: currentDateUtcString
+                startDate: lastMonthStartDate.toISOString(),
+                endDate: lastMonthEndDate.toISOString()
             },
             {
                 name: 'orders.blades.customerOrder-list.labels.last-year-filter',
                 id: 'last-year',
-                startDate: new Date(currentDate.getTime() - days365).toISOString(),
-                endDate: currentDateUtcString
+                startDate: lastYearStartDate.toISOString(),
+                endDate: lastYearEndDate.toISOString()
             }
         ];
     }

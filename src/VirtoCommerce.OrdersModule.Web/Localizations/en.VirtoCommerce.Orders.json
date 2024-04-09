@@ -49,7 +49,8 @@
         "labels": {
           "new-filter": "Add new filter",
           "unnamed-filter": "Unnamed filter",
-          "last-day-filter": "Last 24 hours",
+          "today-filter": "Today",
+          "last-day-filter": "Yesterday",
           "last-week-filter": "Last week",
           "last-month-filter": "Last month",
           "last-year-filter": "Last year",
@@ -74,8 +75,8 @@
           "name": "Filter name",
           "name_": "Please give this filter a name",
           "criteria": "Filter criteria",
-          "from": "Created at",
-          "to": "Valid until"
+          "from": "Created after",
+          "to": "Created before"
         },
         "placeholders": {
           "all": "Not specified"

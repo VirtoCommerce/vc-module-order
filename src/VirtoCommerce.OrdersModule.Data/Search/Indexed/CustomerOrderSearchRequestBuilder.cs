@@ -137,7 +137,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             if (criteria.StartDate.HasValue && criteria.EndDate.HasValue)
             {
-                result.Add(FilterHelper.CreateDateRangeFilter("createddate", criteria.StartDate, null, true, true));
+                result.Add(FilterHelper.CreateDateRangeFilter("createddate", criteria.StartDate, criteria.EndDate, true, true));
             }
             else if (criteria.StartDate.HasValue)
             {
