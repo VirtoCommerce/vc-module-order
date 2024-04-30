@@ -35,7 +35,7 @@ angular.module('virtoCommerce.orderModule')
 
         function clearCreatedDateIfEmpty(items) {
             _.forEach(items, function (item) {
-                if (item.createdDate == '0001-01-01T00:00:00Z') {
+                if (item.createdDate === '0001-01-01T00:00:00Z') {
                     item.createdDate = null;
                 }
             });
