@@ -207,7 +207,9 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         $scope.gridOptions.onExpand();
     };
     blade.onCollapse = function () {
-        $scope.gridOptions.onCollapse();
+        if ($scope.gridOptions.onCollapse) {
+            $scope.gridOptions.onCollapse();
+        }
     };
 
     // ui-grid
