@@ -31,7 +31,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IStoreService _storeService;
         private readonly IMemberService _memberService;
         private readonly ISettingsManager _settingsManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Func<UserManager<ApplicationUser>> _userManagerFactory;
         private readonly ICustomerOrderService _orderService;
 
         public SendNotificationsOrderChangedEventHandler(
@@ -39,7 +39,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             IStoreService storeService,
             IMemberService memberService,
             ISettingsManager settingsManager,
-            UserManager<ApplicationUser> userManager,
+            Func<UserManager<ApplicationUser>> userManagerFactory,
             INotificationSearchService notificationSearchService,
             ICustomerOrderService orderService)
         {
@@ -48,7 +48,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _memberService = memberService;
             _settingsManager = settingsManager;
             _notificationSearchService = notificationSearchService;
-            _userManager = userManager;
+            _userManagerFactory = userManagerFactory;
             _orderService = orderService;
         }
 
@@ -281,7 +281,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             if (customer == null)
             {
                 // try to find user
-                var user = await _userManager.FindByIdAsync(customerId);
+                using var userManager = _userManagerFactory();
+                var user = await userManager.FindByIdAsync(customerId);
 
                 return user?.Email;
             }
@@ -296,7 +297,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (result == null)
             {
-                var user = await _userManager.FindByIdAsync(customerId);
+                using var userManager = _userManagerFactory();
+                var user = await userManager.FindByIdAsync(customerId);
 
                 if (user != null)
                 {
