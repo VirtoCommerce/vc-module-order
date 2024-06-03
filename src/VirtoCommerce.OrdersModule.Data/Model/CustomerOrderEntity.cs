@@ -283,8 +283,13 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
             if (order.Discounts != null)
             {
-                Discounts = new ObservableCollection<DiscountEntity>(order.Discounts.Select(x =>
-                    AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(x)));
+                Discounts = new ObservableCollection<DiscountEntity>();
+                foreach (var discount in order.Discounts)
+                {
+                    var discountEntity = AbstractTypeFactory<DiscountEntity>.TryCreateInstance().FromModel(discount);
+                    Discounts.Add(discountEntity);
+                    pkMap.AddPair(discount, discountEntity);
+                }
             }
 
             if (order.TaxDetails != null)
