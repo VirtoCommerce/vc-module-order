@@ -383,6 +383,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             retVal.GatewayCode = payment.PaymentGatewayCode;
             retVal.Sum = payment.Amount;
+            retVal.Status = PaymentStatus.New.ToString();
             retVal.PaymentStatus = PaymentStatus.New;
             retVal.VendorId = payment.VendorId;
             retVal.Comment = payment.Comment;
