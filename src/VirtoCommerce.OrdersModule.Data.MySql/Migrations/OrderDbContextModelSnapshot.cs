@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 
@@ -16,8 +17,10 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.13")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.AddressEntity", b =>
                 {
@@ -27,8 +30,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(128)");
 
                     b.Property<string>("AddressType")
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.Property<string>("City")
                         .IsRequired()
@@ -41,25 +44,25 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<string>("CountryName")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("CustomerOrderId")
                         .HasColumnType("varchar(128)");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(254)
-                        .HasColumnType("varchar(254)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Line1")
                         .HasMaxLength(2048)
@@ -74,8 +77,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(2048)");
 
                     b.Property<string>("Organization")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
+                        .HasMaxLength(512)
+                        .HasColumnType("varchar(512)");
 
                     b.Property<string>("OuterId")
                         .HasMaxLength(128)
@@ -123,7 +126,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("CancelReason")
                         .HasMaxLength(2048)
@@ -193,7 +196,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Sum")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TransactionId")
                         .IsRequired()
@@ -310,15 +313,15 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("EmployeeId")
                         .HasMaxLength(64)
@@ -330,27 +333,27 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("FeeTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("FeeTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("FeeWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("HandlingTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("HandlingTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<bool>("IsAnonymous")
                         .HasColumnType("tinyint(1)");
@@ -398,11 +401,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("PaymentTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("PaymentTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("PurchaseOrderNumber")
                         .HasMaxLength(128)
@@ -415,11 +418,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("ShippingTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("ShippingTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("ShoppingCartId")
                         .HasMaxLength(128)
@@ -440,11 +443,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("SubTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("SubTotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("SubscriptionId")
                         .HasMaxLength(64)
@@ -456,18 +459,18 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Sum")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("TaxTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("Total")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.HasKey("Id");
 
@@ -499,11 +502,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountAmountWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("LineItemId")
                         .HasColumnType("varchar(128)");
@@ -544,7 +547,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("Currency")
                         .HasMaxLength(128)
@@ -626,19 +629,19 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountAmountWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("FeeWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("FulfillmentCenterId")
                         .HasMaxLength(64)
@@ -695,7 +698,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("PriceId")
                         .HasMaxLength(128)
@@ -703,7 +706,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("PriceWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("ProductId")
                         .IsRequired()
@@ -739,7 +742,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("TaxTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TaxType")
                         .HasMaxLength(64)
@@ -899,7 +902,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(64)
@@ -1023,11 +1026,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountAmountWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("GatewayCode")
                         .HasMaxLength(64)
@@ -1072,11 +1075,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("PriceWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("Purpose")
                         .HasMaxLength(1024)
@@ -1091,14 +1094,14 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Sum")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("TaxTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TaxType")
                         .HasMaxLength(64)
@@ -1106,11 +1109,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Total")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("VendorId")
                         .HasMaxLength(64)
@@ -1137,7 +1140,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("CancelReason")
                         .HasMaxLength(2048)
@@ -1213,7 +1216,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Sum")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TransactionId")
                         .IsRequired()
@@ -1324,11 +1327,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("DiscountAmount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("DiscountAmountWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("EmployeeId")
                         .HasMaxLength(64)
@@ -1340,11 +1343,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Fee")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("FeeWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("FulfillmentCenterId")
                         .HasMaxLength(64)
@@ -1402,11 +1405,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("PriceWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("ShipmentMethodCode")
                         .HasMaxLength(64)
@@ -1422,14 +1425,14 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Sum")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TaxPercentRate")
                         .HasColumnType("decimal(18,4)");
 
                     b.Property<decimal>("TaxTotal")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TaxType")
                         .HasMaxLength(64)
@@ -1437,11 +1440,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Total")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<decimal>("TotalWithTax")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("TrackingNumber")
                         .HasMaxLength(128)
@@ -1608,7 +1611,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal");
 
                     b.Property<string>("CustomerOrderId")
                         .HasColumnType("varchar(128)");
