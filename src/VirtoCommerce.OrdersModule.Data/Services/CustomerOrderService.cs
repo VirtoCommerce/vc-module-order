@@ -143,7 +143,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // VP-5561: Need to fill changedEntries newEntry with the models built from saved entities (with the info filled when saving to database)
             foreach (var (changedEntry, i) in changedEntries.Select((x, i) => (x, i)))
             {
-                var changedModel = changedEntities[i].ToModel(AbstractTypeFactory<CustomerOrder>.TryCreateInstance());
+                // Here the original model from models parameter
+                var changedModel = changedEntities[i].ToModel(changedEntry.NewEntry);
 
                 // We need to CalculateTotals for the new Order, because it is empty after entity.ToModel creation
                 _totalsCalculator.CalculateTotals(changedModel);
