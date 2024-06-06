@@ -139,6 +139,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return repository.InPayments
                 .Where(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && !x.IsCancelled && x.Currency == currency)
                 .GroupBy(x => 1, (key, result) => result.Sum(x => x.Sum))
+                .OrderBy(x => x)
                 .FirstOrDefaultAsync();
         }
 
@@ -176,6 +177,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return repository.CustomerOrders
                 .Where(x => x.CreatedDate >= start && x.CreatedDate <= end && x.Currency == currency)
                 .GroupBy(x => 1, (key, result) => result.Average(x => x.Total))
+                .OrderBy(x => x)
                 .FirstOrDefaultAsync();
         }
     }
