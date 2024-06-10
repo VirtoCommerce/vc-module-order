@@ -1,18 +1,19 @@
-# Entity Framework Core Commands
+# Generate Migrations
 
-## Installation
-```
-dotnet tool install --global dotnet-ef --version 6.*
-```
-
-## Generate Migrations
-
-```
-dotnet ef migrations add Initial
-dotnet ef migrations add Update1
-dotnet ef migrations add Update2
+## Install CLI tools for Entity Framework Core
+```cmd
+dotnet tool install --global dotnet-ef --version 8.0.0
 ```
 
-### Apply Migrations
+or update
 
-`dotnet ef database update`
+```cmd
+dotnet tool update --global dotnet-ef --version 8.0.0
+```
+
+## Add Migration
+Select Data.<Provider> folder and run following command for each provider:
+
+```cmd
+dotnet ef migrations add <migration-name>
+```

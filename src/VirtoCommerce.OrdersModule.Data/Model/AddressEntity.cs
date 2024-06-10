@@ -59,6 +59,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string OuterId { get; set; }
 
+        [StringLength(128)]
+        public string Description { get; set; }
+
         #region Navigation Properties
 
         public virtual CustomerOrderEntity CustomerOrder { get; set; }
@@ -95,6 +98,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             address.Organization = Organization;
             address.OuterId = OuterId;
             address.AddressType = EnumUtility.SafeParseFlags(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping);
+            address.Description = Description;
 
             return address;
         }
@@ -122,6 +126,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             Organization = address.Organization;
             OuterId = address.OuterId;
             AddressType = address.AddressType.ToString();
+            Description = address.Description;
+
             return this;
         }
 
@@ -144,6 +150,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.Line2 = Line2;
             target.Organization = Organization;
             target.OuterId = OuterId;
+            target.Description = Description;
         }
 
         public override bool Equals(object obj)
