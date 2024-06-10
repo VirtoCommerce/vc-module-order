@@ -50,6 +50,10 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.Property<string>("CustomerOrderId")
                         .HasColumnType("varchar(128)");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("varchar(256)");

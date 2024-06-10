@@ -425,6 +425,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.AddressType = address.AddressType;
             retVal.Organization = address.Organization;
             retVal.OuterId = address.OuterId;
+            retVal.Description = address.Description;
 
             return retVal;
         }
