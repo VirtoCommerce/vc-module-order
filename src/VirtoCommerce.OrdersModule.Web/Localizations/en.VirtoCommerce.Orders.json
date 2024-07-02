@@ -61,7 +61,9 @@
           "total": "Total",
           "currency": "Currency",
           "store": "Store",
-          "created": "Created"
+          "created": "Created",
+          "copy-id": "Copy ID",
+          "copy-number": "Copy number"
         },
         "placeholders": {
           "select-filter": "Select filter"
