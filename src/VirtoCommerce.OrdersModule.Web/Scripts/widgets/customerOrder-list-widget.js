@@ -20,6 +20,10 @@ angular.module('virtoCommerce.orderModule')
                 function refresh() {
                     $scope.ordersCount = '...';
 
+                    if (!searchCriteria.organizationId && !searchCriteria.customerId) {
+                        return;
+                    }
+
                     var countSearchCriteria = {
                         responseGroup: "Default",
                         take: 0
@@ -33,6 +37,10 @@ angular.module('virtoCommerce.orderModule')
                 }
 
                 $scope.openBlade = function () {
+                    if (!searchCriteria.organizationId && !searchCriteria.customerId) {
+                        return;
+                    }
+
                     var newBlade = {
                         id: 'orders',
                         title: 'orders.blades.customerOrder-list.title',
