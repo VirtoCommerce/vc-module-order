@@ -488,6 +488,16 @@ angular.module(moduleName, [
                 };
                 widgetService.registerWidget(operationsTreeWidget, 'customerOrderDetailWidgets');
 
+                // register members widgets
+                var customerOrdersWidget = {
+                    controller: 'virtoCommerce.orderModule.customerOrderListWidgetController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-list-widget.tpl.html',
+                    isVisible: function (blade) { return !blade.isNew; }
+                };
+
+                widgetService.registerWidget(customerOrdersWidget, 'customerDetail1');
+                widgetService.registerWidget(customerOrdersWidget, 'organizationDetail1');
+
                 // register dashboard widgets
                 var statisticsController = 'virtoCommerce.orderModule.dashboard.statisticsWidgetController';
 

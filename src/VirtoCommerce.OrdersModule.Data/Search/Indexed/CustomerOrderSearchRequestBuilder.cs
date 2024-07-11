@@ -153,6 +153,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 result.Add(FilterHelper.CreateTermFilter("customerid", criteria.CustomerIds));
             }
 
+            if (!criteria.OrganizationIds.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("organizationid", criteria.OrganizationIds));
+            }
+
             if (!string.IsNullOrEmpty(criteria.EmployeeId))
             {
                 result.Add(FilterHelper.CreateTermFilter("employeeid", criteria.EmployeeId));
