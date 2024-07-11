@@ -326,6 +326,9 @@
         "revenue-per-customer": "Revenue per customer",
         "title": "Order Statistics",
         "not-authorized": "You do not currently have access to this feature. Please contact your account administrator for access."
+      },
+      "customerOrder-list": {
+        "title": "Orders"
       }
     },
     "dialogs": {
