@@ -90,8 +90,6 @@ angular.module('virtoCommerce.orderModule')
     $scope.selectNode = function (node) {
         $scope.selectedNodeId = node.id;
 
-        $location.search({ orderId: node.id });
-
         var foundTemplate = knownOperations.getOperation(node.operationType);
         if (foundTemplate) {
             var newBlade = angular.copy(foundTemplate.detailBlade);
@@ -101,6 +99,8 @@ angular.module('virtoCommerce.orderModule')
             newBlade.customerOrder = node;
             bladeNavigationService.showBlade(newBlade, blade);
         }
+
+        $location.search({ orderId: node.id });
     };
 
     $scope.copy = function (text) {
