@@ -38,7 +38,7 @@
                   <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("CustomerName", contextMenuEntity.customerName)'>
                     <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.customerName}}`
                   </li>
-                  <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("OrganizationName", contextMenuEntity.organizationName)'>
+                  <li class="menu-item" ng-if="useIndexedSearch && contextMenuEntity.organizationName" ng-click='filterBy("OrganizationName", contextMenuEntity.organizationName)'>
                     <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.organizationName}}`
                   </li>
                   <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("StoreId", contextMenuEntity.storeId)'>
