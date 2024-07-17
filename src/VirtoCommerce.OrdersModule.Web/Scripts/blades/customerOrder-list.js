@@ -120,7 +120,7 @@ angular.module('virtoCommerce.orderModule')
         };
 
     $scope.filterBy = function(field, value) {
-        filter.keyword = field + ':"' + value + '"';
+        filter.keyword = `${field}:"${value}"`;
         blade.refresh();
         };
 
