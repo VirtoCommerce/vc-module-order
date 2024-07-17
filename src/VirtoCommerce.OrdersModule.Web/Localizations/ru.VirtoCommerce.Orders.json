@@ -60,7 +60,10 @@
           "total": "Итог",
           "currency": "Валюта",
           "store": "Магазин",
-          "created": "Создан"
+          "created": "Создан",
+          "copy-id": "Копировать ID",
+          "copy-number": "Копировать номер",
+          "filter-by": "Отфильтровать по"
         },
         "placeholders": {
           "select-filter": "Выбрать фильтр"

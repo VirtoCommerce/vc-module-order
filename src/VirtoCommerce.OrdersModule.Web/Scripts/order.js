@@ -598,6 +598,16 @@ angular.module(moduleName, [
                         templateUrl: 'storeSelector.html'
                     },
                     {
+                        name: 'customerId',
+                        title: "orders.blades.customerOrder-detail.labels.customer",
+                        templateUrl: 'customerSelector.html'
+                    },
+                    {
+                        name: 'organizationId',
+                        title: "orders.blades.customerOrder-detail.labels.organization",
+                        templateUrl: 'filter-organizationSelector.html'
+                    },
+                    {
                         name: 'startDate',
                         title: "orders.blades.filter-detail.labels.from",
                         valueType: "DateTime"
@@ -606,11 +616,6 @@ angular.module(moduleName, [
                         name: 'endDate',
                         title: "orders.blades.filter-detail.labels.to",
                         valueType: "DateTime"
-                    },
-                    {
-                        name: 'customerId',
-                        title: "orders.blades.customerOrder-detail.labels.customer",
-                        templateUrl: 'customerSelector.html'
                     },
                     {
                         name: 'employeeId',

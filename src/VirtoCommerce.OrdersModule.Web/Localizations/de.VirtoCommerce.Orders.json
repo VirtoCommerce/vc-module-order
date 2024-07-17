@@ -59,7 +59,10 @@
           "total": "Total",
           "currency": "Währung",
           "store": "Store",
-          "created": "Erstellt"
+          "created": "Erstellt",
+          "copy-id": "ID kopieren",
+          "copy-number": "Nummer kopieren",
+          "filter-by": "Filtern nach"
         },
         "placeholders": {
           "select-filter": "Wählen Sie den Filter."

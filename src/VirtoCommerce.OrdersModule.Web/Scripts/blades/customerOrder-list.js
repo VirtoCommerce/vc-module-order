@@ -117,7 +117,12 @@ angular.module('virtoCommerce.orderModule')
         document.execCommand('copy');
         window.getSelection().removeAllRanges();
         copyElement.remove();
-    };
+        };
+
+    $scope.filterBy = function(field, value) {
+        filter.keyword = field + ':"' + value + '"';
+        blade.refresh();
+        };
 
     $scope.deleteList = function (list) {
         var dialog = {
@@ -190,8 +195,10 @@ angular.module('virtoCommerce.orderModule')
         $localStorage.orderSearchFilterId = filter.current ? filter.current.id : null;
         if (filter.current && !filter.current.id) {
             filter.current = null;
+            filter.keyword = '';
             showFilterDetailBlade({ isNew: true });
         } else {
+            filter.keyword = filter.current ? filter.keyword : '';
             bladeNavigationService.closeBlade({ id: 'filterDetail' });
             filter.criteriaChanged();
         }
@@ -330,8 +337,17 @@ angular.module('virtoCommerce.orderModule')
 
     function addPredefinedFilters(baseFilters) {
         var predefinedFilters = buildPredefinedFilters();
+        var filterWithoutId = null;
 
-        // add or replace predefinded filters in base filters
+        // Remove the filter without an id from baseFilters if it exists
+        for (var j = 0; j < baseFilters.length; j++) {
+            if (!baseFilters[j].id) {
+                filterWithoutId = baseFilters.splice(j, 1)[0];
+                break;
+            }
+        }
+
+        // Add or replace predefined filters in baseFilters
         for (var i = 0; i < predefinedFilters.length; i++) {
             var predefinedFilter = _.findWhere(baseFilters, { id: predefinedFilters[i].id });
             if (predefinedFilter) {
@@ -340,9 +356,10 @@ angular.module('virtoCommerce.orderModule')
                 baseFilters.push(predefinedFilters[i]);
             }
         }
-    }
 
-    // actions on load
-    //No need to call this because page 'pageSettings.currentPage' is watched!!! It would trigger subsequent duplicated req...
-    //blade.refresh();
+        // Push the filter without an id back to the end of baseFilters if it exists
+        if (filterWithoutId) {
+            baseFilters.push(filterWithoutId);
+        }
+    }
 }]);
