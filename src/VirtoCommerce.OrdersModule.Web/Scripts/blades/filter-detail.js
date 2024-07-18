@@ -20,12 +20,20 @@ angular.module('virtoCommerce.orderModule')
             criteria.sort = 'name';
 
             return members.search(criteria);
+            };
+
+        blade.fetchOrganizations = function (criteria) {
+            criteria.memberType = 'Organization';
+            criteria.deepSearch = true;
+            criteria.sort = 'name';
+
+            return members.search(criteria);
         };
 
         $scope.applyCriteria = function () {
             angular.copy(blade.currentEntity, blade.origEntity);
             if (blade.isNew) {
-                $localStorage.orderSearchFilters.push(blade.origEntity);
+                $localStorage.orderSearchFilters.unshift(blade.origEntity);
                 $localStorage.orderSearchFilterId = blade.origEntity.id;
                 blade.parentBlade.filter.current = blade.origEntity;
                 blade.isNew = false;

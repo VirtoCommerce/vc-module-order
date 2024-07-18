@@ -48,7 +48,7 @@
         "title": "Customer orders",
         "labels": {
           "new-filter": "Add new filter",
-          "unnamed-filter": "Unnamed filter",
+          "unnamed-filter": "Filter by",
           "today-filter": "Today",
           "last-day-filter": "Yesterday",
           "last-week-filter": "Last week",
@@ -63,7 +63,8 @@
           "store": "Store",
           "created": "Created",
           "copy-id": "Copy ID",
-          "copy-number": "Copy number"
+          "copy-number": "Copy number",
+          "filter-by": "Filter by"
         },
         "placeholders": {
           "select-filter": "Select filter"

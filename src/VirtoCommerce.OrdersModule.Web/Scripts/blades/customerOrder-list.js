@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderListController', ['$rootScope','$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', '$translate', 
-function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, $translate) {
+    .controller('virtoCommerce.orderModule.customerOrderListController', ['$rootScope', '$scope', '$location', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', '$translate', 
+    function ($rootScope, $scope, $location, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, $translate) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -99,6 +99,8 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
             newBlade.customerOrder = node;
             bladeNavigationService.showBlade(newBlade, blade);
         }
+
+        $location.search({ orderId: node.id });
     };
 
     $scope.copy = function (text) {
@@ -115,7 +117,12 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         document.execCommand('copy');
         window.getSelection().removeAllRanges();
         copyElement.remove();
-    };
+        };
+
+    $scope.filterBy = function(field, value) {
+        filter.keyword = `${field}:"${value}"`;
+        blade.refresh();
+        };
 
     $scope.deleteList = function (list) {
         var dialog = {
@@ -188,8 +195,10 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
         $localStorage.orderSearchFilterId = filter.current ? filter.current.id : null;
         if (filter.current && !filter.current.id) {
             filter.current = null;
+            filter.keyword = '';
             showFilterDetailBlade({ isNew: true });
         } else {
+            filter.keyword = filter.current ? filter.keyword : '';
             bladeNavigationService.closeBlade({ id: 'filterDetail' });
             filter.criteriaChanged();
         }
@@ -328,8 +337,17 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
 
     function addPredefinedFilters(baseFilters) {
         var predefinedFilters = buildPredefinedFilters();
+        var filterWithoutId = null;
 
-        // add or replace predefinded filters in base filters
+        // Remove the filter without an id from baseFilters if it exists
+        for (var j = 0; j < baseFilters.length; j++) {
+            if (!baseFilters[j].id) {
+                filterWithoutId = baseFilters.splice(j, 1)[0];
+                break;
+            }
+        }
+
+        // Add or replace predefined filters in baseFilters
         for (var i = 0; i < predefinedFilters.length; i++) {
             var predefinedFilter = _.findWhere(baseFilters, { id: predefinedFilters[i].id });
             if (predefinedFilter) {
@@ -338,9 +356,10 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
                 baseFilters.push(predefinedFilters[i]);
             }
         }
-    }
 
-    // actions on load
-    //No need to call this because page 'pageSettings.currentPage' is watched!!! It would trigger subsequent duplicated req...
-    //blade.refresh();
+        // Push the filter without an id back to the end of baseFilters if it exists
+        if (filterWithoutId) {
+            baseFilters.push(filterWithoutId);
+        }
+    }
 }]);
