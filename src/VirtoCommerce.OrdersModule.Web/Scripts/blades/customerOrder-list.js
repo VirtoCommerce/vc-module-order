@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderListController', ['$rootScope','$scope', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', '$translate', 
-function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, $translate) {
+    .controller('virtoCommerce.orderModule.customerOrderListController', ['$rootScope', '$scope', '$location', '$localStorage', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', 'platformWebApp.authService', 'uiGridConstants', 'platformWebApp.uiGridHelper', 'platformWebApp.ui-grid.extension', 'virtoCommerce.orderModule.knownOperations', '$translate', 
+    function ($rootScope, $scope, $location, $localStorage, customerOrders, bladeUtils, dialogService, authService, uiGridConstants, uiGridHelper, gridOptionExtension, knownOperations, $translate) {
     var blade = $scope.blade;
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
@@ -99,6 +99,8 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
             newBlade.customerOrder = node;
             bladeNavigationService.showBlade(newBlade, blade);
         }
+
+        $location.search({ orderId: node.id });
     };
 
     $scope.copy = function (text) {

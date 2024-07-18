@@ -1,6 +1,6 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.operationDetailController', ['$scope', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus', '$rootScope',
-    function ($scope,dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus, $rootScope) {
+    .controller('virtoCommerce.orderModule.operationDetailController', ['$scope', '$location', 'platformWebApp.dialogService', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.objCompareService', '$timeout', 'focus', '$rootScope',
+    function ($scope, $location, dialogService, bladeNavigationService, customerOrders, objCompareService, $timeout, focus, $rootScope) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
@@ -275,6 +275,10 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.onClose = function (closeCallback) {
+            if (blade.currentEntity.operationType === "CustomerOrder") {
+                $location.search({ orderId: null });
+            }
+
             bladeNavigationService.showConfirmationIfNeeded(isDirty(), canSave(), blade, $scope.saveChanges, closeCallback, "orders.dialogs.operation-save.title", "orders.dialogs.operation-save.message");
         };
 

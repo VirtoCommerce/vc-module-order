@@ -1,6 +1,5 @@
 //Call this to register our module to main application
 var moduleName = "virtoCommerce.orderModule";
-const bladeNavigationServiceName = 'platformWebApp.bladeNavigationService';
 
 if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
@@ -18,17 +17,31 @@ angular.module(moduleName, [
                     url: '/orders',
                     templateUrl: '$(Platform)/Scripts/common/templates/home.tpl.html',
                     controller: [
-                        '$scope', bladeNavigationServiceName, function ($scope, bladeNavigationService) {
-                            var blade = {
-                                id: 'orders',
-                                title: 'orders.blades.customerOrder-list.title',
-                                //subtitle: 'Manage Orders',
-                                controller: 'virtoCommerce.orderModule.customerOrderListController',
-                                isExpandable: true,
-                                template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-list.tpl.html',
-                                isClosingDisabled: true
-                            };
-                            bladeNavigationService.showBlade(blade);
+                        '$scope', '$location', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.knownOperations', function ($scope, $location, bladeNavigationService, knownOperations) {
+                            var orderId = $location.search().orderId;
+
+                            if (orderId) {
+                                var foundTemplate = knownOperations.getOperation('CustomerOrder');
+                                if (foundTemplate) {
+                                    var newBlade = angular.copy(foundTemplate.detailBlade);
+                                    newBlade.id = 'orders';
+                                    newBlade.customerOrder = { id: orderId, customerName: 'Customer' };
+                                    newBlade.isClosingDisabled = true;
+                                    bladeNavigationService.showBlade(newBlade);
+                                }
+                            }
+                            else {
+                                var blade = {
+                                    id: 'orders',
+                                    title: 'orders.blades.customerOrder-list.title',
+                                    //subtitle: 'Manage Orders',
+                                    controller: 'virtoCommerce.orderModule.customerOrderListController',
+                                    isExpandable: true,
+                                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-list.tpl.html',
+                                    isClosingDisabled: true
+                                };
+                                bladeNavigationService.showBlade(blade);
+                            }
                             //Need for isolate and prevent conflict module css to another modules
                             //it value included in bladeContainer as ng-class='moduleName'
                             $scope.moduleName = "vc-order";
@@ -38,7 +51,7 @@ angular.module(moduleName, [
         }]
     )
     // define known Operations to be accessible platform-wide
-    .factory('virtoCommerce.orderModule.knownOperations', [bladeNavigationServiceName, function (bladeNavigationService) {
+    .factory('virtoCommerce.orderModule.knownOperations', ['platformWebApp.bladeNavigationService', function (bladeNavigationService) {
         var map = {};
 
         function registerOperation(op) {
@@ -79,7 +92,7 @@ angular.module(moduleName, [
             '$compile',
             'platformWebApp.mainMenuService',
             'platformWebApp.widgetService',
-            bladeNavigationServiceName,
+            'platformWebApp.bladeNavigationService',
             '$state',
             '$localStorage',
             'virtoCommerce.orderModule.order_res_customerOrders',
@@ -109,7 +122,7 @@ angular.module(moduleName, [
                     icon: 'fa fa-file-text',
                     title: 'orders.main-menu-title',
                     priority: 90,
-                    action: function () { $state.go('workspace.orderModule'); },
+                    action: function () { $state.go('workspace.orderModule', {}, { reload: true }); },
                     permission: 'order:access'
                 };
                 mainMenuService.addMenuItem(menuItem);
