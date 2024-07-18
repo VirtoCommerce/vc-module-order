@@ -40,6 +40,15 @@
   </div>
 </script>
 
+<script type="text/ng-template" id="filter-organizationSelector.html">
+  <div class="form-input">
+    <ui-scroll-drop-down data="blade.fetchOrganizations(criteria)"
+                         ng-model="blade.currentEntity.organizationId"
+                         placeholder="'orders.blades.filter-detail.placeholders.all'">
+    </ui-scroll-drop-down>
+  </div>
+</script>
+
 <script type="text/ng-template" id="filter-employeeSelector.html">
   <div class="form-input">
     <ui-scroll-drop-down data="blade.fetchEmployees(criteria)"

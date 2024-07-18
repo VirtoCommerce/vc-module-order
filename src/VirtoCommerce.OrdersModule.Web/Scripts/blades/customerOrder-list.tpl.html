@@ -1,18 +1,21 @@
 <div class="blade-static">
     <div class="form-group">
-        <div class="form-input __search">
-            <input placeholder="{{'platform.placeholders.search-keyword' | translate}}" ng-model="filter.keyword" ng-keyup="$event.which === 13 && filter.criteriaChanged()" ng-style="blade.isExpanded && { 'width': '190px' }">
-            <button class="btn __other" style="position: relative;right: 45px;">
-                <i class="btn-ico fa fa-remove" title="Clear" ng-click="filter.keyword=null;filter.criteriaChanged()"></i>
-            </button>
-            <ui-select ng-if="blade.isExpanded" ng-model="filter.current" ng-change="filter.change()" style="left: 220px;position: absolute;width: 190px;top: 0px;">
-                <ui-select-match allow-clear="true" placeholder="{{'orders.blades.customerOrder-list.placeholders.select-filter' | translate}}">{{$select.selected.name | translate}}</ui-select-match>
-                <ui-select-choices repeat="x in $localStorage.orderSearchFilters | filter: $select.search">
-                    <span ng-bind-html="x.name | translate | highlight: $select.search"></span>
-                </ui-select-choices>
-            </ui-select>
+      <div style="display: flex;align-items: center;">
+        <a class="add" left-click-menu data-target="filterSearch{{blade.id}}" style="margin: 0 20px 0 0;">{{ filter.current ? filter.current.name : 'orders.blades.customerOrder-list.placeholders.select-filter' | translate }} <i class="form-ico fa fa-caret-down"></i></a>
+        <ul class="menu __context" role="menu" id="filterSearch{{blade.id}}" style="width: 170px;">
+          <li ng-repeat="x in $localStorage.orderSearchFilters" class="splited-element menu-item">
+            <i class="menu-ico fas fa-plus" ng-if="!x.id"></i> <span ng-click='filter.current=x;filter.change();' ng-bind-html="x.name | translate"></span>
+            <i class="fa fa-pencil right-alignment" ng-click='filter.current=x;filter.edit($event)' ng-if="x.id"></i>
+          </li>
+        </ul>
+
+        <div class="form-input" style="flex-grow: 1; flex-grow: 1; max-width: 400px">
+          <input ng-model="filter.keyword" ng-keyup="$event.which === 13 && filter.criteriaChanged()" placeholder="{{'platform.placeholders.search-keyword' | translate}}">
+          <button class="btn __other" style="position: relative;right: 45px;" ng-click="filter.current=null;filter.change()">
+            <i class="btn-ico fa fa-remove" title="Clear"></i>
+          </button>
         </div>
-        <a href="" ng-if="blade.isExpanded" ng-click="filter.edit()" style="left: 416px; top:25px; position:absolute;" class="form-edit"><i class="form-ico fa fa-pencil"></i></a>
+      </div>
     </div>
 </div>
 <div class="blade-static __bottom" ng-if="pageSettings.itemsPerPageCount < pageSettings.totalItems" ng-include="'pagerTemplate.html'"></div>
@@ -31,6 +34,17 @@
                   <li class="menu-item" ng-click='copy(contextMenuEntity.number)'>
                     <i class="menu-ico fa fa-copy"></i> {{'orders.blades.customerOrder-list.labels.copy-number' | translate}}
                   </li>
+
+                  <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("CustomerName", contextMenuEntity.customerName)'>
+                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.customerName}}`
+                  </li>
+                  <li class="menu-item" ng-if="useIndexedSearch && contextMenuEntity.organizationName" ng-click='filterBy("OrganizationName", contextMenuEntity.organizationName)'>
+                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.organizationName}}`
+                  </li>
+                  <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("StoreId", contextMenuEntity.storeId)'>
+                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.storeId}}`
+                  </li>
+
                   <li class="menu-item" ng-if='!blade.hideDelete' ng-click='deleteList([contextMenuEntity])' va-permission="order:delete">
                     <i class="menu-ico fas fa-trash-alt"></i> {{'platform.commands.delete' | translate}}
                   </li>
