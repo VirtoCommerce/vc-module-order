@@ -569,18 +569,6 @@ angular.module(moduleName, [
                     isVisible: function (blade) { return !checkPermissionToViewDashboard(); }
                 }, 'mainDashboard');
 
-                customerOrders.indexedSearchEnabled(function (data) {
-                    if (data.result) {
-                        var customerOrderIndexWidget = {
-                            documentType: 'CustomerOrder',
-                            controller: 'virtoCommerce.searchModule.indexWidgetController',
-                            template: 'Modules/$(VirtoCommerce.Search)/Scripts/widgets/index-widget.tpl.html',
-                            isVisible: function (blade) { return !blade.isNew; }
-                        };
-                        widgetService.registerWidget(customerOrderIndexWidget, 'customerOrderDetailWidgets');
-                    }
-                });
-
                 $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
                     // compile the response, which will put stuff into the cache
                     $compile(response.data);
@@ -655,6 +643,20 @@ angular.module(moduleName, [
                 scopeResolver.register(responsibleOrderScope);
 
                 $rootScope.$on('loginStatusChanged', function (event, authContext) {
+                    if (authContext.isAuthenticated) {
+                        customerOrders.indexedSearchEnabled(function (data) {
+                            if (data.result) {
+                                var customerOrderIndexWidget = {
+                                    documentType: 'CustomerOrder',
+                                    controller: 'virtoCommerce.searchModule.indexWidgetController',
+                                    template: 'Modules/$(VirtoCommerce.Search)/Scripts/widgets/index-widget.tpl.html',
+                                    isVisible: function (blade) { return !blade.isNew; }
+                                };
+                                widgetService.registerWidget(customerOrderIndexWidget, 'customerOrderDetailWidgets');
+                            }
+                        });
+                    }
+
                     $localStorage.ordersDashboardStatistics = null;
 
                     if (authContext.isAuthenticated &&
