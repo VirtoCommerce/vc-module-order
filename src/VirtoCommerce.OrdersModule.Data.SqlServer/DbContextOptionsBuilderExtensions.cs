@@ -7,10 +7,11 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer
         /// <summary>
         /// Configures the context to use SqlServer.
         /// </summary>
-        public static DbContextOptionsBuilder UseSqlServerDatabase(this DbContextOptionsBuilder builder, string connectionString)
+        public static DbContextOptionsBuilder UseSqlServerDatabase(this DbContextOptionsBuilder builder, string connectionString, int compatibilityLevel)
         {
             return builder.UseSqlServer(connectionString, db => db
-                .MigrationsAssembly(typeof(SqlServerDbContextFactory).Assembly.GetName().Name));
+                .MigrationsAssembly(typeof(SqlServerDbContextFactory).Assembly.GetName().Name)
+                .UseCompatibilityLevel(compatibilityLevel));
         }
     }
 }

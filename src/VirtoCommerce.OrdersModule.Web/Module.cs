@@ -70,7 +70,8 @@ namespace VirtoCommerce.OrdersModule.Web
                         options.UsePostgreSqlDatabase(connectionString);
                         break;
                     default:
-                        options.UseSqlServerDatabase(connectionString);
+                        var compatibilityLevel = Configuration.GetValue("SqlServer:CompatibilityLevel", 120);
+                        options.UseSqlServerDatabase(connectionString, compatibilityLevel);
                         break;
                 }
             });
