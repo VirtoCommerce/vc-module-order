@@ -321,7 +321,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         {
             CustomerOrder retVal;
 
-            using (await AsyncLock.GetLockByKey(cartId).GetReleaserAsync())
+            using (await AsyncLock.GetLockByKey(cartId).LockAsync())
             {
                 var cart = await _cartService.GetByIdAsync(cartId);
                 retVal = await _customerOrderBuilder.PlaceCustomerOrderFromCartAsync(cart);

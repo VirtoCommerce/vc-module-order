@@ -1,38 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
-  <id>VirtoCommerce.Orders</id>
-  <version>3.826.0</version>
-  <version-tag />
-  <platformVersion>3.825.0</platformVersion>
-  <dependencies>
-    <dependency id="VirtoCommerce.Cart" version="3.800.0" />
-    <dependency id="VirtoCommerce.Catalog" version="3.800.0" />
-    <dependency id="VirtoCommerce.Core" version="3.803.0" />
-    <dependency id="VirtoCommerce.Customer" version="3.803.0" />
-    <dependency id="VirtoCommerce.Inventory" version="3.800.0" />
-    <dependency id="VirtoCommerce.Notifications" version="3.800.0" />
-    <dependency id="VirtoCommerce.Payment" version="3.800.0" />
-    <dependency id="VirtoCommerce.Search" version="3.800.0" />
-    <dependency id="VirtoCommerce.Shipping" version="3.800.0" />
-    <dependency id="VirtoCommerce.Store" version="3.800.0" />
-  </dependencies>
-  <title>Order Management</title>
-  <description>Document based flexible order management system</description>
-  <authors>
-    <author>Virto Commerce</author>
-  </authors>
-  <owners>
-    <owner>Virto Commerce</owner>
-  </owners>
-  <projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
-  <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
-  <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
-  <tags>order system</tags>
-  <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
-  <moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>
-  <groups>
-    <group>commerce</group>
-  </groups>
-  <useFullTypeNameInSwagger>false</useFullTypeNameInSwagger>
+	<id>VirtoCommerce.Orders</id>
+	<version>3.826.0</version>
+	<version-tag />
+
+	<platformVersion>3.851.0-alpha.12972-vcst-1752</platformVersion>
+	<dependencies>
+		<dependency id="VirtoCommerce.Cart" version="3.800.0" />
+		<dependency id="VirtoCommerce.Catalog" version="3.800.0" />
+		<dependency id="VirtoCommerce.Core" version="3.803.0" />
+		<dependency id="VirtoCommerce.Customer" version="3.803.0" />
+		<dependency id="VirtoCommerce.Inventory" version="3.800.0" />
+		<dependency id="VirtoCommerce.Notifications" version="3.800.0" />
+		<dependency id="VirtoCommerce.Payment" version="3.800.0" />
+		<dependency id="VirtoCommerce.Search" version="3.800.0" />
+		<dependency id="VirtoCommerce.Shipping" version="3.800.0" />
+		<dependency id="VirtoCommerce.Store" version="3.800.0" />
+	</dependencies>
+
+	<title>Order Management</title>
+	<description>Document based flexible order management system</description>
+	<authors>
+		<author>Virto Commerce</author>
+	</authors>
+	<owners>
+		<owner>Virto Commerce</owner>
+	</owners>
+	<projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
+	<iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
+	<tags>order system</tags>
+	<assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
+	<moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>
+	<groups>
+		<group>commerce</group>
+	</groups>
+	<useFullTypeNameInSwagger>false</useFullTypeNameInSwagger>
 </module>
