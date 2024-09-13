@@ -3,7 +3,8 @@
   <id>VirtoCommerce.Orders</id>
   <version>3.826.0</version>
   <version-tag />
-  <platformVersion>3.825.0</platformVersion>
+
+  <platformVersion>3.851.0</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Cart" version="3.800.0" />
     <dependency id="VirtoCommerce.Catalog" version="3.800.0" />
@@ -16,6 +17,7 @@
     <dependency id="VirtoCommerce.Shipping" version="3.800.0" />
     <dependency id="VirtoCommerce.Store" version="3.800.0" />
   </dependencies>
+
   <title>Order Management</title>
   <description>Document based flexible order management system</description>
   <authors>

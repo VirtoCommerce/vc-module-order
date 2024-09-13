@@ -13,7 +13,7 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer
 
             builder.UseSqlServer(
                 connectionString,
-                db => db.MigrationsAssembly(typeof(SqlServerDbContextFactory).Assembly.GetName().Name));
+                db => db.MigrationsAssembly(typeof(SqlServerDataAssemblyMarker).Assembly.GetName().Name));
 
             return new OrderDbContext(builder.Options);
         }

@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql
                 connectionString,
                 ResolveServerVersion(serverVersion, connectionString),
                 db => db
-                    .MigrationsAssembly(typeof(MySqlDbContextFactory).Assembly.GetName().Name));
+                    .MigrationsAssembly(typeof(MySqlDataAssemblyMarker).Assembly.GetName().Name));
 
             return new OrderDbContext(builder.Options);
         }
