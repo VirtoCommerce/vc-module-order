@@ -621,6 +621,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 throw new InvalidOperationException($"Cannot find order with number {orderNumber}");
             }
 
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, order, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var notification = await _notificationSearchService.GetNotificationAsync<InvoiceEmailNotification>(new TenantIdentity(order.StoreId, nameof(Store)));
             notification.CustomerOrder = order;
             notification.LanguageCode = order.LanguageCode;
@@ -718,6 +724,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("indexed/search")]
         public async Task<ActionResult<CustomerOrderSearchResult>> SearchCustomerOrderIndexed([FromBody] CustomerOrderSearchCriteria criteria)
         {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var result = await _indexedSearchService.SearchCustomerOrdersAsync(criteria);
             return Content(JsonConvert.SerializeObject(result, _outputJsonSerializerSettings), "application/json");
         }
