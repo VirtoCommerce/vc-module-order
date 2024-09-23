@@ -6,10 +6,11 @@ using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization
+    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization, IHasRelevanceScore
     {
         public byte[] RowVersion { get; set; }
 
@@ -64,6 +65,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<Shipment> Shipments { get; set; }
 
         public ICollection<FeeDetail> FeeDetails { get; set; }
+
+        public double? RelevanceScore { get; set; }
 
         #region IHasDiscounts
         public ICollection<Discount> Discounts { get; set; }

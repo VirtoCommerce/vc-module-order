@@ -12,6 +12,7 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SearchModule.Core.Exceptions;
+using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
 
@@ -94,6 +95,8 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 .ToArray();
 
             result.AddRange(orders);
+
+            documents.SetRelevanceScore(result);
 
             return result;
         }
