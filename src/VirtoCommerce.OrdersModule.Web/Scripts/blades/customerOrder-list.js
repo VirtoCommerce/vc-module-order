@@ -34,12 +34,12 @@ angular.module('virtoCommerce.orderModule')
     });
 
     blade.refresh = function () {
-        var sort_criteria = uiGridHelper.getSortExpression($scope);
+        var sortCriteria = uiGridHelper.getSortExpression($scope);
 
         var criteria = {
             responseGroup: "WithPrices",
             keyword: filter.keyword,
-            sort: filter.keyword && filter.ignoreSortingForRelevance == sort_criteria? '' : sort_criteria,
+            sort: filter.keyword && filter.ignoreSortingForRelevance == sortCriteria ? '' : sortCriteria,
             skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
             take: $scope.pageSettings.itemsPerPageCount
         };
@@ -220,7 +220,7 @@ angular.module('virtoCommerce.orderModule')
         };
         angular.extend(newBlade, bladeData);
         bladeNavigationService.showBlade(newBlade, blade);
-        };
+        }
 
     filter.filterByKeyword = function () {
             filter.ignoreSortingForRelevance = uiGridHelper.getSortExpression($scope);
