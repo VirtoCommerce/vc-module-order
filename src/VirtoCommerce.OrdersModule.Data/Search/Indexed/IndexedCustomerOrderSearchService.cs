@@ -90,13 +90,21 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             // Preserve documents order
             var orders = documents
-                .Select(x => itemsMap.TryGetValue(x.Id, out var item) ? item : null)
+                .Select(doc =>
+                {
+                    var order = itemsMap.TryGetValue(doc.Id, out var value) ? value : null;
+
+                    if (order != null)
+                    {
+                        order.RelevanceScore = doc.GetRelevanceScore();
+                    }
+
+                    return order;
+                })
                 .Where(x => x != null)
                 .ToArray();
 
             result.AddRange(orders);
-
-            documents.SetRelevanceScore(result);
 
             return result;
         }
