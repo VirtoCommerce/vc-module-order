@@ -12,6 +12,7 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.SearchModule.Core.Exceptions;
+using VirtoCommerce.SearchModule.Core.Extensions;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
 
@@ -89,7 +90,17 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             // Preserve documents order
             var orders = documents
-                .Select(x => itemsMap.TryGetValue(x.Id, out var item) ? item : null)
+                .Select(doc =>
+                {
+                    var order = itemsMap.TryGetValue(doc.Id, out var value) ? value : null;
+
+                    if (order != null)
+                    {
+                        order.RelevanceScore = doc.GetRelevanceScore();
+                    }
+
+                    return order;
+                })
                 .Where(x => x != null)
                 .ToArray();
 
