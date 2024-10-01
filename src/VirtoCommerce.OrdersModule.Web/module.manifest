@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.829.0</version>
+  <version>3.830.0</version>
   <version-tag />
 
-  <platformVersion>3.851.0</platformVersion>
+  <platformVersion>3.853.0</platformVersion>
   <dependencies>
-    <dependency id="VirtoCommerce.Cart" version="3.800.0" />
-    <dependency id="VirtoCommerce.Catalog" version="3.800.0" />
-    <dependency id="VirtoCommerce.Core" version="3.803.0" />
-    <dependency id="VirtoCommerce.Customer" version="3.803.0" />
-    <dependency id="VirtoCommerce.Inventory" version="3.800.0" />
-    <dependency id="VirtoCommerce.Notifications" version="3.800.0" />
-    <dependency id="VirtoCommerce.Payment" version="3.800.0" />
-    <dependency id="VirtoCommerce.Search" version="3.803.0" />
-    <dependency id="VirtoCommerce.Shipping" version="3.800.0" />
-    <dependency id="VirtoCommerce.Store" version="3.800.0" />
+    <dependency id="VirtoCommerce.Cart" version="3.813.0" />
+    <dependency id="VirtoCommerce.Catalog" version="3.822.0" />
+    <dependency id="VirtoCommerce.Core" version="3.808.0" />
+    <dependency id="VirtoCommerce.Customer" version="3.817.0" />
+    <dependency id="VirtoCommerce.Inventory" version="3.805.0" />
+    <dependency id="VirtoCommerce.Notifications" version="3.809.0" />
+    <dependency id="VirtoCommerce.Payment" version="3.804.0" />
+    <dependency id="VirtoCommerce.Search" version="3.804.0" />
+    <dependency id="VirtoCommerce.Shipping" version="3.802.0" />
+    <dependency id="VirtoCommerce.Store" version="3.809.0" />
   </dependencies>
 
   <title>Order Management</title>
@@ -26,7 +26,7 @@
   <owners>
     <owner>Virto Commerce</owner>
   </owners>
-  <projectUrl>https://virtocommerce.com/apps/extensions/virto-orders-module</projectUrl>
+  <projectUrl>https://github.com/VirtoCommerce/vc-module-order</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
