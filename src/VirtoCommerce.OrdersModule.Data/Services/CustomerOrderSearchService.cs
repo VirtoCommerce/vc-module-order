@@ -71,6 +71,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             query = WithSubscriptionConditions(query, criteria);
 
+            if (!string.IsNullOrEmpty(criteria.ProductId))
+            {
+                query = query.Where(o => o.Items.Any(i => i.ProductId == criteria.ProductId));
+            }
+
             return query;
         }
 

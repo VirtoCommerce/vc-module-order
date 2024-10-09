@@ -84,5 +84,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
                 _organizationIds = value;
             }
         }
+
+        /// <summary>
+        /// Search orders with a certain product
+        /// </summary>
+        public string ProductId { get; set; }
     }
 }
