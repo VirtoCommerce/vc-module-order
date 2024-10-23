@@ -22,34 +22,10 @@
 <div class="blade-content" ng-class="{'__large-wide': blade.isExpanded, '__normal': !blade.isExpanded}">
     <div class="blade-inner">
         <div class="inner-block">
-            <div class="table-wrapper" ng-init="setGridOptions('customerOrder-list-grid', getGridOptions())">
-                <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>
-                <ul class="menu __context" role="menu" id="cor_menu">
-                  <li class="menu-item" ng-click='selectNode(contextMenuEntity)'>
-                    <i class="menu-ico fa fa-edit"></i> {{'platform.commands.manage' | translate}}
-                  </li>
-                  <li class="menu-item" ng-click='copy(contextMenuEntity.id)'>
-                    <i class="menu-ico fa fa-copy"></i> {{'orders.blades.customerOrder-list.labels.copy-id' | translate}}
-                  </li>
-                  <li class="menu-item" ng-click='copy(contextMenuEntity.number)'>
-                    <i class="menu-ico fa fa-copy"></i> {{'orders.blades.customerOrder-list.labels.copy-number' | translate}}
-                  </li>
-
-                  <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("CustomerName", contextMenuEntity.customerName)'>
-                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.customerName}}`
-                  </li>
-                  <li class="menu-item" ng-if="useIndexedSearch && contextMenuEntity.organizationName" ng-click='filterBy("OrganizationName", contextMenuEntity.organizationName)'>
-                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.organizationName}}`
-                  </li>
-                  <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("StoreId", contextMenuEntity.storeId)'>
-                    <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.storeId}}`
-                  </li>
-
-                  <li class="menu-item" ng-if='!blade.hideDelete' ng-click='deleteList([contextMenuEntity])' va-permission="order:delete">
-                    <i class="menu-ico fas fa-trash-alt"></i> {{'platform.commands.delete' | translate}}
-                  </li>
-                </ul>
-            </div>
+          <div class="table-wrapper" ng-init="setGridOptions('customerOrder-list-grid', getGridOptions())">
+            <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-selection ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>
+            <ng-include src="'order-list-context-menu.row.html'"></ng-include>
+          </div>
         </div>
     </div>
 </div>
@@ -61,4 +37,29 @@
     <div class="ui-grid-actions" left-click-menu="grid.appScope.contextMenuEntity = row.entity" data-target="cor_menu">
         <i class="fa context-menu"></i>
     </div>
+</script>
+<script type="text/ng-template" id="order-list-context-menu.row.html">
+  <ul class="menu __context" role="menu" id="cor_menu">
+    <li class="menu-item" ng-click='selectNode(contextMenuEntity)' id="menu_edit">
+      <i class="menu-ico fa fa-edit"></i> {{'platform.commands.manage' | translate}}
+    </li>
+    <li class="menu-item" ng-click='copy(contextMenuEntity.id)' id="menu_copyId">
+      <i class="menu-ico fa fa-copy"></i> {{'orders.blades.customerOrder-list.labels.copy-id' | translate}}
+    </li>
+    <li class="menu-item" ng-click='copy(contextMenuEntity.number)' id="menu_copyNumber">
+      <i class="menu-ico fa fa-copy"></i> {{'orders.blades.customerOrder-list.labels.copy-number' | translate}}
+    </li>
+    <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("CustomerName", contextMenuEntity.customerName)' id="menu_filterCustomerName">
+      <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.customerName}}`
+    </li>
+    <li class="menu-item" ng-if="useIndexedSearch && contextMenuEntity.organizationName" ng-click='filterBy("OrganizationName", contextMenuEntity.organizationName)' id="menu_filterOrganizationName">
+      <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.organizationName}}`
+    </li>
+    <li class="menu-item" ng-if="useIndexedSearch" ng-click='filterBy("StoreId", contextMenuEntity.storeId)' id="menu_filterStoreId">
+      <i class="menu-ico fa fa-filter"></i> {{'orders.blades.customerOrder-list.labels.filter-by' | translate}} `{{contextMenuEntity.storeId}}`
+    </li>
+    <li class="menu-item" ng-if='!blade.hideDelete' ng-click='deleteList([contextMenuEntity])' va-permission="order:delete" id="menu_delete">
+      <i class="menu-ico fas fa-trash-alt"></i> {{'platform.commands.delete' | translate}}
+    </li>
+  </ul>
 </script>
