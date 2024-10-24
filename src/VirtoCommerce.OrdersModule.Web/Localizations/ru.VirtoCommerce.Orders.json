@@ -4,69 +4,70 @@
     "blades": {
       "customerOrder-detail": {
         "title": "Заказ {{customer}}",
-        "subtitle": "Изменить данные заказа и соответствующие документы",
+        "subtitle": "Редактировать детали заказа и связанные документы",
         "labels": {
-          "approved": "Одобрено",
+          "approved": "Утверждено",
           "employee": "Назначено",
-          "order-number": "Номер заказа покупателя",
+          "order-number": "Номер заказа клиента",
           "status": "Статус",
           "store": "Магазин",
-          "from": "Из",
+          "from": "Создано",
           "channel": "Канал",
-          "customer": "Покупатель",
+          "customer": "Клиент",
           "organization": "Организация",
-          "invoice": "Получить счет в PDF",
-          "withPrototypes": "Показать шаблоны"
+          "invoice": "Получить PDF счета",
+          "withPrototypes": "С шаблонами"
         },
         "placeholders": {
-          "employee": "Выбрать исполнителя",
-          "status": "Выбрать...",
-          "store": "Выбрать..."
+          "employee": "Выберите исполнителя",
+          "status": "Выберите...",
+          "store": "Выберите..."
         }
       },
       "customerOrder-items": {
         "labels": {
           "item": "Товар",
-          "quantity": "Количество",
+          "status": "Статус",
+          "quantity": "Кол-во",
           "available": "Доступно",
           "await": "Ожидание",
-          "price": "Цена за единицу (без учета налога)",
+          "price": "Цена за единицу (без налога)",
           "tax": "Налог",
-          "priceWithTax": "Цена за единицу (с учетом налога)",
-          "discount": "Скидка (без учета налога)",
-          "discountWithTax": "Скидка (с учетом налога)",
-          "total": "Общее количество позиций",
+          "priceWithTax": "Цена за единицу (с налогом)",
+          "discount": "Скидка (без налога)",
+          "discountWithTax": "Скидка (с налогом)",
+          "total": "Всего позиций",
           "dynamic-properties": "Динамические свойства",
-          "sub-total": "Промежуточный итог",
-          "discount-total": "Общая сумма скидки",
-          "tax-total": "Общая сумма налога",
-          "fee-total": "Общая сумма сбора"
+          "sub-total": "Подытог",
+          "discount-total": "Общая скидка",
+          "tax-total": "Общий налог",
+          "fee-total": "Общая комиссия"
         }
       },
       "customerOrder-list": {
-        "title": "Заказы Покупателя",
+        "title": "Заказы клиентов",
         "labels": {
           "new-filter": "Добавить новый фильтр",
-          "unnamed-filter": "Фильтр по умолчанию",
+          "unnamed-filter": "Фильтровать по",
           "today-filter": "Сегодня",
           "last-day-filter": "Вчера",
-          "last-week-filter": "Прошлая неделч",
-          "last-month-filter": "Прошлый месяц",
-          "last-year-filter": "Прошлый год",
+          "last-week-filter": "Последняя неделя",
+          "last-month-filter": "Последний месяц",
+          "last-year-filter": "Последний год",
           "number": "Номер заказа",
-          "customer": "Покупатель",
-          "confirmed": "Подтвержден",
+          "customer": "Клиент",
+          "confirmed": "Подтверждено",
           "status": "Статус",
-          "total": "Итог",
+          "total": "Итого",
           "currency": "Валюта",
           "store": "Магазин",
-          "created": "Создан",
-          "copy-id": "Копировать ID",
+          "created": "Создано",
+          "copy-id": "Копировать Id",
           "copy-number": "Копировать номер",
-          "filter-by": "Отфильтровать по"
+          "filter-by": "Фильтровать по"
         },
         "placeholders": {
-          "select-filter": "Выбрать фильтр"
+          "select-filter": "Выберите фильтр"
         }
       },
       "filter-detail": {
@@ -74,14 +75,14 @@
         "new-title": "Новый фильтр",
         "new-subtitle": "Создать новый фильтр",
         "labels": {
-          "name": "Название фильтра",
-          "name_": "Как Вы назовете этот фильтр?",
+          "name": "Имя фильтра",
+          "name_": "Назовите этот фильтр",
           "criteria": "Критерии фильтра",
-          "from": "Создано с",
+          "from": "Создано после",
           "to": "Создано до"
         },
         "placeholders": {
-          "all": "Не определено"
+          "all": "Не указано"
         }
       },
       "operation-comment": {
@@ -91,179 +92,273 @@
       },
       "payment-detail": {
         "title": "Входящий платеж #{{number}}",
-        "title-new": "Новый Входящий платеж",
-        "subtitle": "Редактировать данные платежа и соответствующие документы",
+        "title-new": "Новый входящий платеж",
+        "subtitle": "Редактировать детали платежа и связанные документы",
         "labels": {
-          "approved": "Утвержден",
-          "payment-number": "Номер платежа",
+          "approved": "Утверждено",
+          "payment-number": "ID платежа",
           "status": "Статус",
           "amount": "Сумма",
-          "from": "От",
-          "payment-gateway": "Платежная система",
-          "payment-purpose": "Цель платежа",
-          "price": "Комиссия за оплату",
-          "price-with-tax": "Комиссия за оплату (с учетом налога)",
-          "vendor": "Вендор"
+          "from": "Дата и время",
+          "payment-gateway": "Платежный шлюз",
+          "payment-purpose": "Назначение платежа",
+          "price": "Комиссия за платеж",
+          "price-with-tax": "Комиссия за платеж (с налогом)",
+          "vendor": "Поставщик",
+          "capture-payment": "Захват платежа",
+          "refund-payment": "Возврат платежа"
         },
         "placeholders": {
-          "status": "Выбрать...",
-          "payment-gateway": "Выбрать...",
-          "vendor": "Выбрать..."
+          "status": "Выберите...",
+          "payment-gateway": "Выберите...",
+          "vendor": "Выберите..."
         }
       },
-      "transactions-list": {
-        "title": "Транзакции платежной системы",
-        "subtitle": "Список всех взаимодействий в платежной системе"
-      },
-      "transaction-detail": {
-        "title": "Детали транзакции",
-        "subtitle": "Необработанные данные транзакции "
-      },
-      "shipment-detail": {
-        "title": "Отправление #{{number}}",
-        "title-new": "Новое Отправление",
-        "subtitle": "Редактировать информацию об отправлении",
+      "refund-add": {
+        "title": "Создать возврат",
         "labels": {
-          "shipment-method": "Метод отгрузки",
-          "approved": "Утвержден",
-          "shipment-number": "Номер отправления",
-          "status": "Статус",
-          "fulfillment-center": "Фулфилмент-центр",
-          "from": "От",
-          "employee": "Назначено",
-          "price": "Цена отправления",
-          "price-with-tax": "Цена отправления с учетом налога",
-          "shipment-method-option": "Вариант способа доставки",
-          "tracking-number": "Номер отслеживания",
-          "tracking-url": "URL отслеживания",
-          "delivery-date": "Дата доставки",
-          "vendor": "Вендор"
+          "amount": "Сумма возврата",
+          "reasonCode": "Причина возврата",
+          "message": "Сообщение о возврате",
+          "transactionId": "ID транзакции",
+          "outerId": "Внешний ID"
         },
         "placeholders": {
-          "status": "Выбрать...",
-          "shipment-method": "Выбрать...",
-          "fulfillment-center": "Выбрать или найти центр...",
-          "shipment-method-option": "Способ доставки по умолчанию",
-          "vendor": "Выбрать..."
+          "amount": "Введите...",
+          "reasonCode": "Выберите...",
+          "message": "Введите...",
+          "transactionId": "Введите...",
+          "outerId": "Введите..."
         }
       },
-      "shipment-items": {
-        "title": "{{title}} товары",
-        "subtitle": "Редактировать товары отправления",
+      "refund-details": {
+        "title": "Возврат #{{number}}",
+        "subtitle": "Редактировать детали платежа и связанные документы",
         "labels": {
-          "item": "Товар",
           "status": "Статус",
-          "quantity": "Количество",
-          "price": "Цена",
-          "total": "Итог"
+          "amount": "Сумма",
+          "vendor": "Поставщик",
+          "reasonCode": "Причина возврата"
+        },
+        "refund-status": {
+          "pending": "В ожидании",
+          "approved": "Утверждено",
+          "rejected": "Отклонено",
+          "processed": "Обработано"
+        },
+        "placeholders": {
+          "status": "Выберите...",
+          "vendor": "Выберите...",
+          "reasonCode": "Выберите..."
         }
       },
-      "catalog-items-select": {
-        "title": "Добавить товар в заказ"
+      "refund-detail": {
+        "labels": {
+          "transactionId": "ID транзакции",
+          "outerId": "Внешний ID"
+        }
       },
-      "newOperation-wizard": {
-        "title": "Новая операция",
-        "subtitle": "Выбрать тип операции",
-        "menu": {
-          "shipment-operation": {
-            "description": "Документ о доставке"
-          },
-          "payment-operation": {
-            "description": "Входящий платежный документ"
-          }
+      "capture-add": {
+        "title": "Создать захват",
+        "labels": {
+          "amount": "Сумма захвата",
+          "message": "Сообщение захвата",
+          "transactionId": "ID транзакции",
+          "outerId": "Внешний ID",
+          "closeTransaction": "Закрыть транзакцию"
+        },
+        "placeholders": {
+          "amount": "Введите...",
+          "message": "Введите...",
+          "transactionId": "Введите...",
+          "outerId": "Введите..."
+        },
+        "descr": {
+          "closeTransaction": "Закрыть транзакцию, ограничивая будущие операции захвата для этого заказа"
+        }
+      },
+      "capture-details": {
+        "title": "Захват #{{number}}",
+        "subtitle": "Редактировать детали платежа и связанные документы",
+        "labels": {
+          "amount": "Сумма",
+          "vendor": "Поставщик",
+          "closeTransaction": "Закрыть транзакцию"
+        },
+        "placeholders": {
+          "amount": "Введите...",
+          "vendor": "Выберите..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "ID транзакции",
+          "outerId": "Внешний ID"
+        }
+      }
+    },
+    "transactions-list": {
+      "title": "Транзакции платежного шлюза",
+      "subtitle": "Список всех взаимодействий с платежным шлюзом"
+    },
+    "transaction-detail": {
+      "title": "Детали транзакции",
+      "subtitle": "Необработанные данные транзакции"
+    },
+    "shipment-detail": {
+      "title": "Отправка #{{number}}",
+      "title-new": "Новая отправка",
+      "subtitle": "Редактировать детали отправки",
+      "labels": {
+        "shipment-method": "Метод отправки",
+        "approved": "Утверждено",
+        "shipment-number": "ID отправки",
+        "status": "Статус",
+        "fulfillment-center": "Центр выполнения",
+        "from": "Дата и время",
+        "employee": "Назначено",
+        "price": "Сумма отправки",
+        "price-with-tax": "Сумма отправки с налогом",
+        "shipment-method-option": "Метод отправки",
+        "tracking-number": "Номер отслеживания",
+        "tracking-url": "URL отслеживания",
+        "delivery-date": "Дата доставки",
+        "vendor": "Поставщик"
+      },
+      "placeholders": {
+        "status": "Выберите...",
+        "shipment-method": "Выберите...",
+        "fulfillment-center": "Выберите или найдите центр...",
+        "shipment-method-option": "Метод отправки по умолчанию",
+        "vendor": "Выберите..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} позиции",
+      "subtitle": "Редактировать позиции отправки",
+      "labels": {
+        "item": "Товар",
+        "status": "Статус",
+        "quantity": "Кол-во",
+        "price": "Цена",
+        "total": "Итого"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Добавить товар в заказ"
+    },
+    "newOperation-wizard": {
+      "title": "Новая операция",
+      "subtitle": "Выберите тип операции",
+      "menu": {
+        "shipment-operation": {
+          "description": "Документ отправки"
+        },
+        "payment-operation": {
+          "description": "Документ входящего платежа"
+        },
+        "refund-operation": {
+          "description": "Документ возврата"
         }
       }
     },
     "widgets": {
       "notifications": {
-        "title": "Отправка уведомлений",
-        "subtitle": "Отправка уведомлений о заказе"
+        "title": "Лента уведомлений",
+        "subtitle": "Лента уведомлений заказа"
       },
       "customerOrder-address": {
         "title": "Адреса",
         "blade-title": "Управление адресами"
       },
       "customerOrder-items": {
-        "title": "Позиции заказа",
+        "title": "Позиции",
         "blade-title": "{{title}} позиции",
         "blade-subtitle": "Редактировать позиции"
       },
       "customerOrder-totals": {
-        "sub-total": "Промежуточный итог",
-        "shipping-total": "Общая стоимость доставки",
-        "shipping-sub-total": "Сумма промежуточного итога доставки",
-        "payment-sub-total": "Оплата",
-        "tax-total": "Общая сумма налога",
-        "fee-total": "Общая сумма комиссии",
+        "sub-total": "Подытог",
+        "shipping-total": "Итого доставка",
+        "shipping-sub-total": "Подытог доставки",
+        "payment-sub-total": "Подытог оплаты",
+        "tax-total": "Итого налог",
+        "fee-total": "Итого комиссия",
         "discount": "Скидка",
-        "discount-total": "Общая сумма скидки",
-        "discount-total-with-tax": "Общая сумма скидки с учетом налога",
-        "total": "Итог"
+        "discount-total": "Итого скидка",
+        "discount-total-with-tax": "Итого скидка с налогом",
+        "total": "Итого"
       },
       "operation-comment": {
-        "no-comments": "нет комментариев",
-        "blade-title": "Написать комментарии"
+        "no-comments": "Нет комментариев",
+        "blade-title": "Оставить комментарий"
       },
       "shipment-address": {
-        "blade-title": "Управление адресами доставки",
-        "title": "Адреса доставки"
+        "blade-title": "Управление адресом доставки",
+        "title": "Адрес доставки"
       },
       "shipment-items": {
-        "title": "Позиции доставки"
+        "title": "Позиции отправки"
       },
       "shipment-totals": {
-        "tax-total": "Общая сумма налога",
-        "fee-total": "Общая сумма комиссии",
-        "shipment-total": "Общая сумма доставки",
-        "shipment-price": "Цена доставки",
-        "discount-total": "Общая сумма скидки",
-        "total": "Итог"
+        "tax-total": "Итого налог",
+        "fee-total": "Итого сбор",
+        "shipment-total": "Итого отправка",
+        "shipment-price": "Стоимость доставки",
+        "discount-total": "Итого скидка",
+        "total": "Итого"
       },
       "payment-totals": {
-        "tax-total": "Общая сумма налога",
-        "payment-total": "Сумма платежа",
-        "payment-price": "Цена",
-        "discount-total": "Общая сумма скидки",
-        "total": "Итог"
+        "tax-total": "Итого налог",
+        "payment-total": "Итого оплата",
+        "payment-price": "Стоимость оплаты",
+        "discount-total": "Итого скидка",
+        "total": "Итого"
       },
       "payment-address": {
-        "blade-title": "Управление платежными адресами",
-        "title": "Платежные адреса"
+        "blade-title": "Управление адресом выставления счета",
+        "title": "Адрес оплаты"
       },
       "statistics-templates": {
-        "revenue": "Доход",
+        "revenue": "Выручка",
         "customers-with-orders": "Клиенты с заказами",
-        "average-order-value": "Средняя сумма заказа",
-        "items-purchased": "Куплено товаров",
-        "lines-per-order": "Позиций в заказе",
-        "revenue-per-customer": "Доход от одного клиента",
-        "title": "Статистика по заказам",
-        "not-authorized": "Нет доступа. У вас нет доступа к этой функции. Свяжитесь с администратором своей учетной записи для получения доступа."
+        "average-order-value": "Средняя стоимость заказа",
+        "items-purchased": "Купленные товары",
+        "lines-per-order": "Позиций на заказ",
+        "revenue-per-customer": "Выручка на клиента",
+        "title": "Статистика заказов",
+        "not-authorized": "У вас нет доступа к этой функции. Пожалуйста, обратитесь к администратору вашей учетной записи для получения доступа"
+      },
+      "customerOrder-list": {
+        "title": "Заказы"
       }
     },
     "dialogs": {
       "concurrency-сonflict": {
-        "title": "Обнаружен конфликт совместного обновления",
-        "message": "Заказ был изменен другим пользователем. Нажмите OK, чтобы перезагрузить последние данные, и повторите попытку."
+        "title": "Обнаружен конфликт параллельного доступа",
+        "message": "Заказ был изменен другим пользователем. Нажмите OK, чтобы перезагрузить последние данные и повторить попытку"
       },
       "orders-delete": {
         "title": "Подтверждение удаления",
-        "message": "Вы уверены, что хотите удалить выбранные заказы?"
+        "message": "Вы уверены, что хотите удалить выбранные заказы клиентов?"
       },
       "operation-save": {
-        "title": "Сохранение изменений",
+        "title": "Сохранить изменения",
         "message": "Операция была изменена. Вы хотите сохранить изменения?"
       },
       "operation-delete": {
         "title": "Подтверждение удаления",
-        "message": "Вы уверены, что хотите отменить текущую операцию?"
+        "message": "Вы уверены, что хотите удалить текущую операцию?"
       },
       "operation-cancel": {
         "title": "Отмена операции",
-        "message": "Вы уверены, что хотите закрыть документ?",
+        "message": "Вы уверены, что хотите удалить этот документ?",
         "placeholders": {
-          "reason": "Пожалуйста, введите причину закрытия..."
+          "reason": "Введите причину удаления..."
         }
+      },
+      "payment-capture": {
+        "title": "Подтверждение захвата",
+        "message": "Вы уверены, что хотите захватить платеж на сумму {{amount}}?"
       }
     },
     "settings": {
@@ -275,11 +370,18 @@
         "ready to send": "Готов к отправке",
         "cancelled": "Отменен",
         "partially sent": "Частично отправлен",
-        "completed": "Выполнен"
+        "completed": "Завершен"
+      },
+      "line-item-status": {
+        "pending": "В ожидании",
+        "inprogress": "В процессе",
+        "shipped": "Отправлен",
+        "delivered": "Доставлен",
+        "cancelled": "Отменен"
       },
       "shipment-status": {
         "new": "Новый",
-        "pickpack": "Сбор и Упаковка",
+        "pickpack": "Комплектация",
         "cancelled": "Отменен",
         "readytosend": "Готов к отправке",
         "sent": "Отправлен"
@@ -289,123 +391,158 @@
         "pending": "В ожидании",
         "authorized": "Авторизован",
         "paid": "Оплачен",
-        "partiallyrefunded": "Частично возмещен",
-        "refunded": "Возмещен",
+        "partiallyrefunded": "Частично возвращен",
+        "refunded": "Возвращен",
         "voided": "Аннулирован",
-        "custom": "Клиент",
+        "custom": "Пользовательский",
         "cancelled": "Отменен"
+      },
+      "refund-status": {
+        "pending": "В ожидании",
+        "rejected": "Отклонен",
+        "processed": "Обработан"
+      },
+      "reason-codes": {
+        "duplicate": "Дубликат",
+        "fraudulent": "Мошенничество",
+        "requestedbycustomer": "По запросу клиента",
+        "other": "Другое"
       }
     },
     "commands": {
       "new-document": "Новый документ",
       "cancel-document": "Отменить документ",
-      "add-selected": "Добавить выбранные",
-      "add-item": "Добавить товар"
+      "add-selected": "Добавить выбранное",
+      "add-item": "Добавить позицию"
     }
   },
   "permissions": {
-    "order:read": "Просмотр данных заказа",
-    "order:create": "Создание нового заказа",
-    "order:update": "Обновление данных существующего заказа",
-    "order:delete": "Удаление данных заказа",
-    "order:access": "Доступ к данным заказа",
+    "order:read": "Просмотр данных, связанных с заказом",
+    "order:create": "Создание данных, связанных с заказом",
+    "order:update": "Обновление данных, связанных с заказом",
+    "order:delete": "Удаление данных, связанных с заказом",
+    "order:access": "Доступ к данным, связанным с заказом",
     "order:read_prices": "Просмотр цен заказа"
   },
   "settings": {
     "Order.Status": {
-      "description": "Статусы заказа",
-      "title": "Статусы заказа"
+      "title": "Статусы заказа клиента",
+      "description": "Список доступных статусов для заказов клиентов"
+    },
+    "Order.InitialStatus": {
+      "title": "Начальный статус заказа клиента",
+      "description": "Начальный статус нового заказа клиента"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Начальный статус для заказов с прерванной оплатой",
+      "description": "Этот статус используется для всех заказов, где оплата не была обработана"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Статусы позиций заказа",
+      "description": "Список доступных статусов для позиций заказа"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Начальный статус позиции заказа",
+      "description": "Начальный статус позиции в новом заказе клиента"
     },
     "Shipment.Status": {
-      "description": "Статусы доставки",
-      "title": "Статусы доставки"
+      "description": "Статусы отправки",
+      "title": "Статусы отправки"
     },
     "PaymentIn.Status": {
       "description": "Статусы входящих платежей",
-      "title": "Статусы платежей"
+      "title": "Статусы оплаты"
+    },
+    "Refund.Status": {
+      "title": "Статусы возврата",
+      "description": "Статусы возврата"
     },
     "Order.CustomerOrderNewNumberTemplate": {
-      "description": "Используется для создания нового номера заказов с параметрами:\n\n0: дата и время в формате UTC.\n1: Счетчик\n\nПоддерживает параметры счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Ежедневно для reset_counter_type. Выберите типы счетчиков сброса «Нет», «Ежедневно», «Еженедельно», «Ежемесячно» и «Ежегодно».\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
+      "description": "Используется для генерации нового номера заказа клиента, с параметрами:\n\n0: Дата и время в UTC\n1: Счетчик\n\nФормат поддерживает опции счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Daily для reset_counter_type. Выберите из None, Daily, Weekly, Monthly и Yearly типов сброса счетчика.\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
       "title": "Шаблон номера заказа"
     },
     "Order.ShipmentNewNumberTemplate": {
-      "description": "Используется для создания нового номера документа доставки с параметрами:\n\n0: дата и время в формате UTC.\n1: Счетчик\n\nПоддерживает параметры счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Ежедневно для reset_counter_type. Выберите типы счетчиков сброса «Нет», «Ежедневно», «Еженедельно», «Ежемесячно» и «Ежегодно».\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
-      "title": "Шаблон номера документа доставки"
+      "description": "Используется для генерации нового номера отправки, с параметрами:\n\n0: Дата и время в UTC\n1: Счетчик\n\nФормат поддерживает опции счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Daily для reset_counter_type. Выберите из None, Daily, Weekly, Monthly и Yearly типов сброса счетчика.\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
+      "title": "Шаблон номера отправки заказа"
     },
     "Order.PaymentInNewNumberTemplate": {
-      "description": "Используется для создания нового номера платежного документа с параметрами:\n\n0: дата и время в формате UTC.\n1: Счетчик\n\nПоддерживает параметры счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Ежедневно для reset_counter_type. Выберите типы счетчиков сброса «Нет», «Ежедневно», «Еженедельно», «Ежемесячно» и «Ежегодно».\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
-      "title": "Шаблон номера платежного документа"
+      "description": "Используется для генерации нового номера платежа, с параметрами:\n\n0: Дата и время в UTC\n1: Счетчик\n\nФормат поддерживает опции счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Daily для reset_counter_type. Выберите из None, Daily, Weekly, Monthly и Yearly типов сброса счетчика.\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
+      "title": "Шаблон номера платежа заказа"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Используется для генерации нового номера возврата, с параметрами:\n\n0: Дата и время в UTC\n1: Счетчик\n\nФормат поддерживает опции счетчика непосредственно в шаблоне, используя формат:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nЗначения по умолчанию:\n* Daily для reset_counter_type. Выберите из None, Daily, Weekly, Monthly и Yearly типов сброса счетчика.\n* 1 для start_counter_from.\n* 1 для counter_increment.\n\nПример: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nРезультат: CO240101-00001.",
+      "title": "Шаблон номера возврата заказа"
     },
     "Order.SendOrderNotifications": {
-      "description": "Отправление уведомлений при изменении статуса заказа",
+      "description": "Отправляет уведомление при изменении статуса заказа",
       "title": "Включить уведомления для заказов"
     },
     "Order.AdjustInventory": {
-      "description": "Списывать со склада при изменении статуса заказа",
-      "title": "Списывать со склада продукцию из заказов"
+      "description": "Корректирует инвентарь при изменении статуса заказа",
+      "title": "Корректировать инвентарь для заказов"
     },
     "Order.LogOrderChanges": {
-      "title": "Лог изменений заказа",
-      "description": "Регистрирует изменения заказа в логе работы приложения"
+      "title": "Журнал изменений заказа",
+      "description": "Записывает изменения заказа в журнал операций платформы"
     },
     "Order.Search.EventBasedIndexation.Enable": {
-      "title": "Включить индексацию событий для заказов",
-      "description": "Любые изменения в заказе вызовут фоновую задачу, которая применит эти изменения к поисковому индексу"
+      "title": "Событийная индексация для сущностей заказа",
+      "description": "Любые изменения в сущности клиента вызовут фоновую задачу для применения этих изменений к поисковому индексу"
     },
     "Order.Validation.Enable": {
-      "title": "Подтвердить сохранение заказа",
-      "description": "Включает необходимость подтверждения при сохранении заказа"
+      "title": "Валидация сохранения заказа",
+      "description": "Включает валидацию при сохранении заказа"
     },
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
       "title": "Дата и время индексации заказа",
-      "description": "Дата и время последней индексации заказа"
+      "description": "Дата и время последней задачи индексации заказа"
     },
     "Order.OrderPaidAndOrderSentNotifications.Enable": {
-      "title": "Использовать уведомления об оплате/доставке заказа",
-      "description": "Использовать уведомления об оплате/доставке заказа"
+      "title": "Использовать уведомления об оплате и отправке заказа",
+      "description": "Использовать уведомления об оплате и отправке заказа"
     },
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
-      "title": "Использовать уведомления о смене статуса платежа/доставки",
-      "description": "Использовать уведомления о смене статуса платежа/доставки"
+      "title": "Использовать уведомления об изменении статуса оплаты/отправки",
+      "description": "Использовать для уведомлений об изменении статуса оплаты/отправки"
     }
   },
   "module": {
     "VirtoCommerce.Orders": {
-      "description": "Экспорт/импорт заказов со всеми связанными объектами (продукцию, доставку, оплату и т. д.)"
+      "description": "Экспорт/импорт заказов клиентов со всеми связанными объектами (позиции заказа, отправки, платежи и т.д.)"
     }
   },
   "notificationTypes": {
     "CancelOrderEmailNotification": {
-      "displayName": "Уведомление при отмене заказа",
-      "description": "Клиент получит уведомление по электронной почте, когда заказ будет отменен."
+      "displayName": "Уведомление об отмене заказа",
+      "description": "Клиент получает уведомление по электронной почте, когда заказ отменяется"
     },
     "InvoiceEmailNotification": {
-      "displayName": "Счет-фактура для заказа",
-      "description": "Это шаблон счета-фактуры заказа, используется при создании PDF-версии."
+      "displayName": "Счет для заказа клиента",
+      "description": "Это шаблон для счета заказа клиента, используемый для генерации PDF-версии"
     },
     "NewOrderStatusEmailNotification": {
-      "displayName": "Уведомление при изменении статуса заказа",
-      "description": "Клиент получит уведомление по электронной почте, когда статус заказа будет изменен"
+      "displayName": "Уведомление о новом статусе заказа",
+      "description": "Клиент получает уведомление по электронной почте, когда статус любого заказа изменяется"
     },
     "OrderCreateEmailNotification": {
-      "displayName": "Уведомление о создании заказа",
-      "description": "Клиент получит уведомление по электронной почте после отправки своих данных через форму на сайте, например, через форму «Свяжитесь с нами»."
+      "displayName": "Уведомление о созданном заказе",
+      "description": "Клиент получает уведомление по электронной почте после отправки своих данных через форму во Фронтенд-приложении, например, через форму обратной связи"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Уведомление об оплате заказа",
-      "description": "Клиент получит уведомление по электронной почте, когда все платежи, связанные с заказом, будут оплачены."
+      "description": "Клиент получает уведомление по электронной почте, когда все платежи, связанные с заказом, завершены"
     },
     "OrderSentEmailNotification": {
-      "displayName": "Уведомление о доставке заказа",
-      "description": "Клиент получит уведомление по электронной почте, когда все заказанные товары будут отправлены."
+      "displayName": "Уведомление об отправленном заказе",
+      "description": "Клиент получает уведомление по электронной почте, когда все заказанные товары были отправлены"
     },
     "PaymentStatusChangedEmailNotification": {
-      "displayName": "Уведомление об изменение статусов платежей",
-      "description": "Клиент получит уведомление по электронной почте, со списком платежей, у которых изменились статусы"
+      "displayName": "Уведомление об изменении статуса платежей",
+      "description": "Клиент получает уведомление по электронной почте со всеми измененными статусами платежей"
     },
     "ShipmentStatusChangedEmailNotification": {
-      "displayName": "Уведомление об изменение статусов доставок",
-      "description": "Клиент получит уведомление по электронной почте, со списком доставок, у которых изменились статусы"
+      "displayName": "Уведомление об изменении статуса отправок",
+      "description": "Клиент получает уведомление по электронной почте со всеми измененными статусами отправок"
     }
   }
 }
