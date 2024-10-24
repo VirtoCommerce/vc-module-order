@@ -1,0 +1,548 @@
+{
+  "orders": {
+    "main-menu-title": "Orders",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "{{customer}}'s order",
+        "subtitle": "Edit order details and related documents",
+        "labels": {
+          "approved": "Approved",
+          "employee": "Assigned to",
+          "order-number": "Customer order number",
+          "status": "Status",
+          "store": "Store",
+          "from": "Created at",
+          "channel": "Channel",
+          "customer": "Customer",
+          "organization": "Organization",
+          "invoice": "Get invoice PDF",
+          "withPrototypes": "With templates"
+        },
+        "placeholders": {
+          "employee": "Select assignee",
+          "status": "Select...",
+          "store": "Select..."
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "Item",
+          "status": "Status",
+          "quantity": "Qty",
+          "available": "Avail",
+          "await": "Await",
+          "price": "Unit price (excl. tax)",
+          "tax": "Tax",
+          "priceWithTax": "Unit price (incl. tax)",
+          "discount": "Discount (excl. tax)",
+          "discountWithTax": "Discount (incl. tax)",
+          "total": "Total line items",
+          "dynamic-properties": "Dynamic properties",
+          "sub-total": "Subtotal",
+          "discount-total": "Total discount",
+          "tax-total": "Total tax",
+          "fee-total": "Total fee"
+        }
+      },
+      "customerOrder-list": {
+        "title": "Customer orders",
+        "labels": {
+          "new-filter": "Add new filter",
+          "unnamed-filter": "Filter by",
+          "today-filter": "Today",
+          "last-day-filter": "Yesterday",
+          "last-week-filter": "Last week",
+          "last-month-filter": "Last month",
+          "last-year-filter": "Last year",
+          "number": "Order number",
+          "customer": "Customer",
+          "confirmed": "Confirmed",
+          "status": "Status",
+          "total": "Total",
+          "currency": "Currency",
+          "store": "Store",
+          "created": "Created",
+          "copy-id": "Copy Id",
+          "copy-number": "Copy number",
+          "filter-by": "Filter by"
+        },
+        "placeholders": {
+          "select-filter": "Select filter"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "Edit filter",
+        "new-title": "New filter",
+        "new-subtitle": "Create new filter",
+        "labels": {
+          "name": "Filter name",
+          "name_": "Name this filter",
+          "criteria": "Filter criteria",
+          "from": "Created after",
+          "to": "Created before"
+        },
+        "placeholders": {
+          "all": "Not specified"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "Comments"
+        }
+      },
+      "payment-detail": {
+        "title": "Incoming payment #{{number}}",
+        "title-new": "New incoming payment",
+        "subtitle": "Edit payment details and related documents",
+        "labels": {
+          "approved": "Approved",
+          "payment-number": "Payment Id",
+          "status": "Status",
+          "amount": "Amount",
+          "from": "Date and time",
+          "payment-gateway": "Payment gateway",
+          "payment-purpose": "Payment purpose",
+          "price": "Payment fees",
+          "price-with-tax": "Payment fees (incl. tax)",
+          "vendor": "Vendor",
+          "capture-payment": "Capture payment",
+          "refund-payment": "Refund payment"
+        },
+        "placeholders": {
+          "status": "Select...",
+          "payment-gateway": "Select...",
+          "vendor": "Select..."
+        }
+      },
+      "refund-add": {
+        "title": "Create a refund",
+        "labels": {
+          "amount": "Refund amount",
+          "reasonCode": "Refund reason",
+          "message": "Refund message",
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "reasonCode": "Select...",
+          "message": "Enter...",
+          "transactionId": "Enter...",
+          "outerId": "Enter..."
+        }
+      },
+      "refund-details": {
+        "title": "Refund #{{number}}",
+        "subtitle": "Edit payment details and related documents",
+        "labels": {
+          "status": "Status",
+          "amount": "Amount",
+          "vendor": "Vendor",
+          "reasonCode": "Refund reason"
+        },
+        "refund-status": {
+          "pending": "Pending",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "processed": "Processed"
+        },
+        "placeholders": {
+          "status": "Select...",
+          "vendor": "Select...",
+          "reasonCode": "Select..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id"
+        }
+      },
+      "capture-add": {
+        "title": "Create a capture",
+        "labels": {
+          "amount": "Capture amount",
+          "message": "Capture message",
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id",
+          "closeTransaction": "Close transaction"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "message": "Enter...",
+          "transactionId": "Enter...",
+          "outerId": "Enter..."
+        },
+        "descr": {
+          "closeTransaction": "Close a transaction, restricting future capture operations against this order"
+        }
+      },
+      "capture-details": {
+        "title": "Capture #{{number}}",
+        "subtitle": "Edit payment details and related documents",
+        "labels": {
+          "amount": "Amount",
+          "vendor": "Vendor",
+          "closeTransaction": "Close transaction"
+        },
+        "placeholders": {
+          "amount": "Enter...",
+          "vendor": "Select..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Transaction Id",
+          "outerId": "Outer Id"
+        }
+      }
+    },
+    "transactions-list": {
+      "title": "Payment gateway transactions",
+      "subtitle": "List of all payment gateway interactions"
+    },
+    "transaction-detail": {
+      "title": "Transaction details",
+      "subtitle": "Raw transaction data "
+    },
+    "shipment-detail": {
+      "title": "Shipment #{{number}}",
+      "title-new": "New shipment",
+      "subtitle": "Edit shipment details",
+      "labels": {
+        "shipment-method": "Shipment method",
+        "approved": "Approved",
+        "shipment-number": "Shipment ID",
+        "status": "Status",
+        "fulfillment-center": "Fulfillment center",
+        "from": "Date and time",
+        "employee": "Assigned to",
+        "price": "Shipment amount",
+        "price-with-tax": "Shipment amount with tax",
+        "shipment-method-option": "Shipment method",
+        "tracking-number": "Tracking number",
+        "tracking-url": "Tracking URL",
+        "delivery-date": "Delivery date",
+        "vendor": "Vendor"
+      },
+      "placeholders": {
+        "status": "Select...",
+        "shipment-method": "Select...",
+        "fulfillment-center": "Select or search a center...",
+        "shipment-method-option": "Default shipment method",
+        "vendor": "Select..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} line items",
+      "subtitle": "Edit shipment items",
+      "labels": {
+        "item": "Item",
+        "status": "Status",
+        "quantity": "Qty",
+        "price": "Price",
+        "total": "Total"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Add item to order"
+    },
+    "newOperation-wizard": {
+      "title": "New operation",
+      "subtitle": "Select operation type",
+      "menu": {
+        "shipment-operation": {
+          "description": "Shipment document"
+        },
+        "payment-operation": {
+          "description": "Incoming payment document"
+        },
+        "refund-operation": {
+          "description": "Refund document"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "Notification feed",
+        "subtitle": "Order notification feed"
+      },
+      "customerOrder-address": {
+        "title": "Addresses",
+        "blade-title": "Manage addresses"
+      },
+      "customerOrder-items": {
+        "title": "Line items",
+        "blade-title": "{{title}} line items",
+        "blade-subtitle": "Edit line items"
+      },
+      "customerOrder-totals": {
+        "sub-total": "Subtotal",
+        "shipping-total": "Shipping total",
+        "shipping-sub-total": "Shipping subtotal",
+        "payment-sub-total": "Payment subtotal",
+        "tax-total": "Total tax",
+        "fee-total": "Total fee",
+        "discount": "Discount",
+        "discount-total": "Total discount",
+        "discount-total-with-tax": "Total discount with tax",
+        "total": "Total"
+      },
+      "operation-comment": {
+        "no-comments": "No comments",
+        "blade-title": "Leave a comment"
+      },
+      "shipment-address": {
+        "blade-title": "Manage delivery address",
+        "title": "Delivery address"
+      },
+      "shipment-items": {
+        "title": "Shipment items"
+      },
+      "shipment-totals": {
+        "tax-total": "Total tax",
+        "fee-total": "Total fee",
+        "shipment-total": "Total shipment",
+        "shipment-price": "Shipping price",
+        "discount-total": "Total discount",
+        "total": "Total"
+      },
+      "payment-totals": {
+        "tax-total": "Total tax",
+        "payment-total": "Total payment",
+        "payment-price": "Payment price",
+        "discount-total": "Total discount",
+        "total": "Total"
+      },
+      "payment-address": {
+        "blade-title": "Manage billing address",
+        "title": "Payment address"
+      },
+      "statistics-templates": {
+        "revenue": "Revenue",
+        "customers-with-orders": "Customers with orders",
+        "average-order-value": "Average order value",
+        "items-purchased": "Items purchased",
+        "lines-per-order": "Lines per order",
+        "revenue-per-customer": "Revenue per customer",
+        "title": "Order statistics",
+        "not-authorized": "You do not currently have access to this feature. Please contact your account administrator for access"
+      },
+      "customerOrder-list": {
+        "title": "Orders"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Concurrency conflict detected",
+        "message": "The order has been modified by another user. Click OK to reload the latest data and try again"
+      },
+      "orders-delete": {
+        "title": "Delete confirmation",
+        "message": "Are you sure you want to delete the selected customer orders?"
+      },
+      "operation-save": {
+        "title": "Save changes",
+        "message": "The operation has been modified. Do you want to save changes?"
+      },
+      "operation-delete": {
+        "title": "Delete confirmation",
+        "message": "Are you sure you want to delete the current operation?"
+      },
+      "operation-cancel": {
+        "title": "Cancel operation",
+        "message": "Are you sure you want to remove this document?",
+        "placeholders": {
+          "reason": "Enter the reason for removal..."
+        }
+      },
+      "payment-capture": {
+        "title": "Capture confirmation",
+        "message": "Are you sure you want to capture payment on {{amount}}?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "New",
+        "not payed": "Not paid",
+        "pending": "Pending",
+        "processing": "Processing",
+        "ready to send": "Ready to send",
+        "cancelled": "Cancelled",
+        "partially sent": "Partially sent",
+        "completed": "Completed"
+      },
+      "line-item-status": {
+        "pending": "Pending",
+        "inprogress": "In progress",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "shipment-status": {
+        "new": "New",
+        "pickpack": "Pick pack",
+        "cancelled": "Cancelled",
+        "readytosend": "Ready to send",
+        "sent": "Sent"
+      },
+      "paymentin-status": {
+        "new": "New",
+        "pending": "Pending",
+        "authorized": "Authorized",
+        "paid": "Paid",
+        "partiallyrefunded": "Partially refunded",
+        "refunded": "Refunded",
+        "voided": "Void",
+        "custom": "Custom",
+        "cancelled": "Cancelled"
+      },
+      "refund-status": {
+        "pending": "Pending",
+        "rejected": "Rejected",
+        "processed": "Processed"
+      },
+      "reason-codes": {
+        "duplicate": "Duplicate",
+        "fraudulent": "Fraudulent",
+        "requestedbycustomer": "Requested by customer",
+        "other": "Other"
+      }
+    },
+    "commands": {
+      "new-document": "New document",
+      "cancel-document": "Cancel document",
+      "add-selected": "Add selected",
+      "add-item": "Add item"
+    }
+  },
+  "permissions": {
+    "order:read": "View order related data",
+    "order:create": "Create order related data",
+    "order:update": "Update order related data",
+    "order:delete": "Delete order related data",
+    "order:access": "Access order related data",
+    "order:read_prices": "View order prices"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Customer order statuses",
+      "description": "List of available statuses for customer orders"
+    },
+    "Order.InitialStatus": {
+      "title": "Customer order initial status",
+      "description": "The initial status of a new customer order"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Initial status for orders with terminated payment",
+      "description": "This status is used for all orders, where the payment was not processed"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Line item statuses",
+      "description": "The list of available statuses for order line items"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Line item initial status",
+      "description": "The initial status of a line item in a new customer order"
+    },
+    "Shipment.Status": {
+      "description": "Shipment statuses",
+      "title": "Shipment statuses"
+    },
+    "PaymentIn.Status": {
+      "description": "Incoming payment statuses",
+      "title": "Payment statuses"
+    },
+    "Refund.Status": {
+      "title": "Refund statuses",
+      "description": "Refund statuses"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Used to generate new customer order number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order number template"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Used to generate new shipment number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order shipment number template"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Used to generate new payment number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order payment number template"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Used to generate new refund number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "title": "Order refund number template"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Sends a notification when the order status changes",
+      "title": "Enable notifications for orders"
+    },
+    "Order.AdjustInventory": {
+      "description": "Adjusts the inventory when the order status changes",
+      "title": "Adjust inventory for orders"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Log order changes",
+      "description": "Logs order changes into the platform operation log"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Event-based indexing for order entities",
+      "description": "Any changes to the customer entity will trigger a background task to apply these changes to the search index"
+    },
+    "Order.Validation.Enable": {
+      "title": "Order saving validation",
+      "description": "Enables validation of saving an order"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Order indexing date and time",
+      "description": "Date and time of the latest order indexing task"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Use order paid and order sent notifications",
+      "description": "Use order paid and order sent notifications"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Use payments/shipments status changed notifications",
+      "description": "Use for payments/shipments status change notifications"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Export/import customer orders with all related objects (line items, shipments, payments, etc.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Notification on cancelled order",
+      "description": "The customer gets an email notification when an order is cancelled"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Invoice for customer order",
+      "description": "This is a template for customer order invoice used for generating PDF version"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Notification on new order status",
+      "description": "The customer gets an email notification when the status of any order is changed"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Notification on created order",
+      "description": "The customer gets an email notification after submitting their details through a form in the Frontend Application, e.g., through the Contact Us form"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Notification on order payment",
+      "description": "The customer gets an email notification when all payments related to an order have been complete"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Notification on shipped order",
+      "description": "The customer gets an email notification when all ordered items have been shipped"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Notification on payments status changed",
+      "description": "The customer gets an email notification with all changed payments statuses"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Notification on shipments status changed",
+      "description": "The customer gets an email notification with all changed shipments statuses"
+    }
+  }
+}
