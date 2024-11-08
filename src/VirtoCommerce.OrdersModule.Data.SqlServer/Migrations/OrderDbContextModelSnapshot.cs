@@ -503,6 +503,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<string>("PromotionName")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<string>("ShipmentId")
                         .HasColumnType("nvarchar(128)");
 

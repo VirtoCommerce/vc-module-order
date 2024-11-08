@@ -15,10 +15,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.813.0" />
-    <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.808.0" />
+    <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.816.0-alpha.705-vcst-1659" />
+    <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.811.0-alpha.1632-vcst-1659" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.817.0" />
-    <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.809.0" />
+    <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.811.0" />
     <PackageReference Include="VirtoCommerce.PaymentModule.Core" Version="3.804.0" />
     <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.861.0" />
     <PackageReference Include="VirtoCommerce.ShippingModule.Core" Version="3.802.0" />
