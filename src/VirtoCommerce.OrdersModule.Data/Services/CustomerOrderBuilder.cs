@@ -39,7 +39,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         public virtual async Task<CustomerOrder> PlaceCustomerOrderFromCartAsync(ShoppingCart cart)
         {
             var customerOrder = ConvertCartToOrder(cart);
-            await _customerOrderService.SaveChangesAsync(new[] { customerOrder });
+            await _customerOrderService.SaveChangesAsync([customerOrder]);
             return customerOrder;
         }
 
@@ -305,6 +305,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.DiscountAmount = discount.DiscountAmount;
             retVal.DiscountAmountWithTax = discount.DiscountAmountWithTax;
             retVal.PromotionId = discount.PromotionId;
+            retVal.Name = discount.Name;
 
             return retVal;
         }
