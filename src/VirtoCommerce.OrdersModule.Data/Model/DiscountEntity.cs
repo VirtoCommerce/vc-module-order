@@ -12,6 +12,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public string PromotionId { get; set; }
         [StringLength(1024)]
         public string PromotionDescription { get; set; }
+        [StringLength(128)]
+        public string PromotionName { get; set; }
         [Required]
         [StringLength(3)]
         public string Currency { get; set; }
@@ -52,6 +54,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             discount.Description = PromotionDescription;
             discount.PromotionId = PromotionId;
             discount.Coupon = CouponCode;
+            discount.Name = PromotionName;
 
             return discount;
         }
@@ -68,6 +71,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             PromotionDescription = discount.Description;
             PromotionId = discount.PromotionId;
             CouponCode = discount.Coupon;
+            PromotionName = discount.Name;
 
             return this;
         }
@@ -80,6 +84,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.DiscountAmountWithTax = DiscountAmountWithTax;
             target.PromotionDescription = PromotionDescription;
             target.PromotionId = PromotionId;
+            target.PromotionName = PromotionName;
         }
     }
 }
