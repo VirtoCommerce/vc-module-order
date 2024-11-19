@@ -156,29 +156,33 @@ namespace VirtoCommerce.OrdersModule.Tests
                 StoreId = "test store",
                 Addresses = new[]
                 {
-                            new Address {
-                            AddressType = AddressType.Shipping,
-                            City = "london",
-                            Phone = "+68787687",
-                            PostalCode = "22222",
-                            CountryCode = "ENG",
-                            CountryName = "England",
-                            Email = "user@mail.com",
-                            FirstName = "first name",
-                            LastName = "last name",
-                            Line1 = "line 1",
-                            Organization = "org1"
-                            }
-                        }.ToList(),
-                Discounts = new[] {
-                    new Discount
-                {
-                    PromotionId = "testPromotion",
-                    Currency = "USD",
-                    DiscountAmount = 12,
-                    Coupon = "ssss"
+                    new Address
+                    {
+                        AddressType = AddressType.Shipping,
+                        City = "london",
+                        Phone = "+68787687",
+                        PostalCode = "22222",
+                        CountryCode = "ENG",
+                        CountryName = "England",
+                        Email = "user@mail.com",
+                        FirstName = "first name",
+                        LastName = "last name",
+                        Line1 = "line 1",
+                        Organization = "org1"
                     }
-                }
+                }.ToList(),
+                Discounts =
+                [
+                    new Discount
+                    {
+                        PromotionId = "testPromotion",
+                        Name = "Test Promotion",
+                        Description = "This is a test promotion",
+                        Currency = "USD",
+                        DiscountAmount = 12,
+                        Coupon = "ssss"
+                    }
+                ]
             };
             var item1 = new LineItem
             {
@@ -193,13 +197,15 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Quantity = 2,
                 FulfillmentLocationCode = "warehouse1",
                 ShippingMethodCode = "EMS",
-                Discounts = new[] {  new Discount
+                Discounts = [  new Discount
                 {
                     PromotionId = "itemPromotion",
+                    Name = "Test Promotion",
+                    Description = "This is a test promotion",
                     Currency = "USD",
                     DiscountAmount = 12,
                     Coupon =  "ssss"
-                }}
+                }]
             };
             var item2 = new LineItem
             {
@@ -236,13 +242,15 @@ namespace VirtoCommerce.OrdersModule.Tests
                     Line1 = "line 1",
                     Organization = "org1"
                 },
-                Discounts = new[] {  new Discount
+                Discounts = [  new Discount
                 {
                     PromotionId = "testPromotion",
+                    Name = "Test Promotion",
+                    Description = "This is a test promotion",
                     Currency = "USD",
                     DiscountAmount = 12,
                     Coupon = ""
-                }},
+                }],
 
             };
 
