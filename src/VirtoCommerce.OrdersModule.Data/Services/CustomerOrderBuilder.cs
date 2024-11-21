@@ -14,6 +14,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Settings;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
+using ConfigurationItem = VirtoCommerce.OrdersModule.Core.Model.ConfigurationItem;
 using LineItem = VirtoCommerce.OrdersModule.Core.Model.LineItem;
 using OrderSettings = VirtoCommerce.OrdersModule.Core.ModuleConstants.Settings.General;
 using Shipment = VirtoCommerce.OrdersModule.Core.Model.Shipment;
@@ -284,8 +285,30 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 retVal.Discounts = lineItem.Discounts.Select(ToOrderModel).ToList();
             }
 
+            if (lineItem.ConfigurationItems != null)
+            {
+                retVal.ConfigurationItems = lineItem.ConfigurationItems.Select(ToOrderModel).ToList();
+            }
+
             retVal.TaxDetails = lineItem.TaxDetails;
             retVal.Status = GetDefaultLineItemStatus();
+
+            return retVal;
+        }
+
+        protected virtual ConfigurationItem ToOrderModel(CartModule.Core.Model.ConfigurationItem configurationItem)
+        {
+            ArgumentNullException.ThrowIfNull(configurationItem);
+
+            var retVal = AbstractTypeFactory<ConfigurationItem>.TryCreateInstance();
+
+            retVal.ProductId = configurationItem.ProductId;
+            retVal.Name = configurationItem.Name;
+            retVal.Sku = configurationItem.Sku;
+            retVal.Quantity = configurationItem.Quantity;
+            retVal.ImageUrl = configurationItem.ImageUrl;
+            retVal.CatalogId = configurationItem.CatalogId;
+            retVal.CategoryId = configurationItem.CategoryId;
 
             return retVal;
         }

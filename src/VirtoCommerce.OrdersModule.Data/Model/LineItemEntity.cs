@@ -106,6 +106,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(128)]
         public string VendorId { get; set; }
 
+        public bool IsConfigured { get; set; }
+
         #region NavigationProperties
 
         public string CustomerOrderId { get; set; }
@@ -125,6 +127,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public virtual ObservableCollection<RefundItemEntity> RefundItems { get; set; } = new NullCollection<RefundItemEntity>();
 
         public virtual ObservableCollection<CaptureItemEntity> CaptureItems { get; set; } = new NullCollection<CaptureItemEntity>();
+
+        public virtual ObservableCollection<ConfigurationItemEntity> ConfigurationItems { get; set; } = new NullCollection<ConfigurationItemEntity>();
 
         #endregion
 
@@ -178,10 +182,12 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.FulfillmentCenterId = FulfillmentCenterId;
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
             lineItem.VendorId = VendorId;
+            lineItem.IsConfigured = IsConfigured;
 
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
             lineItem.FeeDetails = FeeDetails.Select(x => x.ToModel(AbstractTypeFactory<FeeDetail>.TryCreateInstance())).ToList();
+            lineItem.ConfigurationItems = ConfigurationItems.Select(x => x.ToModel(AbstractTypeFactory<ConfigurationItem>.TryCreateInstance())).ToList();
 
             lineItem.DynamicProperties = DynamicPropertyObjectValues.GroupBy(g => g.PropertyId).Select(x =>
             {
@@ -253,6 +259,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             FulfillmentCenterName = lineItem.FulfillmentCenterName;
             VendorId = lineItem.VendorId;
 
+            IsConfigured = lineItem.IsConfigured;
+
             if (lineItem.Discounts != null)
             {
                 Discounts = new ObservableCollection<DiscountEntity>();
@@ -269,6 +277,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 FeeDetails = new ObservableCollection<FeeDetailEntity>();
                 FeeDetails.AddRange(lineItem.FeeDetails.Select(x => AbstractTypeFactory<FeeDetailEntity>.TryCreateInstance().FromModel(x)));
+            }
+
+            if (lineItem.ConfigurationItems != null)
+            {
+                ConfigurationItems = new ObservableCollection<ConfigurationItemEntity>(lineItem.ConfigurationItems.Select(x => AbstractTypeFactory<ConfigurationItemEntity>.TryCreateInstance().FromModel(x, pkMap)));
             }
 
             if (lineItem.DynamicProperties != null)
@@ -304,6 +317,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.FulfillmentCenterId = FulfillmentCenterId;
             target.FulfillmentCenterName = FulfillmentCenterName;
             target.VendorId = VendorId;
+            target.IsConfigured = IsConfigured;
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
             var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
@@ -336,6 +350,11 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             {
                 var feeDetailComparer = AnonymousComparer.Create((FeeDetailEntity x) => x.FeeId);
                 FeeDetails.Patch(target.FeeDetails, feeDetailComparer, (sourceFeeDetail, targetFeeDetail) => sourceFeeDetail.Patch(targetFeeDetail));
+            }
+
+            if (!ConfigurationItems.IsNullCollection())
+            {
+                ConfigurationItems.Patch(target.ConfigurationItems, (sourceConfigurationItem, targetConfigurationItem) => sourceConfigurationItem.Patch(targetConfigurationItem));
             }
 
             if (!DynamicPropertyObjectValues.IsNullCollection())
