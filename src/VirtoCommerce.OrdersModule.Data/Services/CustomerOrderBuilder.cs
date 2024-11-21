@@ -275,6 +275,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             retVal.VendorId = lineItem.VendorId;
 
+            retVal.IsConfigured = lineItem.IsConfigured;
+
             if (lineItem.DynamicProperties != null)
             {
                 retVal.DynamicProperties = lineItem.DynamicProperties.Select(ToOrderModel).ToList();
