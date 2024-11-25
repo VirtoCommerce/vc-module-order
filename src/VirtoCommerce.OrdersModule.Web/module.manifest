@@ -4,11 +4,11 @@
   <version>3.836.0</version>
   <version-tag />
 
-  <platformVersion>3.861.0</platformVersion>
+  <platformVersion>3.867.0</platformVersion>
   <dependencies>
-    <dependency id="VirtoCommerce.Cart" version="3.818.0" />
+    <dependency id="VirtoCommerce.Cart" version="3.820.0" />
     <dependency id="VirtoCommerce.Catalog" version="3.822.0" />
-    <dependency id="VirtoCommerce.Core" version="3.812.0" />
+    <dependency id="VirtoCommerce.Core" version="3.813.0" />
     <dependency id="VirtoCommerce.Customer" version="3.817.0" />
     <dependency id="VirtoCommerce.Inventory" version="3.805.0" />
     <dependency id="VirtoCommerce.Notifications" version="3.811.0" />
