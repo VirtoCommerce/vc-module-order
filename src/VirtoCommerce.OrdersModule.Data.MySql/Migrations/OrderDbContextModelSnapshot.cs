@@ -266,6 +266,66 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.ToTable("OrderCaptureItem", (string)null);
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<string>("CatalogId")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<string>("CategoryId")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(1028)
+                        .HasColumnType("varchar(1028)");
+
+                    b.Property<string>("LineItemId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(1024)
+                        .HasColumnType("varchar(1024)");
+
+                    b.Property<string>("ProductId")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sku")
+                        .HasMaxLength(128)
+                        .HasColumnType("varchar(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LineItemId");
+
+                    b.ToTable("OrderConfigurationItem", (string)null);
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -670,6 +730,9 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("varchar(1028)");
 
                     b.Property<bool>("IsCancelled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsConfigured")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsGift")
@@ -1711,6 +1774,17 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.Navigation("LineItem");
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
+                        .WithMany("ConfigurationItems")
+                        .HasForeignKey("LineItemId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("LineItem");
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.DiscountEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
@@ -1998,6 +2072,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", b =>
                 {
                     b.Navigation("CaptureItems");
+
+                    b.Navigation("ConfigurationItems");
 
                     b.Navigation("Discounts");
 
