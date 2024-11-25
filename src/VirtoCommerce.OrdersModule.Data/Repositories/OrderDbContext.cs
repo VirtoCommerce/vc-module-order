@@ -320,6 +320,15 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #endregion
 
+            #region ConfigurationItem
+
+            modelBuilder.Entity<ConfigurationItemEntity>().ToTable("OrderConfigurationItem").HasKey(x => x.Id);
+            modelBuilder.Entity<ConfigurationItemEntity>().Property(x => x.Id).HasMaxLength(128).ValueGeneratedOnAdd();
+            modelBuilder.Entity<ConfigurationItemEntity>().HasOne(x => x.LineItem).WithMany(x => x.ConfigurationItems)
+                        .HasForeignKey(x => x.LineItemId).IsRequired().OnDelete(DeleteBehavior.ClientCascade);
+
+            #endregion
+
             base.OnModelCreating(modelBuilder);
 
             // Allows configuration for an entity type for different database types.

@@ -97,6 +97,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string VendorId { get; set; }
 
+        public bool IsConfigured { get; set; }
+
         #region IHaveDimension Members
 
         public string WeightUnit { get; set; }
@@ -132,6 +134,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #region IHaveTaxDetalization Members
 
         public ICollection<TaxDetail> TaxDetails { get; set; }
+
+        #endregion
+
+        #region Configuration Items
+
+        public ICollection<ConfigurationItem> ConfigurationItems { get; set; }
 
         #endregion
 
