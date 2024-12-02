@@ -89,14 +89,13 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.showBlade(blade, $scope.blade);
             };
 
-            $scope.openItemDetail = function (item) {
+            $scope.openLineItemDetail = function (item, index) {
+                blade.selectedNodeId = index;
                 var newBlade = {
-                    id: "listItemDetail",
-                    controller: 'virtoCommerce.catalogModule.itemDetailController',
-                    template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
-                    title: item.name,
-                    itemId: item.productId,
-                    productType: item.productType,
+                    id: "listLineItemDetail",
+                    controller: 'virtoCommerce.orderModule.customerOrderItemDetailController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-detail.tpl.html',
+                    currentEntity: item,
                 };
                 bladeNavigationService.showBlade(newBlade, $scope.blade);
             };

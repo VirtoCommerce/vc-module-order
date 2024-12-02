@@ -25,17 +25,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
+                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
                             <td class="table-col">
                                 <label class="form-control __checkbox">
                                     <input type="checkbox" ng-model="data.selected">
                                     <span class="check"></span>
                                 </label>
-                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
+                                <!-- <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a> -->
                             </td>
                             <td class="table-col">
                                 <div class="product-img">
-                                    <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl" ng-click="openItemDetail(data)"></div>
+                                    <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl"></div>
                                     <i class="table-ico fas fa-image" ng-if="!data.imageUrl" />
                                 </div>
 
@@ -81,8 +81,8 @@
                                 <span class="list-price">{{data.extendedPriceWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                         </tr>
-                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
-                            <td class="table-head" colspan="{{ data.comment ? 5 : 10 }}" ng-click="openItemDetail(data)">
+                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
+                            <td class="table-head" colspan="{{ data.comment ? 6 : 11 }}">
                                 {{data.name}}
                             </td>
                             <td class="table-head" colspan="5" ng-if="data.comment">
