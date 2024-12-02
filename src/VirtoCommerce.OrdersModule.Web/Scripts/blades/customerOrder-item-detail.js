@@ -5,7 +5,7 @@ angular.module('virtoCommerce.orderModule')
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
-            blade.title = blade.currentEntity.name;
+            
             blade.metaFields1 = [
                 {
                     title: "orders.blades.customerOrder-item-detail.labels.product",
@@ -45,12 +45,6 @@ angular.module('virtoCommerce.orderModule')
                 }
             ];
 
-//            $translate('orders.blades.customerOrder-detail.title', { customer: blade.currentEntity.customerName }).then(function (result) {
-//                blade.title = 'orders.widgets.customerOrder-items.blade-title';
-//                blade.titleValues = { title: result };
-//                blade.subtitle = 'orders.widgets.customerOrder-items.blade-subtitle';
-//            });
-
             blade.refresh = function () {
                 blade.isLoading = false;
             };
@@ -87,31 +81,10 @@ angular.module('virtoCommerce.orderModule')
                 };
                 bladeNavigationService.showBlade(newBlade, blade);
             };
-            
-//            blade.toolbarCommands = [
-//                {
-//                    name: "orders.commands.add-item", icon: 'fas fa-plus',
-//                    executeMethod: function () {
-//                        openAddEntityWizard();
-//                    },
-//                    canExecuteMethod: function () {
-//                        return blade.currentEntity.operationType === 'CustomerOrder';
-//                    },
-//                    permission: blade.updatePermission
-//                },
-//                {
-//                    name: "platform.commands.remove", icon: 'fas fa-trash-alt',
-//                    executeMethod: function () {
-//                        var lineItems = blade.currentEntity.items;
-//                        blade.currentEntity.items = _.difference(lineItems, _.filter(lineItems, function (x) { return x.selected }));
-//                        blade.recalculateFn();
-//                    },
-//                    canExecuteMethod: function () {
-//                        return _.any(blade.currentEntity.items, function (x) { return x.selected; });
-//                    },
-//                    permission: blade.updatePermission
-//                }
-//            ];
+
+            $scope.$watch("blade.order", function (order) {
+                blade.currentEntity = _.filter(order.items, function (item) { return item.id === blade.currentEntityId })[0];
+            }, true);
 
             blade.refresh();
         }]);

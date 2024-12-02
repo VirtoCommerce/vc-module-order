@@ -26,9 +26,9 @@
                     </thead>
                     <tbody>
                         <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
-                            <td class="table-col">
+                            <td class="table-col" ng-click="stopSelect($event)">
                                 <label class="form-control __checkbox">
-                                    <input type="checkbox" ng-model="data.selected">
+                                    <input type="checkbox" ng-model="data.selected" ng-change="checkOne(data.selected)">
                                     <span class="check"></span>
                                 </label>
                                 <!-- <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a> -->
@@ -38,10 +38,9 @@
                                     <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl"></div>
                                     <i class="table-ico fas fa-image" ng-if="!data.imageUrl" />
                                 </div>
-
                             </td>
                             <td class="table-col">
-                                <div class="form-input __inline">
+                                <div class="form-input __inline" ng-click="stopSelect($event)">
                                     <va-setting-value-select placeholder="'orders.blades.customerOrder-detail.placeholders.status' | translate"
                                                              setting="'OrderLineItem.Statuses'"
                                                              ng-model="data.status"
@@ -50,7 +49,7 @@
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
-                                    <div class="form-input __mini __number">
+                                    <div class="form-input __mini __number" ng-click="stopSelect($event)">
                                         <input smart-float num-type="integer" required ng-model="data.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
                                     </div>
                                 </div>
@@ -59,7 +58,7 @@
                                 <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
                             </td>
                             <td class="table-col">
-                                <div class="form-input __mini">
+                                <div class="form-input __mini" ng-click="stopSelect($event)">
                                     <input money mask-money="!blade.isVisiblePrices" required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
                             </td>
@@ -67,7 +66,7 @@
                                 <span class="list-price">{{data.priceWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <div class="form-input __mini __inline">
+                                <div class="form-input __mini __inline" ng-click="stopSelect($event)">
                                     <input money mask-money="!blade.isVisiblePrices" required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
                                 </div>
                             </td>
