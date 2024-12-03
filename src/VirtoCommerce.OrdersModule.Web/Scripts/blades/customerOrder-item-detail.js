@@ -5,8 +5,9 @@ angular.module('virtoCommerce.orderModule')
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.formScope = null;
             
-            blade.metaFields1 = [
+            blade.metaFields = [
                 {
                     title: "orders.blades.customerOrder-item-detail.labels.product",
                     colSpan: 2,
@@ -60,16 +61,14 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.showBlade(newBlade, blade);
             };
 
-//            $scope.openItemDynamicProperties = function (item) {
-//                var blade = {
-//                    id: "dynamicPropertiesList",
-//                    controller: 'platformWebApp.propertyValueListController',
-//                    template: '$(Platform)/Scripts/app/dynamicProperties/blades/propertyValue-list.tpl.html',
-//                    currentEntity: item,
-//                };
-//                bladeNavigationService.showBlade(blade, $scope.blade);
-//            };
-//
+            blade.recalculate = function() {
+                if (blade.formScope && blade.formScope.$valid && angular.isFunction(blade.recalculateFn)) {
+                    blade.recalculateFn();
+                }
+            }
+
+            blade.setForm = function (form) { blade.formScope = form; }
+
             blade.openItemDetail = function () {
                 var newBlade = {
                     id: "listItemDetail",

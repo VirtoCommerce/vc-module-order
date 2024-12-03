@@ -79,16 +79,6 @@ angular.module('virtoCommerce.orderModule')
                 });
             };
 
-//            $scope.openItemDynamicProperties = function (item) {
-//                var blade = {
-//                    id: "dynamicPropertiesList",
-//                    controller: 'platformWebApp.propertyValueListController',
-//                    template: '$(Platform)/Scripts/app/dynamicProperties/blades/propertyValue-list.tpl.html',
-//                    currentEntity: item,
-//                };
-//                bladeNavigationService.showBlade(blade, $scope.blade);
-//            };
-
             $scope.openLineItemDetail = function (item, index) {
                 blade.selectedNodeId = index;
                 var newBlade = {

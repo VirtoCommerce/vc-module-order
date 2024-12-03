@@ -265,6 +265,17 @@
             "description": "Refund document"
           }
         }
+      },
+      "configuration": {
+        "title": "Configuration",
+        "labels": {
+          "picture": "Image",
+          "quantity": "Quantity",
+          "product-name": "Product name"
+        },
+        "descr": {
+          "no-configuration": "This product does not support configuration."
+        }
       }
     },
     "widgets": {
@@ -335,6 +346,9 @@
       },
       "customerOrder-list": {
         "title": "Orders"
+      },
+      "configuration": {
+        "title": "Configuration"
       }
     },
     "dialogs": {

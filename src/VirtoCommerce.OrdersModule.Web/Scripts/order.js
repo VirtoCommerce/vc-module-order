@@ -492,7 +492,7 @@ angular.module(moduleName, [
                 widgetService.registerWidget(dynamicPropertyWidget, 'paymentDetailWidgets');
                 widgetService.registerWidget(dynamicPropertyWidget, 'refundDetailWidgets');
                 widgetService.registerWidget(dynamicPropertyWidget, 'captureDetailWidgets');
-
+                widgetService.registerWidget(dynamicPropertyWidget, 'customerOrderItemDetailWidgets');
 
                 var operationsTreeWidget = {
                     controller: 'virtoCommerce.orderModule.operationTreeWidgetController',
@@ -766,4 +766,11 @@ angular.module(moduleName, [
                             });
                     }
                 });
+
+                var itemConfigurationWidget = {
+                    controller: 'virtoCommerce.orderModule.itemConfigurationWidgetController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/item-configuration-widget.tpl.html',
+                    isVisible: function (blade) { return blade.currentEntity.configurationItems.length && authService.checkPermission('catalog:configurations:read'); }
+                };
+                widgetService.registerWidget(itemConfigurationWidget, 'customerOrderItemDetailWidgets');
             }]);

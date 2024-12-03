@@ -1,8 +1,11 @@
 <div class="blade-content __medium-wide">
   <div class="blade-inner">
     <div class="inner-block">
-      <!-- <form name="orderForm" novalidate></form> -->
-      <va-metaform registered-inputs="blade.metaFields1" blade="blade" column-count="2" ng-if="blade.currentEntity"></va-metaform>
+      <form style="padding: 0 0 35px 0;" name="lineItemForm">
+        <div ng-init="blade.setForm(lineItemForm)">
+          <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2" ng-if="blade.currentEntity"></va-metaform>
+        </div>
+      </form>
       <va-widget-container group="customerOrderItemDetailWidgets" blade="blade" gridster-opts="{columns: 4}"></va-widget-container>
     </div>
   </div>
@@ -26,13 +29,13 @@
 </script>
 <script type="text/ng-template" id="quantity.html">
   <div class="form-input __number">
-    <input smart-float num-type="integer" required ng-model="blade.currentEntity.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity" focus-on="quantity">
+    <input ng-pattern="/^[1-9]+[0-9]*$/" required ng-model="blade.currentEntity.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="quantity" focus-on="quantity">
   </div>
 </script>
 <script type="text/ng-template" id="price.html">
   <div class="form-input __currency">
     <span class="currency">{{blade.currentEntity.currency}}</span>
-    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price" focus-on="price">
+    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="price" focus-on="price">
   </div>
 </script>
 <script type="text/ng-template" id="priceWithTax.html">
@@ -44,7 +47,7 @@
 <script type="text/ng-template" id="discountAmount.html">
   <div class="form-input __currency">
     <span class="currency">{{blade.currentEntity.currency}}</span>
-    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount" focus-on="discountAmount">
+    <input money mask-money="!blade.isVisiblePrices" required ng-model="blade.currentEntity.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculate()" id="discountAmount" focus-on="discountAmount">
   </div>
 </script>
 <script type="text/ng-template" id="discountAmountWithTax.html">
