@@ -767,10 +767,16 @@ angular.module(moduleName, [
                     }
                 });
 
-                var itemConfigurationWidget = {
-                    controller: 'virtoCommerce.orderModule.itemConfigurationWidgetController',
-                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/item-configuration-widget.tpl.html',
+                var customerOrderItemDiscountWidget = {
+                    controller: 'virtoCommerce.orderModule.customerOrderItemDiscountWidgetController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-item-discounts-widget.tpl.html'
+                };
+                widgetService.registerWidget(customerOrderItemDiscountWidget, 'customerOrderItemDetailWidgets');
+
+                var customerOrderItemConfigurationWidget = {
+                    controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationWidgetController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-item-configuration-widget.tpl.html',
                     isVisible: function (blade) { return blade.currentEntity.configurationItems.length && authService.checkPermission('catalog:configurations:read'); }
                 };
-                widgetService.registerWidget(itemConfigurationWidget, 'customerOrderItemDetailWidgets');
+                widgetService.registerWidget(customerOrderItemConfigurationWidget, 'customerOrderItemDetailWidgets');
             }]);

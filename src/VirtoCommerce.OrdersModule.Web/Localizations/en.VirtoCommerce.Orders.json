@@ -276,6 +276,19 @@
         "descr": {
           "no-configuration": "This product does not support configuration."
         }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Discounts",
+        "labels": {
+          "name": "Name",
+          "coupon": "Coupon",
+          "discountAmount": "Discount amount",
+          "discountAmountWithTax": "Discount amount with tax",
+          "currency": "Currency"
+        },
+        "descr": {
+          "no-discounts": "This entity doesn't have any discounts yet."
+        }
       }
     },
     "widgets": {
@@ -349,6 +362,9 @@
       },
       "configuration": {
         "title": "Configuration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Discounts"
       }
     },
     "dialogs": {

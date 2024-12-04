@@ -1,5 +1,5 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.itemConfigurationDetailController', [
+    .controller('virtoCommerce.orderModule.customerOrderItemConfigurationController', [
         '$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService',
         function ($scope, uiGridHelper, bladeNavigationService) {
             var blade = $scope.blade;
