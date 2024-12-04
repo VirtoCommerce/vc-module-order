@@ -6,7 +6,6 @@ angular.module('virtoCommerce.orderModule')
             blade.updatePermission = 'order:update';
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
             blade.formScope = null;
-            
             blade.metaFields = [
                 {
                     title: "orders.blades.customerOrder-item-detail.labels.product",
