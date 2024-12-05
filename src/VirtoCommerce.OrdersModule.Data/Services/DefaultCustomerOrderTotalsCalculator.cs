@@ -200,20 +200,24 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void CalculateLineItemTotals(LineItem lineItem)
         {
-            if (lineItem == null)
-            {
-                throw new ArgumentNullException(nameof(lineItem));
-            }
-            var taxFactor = 1 + lineItem.TaxPercentRate;
-            lineItem.PriceWithTax = lineItem.Price * taxFactor;
+            ArgumentNullException.ThrowIfNull(lineItem);
+
+            var quantity = Math.Max(1, lineItem.Quantity);
+            var currency = _currencyService.GetAllCurrenciesAsync().GetAwaiter().GetResult().First(c => c.Code == lineItem.Currency);
+
             lineItem.PlacedPrice = lineItem.Price - lineItem.DiscountAmount;
-            lineItem.ExtendedPrice = lineItem.PlacedPrice * lineItem.Quantity;
-            lineItem.DiscountAmountWithTax = lineItem.DiscountAmount * taxFactor;
-            lineItem.DiscountTotal = lineItem.DiscountAmount * Math.Max(1, lineItem.Quantity);
-            lineItem.FeeWithTax = lineItem.Fee * taxFactor;
+            lineItem.DiscountTotal = currency.RoundingPolicy.RoundMoney(lineItem.DiscountAmount * quantity, currency);
+            lineItem.ExtendedPrice = lineItem.Price * quantity - lineItem.DiscountTotal;
+
+            var taxFactor = 1 + lineItem.TaxPercentRate;
+
+            lineItem.PriceWithTax = lineItem.Price * taxFactor;
             lineItem.PlacedPriceWithTax = lineItem.PlacedPrice * taxFactor;
-            lineItem.ExtendedPriceWithTax = lineItem.PlacedPriceWithTax * lineItem.Quantity;
-            lineItem.DiscountTotalWithTax = lineItem.DiscountAmountWithTax * Math.Max(1, lineItem.Quantity);
+            lineItem.ExtendedPriceWithTax = lineItem.ExtendedPrice * taxFactor;
+            lineItem.DiscountAmountWithTax = lineItem.DiscountAmount * taxFactor;
+            lineItem.DiscountTotalWithTax = lineItem.DiscountTotal * taxFactor;
+            lineItem.FeeWithTax = lineItem.Fee * taxFactor;
+
             lineItem.TaxTotal = lineItem.ExtendedPrice * lineItem.TaxPercentRate;
         }
     }

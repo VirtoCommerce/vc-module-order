@@ -269,6 +269,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.FeeWithTax = lineItem.FeeWithTax;
 
             retVal.DiscountAmount = lineItem.DiscountAmount;
+            retVal.IsDiscountAmountRounded = lineItem.IsDiscountAmountRounded;
             retVal.Price = lineItem.ListPrice;
 
             retVal.FulfillmentLocationCode = lineItem.FulfillmentLocationCode;

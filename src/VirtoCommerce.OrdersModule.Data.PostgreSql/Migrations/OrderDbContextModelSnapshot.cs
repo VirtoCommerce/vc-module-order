@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -707,6 +707,9 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsConfigured")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDiscountAmountRounded")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsGift")
