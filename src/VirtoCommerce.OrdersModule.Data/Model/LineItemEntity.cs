@@ -25,6 +25,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         public decimal PriceWithTax { get; set; }
         [Column(TypeName = "Money")]
         public decimal DiscountAmount { get; set; }
+        public bool IsDiscountAmountRounded { get; set; }
         [Column(TypeName = "Money")]
         public decimal DiscountAmountWithTax { get; set; }
         [Column(TypeName = "Money")]
@@ -160,6 +161,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.Price = Price;
             lineItem.PriceWithTax = PriceWithTax;
             lineItem.DiscountAmount = DiscountAmount;
+            lineItem.IsDiscountAmountRounded = IsDiscountAmountRounded;
             lineItem.DiscountAmountWithTax = DiscountAmountWithTax;
             lineItem.Quantity = Quantity;
             lineItem.TaxTotal = TaxTotal;
@@ -234,6 +236,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             Price = lineItem.Price;
             PriceWithTax = lineItem.PriceWithTax;
             DiscountAmount = lineItem.DiscountAmount;
+            IsDiscountAmountRounded = lineItem.IsDiscountAmountRounded;
             DiscountAmountWithTax = lineItem.DiscountAmountWithTax;
             Fee = lineItem.Fee;
             FeeWithTax = lineItem.FeeWithTax;
@@ -318,6 +321,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.FulfillmentCenterName = FulfillmentCenterName;
             target.VendorId = VendorId;
             target.IsConfigured = IsConfigured;
+            target.IsDiscountAmountRounded = IsDiscountAmountRounded;
 
             // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
             var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);

@@ -43,6 +43,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// </summary>
         public virtual decimal DiscountAmount { get; set; }
 
+        /// <summary>
+        /// Indicates whether the discount amount per item was rounded according to the currency settings.
+        /// If false, DiscountAmount and PlacedPrice should not be visible to the customer, as these values may be incorrect;
+        /// in this case, DiscountTotal and ExtendedPrice should be used.
+        /// </summary>
+        public bool IsDiscountAmountRounded { get; set; }
+
         public virtual decimal DiscountAmountWithTax { get; set; }
 
         public decimal DiscountTotal { get; set; }
