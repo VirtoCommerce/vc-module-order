@@ -28,7 +28,7 @@
                         <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
                             <td class="table-col">
                                 <label class="form-control __checkbox" ng-click="$event.stopPropagation()">
-                                    <input type="checkbox" ng-model="data.selected" ng-change="updateSelectedAll(data.selected)">
+                                    <input type="checkbox" ng-model="data.selected" ng-change="updateSelectedAll()">
                                     <span class="check"></span>
                                 </label>
                             </td>
