@@ -171,16 +171,12 @@ angular.module('virtoCommerce.orderModule')
                 });
             };
 
-            $scope.checkOne = function (selected) {
+            $scope.updateSelectedAll = function (selected) {
                 if (!selected) {
                     blade.selectedAll = false;
                 } else if (_.every(blade.currentEntity.items, item => item.selected)){
                     blade.selectedAll = true;
                 }
-            };
-
-            $scope.stopSelect = function ($event) {
-                $event.stopPropagation();
             };
 
             blade.refresh();
