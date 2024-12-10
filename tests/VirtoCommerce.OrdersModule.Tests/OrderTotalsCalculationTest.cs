@@ -16,18 +16,18 @@ namespace VirtoCommerce.OrdersModule.Tests
     {
         public static IEnumerable<object[]> Data =>
         [
-            //                                                                    Expected      Expected       Expected
-            // MidpointRounding,             ListPrice, DiscountAmount, Quantity, CartSubTotal, DiscountTotal, CartTotal
-            [MidpointRounding.AwayFromZero,  49.95m,      4.9950m,       1,         49.95m,        5.00m,        44.95m],
-            [MidpointRounding.ToZero,        49.95m,      4.9950m,       1,         49.95m,        4.99m,        44.96m],
-            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       1,         26.25m,        1.31m,        24.94m],
-            [MidpointRounding.ToZero,        26.25m,      1.3125m,       1,         26.25m,        1.31m,        24.94m],
-            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       3,         78.75m,        3.94m,        74.81m],
-            [MidpointRounding.ToZero,        26.25m,      1.3125m,       3,         78.75m,        3.93m,        74.82m],
-            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,       1,        422.50m,      190.13m,       232.37m],
-            [MidpointRounding.ToZero,       422.50m,    190.1250m,       1,        422.50m,      190.12m,       232.38m],
-            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,      10,       4225.00m,     1901.25m,      2323.75m],
-            [MidpointRounding.ToZero,       422.50m,    190.1250m,      10,       4225.00m,     1901.25m,      2323.75m],
+            //                                                                    Expected  Expected       Expected
+            // MidpointRounding,             ListPrice, DiscountAmount, Quantity, SubTotal, DiscountTotal, Total
+            [MidpointRounding.AwayFromZero,  49.95m,      4.9950m,       1,         49.95m,    5.00m,        44.95m],
+            [MidpointRounding.ToZero,        49.95m,      4.9950m,       1,         49.95m,    4.99m,        44.96m],
+            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
+            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       3,         78.75m,    3.94m,        74.81m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       3,         78.75m,    3.93m,        74.82m],
+            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,       1,        422.50m,  190.13m,       232.37m],
+            [MidpointRounding.ToZero,       422.50m,    190.1250m,       1,        422.50m,  190.12m,       232.38m],
+            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
+            [MidpointRounding.ToZero,       422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
         ];
 
         [Theory]
@@ -37,9 +37,9 @@ namespace VirtoCommerce.OrdersModule.Tests
             decimal listPrice,
             decimal discountAmount,
             int quantity,
-            decimal expectedCartSubTotal,
+            decimal expectedSubTotal,
             decimal expectedDiscountTotal,
-            decimal expectedCartTotal)
+            decimal expectedTotal)
         {
             // Arrange
             var lineItem = new LineItem
@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Quantity = quantity,
             };
 
-            var cart = new CustomerOrder
+            var order = new CustomerOrder
             {
                 Items = [lineItem],
             };
@@ -63,16 +63,16 @@ namespace VirtoCommerce.OrdersModule.Tests
             var totalsCalculator = GetTotalsCalculator(currency);
 
             // Act
-            totalsCalculator.CalculateTotals(cart);
+            totalsCalculator.CalculateTotals(order);
 
             // Assert
-            Assert.Equal(expectedCartSubTotal, cart.SubTotal);
-            Assert.Equal(expectedDiscountTotal, cart.DiscountTotal);
-            Assert.Equal(expectedCartTotal, cart.Total);
+            Assert.Equal(expectedSubTotal, order.SubTotal);
+            Assert.Equal(expectedDiscountTotal, order.DiscountTotal);
+            Assert.Equal(expectedTotal, order.Total);
 
-            Assert.Equal(expectedCartSubTotal, lineItem.ListTotal);
+            Assert.Equal(expectedSubTotal, lineItem.ListTotal);
             Assert.Equal(expectedDiscountTotal, lineItem.DiscountTotal);
-            Assert.Equal(expectedCartTotal, lineItem.ExtendedPrice);
+            Assert.Equal(expectedTotal, lineItem.ExtendedPrice);
         }
 
         private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
