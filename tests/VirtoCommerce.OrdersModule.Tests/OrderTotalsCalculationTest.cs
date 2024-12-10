@@ -1,15 +1,80 @@
+using System;
 using System.Collections.Generic;
 using Moq;
+using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Currency;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Services;
 using Xunit;
+using LineItem = VirtoCommerce.OrdersModule.Core.Model.LineItem;
+using Shipment = VirtoCommerce.OrdersModule.Core.Model.Shipment;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
     [Trait("Category", "CI")]
     public class OrderTotalsCalculationTest
     {
+        public static IEnumerable<object[]> Data =>
+        [
+            //                                                                    Expected  Expected       Expected
+            // MidpointRounding,             ListPrice, DiscountAmount, Quantity, SubTotal, DiscountTotal, Total
+            [MidpointRounding.AwayFromZero,  49.95m,      4.9950m,       1,         49.95m,    5.00m,        44.95m],
+            [MidpointRounding.ToZero,        49.95m,      4.9950m,       1,         49.95m,    4.99m,        44.96m],
+            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
+            [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       3,         78.75m,    3.94m,        74.81m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       3,         78.75m,    3.93m,        74.82m],
+            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,       1,        422.50m,  190.13m,       232.37m],
+            [MidpointRounding.ToZero,       422.50m,    190.1250m,       1,        422.50m,  190.12m,       232.38m],
+            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
+            [MidpointRounding.ToZero,       422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
+        ];
+
+        [Theory]
+        [MemberData(nameof(Data))]
+        public void CalculateTotals_LineItemDiscountTotal_MustBeRounded(
+            MidpointRounding midpointRounding,
+            decimal listPrice,
+            decimal discountAmount,
+            int quantity,
+            decimal expectedSubTotal,
+            decimal expectedDiscountTotal,
+            decimal expectedTotal)
+        {
+            // Arrange
+            var lineItem = new LineItem
+            {
+                Price = listPrice,
+                DiscountAmount = discountAmount,
+                Quantity = quantity,
+            };
+
+            var order = new CustomerOrder
+            {
+                Items = [lineItem],
+            };
+
+            var currency = new Currency(new Language("en-US"), code: null)
+            {
+                MidpointRounding = midpointRounding.ToString(),
+                RoundingPolicy = new DefaultMoneyRoundingPolicy()
+            };
+
+            var totalsCalculator = GetTotalsCalculator(currency);
+
+            // Act
+            totalsCalculator.CalculateTotals(order);
+
+            // Assert
+            Assert.Equal(expectedSubTotal, order.SubTotal);
+            Assert.Equal(expectedDiscountTotal, order.DiscountTotal);
+            Assert.Equal(expectedTotal, order.Total);
+
+            Assert.Equal(expectedSubTotal, lineItem.ListTotal);
+            Assert.Equal(expectedDiscountTotal, lineItem.DiscountTotal);
+            Assert.Equal(expectedTotal, lineItem.ExtendedPrice);
+        }
+
         private DefaultCustomerOrderTotalsCalculator GetTotalsCalculator(Currency currency)
         {
             var currencyServiceMock = new Mock<ICurrencyService>();
