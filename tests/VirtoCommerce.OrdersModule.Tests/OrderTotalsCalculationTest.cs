@@ -70,6 +70,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(expectedDiscountTotal, cart.DiscountTotal);
             Assert.Equal(expectedCartTotal, cart.Total);
 
+            Assert.Equal(expectedCartSubTotal, lineItem.ListTotal);
             Assert.Equal(expectedDiscountTotal, lineItem.DiscountTotal);
             Assert.Equal(expectedCartTotal, lineItem.ExtendedPrice);
         }

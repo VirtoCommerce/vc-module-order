@@ -70,8 +70,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (order.Items != null)
             {
-                order.SubTotal = order.Items.Sum(x => x.Price * x.Quantity);
-                order.SubTotalWithTax = order.Items.Sum(x => x.PriceWithTax * x.Quantity);
+                order.SubTotal = order.Items.Sum(x => x.ListTotal);
+                order.SubTotalWithTax = order.Items.Sum(x => x.ListTotalWithTax);
                 order.SubTotalTaxTotal += order.Items.Sum(x => x.TaxTotal);
                 order.SubTotalDiscount = order.Items.Sum(x => x.DiscountTotal);
                 order.SubTotalDiscountWithTax = order.Items.Sum(x => x.DiscountTotalWithTax);
@@ -205,13 +205,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var quantity = Math.Max(1, lineItem.Quantity);
             var currency = _currencyService.GetAllCurrenciesAsync().GetAwaiter().GetResult().First(c => c.Code == lineItem.Currency);
 
+            lineItem.ListTotal = lineItem.Price * quantity;
             lineItem.PlacedPrice = lineItem.Price - lineItem.DiscountAmount;
             lineItem.DiscountTotal = currency.RoundingPolicy.RoundMoney(lineItem.DiscountAmount * quantity, currency);
-            lineItem.ExtendedPrice = lineItem.Price * quantity - lineItem.DiscountTotal;
+            lineItem.ExtendedPrice = lineItem.ListTotal - lineItem.DiscountTotal;
 
             var taxFactor = 1 + lineItem.TaxPercentRate;
 
             lineItem.PriceWithTax = lineItem.Price * taxFactor;
+            lineItem.ListTotalWithTax = lineItem.ListTotal * taxFactor;
             lineItem.PlacedPriceWithTax = lineItem.PlacedPrice * taxFactor;
             lineItem.ExtendedPriceWithTax = lineItem.ExtendedPrice * taxFactor;
             lineItem.DiscountAmountWithTax = lineItem.DiscountAmount * taxFactor;

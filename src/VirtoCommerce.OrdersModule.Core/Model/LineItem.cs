@@ -27,6 +27,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public virtual decimal PriceWithTax { get; set; }
 
+        public decimal ListTotal { get; set; }
+        public decimal ListTotalWithTax { get; set; }
+
         /// <summary>
         /// Resulting price with discount for one unit
         /// </summary>
