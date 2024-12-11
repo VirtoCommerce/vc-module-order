@@ -62,7 +62,7 @@
           "currency": "Currency",
           "store": "Store",
           "created": "Created",
-          "copy-id": "Copy ID",
+          "copy-id": "Copy Id",
           "copy-number": "Copy number",
           "filter-by": "Filter by"
         },
@@ -76,7 +76,7 @@
         "new-subtitle": "Create new filter",
         "labels": {
           "name": "Filter name",
-          "name_": "Please give this filter a name",
+          "name_": "Name this filter",
           "criteria": "Filter criteria",
           "from": "Created after",
           "to": "Created before"
@@ -96,7 +96,7 @@
         "subtitle": "Edit payment details and related documents",
         "labels": {
           "approved": "Approved",
-          "payment-number": "Payment ID",
+          "payment-number": "Payment Id",
           "status": "Status",
           "amount": "Amount",
           "from": "Date and time",
@@ -174,7 +174,7 @@
           "outerId": "Enter..."
         },
         "descr": {
-          "closeTransaction": "Close a transaction, restricting future capture operations against this order."
+          "closeTransaction": "Close a transaction, restricting future capture operations against this order"
         }
       },
       "capture-details": {
@@ -194,6 +194,7 @@
         "labels": {
           "transactionId": "Transaction Id",
           "outerId": "Outer Id"
+        }
       }
     },
     "transactions-list": {
@@ -260,8 +261,7 @@
           "description": "Refund document"
         }
       }
-    }
-  },
+    },
     "widgets": {
       "notifications": {
         "title": "Notification feed",
@@ -289,7 +289,7 @@
         "total": "Total"
       },
       "operation-comment": {
-        "no-comments": "no comments",
+        "no-comments": "No comments",
         "blade-title": "Leave a comment"
       },
       "shipment-address": {
@@ -325,8 +325,8 @@
         "items-purchased": "Items purchased",
         "lines-per-order": "Lines per order",
         "revenue-per-customer": "Revenue per customer",
-        "title": "Order Statistics",
-        "not-authorized": "You do not currently have access to this feature. Please contact your account administrator for access."
+        "title": "Order statistics",
+        "not-authorized": "You do not currently have access to this feature. Please contact your account administrator for access"
       },
       "customerOrder-list": {
         "title": "Orders"
@@ -335,7 +335,7 @@
     "dialogs": {
       "concurrency-сonflict": {
         "title": "Concurrency conflict detected",
-        "message": "The order has been modified by another user. Click OK to reload the latest data and try again."
+        "message": "The order has been modified by another user. Click OK to reload the latest data and try again"
       },
       "orders-delete": {
         "title": "Delete confirmation",
@@ -353,7 +353,7 @@
         "title": "Cancel operation",
         "message": "Are you sure you want to remove this document?",
         "placeholders": {
-          "reason": "Please enter the reason for removing here..."
+          "reason": "Enter the reason for removal..."
         }
       },
       "payment-capture": {
@@ -364,7 +364,7 @@
     "settings": {
       "customerorder-status": {
         "new": "New",
-        "not payed": "Not payed",
+        "not payed": "Not paid",
         "pending": "Pending",
         "processing": "Processing",
         "ready to send": "Ready to send",
@@ -374,7 +374,7 @@
       },
       "line-item-status": {
         "pending": "Pending",
-        "inprogress": "In Progress",
+        "inprogress": "In progress",
         "shipped": "Shipped",
         "delivered": "Delivered",
         "cancelled": "Cancelled"
@@ -405,7 +405,7 @@
       "reason-codes": {
         "duplicate": "Duplicate",
         "fraudulent": "Fraudulent",
-        "requestedbycustomer": "Requested by Customer",
+        "requestedbycustomer": "Requested by customer",
         "other": "Other"
       }
     },
@@ -427,7 +427,7 @@
   "settings": {
     "Order.Status": {
       "title": "Customer order statuses",
-      "description": "The list of available statuses for customer orders"
+      "description": "List of available statuses for customer orders"
     },
     "Order.InitialStatus": {
       "title": "Customer order initial status",
@@ -458,19 +458,19 @@
       "description": "Refund statuses"
     },
     "Order.CustomerOrderNewNumberTemplate": {
-      "description": "Used to generate new Customer Order Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "description": "Used to generate new customer order number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
       "title": "Order number template"
     },
     "Order.ShipmentNewNumberTemplate": {
-      "description": "Used to generate new Shipment Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "description": "Used to generate new shipment number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
       "title": "Order shipment number template"
     },
     "Order.PaymentInNewNumberTemplate": {
-      "description": "Used to generate new Payment Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "description": "Used to generate new payment number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
       "title": "Order payment number template"
     },
     "Order.RefundNewNumberTemplate": {
-      "description": "Used to generate new Refund Number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
+      "description": "Used to generate new refund number, with parameters:\n\n0: Date and Time in UTC\n1: Counter\n\nFormat supports counter options directly within the template using the format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nDefault values:\n* Daily for reset_counter_type. Choose from None, Daily, Weekly, Monthly, and Yearly reset counter types.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nExample: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResult: CO240101-00001.",
       "title": "Order refund number template"
     },
     "Order.SendOrderNotifications": {
@@ -486,11 +486,11 @@
       "description": "Logs order changes into the platform operation log"
     },
     "Order.Search.EventBasedIndexation.Enable": {
-      "title": "Enable event-based indexing for order entities",
-      "description": "Any changes to the customer entity will trigger a background task that will apply these changes to the search index"
+      "title": "Event-based indexing for order entities",
+      "description": "Any changes to the customer entity will trigger a background task to apply these changes to the search index"
     },
     "Order.Validation.Enable": {
-      "title": "Validate order saving",
+      "title": "Order saving validation",
       "description": "Enables validation of saving an order"
     },
     "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
@@ -514,7 +514,7 @@
   "notificationTypes": {
     "CancelOrderEmailNotification": {
       "displayName": "Notification on cancelled order",
-      "description": "The customer will get an email notification when an order gets cancelled."
+      "description": "The customer gets an email notification when an order is cancelled"
     },
     "InvoiceEmailNotification": {
       "displayName": "Invoice for customer order",
@@ -522,27 +522,27 @@
     },
     "NewOrderStatusEmailNotification": {
       "displayName": "Notification on new order status",
-      "description": "The customer will get an email notification when the status of any order gets changed"
+      "description": "The customer gets an email notification when the status of any order is changed"
     },
     "OrderCreateEmailNotification": {
       "displayName": "Notification on created order",
-      "description": "The customer will get an email notification after submitting their details through a form in Storefront, e.g., through the Contact Us form"
+      "description": "The customer gets an email notification after submitting their details through a form in the Frontend Application, e.g., through the Contact Us form"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Notification on order payment",
-      "description": "The customer will get an email notification when all payments related to an order have been complete"
+      "description": "The customer gets an email notification when all payments related to an order have been complete"
     },
     "OrderSentEmailNotification": {
       "displayName": "Notification on shipped order",
-      "description": "The customer will get an email notification when all ordered items have been shipped"
+      "description": "The customer gets an email notification when all ordered items have been shipped"
     },
     "PaymentStatusChangedEmailNotification": {
       "displayName": "Notification on payments status changed",
-      "description": "The customer will receive an email notification with all changed payments statuses"
+      "description": "The customer gets an email notification with all changed payments statuses"
     },
     "ShipmentStatusChangedEmailNotification": {
       "displayName": "Notification on shipments status changed",
-      "description": "The customer will receive an email notification with all changed shipments statuses"
+      "description": "The customer gets an email notification with all changed shipments statuses"
     }
   }
 }
