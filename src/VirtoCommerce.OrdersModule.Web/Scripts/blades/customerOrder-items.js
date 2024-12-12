@@ -79,24 +79,16 @@ angular.module('virtoCommerce.orderModule')
                 });
             };
 
-            $scope.openItemDynamicProperties = function (item) {
-                var blade = {
-                    id: "dynamicPropertiesList",
-                    controller: 'platformWebApp.propertyValueListController',
-                    template: '$(Platform)/Scripts/app/dynamicProperties/blades/propertyValue-list.tpl.html',
-                    currentEntity: item,
-                };
-                bladeNavigationService.showBlade(blade, $scope.blade);
-            };
-
-            $scope.openItemDetail = function (item) {
+            $scope.openLineItemDetail = function (item, index) {
+                blade.selectedNodeId = index;
                 var newBlade = {
-                    id: "listItemDetail",
-                    controller: 'virtoCommerce.catalogModule.itemDetailController',
-                    template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
+                    id: "listLineItemDetail",
+                    controller: 'virtoCommerce.orderModule.customerOrderItemDetailController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-detail.tpl.html',
                     title: item.name,
-                    itemId: item.productId,
-                    productType: item.productType,
+                    currentEntityId: item.id,
+                    order: blade.currentEntity,
+                    recalculateFn: blade.recalculateFn,
                 };
                 bladeNavigationService.showBlade(newBlade, $scope.blade);
             };
@@ -153,7 +145,17 @@ angular.module('virtoCommerce.orderModule')
                     name: "platform.commands.remove", icon: 'fas fa-trash-alt',
                     executeMethod: function () {
                         var lineItems = blade.currentEntity.items;
-                        blade.currentEntity.items = _.difference(lineItems, _.filter(lineItems, function (x) { return x.selected }));
+                        var selectedLineItems = _.filter(lineItems, function (x) { return x.selected; });
+
+                        if (blade.selectedNodeId >= 0) {
+                            var selectedNode = lineItems[blade.selectedNodeId];
+                            if (selectedNode && _.some(selectedLineItems, lineItem => selectedNode.id === lineItem.id)) {
+                                bladeNavigationService.closeChildrenBlades(blade);
+                            }
+                        }
+
+                        blade.currentEntity.items = _.difference(lineItems, selectedLineItems);
+                        blade.selectedAll = false;
                         blade.recalculateFn();
                     },
                     canExecuteMethod: function () {
@@ -167,6 +169,10 @@ angular.module('virtoCommerce.orderModule')
                 angular.forEach(blade.currentEntity.items, function (item) {
                     item.selected = selected;
                 });
+            };
+
+            $scope.updateSelectedAll = function () {
+                blade.selectedAll = _.every(blade.currentEntity.items, item => item.selected);
             };
 
             blade.refresh();

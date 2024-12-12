@@ -230,6 +230,9 @@
         "items-purchased": "Die Anzahl der gekauften Artikel",
         "lines-per-order": "Zeilen pro Bestellung",
         "revenue-per-customer": "Umsatz pro Kunde"
+      },
+      "configuration": {
+        "title": "Konfiguration"
       }
     },
     "dialogs": {
