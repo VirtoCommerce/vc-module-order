@@ -25,23 +25,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
+                        <tr class="table-item" ng-repeat-start="data in blade.currentEntity.items" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
                             <td class="table-col">
-                                <label class="form-control __checkbox">
-                                    <input type="checkbox" ng-model="data.selected">
+                                <label class="form-control __checkbox" ng-click="$event.stopPropagation()">
+                                    <input type="checkbox" ng-model="data.selected" ng-change="updateSelectedAll()">
                                     <span class="check"></span>
                                 </label>
-                                <a class="clear text-mini __link" ng-click="openItemDynamicProperties(data)">{{ 'orders.blades.customerOrder-items.labels.dynamic-properties' | translate }}</a>
                             </td>
                             <td class="table-col">
                                 <div class="product-img">
-                                    <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl" ng-click="openItemDetail(data)"></div>
+                                    <div class="image" style="background-image: url({{data.imageUrl}})" ng-if="data.imageUrl"></div>
                                     <i class="table-ico fas fa-image" ng-if="!data.imageUrl" />
                                 </div>
-
                             </td>
                             <td class="table-col">
-                                <div class="form-input __inline">
+                                <div class="form-input __inline" ng-click="$event.stopPropagation()">
                                     <va-setting-value-select placeholder="'orders.blades.customerOrder-detail.placeholders.status' | translate"
                                                              setting="'OrderLineItem.Statuses'"
                                                              ng-model="data.status"
@@ -50,7 +48,7 @@
                             </td>
                             <td class="table-col">
                                 <div class="form-input __mini __inline">
-                                    <div class="form-input __mini __number">
+                                    <div class="form-input __mini __number" ng-click="$event.stopPropagation()">
                                         <input smart-float num-type="integer" required ng-model="data.quantity" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="quantity{{$index}}" focus-on="quantity{{$index}}">
                                     </div>
                                 </div>
@@ -59,7 +57,7 @@
                                 <span ng-class="{'error': data.avail <= 0}">{{(data.avail || 0) | number:0}}</span>
                             </td>
                             <td class="table-col">
-                                <div class="form-input __mini">
+                                <div class="form-input __mini" ng-click="$event.stopPropagation()">
                                     <input money mask-money="!blade.isVisiblePrices" required ng-model="data.price" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="price{{$index}}" focus-on="price{{$index}}">
                                 </div>
                             </td>
@@ -67,7 +65,7 @@
                                 <span class="list-price">{{data.priceWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                             <td class="table-col">
-                                <div class="form-input __mini __inline">
+                                <div class="form-input __mini __inline" ng-click="$event.stopPropagation()">
                                     <input money mask-money="!blade.isVisiblePrices" required ng-model="data.discountAmount" ng-model-options="{ updateOn: 'blur' }" ng-change="blade.recalculateFn()" id="discountAmount{{$index}}" focus-on="discountAmount{{$index}}">
                                 </div>
                             </td>
@@ -81,8 +79,8 @@
                                 <span class="list-price">{{data.extendedPriceWithTax | currency:'' | showPrice:blade.isVisiblePrices}}</span>
                             </td>
                         </tr>
-                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click='blade.selectedNodeId = $index'>
-                            <td class="table-head" colspan="{{ data.comment ? 5 : 10 }}" ng-click="openItemDetail(data)">
+                        <tr ng-repeat-end class="table-item" ng-class="{'__selected': $index === blade.selectedNodeId}" ng-click="openLineItemDetail(data, $index)">
+                            <td class="table-head" colspan="{{ data.comment ? 6 : 11 }}">
                                 {{data.name}}
                             </td>
                             <td class="table-head" colspan="5" ng-if="data.comment">
