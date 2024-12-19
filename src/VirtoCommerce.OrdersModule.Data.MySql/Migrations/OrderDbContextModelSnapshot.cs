@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -733,6 +733,9 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsConfigured")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDiscountAmountRounded")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsGift")
