@@ -27,6 +27,9 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public virtual decimal PriceWithTax { get; set; }
 
+        public decimal ListTotal { get; set; }
+        public decimal ListTotalWithTax { get; set; }
+
         /// <summary>
         /// Resulting price with discount for one unit
         /// </summary>
@@ -42,6 +45,13 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         /// Gets the value of the single qty line item discount amount
         /// </summary>
         public virtual decimal DiscountAmount { get; set; }
+
+        /// <summary>
+        /// Indicates whether the discount amount per item was rounded according to the currency settings.
+        /// If false, DiscountAmount and PlacedPrice should not be visible to the customer, as these values may be incorrect;
+        /// in this case, DiscountTotal and ExtendedPrice should be used.
+        /// </summary>
+        public bool IsDiscountAmountRounded { get; set; }
 
         public virtual decimal DiscountAmountWithTax { get; set; }
 
@@ -97,6 +107,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public string VendorId { get; set; }
 
+        public bool IsConfigured { get; set; }
+
         #region IHaveDimension Members
 
         public string WeightUnit { get; set; }
@@ -132,6 +144,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         #region IHaveTaxDetalization Members
 
         public ICollection<TaxDetail> TaxDetails { get; set; }
+
+        #endregion
+
+        #region Configuration Items
+
+        public ICollection<ConfigurationItem> ConfigurationItems { get; set; }
 
         #endregion
 

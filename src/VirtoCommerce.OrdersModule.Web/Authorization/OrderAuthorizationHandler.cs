@@ -38,7 +38,7 @@ namespace VirtoCommerce.OrdersModule.Web.Authorization
                 {
                     //Use associated to user memberId and userId as only fall-back value to check  "OnlyOrderResponsibleScope" auth rule
                     var memberId = context.User.FindFirstValue(MemberIdClaimType);
-                    var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? context.User.FindFirstValue("name");
+                    var userId = context.User.GetUserId();
                     memberId = string.IsNullOrEmpty(memberId) ? null : memberId;
                     userId = string.IsNullOrEmpty(userId) ? null : userId;
 

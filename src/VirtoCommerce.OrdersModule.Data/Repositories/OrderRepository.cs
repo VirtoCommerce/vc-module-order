@@ -34,6 +34,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<RefundItemEntity> RefundItems => DbContext.Set<RefundItemEntity>();
         public IQueryable<CaptureEntity> Captures => DbContext.Set<CaptureEntity>();
         public IQueryable<CaptureItemEntity> CaptureItems => DbContext.Set<CaptureItemEntity>();
+        public IQueryable<ConfigurationItemEntity> ConfigurationItems => DbContext.Set<ConfigurationItemEntity>();
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
@@ -105,6 +106,14 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
                     {
                         await OrderDynamicPropertyObjectValues.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
+                    }
+
+                    var configurationItemIds = lineItems.Where(x => x.IsConfigured).Select(x => x.Id).ToArray();
+                    if (configurationItemIds.Any())
+                    {
+                        await ConfigurationItems
+                            .Where(x => configurationItemIds.Contains(x.LineItemId))
+                            .LoadAsync();
                     }
                 }
             }

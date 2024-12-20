@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -59,12 +59,10 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
@@ -264,6 +262,66 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.HasIndex("LineItemId");
 
                     b.ToTable("OrderCaptureItem", (string)null);
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("CatalogId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("CategoryId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(1028)
+                        .HasColumnType("character varying(1028)");
+
+                    b.Property<string>("LineItemId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<string>("ProductId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Sku")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LineItemId");
+
+                    b.ToTable("OrderConfigurationItem", (string)null);
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>
@@ -505,6 +563,10 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
 
+                    b.Property<string>("PromotionName")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
                     b.Property<string>("ShipmentId")
                         .HasColumnType("character varying(128)");
 
@@ -642,6 +704,12 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasColumnType("character varying(1028)");
 
                     b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsConfigured")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDiscountAmountRounded")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsGift")
@@ -1658,6 +1726,17 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.Navigation("LineItem");
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", "LineItem")
+                        .WithMany("ConfigurationItems")
+                        .HasForeignKey("LineItemId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("LineItem");
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.DiscountEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
@@ -1945,6 +2024,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.LineItemEntity", b =>
                 {
                     b.Navigation("CaptureItems");
+
+                    b.Navigation("ConfigurationItems");
 
                     b.Navigation("Discounts");
 
