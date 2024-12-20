@@ -360,13 +360,11 @@
       "customerOrder-list": {
         "title": "Заказы"
       },
-      {
-        "configuration": {
-          "title": "Конфигурация"
-        },
-        "customerOrder-item-discounts": {
-          "title": "Скидки"
-        }
+      "configuration": {
+        "title": "Конфигурация"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Скидки"
       }
     },
     "dialogs": {
