@@ -44,6 +44,11 @@
           "fee-total": "手数料合計"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "商品名"
+        }
+      },
       "customerOrder-list": {
         "title": "顧客注文",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "構成",
+      "labels": {
+        "picture": "画像",
+        "quantity": "数量",
+        "product-name": "商品名"
+      },
+      "descr": {
+        "no-configuration": "この商品は構成をサポートしていません。"
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "割引",
+      "labels": {
+        "name": "名前",
+        "coupon": "クーポン",
+        "discountAmount": "割引額",
+        "discountAmountWithTax": "割引額（税込）",
+        "currency": "通貨"
+      },
+      "descr": {
+        "no-discounts": "このエンティティにはまだ割引がありません。"
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "通知フィード",
@@ -330,8 +359,14 @@
       },
       "customerOrder-list": {
         "title": "注文"
+      },
+      "configuration": {
+        "title": "構成"
+      },
+      "customerOrder-item-discounts": {
+        "title": "割引"
       }
-    },
+      },
     "dialogs": {
       "concurrency-сonflict": {
         "title": "同時実行の競合が検出されました",

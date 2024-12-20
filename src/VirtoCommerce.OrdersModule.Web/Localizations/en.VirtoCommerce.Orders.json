@@ -44,6 +44,11 @@
           "fee-total": "Total fee"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Product name"
+        }
+      },
       "customerOrder-list": {
         "title": "Customer orders",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "Configuration",
+      "labels": {
+        "picture": "Image",
+        "quantity": "Quantity",
+        "product-name": "Product name"
+      },
+      "descr": {
+        "no-configuration": "This product does not support configuration."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Discounts",
+      "labels": {
+        "name": "Name",
+        "coupon": "Coupon",
+        "discountAmount": "Discount amount",
+        "discountAmountWithTax": "Discount amount with tax",
+        "currency": "Currency"
+      },
+      "descr": {
+        "no-discounts": "This entity doesn't have any discounts yet."
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "Notification feed",
@@ -330,6 +359,12 @@
       },
       "customerOrder-list": {
         "title": "Orders"
+      },
+      "configuration": {
+        "title": "Configuration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Discounts"
       }
     },
     "dialogs": {

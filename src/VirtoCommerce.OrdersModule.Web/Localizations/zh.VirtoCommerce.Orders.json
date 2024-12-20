@@ -44,6 +44,11 @@
           "fee-total": "总费用"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "产品名称"
+        }
+      },
       "customerOrder-list": {
         "title": "客户订单",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "配置",
+      "labels": {
+        "picture": "图片",
+        "quantity": "数量",
+        "product-name": "产品名称"
+      },
+      "descr": {
+        "no-configuration": "此产品不支持配置。"
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "折扣",
+      "labels": {
+        "name": "名称",
+        "coupon": "优惠券",
+        "discountAmount": "折扣金额",
+        "discountAmountWithTax": "折扣金额（含税）",
+        "currency": "货币"
+      },
+      "descr": {
+        "no-discounts": "此实体尚无任何折扣。"
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "通知源",
@@ -330,6 +359,12 @@
       },
       "customerOrder-list": {
         "title": "订单"
+      },
+      "configuration": {
+        "title": "配置"
+      },
+      "customerOrder-item-discounts": {
+        "title": "折扣"
       }
     },
     "dialogs": {

@@ -44,6 +44,11 @@
           "fee-total": "Общая комиссия"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Название продукта"
+        }
+      },
       "customerOrder-list": {
         "title": "Заказы клиентов",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "Конфигурация",
+      "labels": {
+        "picture": "Изображение",
+        "quantity": "Количество",
+        "product-name": "Название продукта"
+      },
+      "descr": {
+        "no-configuration": "Этот продукт не поддерживает конфигурацию."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Скидки",
+      "labels": {
+        "name": "Имя",
+        "coupon": "Купон",
+        "discountAmount": "Сумма скидки",
+        "discountAmountWithTax": "Сумма скидки с налогом",
+        "currency": "Валюта"
+      },
+      "descr": {
+        "no-discounts": "У этой сущности пока нет скидок."
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "Лента уведомлений",
@@ -330,6 +359,14 @@
       },
       "customerOrder-list": {
         "title": "Заказы"
+      },
+      {
+        "configuration": {
+          "title": "Конфигурация"
+        },
+        "customerOrder-item-discounts": {
+          "title": "Скидки"
+        }
       }
     },
     "dialogs": {

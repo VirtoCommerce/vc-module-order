@@ -14,7 +14,7 @@
           "from": "Créé le",
           "channel": "Canal",
           "customer": "Client",
-          "organization": "Organisation",
+          "fee-total": null,
           "invoice": "Obtenir la facture PDF",
           "withPrototypes": "Avec modèles"
         },
@@ -42,6 +42,11 @@
           "discount-total": "Remise totale",
           "tax-total": "Total des taxes",
           "fee-total": "Total des frais"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Nom du produit"
         }
       },
       "customerOrder-list": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "Configuration",
+      "labels": {
+        "picture": "Image",
+        "quantity": "Quantité",
+        "product-name": "Nom du produit"
+      },
+      "descr": {
+        "no-configuration": "Ce produit ne prend pas en charge la configuration."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Remises",
+      "labels": {
+        "name": "Nom",
+        "coupon": "Coupon",
+        "discountAmount": "Montant de la remise",
+        "discountAmountWithTax": "Montant de la remise avec taxe",
+        "currency": "Devise"
+      },
+      "descr": {
+        "no-discounts": "Cette entité n'a pas encore de remises."
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "Flux de notifications",
@@ -330,6 +359,12 @@
       },
       "customerOrder-list": {
         "title": "Commandes"
+      },
+      "configuration": {
+        "title": "Configuration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Remises"
       }
     },
     "dialogs": {

@@ -44,6 +44,11 @@
           "fee-total": "Commissioni totali"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Nome prodotto"
+        }
+      },
       "customerOrder-list": {
         "title": "Ordini clienti",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "Configurazione",
+      "labels": {
+        "picture": "Immagine",
+        "quantity": "Quantità",
+        "product-name": "Nome prodotto"
+      },
+      "descr": {
+        "no-configuration": "Questo prodotto non supporta la configurazione."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Sconti",
+      "labels": {
+        "name": "Nome",
+        "coupon": "Coupon",
+        "discountAmount": "Importo sconto",
+        "discountAmountWithTax": "Importo sconto con tasse",
+        "currency": "Valuta"
+      },
+      "descr": {
+        "no-discounts": "Questa entità non ha ancora sconti."
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "Feed notifiche",
@@ -330,6 +359,12 @@
       },
       "customerOrder-list": {
         "title": "Ordini"
+      },
+      "configuration": {
+        "title": "Configurazione"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Sconti"
       }
     },
     "dialogs": {

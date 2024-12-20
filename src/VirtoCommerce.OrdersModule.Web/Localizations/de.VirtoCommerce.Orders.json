@@ -44,6 +44,11 @@
           "fee-total": "Gesamtgebühr"
         }
       },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Produktname"
+        }
+      },
       "customerOrder-list": {
         "title": "Kundenbestellungen",
         "labels": {
@@ -262,6 +267,30 @@
         }
       }
     },
+    "configuration": {
+      "title": "Konfiguration",
+      "labels": {
+        "picture": "Bild",
+        "quantity": "Menge",
+        "product-name": "Produktname"
+      },
+      "descr": {
+        "no-configuration": "Dieses Produkt unterstützt keine Konfiguration."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Rabatte",
+      "labels": {
+        "name": "Name",
+        "coupon": "Gutschein",
+        "discountAmount": "Rabattbetrag",
+        "discountAmountWithTax": "Rabattbetrag mit Steuern",
+        "currency": "Währung"
+      },
+      "descr": {
+        "no-discounts": "Dieses Objekt hat noch keine Rabatte."
+      }
+    },
     "widgets": {
       "notifications": {
         "title": "Benachrichtigungsfeed",
@@ -330,6 +359,12 @@
       },
       "customerOrder-list": {
         "title": "Bestellungen"
+      },
+      "configuration": {
+        "title": "Konfiguration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatte"
       }
     },
     "dialogs": {
