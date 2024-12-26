@@ -1,0 +1,583 @@
+{
+  "orders": {
+    "main-menu-title": "注文",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "{{customer}}の注文",
+        "subtitle": "注文詳細と関連文書を編集",
+        "labels": {
+          "approved": "承認済み",
+          "employee": "担当者",
+          "order-number": "顧客注文番号",
+          "status": "ステータス",
+          "store": "店舗",
+          "from": "作成日時",
+          "channel": "チャネル",
+          "customer": "顧客",
+          "organization": "組織",
+          "invoice": "請求書PDFを取得",
+          "withPrototypes": "テンプレート付き"
+        },
+        "placeholders": {
+          "employee": "担当者を選択",
+          "status": "選択...",
+          "store": "選択..."
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "商品",
+          "status": "ステータス",
+          "quantity": "数量",
+          "available": "在庫",
+          "await": "待機",
+          "price": "単価（税抜）",
+          "tax": "税金",
+          "priceWithTax": "単価（税込）",
+          "discount": "割引（税抜）",
+          "discountWithTax": "割引（税込）",
+          "total": "合計品目",
+          "dynamic-properties": "動的プロパティ",
+          "sub-total": "小計",
+          "discount-total": "割引合計",
+          "tax-total": "税金合計",
+          "fee-total": "手数料合計"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "商品名"
+        }
+      },
+      "customerOrder-list": {
+        "title": "顧客注文",
+        "labels": {
+          "new-filter": "新しいフィルターを追加",
+          "unnamed-filter": "フィルター条件",
+          "today-filter": "今日",
+          "last-day-filter": "昨日",
+          "last-week-filter": "先週",
+          "last-month-filter": "先月",
+          "last-year-filter": "昨年",
+          "number": "注文番号",
+          "customer": "顧客",
+          "confirmed": "確認済み",
+          "status": "ステータス",
+          "total": "合計",
+          "currency": "通貨",
+          "store": "店舗",
+          "created": "作成日",
+          "copy-id": "IDをコピー",
+          "copy-number": "番号をコピー",
+          "filter-by": "フィルター条件"
+        },
+        "placeholders": {
+          "select-filter": "フィルターを選択"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "フィルターを編集",
+        "new-title": "新しいフィルター",
+        "new-subtitle": "新しいフィルターを作成",
+        "labels": {
+          "name": "フィルター名",
+          "name_": "このフィルターに名前を付ける",
+          "criteria": "フィルター条件",
+          "from": "作成日（以降）",
+          "to": "作成日（以前）"
+        },
+        "placeholders": {
+          "all": "指定なし"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "コメント"
+        }
+      },
+      "payment-detail": {
+        "title": "入金 #{{number}}",
+        "title-new": "新規入金",
+        "subtitle": "支払い詳細と関連文書を編集",
+        "labels": {
+          "approved": "承認済み",
+          "payment-number": "支払いID",
+          "status": "ステータス",
+          "amount": "金額",
+          "from": "日時",
+          "payment-gateway": "決済ゲートウェイ",
+          "payment-purpose": "支払い目的",
+          "price": "支払い手数料",
+          "price-with-tax": "支払い手数料（税込）",
+          "vendor": "ベンダー",
+          "capture-payment": "支払いを確定",
+          "refund-payment": "返金"
+        },
+        "placeholders": {
+          "status": "選択...",
+          "payment-gateway": "選択...",
+          "vendor": "選択..."
+        }
+      },
+      "refund-add": {
+        "title": "返金を作成",
+        "labels": {
+          "amount": "返金額",
+          "reasonCode": "返金理由",
+          "message": "返金メッセージ",
+          "transactionId": "取引ID",
+          "outerId": "外部ID"
+        },
+        "placeholders": {
+          "amount": "入力...",
+          "reasonCode": "選択...",
+          "message": "入力...",
+          "transactionId": "入力...",
+          "outerId": "入力..."
+        }
+      },
+      "refund-details": {
+        "title": "返金 #{{number}}",
+        "subtitle": "支払い詳細と関連文書を編集",
+        "labels": {
+          "status": "ステータス",
+          "amount": "金額",
+          "vendor": "ベンダー",
+          "reasonCode": "返金理由"
+        },
+        "refund-status": {
+          "pending": "保留中",
+          "approved": "承認済み",
+          "rejected": "拒否",
+          "processed": "処理済み"
+        },
+        "placeholders": {
+          "status": "選択...",
+          "vendor": "選択...",
+          "reasonCode": "選択..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "取引ID",
+          "outerId": "外部ID"
+        }
+      },
+      "capture-add": {
+        "title": "支払い確定を作成",
+        "labels": {
+          "amount": "確定金額",
+          "message": "確定メッセージ",
+          "transactionId": "取引ID",
+          "outerId": "外部ID",
+          "closeTransaction": "取引を閉じる"
+        },
+        "placeholders": {
+          "amount": "入力...",
+          "message": "入力...",
+          "transactionId": "入力...",
+          "outerId": "入力..."
+        },
+        "descr": {
+          "closeTransaction": "取引を閉じ、この注文に対する将来の支払い確定操作を制限します"
+        }
+      },
+      "capture-details": {
+        "title": "支払い確定 #{{number}}",
+        "subtitle": "支払い詳細と関連文書を編集",
+        "labels": {
+          "amount": "金額",
+          "vendor": "ベンダー",
+          "closeTransaction": "取引を閉じる"
+        },
+        "placeholders": {
+          "amount": "入力...",
+          "vendor": "選択..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "取引ID",
+          "outerId": "外部ID"
+        }
+      }
+    },
+    "transactions-list": {
+      "title": "決済ゲートウェイ取引",
+      "subtitle": "すべての決済ゲートウェイ相互作用のリスト"
+    },
+    "transaction-detail": {
+      "title": "取引詳細",
+      "subtitle": "生の取引データ"
+    },
+    "shipment-detail": {
+      "title": "配送 #{{number}}",
+      "title-new": "新規配送",
+      "subtitle": "配送詳細を編集",
+      "labels": {
+        "shipment-method": "配送方法",
+        "approved": "承認済み",
+        "shipment-number": "配送ID",
+        "status": "ステータス",
+        "fulfillment-center": "フルフィルメントセンター",
+        "from": "日時",
+        "employee": "担当者",
+        "price": "配送料",
+        "price-with-tax": "配送料（税込）",
+        "shipment-method-option": "配送方法",
+        "tracking-number": "追跡番号",
+        "tracking-url": "追跡URL",
+        "delivery-date": "配達日",
+        "vendor": "ベンダー"
+      },
+      "placeholders": {
+        "status": "選択...",
+        "shipment-method": "選択...",
+        "fulfillment-center": "センターを選択または検索...",
+        "shipment-method-option": "デフォルトの配送方法",
+        "vendor": "選択..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}}の品目",
+      "subtitle": "配送品目を編集",
+      "labels": {
+        "item": "商品",
+        "status": "ステータス",
+        "quantity": "数量",
+        "price": "価格",
+        "total": "合計"
+      }
+    },
+    "catalog-items-select": {
+      "title": "注文に商品を追加"
+    },
+    "newOperation-wizard": {
+      "title": "新規操作",
+      "subtitle": "操作タイプを選択",
+      "menu": {
+        "shipment-operation": {
+          "description": "配送文書"
+        },
+        "payment-operation": {
+          "description": "入金文書"
+        },
+        "refund-operation": {
+          "description": "返金文書"
+        }
+      }
+    },
+    "configuration": {
+      "title": "構成",
+      "labels": {
+        "picture": "画像",
+        "quantity": "数量",
+        "product-name": "商品名"
+      },
+      "descr": {
+        "no-configuration": "この商品は構成をサポートしていません。"
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "割引",
+      "labels": {
+        "name": "名前",
+        "coupon": "クーポン",
+        "discountAmount": "割引額",
+        "discountAmountWithTax": "割引額（税込）",
+        "currency": "通貨"
+      },
+      "descr": {
+        "no-discounts": "このエンティティにはまだ割引がありません。"
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "通知フィード",
+        "subtitle": "注文通知フィード"
+      },
+      "customerOrder-address": {
+        "title": "住所",
+        "blade-title": "住所を管理"
+      },
+      "customerOrder-items": {
+        "title": "品目",
+        "blade-title": "{{title}}の品目",
+        "blade-subtitle": "品目を編集"
+      },
+      "customerOrder-totals": {
+        "sub-total": "小計",
+        "shipping-total": "配送料合計",
+        "shipping-sub-total": "配送料小計",
+        "payment-sub-total": "支払い小計",
+        "tax-total": "税金合計",
+        "fee-total": "手数料合計",
+        "discount": "割引",
+        "discount-total": "割引合計",
+        "discount-total-with-tax": "割引合計（税込）",
+        "total": "合計"
+      },
+      "operation-comment": {
+        "no-comments": "コメントなし",
+        "blade-title": "コメントを残す"
+      },
+      "shipment-address": {
+        "blade-title": "配送先住所を管理",
+        "title": "配送先住所"
+      },
+      "shipment-items": {
+        "title": "配送品目"
+      },
+      "shipment-totals": {
+        "tax-total": "税金合計",
+        "fee-total": "手数料合計",
+        "shipment-total": "配送料合計",
+        "shipment-price": "配送料",
+        "discount-total": "割引合計",
+        "total": "合計"
+      },
+      "payment-totals": {
+        "tax-total": "税金合計",
+        "payment-total": "支払い合計",
+        "payment-price": "支払い金額",
+        "discount-total": "割引合計",
+        "total": "合計"
+      },
+      "payment-address": {
+        "blade-title": "請求先住所を管理",
+        "title": "支払い住所"
+      },
+      "statistics-templates": {
+        "revenue": "売上高",
+        "customers-with-orders": "注文のある顧客",
+        "average-order-value": "平均注文金額",
+        "items-purchased": "購入商品数",
+        "lines-per-order": "注文あたりの品目数",
+        "revenue-per-customer": "顧客あたりの売上高",
+        "title": "注文統計",
+        "not-authorized": "現在この機能にアクセスする権限がありません。アクセス権限については、アカウント管理者にお問い合わせください"
+      },
+      "customerOrder-list": {
+        "title": "注文"
+      },
+      "configuration": {
+        "title": "構成"
+      },
+      "customerOrder-item-discounts": {
+        "title": "割引"
+      }
+      },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "同時実行の競合が検出されました",
+        "message": "注文が他のユーザーによって変更されました。OKをクリックして最新のデータを再読み込みし、もう一度お試しください"
+      },
+      "orders-delete": {
+        "title": "削除の確認",
+        "message": "選択した顧客注文を削除してもよろしいですか？"
+      },
+      "operation-save": {
+        "title": "変更を保存",
+        "message": "操作が変更されました。変更を保存しますか？"
+      },
+      "operation-delete": {
+        "title": "削除の確認",
+        "message": "現在の操作を削除してもよろしいですか？"
+      },
+      "operation-cancel": {
+        "title": "操作をキャンセル",
+        "message": "このドキュメントを削除してもよろしいですか？",
+        "placeholders": {
+          "reason": "削除理由を入力してください..."
+        }
+      },
+      "payment-capture": {
+        "title": "支払い確定の確認",
+        "message": "{{amount}}の支払いを確定してもよろしいですか？"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "新規",
+        "not payed": "未払い",
+        "pending": "保留中",
+        "processing": "処理中",
+        "ready to send": "発送準備完了",
+        "cancelled": "キャンセル",
+        "partially sent": "一部発送済み",
+        "completed": "完了"
+      },
+      "line-item-status": {
+        "pending": "保留中",
+        "inprogress": "進行中",
+        "shipped": "発送済み",
+        "delivered": "配達済み",
+        "cancelled": "キャンセル"
+      },
+      "shipment-status": {
+        "new": "新規",
+        "pickpack": "ピッキング/梱包",
+        "cancelled": "キャンセル",
+        "readytosend": "発送準備完了",
+        "sent": "発送済み"
+      },
+      "paymentin-status": {
+        "new": "新規",
+        "pending": "保留中",
+        "authorized": "承認済み",
+        "paid": "支払い済み",
+        "partiallyrefunded": "一部返金済み",
+        "refunded": "返金済み",
+        "voided": "無効",
+        "custom": "カスタム",
+        "cancelled": "キャンセル"
+      },
+      "refund-status": {
+        "pending": "保留中",
+        "rejected": "拒否",
+        "processed": "処理済み"
+      },
+      "reason-codes": {
+        "duplicate": "重複",
+        "fraudulent": "不正",
+        "requestedbycustomer": "顧客要求",
+        "other": "その他"
+      }
+    },
+    "commands": {
+      "new-document": "新規ドキュメント",
+      "cancel-document": "ドキュメントをキャンセル",
+      "add-selected": "選択項目を追加",
+      "add-item": "商品を追加"
+    }
+  },
+  "permissions": {
+    "order:read": "注文関連データの表示",
+    "order:create": "注文関連データの作成",
+    "order:update": "注文関連データの更新",
+    "order:delete": "注文関連データの削除",
+    "order:access": "注文関連データへのアクセス",
+    "order:read_prices": "注文価格の表示"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "顧客注文ステータス",
+      "description": "顧客注文で利用可能なステータスのリスト"
+    },
+    "Order.InitialStatus": {
+      "title": "顧客注文の初期ステータス",
+      "description": "新規顧客注文の初期ステータス"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "支払いが終了した注文の初期ステータス",
+      "description": "支払いが処理されなかったすべての注文に使用されるステータス"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "品目ステータス",
+      "description": "注文品目で利用可能なステータスのリスト"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "品目の初期ステータス",
+      "description": "新規顧客注文の品目の初期ステータス"
+    },
+    "Shipment.Status": {
+      "description": "配送ステータス",
+      "title": "配送ステータス"
+    },
+    "PaymentIn.Status": {
+      "description": "入金ステータス",
+      "title": "支払いステータス"
+    },
+    "Refund.Status": {
+      "title": "返金ステータス",
+      "description": "返金ステータス"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "新しい顧客注文番号を生成するために使用されます。パラメータ：\n\n0: UTC日時\n1: カウンター\n\nフォーマットは、テンプレート内で直接カウンターオプションをサポートしています：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nデフォルト値：\n* reset_counter_typeはDaily。None、Daily、Weekly、Monthly、Yearlyのリセットカウンタータイプから選択できます。\n* start_counter_fromは1。\n* counter_incrementは1。\n\n例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10\n結果：CO240101-00001",
+      "title": "注文番号テンプレート"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "新しい配送番号を生成するために使用されます。パラメータ：\n\n0: UTC日時\n1: カウンター\n\nフォーマットは、テンプレート内で直接カウンターオプションをサポートしています：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nデフォルト値：\n* reset_counter_typeはDaily。None、Daily、Weekly、Monthly、Yearlyのリセットカウンタータイプから選択できます。\n* start_counter_fromは1。\n* counter_incrementは1。\n\n例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10\n結果：CO240101-00001",
+      "title": "注文配送番号テンプレート"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "新しい支払い番号を生成するために使用されます。パラメータ：\n\n0: UTC日時\n1: カウンター\n\nフォーマットは、テンプレート内で直接カウンターオプションをサポートしています：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nデフォルト値：\n* reset_counter_typeはDaily。None、Daily、Weekly、Monthly、Yearlyのリセットカウンタータイプから選択できます。\n* start_counter_fromは1。\n* counter_incrementは1。\n\n例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10\n結果：CO240101-00001",
+      "title": "注文支払い番号テンプレート"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "新しい返金番号を生成するために使用されます。パラメータ：\n\n0: UTC日時\n1: カウンター\n\nフォーマットは、テンプレート内で直接カウンターオプションをサポートしています：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nデフォルト値：\n* reset_counter_typeはDaily。None、Daily、Weekly、Monthly、Yearlyのリセットカウンタータイプから選択できます。\n* start_counter_fromは1。\n* counter_incrementは1。\n\n例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10\n結果：CO240101-00001",
+      "title": "注文返金番号テンプレート"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "注文ステータスが変更されたときに通知を送信します",
+      "title": "注文の通知を有効にする"
+    },
+    "Order.AdjustInventory": {
+      "description": "注文ステータスが変更されたときに在庫を調整します",
+      "title": "注文の在庫調整"
+    },
+    "Order.LogOrderChanges": {
+      "title": "注文変更のログ",
+      "description": "注文変更をプラットフォーム操作ログに記録します"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "注文エンティティのイベントベースインデックス作成",
+      "description": "顧客エンティティへの変更は、これらの変更を検索インデックスに適用するバックグラウンドタスクをトリガーします"
+    },
+    "Order.Validation.Enable": {
+      "title": "注文保存の検証",
+      "description": "注文の保存の検証を有効にします"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "注文インデックス作成の日時",
+      "description": "最新の注文インデックス作成タスクの日時"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "注文支払済みと注文発送通知を使用",
+      "description": "注文支払済みと注文発送通知を使用します"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "支払い/配送ステータス変更通知を使用",
+      "description": "支払い/配送ステータス変更通知に使用します"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "関連するすべてのオブジェクト（品目、配送、支払いなど）を含む顧客注文のエクスポート/インポート"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "注文キャンセルの通知",
+      "description": "注文がキャンセルされたときに顧客にメール通知が送信されます"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "顧客注文の請求書",
+      "description": "これはPDFバージョンの生成に使用される顧客注文請求書のテンプレートです"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "新しい注文ステータスの通知",
+      "description": "任意の注文のステータスが変更されたときに顧客にメール通知が送信されます"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "注文作成の通知",
+      "description": "顧客がフロントエンドアプリケーションのフォーム（例：お問い合わせフォーム）を通じて詳細を送信した後、メール通知が送信されます"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "注文支払いの通知",
+      "description": "注文に関連するすべての支払いが完了したときに顧客にメール通知が送信されます"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "注文発送の通知",
+      "description": "注文したすべての商品が発送されたときに顧客にメール通知が送信されます"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "支払いステータス変更の通知",
+      "description": "変更されたすべての支払いステータスを含むメール通知が顧客に送信されます"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "配送ステータス変更の通知",
+      "description": "変更されたすべての配送ステータスを含むメール通知が顧客に送信されます"
+    }
+  }
+}

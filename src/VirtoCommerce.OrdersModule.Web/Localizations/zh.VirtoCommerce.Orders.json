@@ -1,0 +1,583 @@
+{
+  "orders": {
+    "main-menu-title": "订单",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "{{customer}}的订单",
+        "subtitle": "编辑订单详情和相关文档",
+        "labels": {
+          "approved": "已批准",
+          "employee": "分配给",
+          "order-number": "客户订单号",
+          "status": "状态",
+          "store": "商店",
+          "from": "创建于",
+          "channel": "渠道",
+          "customer": "客户",
+          "organization": "组织",
+          "invoice": "获取发票PDF",
+          "withPrototypes": "带模板"
+        },
+        "placeholders": {
+          "employee": "选择受让人",
+          "status": "选择...",
+          "store": "选择..."
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "项目",
+          "status": "状态",
+          "quantity": "数量",
+          "available": "可用",
+          "await": "等待",
+          "price": "单价（不含税）",
+          "tax": "税",
+          "priceWithTax": "单价（含税）",
+          "discount": "折扣（不含税）",
+          "discountWithTax": "折扣（含税）",
+          "total": "总行项目",
+          "dynamic-properties": "动态属性",
+          "sub-total": "小计",
+          "discount-total": "总折扣",
+          "tax-total": "总税额",
+          "fee-total": "总费用"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "产品名称"
+        }
+      },
+      "customerOrder-list": {
+        "title": "客户订单",
+        "labels": {
+          "new-filter": "添加新过滤器",
+          "unnamed-filter": "按以下条件过滤",
+          "today-filter": "今天",
+          "last-day-filter": "昨天",
+          "last-week-filter": "上周",
+          "last-month-filter": "上月",
+          "last-year-filter": "去年",
+          "number": "订单号",
+          "customer": "客户",
+          "confirmed": "已确认",
+          "status": "状态",
+          "total": "总计",
+          "currency": "货币",
+          "store": "商店",
+          "created": "创建时间",
+          "copy-id": "复制ID",
+          "copy-number": "复制号码",
+          "filter-by": "过滤条件"
+        },
+        "placeholders": {
+          "select-filter": "选择过滤器"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "编辑过滤器",
+        "new-title": "新过滤器",
+        "new-subtitle": "创建新过滤器",
+        "labels": {
+          "name": "过滤器名称",
+          "name_": "命名此过滤器",
+          "criteria": "过滤条件",
+          "from": "创建时间晚于",
+          "to": "创建时间早于"
+        },
+        "placeholders": {
+          "all": "未指定"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "评论"
+        }
+      },
+      "payment-detail": {
+        "title": "收到的付款 #{{number}}",
+        "title-new": "新收到的付款",
+        "subtitle": "编辑付款详情和相关文档",
+        "labels": {
+          "approved": "已批准",
+          "payment-number": "付款ID",
+          "status": "状态",
+          "amount": "金额",
+          "from": "日期和时间",
+          "payment-gateway": "支付网关",
+          "payment-purpose": "付款目的",
+          "price": "支付费用",
+          "price-with-tax": "支付费用（含税）",
+          "vendor": "供应商",
+          "capture-payment": "捕获付款",
+          "refund-payment": "退款"
+        },
+        "placeholders": {
+          "status": "选择...",
+          "payment-gateway": "选择...",
+          "vendor": "选择..."
+        }
+      },
+      "refund-add": {
+        "title": "创建退款",
+        "labels": {
+          "amount": "退款金额",
+          "reasonCode": "退款原因",
+          "message": "退款消息",
+          "transactionId": "交易ID",
+          "outerId": "外部ID"
+        },
+        "placeholders": {
+          "amount": "输入...",
+          "reasonCode": "选择...",
+          "message": "输入...",
+          "transactionId": "输入...",
+          "outerId": "输入..."
+        }
+      },
+      "refund-details": {
+        "title": "退款 #{{number}}",
+        "subtitle": "编辑付款详情和相关文档",
+        "labels": {
+          "status": "状态",
+          "amount": "金额",
+          "vendor": "供应商",
+          "reasonCode": "退款原因"
+        },
+        "refund-status": {
+          "pending": "待处理",
+          "approved": "已批准",
+          "rejected": "已拒绝",
+          "processed": "已处理"
+        },
+        "placeholders": {
+          "status": "选择...",
+          "vendor": "选择...",
+          "reasonCode": "选择..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "交易ID",
+          "outerId": "外部ID"
+        }
+      },
+      "capture-add": {
+        "title": "创建捕获",
+        "labels": {
+          "amount": "捕获金额",
+          "message": "捕获消息",
+          "transactionId": "交易ID",
+          "outerId": "外部ID",
+          "closeTransaction": "关闭交易"
+        },
+        "placeholders": {
+          "amount": "输入...",
+          "message": "输入...",
+          "transactionId": "输入...",
+          "outerId": "输入..."
+        },
+        "descr": {
+          "closeTransaction": "关闭交易，限制此订单的未来捕获操作"
+        }
+      },
+      "capture-details": {
+        "title": "捕获 #{{number}}",
+        "subtitle": "编辑付款详情和相关文档",
+        "labels": {
+          "amount": "金额",
+          "vendor": "供应商",
+          "closeTransaction": "关闭交易"
+        },
+        "placeholders": {
+          "amount": "输入...",
+          "vendor": "选择..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "交易ID",
+          "outerId": "外部ID"
+        }
+      }
+    },
+    "transactions-list": {
+      "title": "支付网关交易",
+      "subtitle": "所有支付网关交互列表"
+    },
+    "transaction-detail": {
+      "title": "交易详情",
+      "subtitle": "原始交易数据"
+    },
+    "shipment-detail": {
+      "title": "发货 #{{number}}",
+      "title-new": "新发货",
+      "subtitle": "编辑发货详情",
+      "labels": {
+        "shipment-method": "发货方式",
+        "approved": "已批准",
+        "shipment-number": "发货ID",
+        "status": "状态",
+        "fulfillment-center": "履行中心",
+        "from": "日期和时间",
+        "employee": "分配给",
+        "price": "发货金额",
+        "price-with-tax": "发货金额（含税）",
+        "shipment-method-option": "发货方式",
+        "tracking-number": "跟踪号",
+        "tracking-url": "跟踪URL",
+        "delivery-date": "交付日期",
+        "vendor": "供应商"
+      },
+      "placeholders": {
+        "status": "选择...",
+        "shipment-method": "选择...",
+        "fulfillment-center": "选择或搜索中心...",
+        "shipment-method-option": "默认发货方式",
+        "vendor": "选择..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} 行项目",
+      "subtitle": "编辑发货项目",
+      "labels": {
+        "item": "项目",
+        "status": "状态",
+        "quantity": "数量",
+        "price": "价格",
+        "total": "总计"
+      }
+    },
+    "catalog-items-select": {
+      "title": "添加项目到订单"
+    },
+    "newOperation-wizard": {
+      "title": "新操作",
+      "subtitle": "选择操作类型",
+      "menu": {
+        "shipment-operation": {
+          "description": "发货文档"
+        },
+        "payment-operation": {
+          "description": "收到付款文档"
+        },
+        "refund-operation": {
+          "description": "退款文档"
+        }
+      }
+    },
+    "configuration": {
+      "title": "配置",
+      "labels": {
+        "picture": "图片",
+        "quantity": "数量",
+        "product-name": "产品名称"
+      },
+      "descr": {
+        "no-configuration": "此产品不支持配置。"
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "折扣",
+      "labels": {
+        "name": "名称",
+        "coupon": "优惠券",
+        "discountAmount": "折扣金额",
+        "discountAmountWithTax": "折扣金额（含税）",
+        "currency": "货币"
+      },
+      "descr": {
+        "no-discounts": "此实体尚无任何折扣。"
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "通知源",
+        "subtitle": "订单通知源"
+      },
+      "customerOrder-address": {
+        "title": "地址",
+        "blade-title": "管理地址"
+      },
+      "customerOrder-items": {
+        "title": "行项目",
+        "blade-title": "{{title}} 行项目",
+        "blade-subtitle": "编辑行项目"
+      },
+      "customerOrder-totals": {
+        "sub-total": "小计",
+        "shipping-total": "运费总计",
+        "shipping-sub-total": "运费小计",
+        "payment-sub-total": "支付小计",
+        "tax-total": "税费总计",
+        "fee-total": "费用总计",
+        "discount": "折扣",
+        "discount-total": "折扣总计",
+        "discount-total-with-tax": "折扣总计（含税）",
+        "total": "总计"
+      },
+      "operation-comment": {
+        "no-comments": "无评论",
+        "blade-title": "留下评论"
+      },
+      "shipment-address": {
+        "blade-title": "管理配送地址",
+        "title": "配送地址"
+      },
+      "shipment-items": {
+        "title": "发货项目"
+      },
+      "shipment-totals": {
+        "tax-total": "税费总计",
+        "fee-total": "费用总计",
+        "shipment-total": "发货总计",
+        "shipment-price": "运费",
+        "discount-total": "折扣总计",
+        "total": "总计"
+      },
+      "payment-totals": {
+        "tax-total": "税费总计",
+        "payment-total": "支付总计",
+        "payment-price": "支付价格",
+        "discount-total": "折扣总计",
+        "total": "总计"
+      },
+      "payment-address": {
+        "blade-title": "管理账单地址",
+        "title": "支付地址"
+      },
+      "statistics-templates": {
+        "revenue": "收入",
+        "customers-with-orders": "有订单的客户",
+        "average-order-value": "平均订单价值",
+        "items-purchased": "已购买项目",
+        "lines-per-order": "每订单行数",
+        "revenue-per-customer": "每客户收入",
+        "title": "订单统计",
+        "not-authorized": "您当前无权访问此功能。请联系您的账户管理员以获取访问权限"
+      },
+      "customerOrder-list": {
+        "title": "订单"
+      },
+      "configuration": {
+        "title": "配置"
+      },
+      "customerOrder-item-discounts": {
+        "title": "折扣"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "检测到并发冲突",
+        "message": "该订单已被另一用户修改。点击确定重新加载最新数据并重试"
+      },
+      "orders-delete": {
+        "title": "删除确认",
+        "message": "您确定要删除所选的客户订单吗？"
+      },
+      "operation-save": {
+        "title": "保存更改",
+        "message": "操作已被修改。您想保存更改吗？"
+      },
+      "operation-delete": {
+        "title": "删除确认",
+        "message": "您确定要删除当前操作吗？"
+      },
+      "operation-cancel": {
+        "title": "取消操作",
+        "message": "您确定要移除此文档吗？",
+        "placeholders": {
+          "reason": "输入移除原因..."
+        }
+      },
+      "payment-capture": {
+        "title": "捕获确认",
+        "message": "您确定要捕获 {{amount}} 的付款吗？"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "新建",
+        "not payed": "未支付",
+        "pending": "待处理",
+        "processing": "处理中",
+        "ready to send": "准备发送",
+        "cancelled": "已取消",
+        "partially sent": "部分已发送",
+        "completed": "已完成"
+      },
+      "line-item-status": {
+        "pending": "待处理",
+        "inprogress": "进行中",
+        "shipped": "已发货",
+        "delivered": "已交付",
+        "cancelled": "已取消"
+      },
+      "shipment-status": {
+        "new": "新建",
+        "pickpack": "拣货包装",
+        "cancelled": "已取消",
+        "readytosend": "准备发送",
+        "sent": "已发送"
+      },
+      "paymentin-status": {
+        "new": "新建",
+        "pending": "待处理",
+        "authorized": "已授权",
+        "paid": "已支付",
+        "partiallyrefunded": "部分已退款",
+        "refunded": "已退款",
+        "voided": "已作废",
+        "custom": "自定义",
+        "cancelled": "已取消"
+      },
+      "refund-status": {
+        "pending": "待处理",
+        "rejected": "已拒绝",
+        "processed": "已处理"
+      },
+      "reason-codes": {
+        "duplicate": "重复",
+        "fraudulent": "欺诈",
+        "requestedbycustomer": "客户要求",
+        "other": "其他"
+      }
+    },
+    "commands": {
+      "new-document": "新文档",
+      "cancel-document": "取消文档",
+      "add-selected": "添加所选",
+      "add-item": "添加项目"
+    }
+  },
+  "permissions": {
+    "order:read": "查看订单相关数据",
+    "order:create": "创建订单相关数据",
+    "order:update": "更新订单相关数据",
+    "order:delete": "删除订单相关数据",
+    "order:access": "访问订单相关数据",
+    "order:read_prices": "查看订单价格"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "客户订单状态",
+      "description": "客户订单可用状态列表"
+    },
+    "Order.InitialStatus": {
+      "title": "客户订单初始状态",
+      "description": "新客户订单的初始状态"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "终止付款订单的初始状态",
+      "description": "此状态用于所有未处理付款的订单"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "行项目状态",
+      "description": "订单行项目可用状态列表"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "行项目初始状态",
+      "description": "新客户订单中行项目的初始状态"
+    },
+    "Shipment.Status": {
+      "description": "发货状态",
+      "title": "发货状态"
+    },
+    "PaymentIn.Status": {
+      "description": "收到付款状态",
+      "title": "支付状态"
+    },
+    "Refund.Status": {
+      "title": "退款状态",
+      "description": "退款状态"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "用于生成新客户订单号，参数：\n\n0：UTC日期和时间\n1：计数器\n\n格式支持直接在模板中使用计数器选项，格式如下：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\n默认值：\n* reset_counter_type 为每日。可选择无、每日、每周、每月和每年重置计数器类型。\n* start_counter_from 为 1。\n* counter_increment 为 1。\n\n示例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10。\n结果：CO240101-00001。",
+      "title": "订单号模板"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "用于生成新发货号，参数：\n\n0：UTC日期和时间\n1：计数器\n\n格式支持直接在模板中使用计数器选项，格式如下：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\n默认值：\n* reset_counter_type 为每日。可选择无、每日、每周、每月和每年重置计数器类型。\n* start_counter_from 为 1。\n* counter_increment 为 1。\n\n示例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10。\n结果：CO240101-00001。",
+      "title": "订单发货号模板"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "用于生成新支付号，参数：\n\n0：UTC日期和时间\n1：计数器\n\n格式支持直接在模板中使用计数器选项，格式如下：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\n默认值：\n* reset_counter_type 为每日。可选择无、每日、每周、每月和每年重置计数器类型。\n* start_counter_from 为 1。\n* counter_increment 为 1。\n\n示例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10。\n结果：CO240101-00001。",
+      "title": "订单支付号模板"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "用于生成新退款号，参数：\n\n0：UTC日期和时间\n1：计数器\n\n格式支持直接在模板中使用计数器选项，格式如下：\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\n默认值：\n* reset_counter_type 为每日。可选择无、每日、每周、每月和每年重置计数器类型。\n* start_counter_from 为 1。\n* counter_increment 为 1。\n\n示例：CO{0:yyMMdd}-{1:D5}@Weekly:1:10。\n结果：CO240101-00001。",
+      "title": "订单退款号模板"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "订单状态变更时发送通知",
+      "title": "启用订单通知"
+    },
+    "Order.AdjustInventory": {
+      "description": "订单状态变更时调整库存",
+      "title": "调整订单库存"
+    },
+    "Order.LogOrderChanges": {
+      "title": "记录订单变更",
+      "description": "将订单变更记录到平台操作日志"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "订单实体的事件基础索引",
+      "description": "客户实体的任何变更都将触发后台任务，将这些变更应用到搜索索引"
+    },
+    "Order.Validation.Enable": {
+      "title": "订单保存验证",
+      "description": "启用订单保存验证"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "订单索引日期和时间",
+      "description": "最新订单索引任务的日期和时间"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "使用订单已支付和订单已发送通知",
+      "description": "使用订单已支付和订单已发送通知"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "使用支付/发货状态变更通知",
+      "description": "用于支付/发货状态变更通知"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "导出/导入客户订单及所有相关对象（行项目、发货、支付等）"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "订单取消通知",
+      "description": "订单取消时客户收到电子邮件通知"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "客户订单发票",
+      "description": "这是用于生成PDF版本的客户订单发票模板"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "新订单状态通知",
+      "description": "任何订单状态变更时客户收到电子邮件通知"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "订单创建通知",
+      "description": "客户通过前端应用程序中的表单（如联系我们表单）提交详细信息后收到电子邮件通知"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "订单支付通知",
+      "description": "订单相关的所有支付完成时客户收到电子邮件通知"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "订单发货通知",
+      "description": "所有订购项目发货后客户收到电子邮件通知"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "支付状态变更通知",
+      "description": "客户收到包含所有变更支付状态的电子邮件通知"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "发货状态变更通知",
+      "description": "客户收到包含所有变更发货状态的电子邮件通知"
+    }
+  }
+}
