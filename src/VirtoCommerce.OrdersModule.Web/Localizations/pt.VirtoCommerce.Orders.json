@@ -1,0 +1,583 @@
+{
+  "orders": {
+    "main-menu-title": "Ordens",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "Ordem de {{customer}}",
+        "subtitle": "Editar detalhes da ordem e documentos relacionados",
+        "labels": {
+          "approved": "Aprovado",
+          "employee": "Atribuído a",
+          "order-number": "Número da ordem do cliente",
+          "status": "Status",
+          "store": "Loja",
+          "from": "Criado em",
+          "channel": "Canal",
+          "customer": "Cliente",
+          "organization": "Organização",
+          "invoice": "Obter PDF da fatura",
+          "withPrototypes": "Com modelos"
+        },
+        "placeholders": {
+          "employee": "Selecionar responsável",
+          "status": "Selecionar...",
+          "store": "Selecionar..."
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "Item",
+          "status": "Status",
+          "quantity": "Qtd",
+          "available": "Disp",
+          "await": "Aguardar",
+          "price": "Preço unitário (sem impostos)",
+          "tax": "Imposto",
+          "priceWithTax": "Preço unitário (com impostos)",
+          "discount": "Desconto (sem impostos)",
+          "discountWithTax": "Desconto (com impostos)",
+          "total": "Total de itens de linha",
+          "dynamic-properties": "Propriedades dinâmicas",
+          "sub-total": "Subtotal",
+          "discount-total": "Desconto total",
+          "tax-total": "Imposto total",
+          "fee-total": "Taxa total"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Nome do produto"
+        }
+      },
+      "customerOrder-list": {
+        "title": "Ordens de clientes",
+        "labels": {
+          "new-filter": "Adicionar novo filtro",
+          "unnamed-filter": "Filtrar por",
+          "today-filter": "Hoje",
+          "last-day-filter": "Ontem",
+          "last-week-filter": "Última semana",
+          "last-month-filter": "Último mês",
+          "last-year-filter": "Último ano",
+          "number": "Número da ordem",
+          "customer": "Cliente",
+          "confirmed": "Confirmado",
+          "status": "Status",
+          "total": "Total",
+          "currency": "Moeda",
+          "store": "Loja",
+          "created": "Criado",
+          "copy-id": "Copiar Id",
+          "copy-number": "Copiar número",
+          "filter-by": "Filtrar por"
+        },
+        "placeholders": {
+          "select-filter": "Selecionar filtro"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "Editar filtro",
+        "new-title": "Novo filtro",
+        "new-subtitle": "Criar novo filtro",
+        "labels": {
+          "name": "Nome do filtro",
+          "name_": "Nomear este filtro",
+          "criteria": "Critérios do filtro",
+          "from": "Criado após",
+          "to": "Criado antes"
+        },
+        "placeholders": {
+          "all": "Não especificado"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "Comentários"
+        }
+      },
+      "payment-detail": {
+        "title": "Pagamento recebido #{{number}}",
+        "title-new": "Novo pagamento recebido",
+        "subtitle": "Editar detalhes do pagamento e documentos relacionados",
+        "labels": {
+          "approved": "Aprovado",
+          "payment-number": "Id do pagamento",
+          "status": "Status",
+          "amount": "Valor",
+          "from": "Data e hora",
+          "payment-gateway": "Gateway de pagamento",
+          "payment-purpose": "Finalidade do pagamento",
+          "price": "Taxas de pagamento",
+          "price-with-tax": "Taxas de pagamento (com impostos)",
+          "vendor": "Fornecedor",
+          "capture-payment": "Capturar pagamento",
+          "refund-payment": "Reembolsar pagamento"
+        },
+        "placeholders": {
+          "status": "Selecionar...",
+          "payment-gateway": "Selecionar...",
+          "vendor": "Selecionar..."
+        }
+      },
+      "refund-add": {
+        "title": "Criar um reembolso",
+        "labels": {
+          "amount": "Valor do reembolso",
+          "reasonCode": "Motivo do reembolso",
+          "message": "Mensagem de reembolso",
+          "transactionId": "Id da transação",
+          "outerId": "Id externo"
+        },
+        "placeholders": {
+          "amount": "Inserir...",
+          "reasonCode": "Selecionar...",
+          "message": "Inserir...",
+          "transactionId": "Inserir...",
+          "outerId": "Inserir..."
+        }
+      },
+      "refund-details": {
+        "title": "Reembolso #{{number}}",
+        "subtitle": "Editar detalhes do pagamento e documentos relacionados",
+        "labels": {
+          "status": "Status",
+          "amount": "Valor",
+          "vendor": "Fornecedor",
+          "reasonCode": "Motivo do reembolso"
+        },
+        "refund-status": {
+          "pending": "Pendente",
+          "approved": "Aprovado",
+          "rejected": "Rejeitado",
+          "processed": "Processado"
+        },
+        "placeholders": {
+          "status": "Selecionar...",
+          "vendor": "Selecionar...",
+          "reasonCode": "Selecionar..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "Id da transação",
+          "outerId": "Id externo"
+        }
+      },
+      "capture-add": {
+        "title": "Criar uma captura",
+        "labels": {
+          "amount": "Valor da captura",
+          "message": "Mensagem de captura",
+          "transactionId": "Id da transação",
+          "outerId": "Id externo",
+          "closeTransaction": "Fechar transação"
+        },
+        "placeholders": {
+          "amount": "Inserir...",
+          "message": "Inserir...",
+          "transactionId": "Inserir...",
+          "outerId": "Inserir..."
+        },
+        "descr": {
+          "closeTransaction": "Fechar uma transação, restringindo futuras operações de captura para esta ordem"
+        }
+      },
+      "capture-details": {
+        "title": "Captura #{{number}}",
+        "subtitle": "Editar detalhes do pagamento e documentos relacionados",
+        "labels": {
+          "amount": "Valor",
+          "vendor": "Fornecedor",
+          "closeTransaction": "Fechar transação"
+        },
+        "placeholders": {
+          "amount": "Inserir...",
+          "vendor": "Selecionar..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Id da transação",
+          "outerId": "Id externo"
+        }
+      }
+    },
+    "transactions-list": {
+      "title": "Transações do gateway de pagamento",
+      "subtitle": "Lista de todas as interações do gateway de pagamento"
+    },
+    "transaction-detail": {
+      "title": "Detalhes da transação",
+      "subtitle": "Dados brutos da transação"
+    },
+    "shipment-detail": {
+      "title": "Envio #{{number}}",
+      "title-new": "Novo envio",
+      "subtitle": "Editar detalhes do envio",
+      "labels": {
+        "shipment-method": "Método de envio",
+        "approved": "Aprovado",
+        "shipment-number": "ID do envio",
+        "status": "Status",
+        "fulfillment-center": "Centro de distribuição",
+        "from": "Data e hora",
+        "employee": "Atribuído a",
+        "price": "Valor do envio",
+        "price-with-tax": "Valor do envio com impostos",
+        "shipment-method-option": "Método de envio",
+        "tracking-number": "Número de rastreamento",
+        "tracking-url": "URL de rastreamento",
+        "delivery-date": "Data de entrega",
+        "vendor": "Fornecedor"
+      },
+      "placeholders": {
+        "status": "Selecionar...",
+        "shipment-method": "Selecionar...",
+        "fulfillment-center": "Selecionar ou pesquisar um centro...",
+        "shipment-method-option": "Método de envio padrão",
+        "vendor": "Selecionar..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} itens de linha",
+      "subtitle": "Editar itens de envio",
+      "labels": {
+        "item": "Item",
+        "status": "Status",
+        "quantity": "Qtd",
+        "price": "Preço",
+        "total": "Total"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Adicionar item à ordem"
+    },
+    "newOperation-wizard": {
+      "title": "Nova operação",
+      "subtitle": "Selecionar tipo de operação",
+      "menu": {
+        "shipment-operation": {
+          "description": "Documento de envio"
+        },
+        "payment-operation": {
+          "description": "Documento de pagamento recebido"
+        },
+        "refund-operation": {
+          "description": "Documento de reembolso"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Configuração",
+      "labels": {
+        "picture": "Imagem",
+        "quantity": "Quantidade",
+        "product-name": "Nome do produto"
+      },
+      "descr": {
+        "no-configuration": "Este produto não suporta configuração."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Descontos",
+      "labels": {
+        "name": "Nome",
+        "coupon": "Cupom",
+        "discountAmount": "Valor do desconto",
+        "discountAmountWithTax": "Valor do desconto com impostos",
+        "currency": "Moeda"
+      },
+      "descr": {
+        "no-discounts": "Esta entidade ainda não possui descontos."
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "Feed de notificações",
+        "subtitle": "Feed de notificações de ordens"
+      },
+      "customerOrder-address": {
+        "title": "Endereços",
+        "blade-title": "Gerenciar endereços"
+      },
+      "customerOrder-items": {
+        "title": "Itens de linha",
+        "blade-title": "{{title}} itens de linha",
+        "blade-subtitle": "Editar itens de linha"
+      },
+      "customerOrder-totals": {
+        "sub-total": "Subtotal",
+        "shipping-total": "Total de envio",
+        "shipping-sub-total": "Subtotal de envio",
+        "payment-sub-total": "Subtotal de pagamento",
+        "tax-total": "Total de impostos",
+        "fee-total": "Total de taxas",
+        "discount": "Desconto",
+        "discount-total": "Desconto total",
+        "discount-total-with-tax": "Desconto total com impostos",
+        "total": "Total"
+      },
+      "operation-comment": {
+        "no-comments": "Sem comentários",
+        "blade-title": "Deixar um comentário"
+      },
+      "shipment-address": {
+        "blade-title": "Gerenciar endereço de entrega",
+        "title": "Endereço de entrega"
+      },
+      "shipment-items": {
+        "title": "Itens de envio"
+      },
+      "shipment-totals": {
+        "tax-total": "Total de impostos",
+        "fee-total": "Total de taxas",
+        "shipment-total": "Total de envio",
+        "shipment-price": "Preço de envio",
+        "discount-total": "Desconto total",
+        "total": "Total"
+      },
+      "payment-totals": {
+        "tax-total": "Total de impostos",
+        "payment-total": "Total do pagamento",
+        "payment-price": "Preço do pagamento",
+        "discount-total": "Desconto total",
+        "total": "Total"
+      },
+      "payment-address": {
+        "blade-title": "Gerenciar endereço de cobrança",
+        "title": "Endereço de pagamento"
+      },
+      "statistics-templates": {
+        "revenue": "Receita",
+        "customers-with-orders": "Clientes com ordens",
+        "average-order-value": "Valor médio da ordem",
+        "items-purchased": "Itens comprados",
+        "lines-per-order": "Linhas por ordem",
+        "revenue-per-customer": "Receita por cliente",
+        "title": "Estatísticas de ordens",
+        "not-authorized": "Você não tem acesso a este recurso no momento. Entre em contato com o administrador da sua conta para obter acesso"
+      },
+      "customerOrder-list": {
+        "title": "Ordens"
+      },
+      "configuration": {
+        "title": "Configuração"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Descontos"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Conflito de concorrência detectado",
+        "message": "A ordem foi modificada por outro usuário. Clique em OK para recarregar os dados mais recentes e tente novamente"
+      },
+      "orders-delete": {
+        "title": "Confirmação de exclusão",
+        "message": "Tem certeza de que deseja excluir as ordens de clientes selecionadas?"
+      },
+      "operation-save": {
+        "title": "Salvar alterações",
+        "message": "A operação foi modificada. Deseja salvar as alterações?"
+      },
+      "operation-delete": {
+        "title": "Confirmação de exclusão",
+        "message": "Tem certeza de que deseja excluir a operação atual?"
+      },
+      "operation-cancel": {
+        "title": "Cancelar operação",
+        "message": "Tem certeza de que deseja remover este documento?",
+        "placeholders": {
+          "reason": "Digite o motivo da remoção..."
+        }
+      },
+      "payment-capture": {
+        "title": "Confirmação de captura",
+        "message": "Tem certeza de que deseja capturar o pagamento de {{amount}}?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "Nova",
+        "not payed": "Não paga",
+        "pending": "Pendente",
+        "processing": "Em processamento",
+        "ready to send": "Pronta para envio",
+        "cancelled": "Cancelada",
+        "partially sent": "Parcialmente enviada",
+        "completed": "Concluída"
+      },
+      "line-item-status": {
+        "pending": "Pendente",
+        "inprogress": "Em andamento",
+        "shipped": "Enviado",
+        "delivered": "Entregue",
+        "cancelled": "Cancelado"
+      },
+      "shipment-status": {
+        "new": "Novo",
+        "pickpack": "Separação e embalagem",
+        "cancelled": "Cancelado",
+        "readytosend": "Pronto para envio",
+        "sent": "Enviado"
+      },
+      "paymentin-status": {
+        "new": "Novo",
+        "pending": "Pendente",
+        "authorized": "Autorizado",
+        "paid": "Pago",
+        "partiallyrefunded": "Parcialmente reembolsado",
+        "refunded": "Reembolsado",
+        "voided": "Anulado",
+        "custom": "Personalizado",
+        "cancelled": "Cancelado"
+      },
+      "refund-status": {
+        "pending": "Pendente",
+        "rejected": "Rejeitado",
+        "processed": "Processado"
+      },
+      "reason-codes": {
+        "duplicate": "Duplicado",
+        "fraudulent": "Fraudulento",
+        "requestedbycustomer": "Solicitado pelo cliente",
+        "other": "Outro"
+      }
+    },
+    "commands": {
+      "new-document": "Novo documento",
+      "cancel-document": "Cancelar documento",
+      "add-selected": "Adicionar selecionados",
+      "add-item": "Adicionar item"
+    }
+  },
+  "permissions": {
+    "order:read": "Visualizar dados relacionados a ordens",
+    "order:create": "Criar dados relacionados a ordens",
+    "order:update": "Atualizar dados relacionados a ordens",
+    "order:delete": "Excluir dados relacionados a ordens",
+    "order:access": "Acessar dados relacionados a ordens",
+    "order:read_prices": "Visualizar preços de ordens"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Status de ordens de clientes",
+      "description": "Lista de status disponíveis para ordens de clientes"
+    },
+    "Order.InitialStatus": {
+      "title": "Status inicial da ordem do cliente",
+      "description": "O status inicial de uma nova ordem de cliente"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Status inicial para ordens com pagamento encerrado",
+      "description": "Este status é usado para todas as ordens onde o pagamento não foi processado"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Status de itens de linha",
+      "description": "A lista de status disponíveis para itens de linha de ordens"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Status inicial do item de linha",
+      "description": "O status inicial de um item de linha em uma nova ordem de cliente"
+    },
+    "Shipment.Status": {
+      "description": "Status de envio",
+      "title": "Status de envio"
+    },
+    "PaymentIn.Status": {
+      "description": "Status de pagamento recebido",
+      "title": "Status de pagamento"
+    },
+    "Refund.Status": {
+      "title": "Status de reembolso",
+      "description": "Status de reembolso"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Usado para gerar novo número de ordem do cliente, com parâmetros:\n\n0: Data e Hora em UTC\n1: Contador\n\nO formato suporta opções de contador diretamente dentro do modelo usando o formato:\n<modelo_de_número>@<tipo_de_reinício_do_contador>[:<início_do_contador>[:<incremento_do_contador>]]\n\nValores padrão:\n* Diário para tipo_de_reinício_do_contador. Escolha entre Nenhum, Diário, Semanal, Mensal e Anual para tipos de reinício do contador.\n* 1 para início_do_contador.\n* 1 para incremento_do_contador.\n\nExemplo: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultado: CO240101-00001.",
+      "title": "Modelo de número de ordem"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Usado para gerar novo número de envio, com parâmetros:\n\n0: Data e Hora em UTC\n1: Contador\n\nO formato suporta opções de contador diretamente dentro do modelo usando o formato:\n<modelo_de_número>@<tipo_de_reinício_do_contador>[:<início_do_contador>[:<incremento_do_contador>]]\n\nValores padrão:\n* Diário para tipo_de_reinício_do_contador. Escolha entre Nenhum, Diário, Semanal, Mensal e Anual para tipos de reinício do contador.\n* 1 para início_do_contador.\n* 1 para incremento_do_contador.\n\nExemplo: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultado: CO240101-00001.",
+      "title": "Modelo de número de envio de ordem"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Usado para gerar novo número de pagamento, com parâmetros:\n\n0: Data e Hora em UTC\n1: Contador\n\nO formato suporta opções de contador diretamente dentro do modelo usando o formato:\n<modelo_de_número>@<tipo_de_reinício_do_contador>[:<início_do_contador>[:<incremento_do_contador>]]\n\nValores padrão:\n* Diário para tipo_de_reinício_do_contador. Escolha entre Nenhum, Diário, Semanal, Mensal e Anual para tipos de reinício do contador.\n* 1 para início_do_contador.\n* 1 para incremento_do_contador.\n\nExemplo: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultado: CO240101-00001.",
+      "title": "Modelo de número de pagamento de ordem"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Usado para gerar novo número de reembolso, com parâmetros:\n\n0: Data e Hora em UTC\n1: Contador\n\nO formato suporta opções de contador diretamente dentro do modelo usando o formato:\n<modelo_de_número>@<tipo_de_reinício_do_contador>[:<início_do_contador>[:<incremento_do_contador>]]\n\nValores padrão:\n* Diário para tipo_de_reinício_do_contador. Escolha entre Nenhum, Diário, Semanal, Mensal e Anual para tipos de reinício do contador.\n* 1 para início_do_contador.\n* 1 para incremento_do_contador.\n\nExemplo: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultado: CO240101-00001.",
+      "title": "Modelo de número de reembolso de ordem"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Envia uma notificação quando o status da ordem muda",
+      "title": "Habilitar notificações para ordens"
+    },
+    "Order.AdjustInventory": {
+      "description": "Ajusta o inventário quando o status da ordem muda",
+      "title": "Ajustar inventário para ordens"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Registrar alterações de ordem",
+      "description": "Registra alterações de ordem no log de operações da plataforma"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Indexação baseada em eventos para entidades de ordem",
+      "description": "Quaisquer alterações na entidade do cliente acionarão uma tarefa em segundo plano para aplicar essas alterações ao índice de pesquisa"
+    },
+    "Order.Validation.Enable": {
+      "title": "Validação de salvamento de ordem",
+      "description": "Habilita a validação ao salvar uma ordem"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Data e hora de indexação de ordens",
+      "description": "Data e hora da última tarefa de indexação de ordens"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Usar notificações de ordem paga e ordem enviada",
+      "description": "Usar notificações de ordem paga e ordem enviada"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Usar notificações de mudança de status de pagamentos/envios",
+      "description": "Usar para notificações de mudança de status de pagamentos/envios"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Exportar/importar ordens de clientes com todos os objetos relacionados (itens de linha, envios, pagamentos, etc.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Notificação de ordem cancelada",
+      "description": "O cliente recebe uma notificação por e-mail quando uma ordem é cancelada"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Fatura para ordem do cliente",
+      "description": "Este é um modelo para fatura de ordem do cliente usado para gerar a versão PDF"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Notificação de novo status de ordem",
+      "description": "O cliente recebe uma notificação por e-mail quando o status de qualquer ordem é alterado"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Notificação de ordem criada",
+      "description": "O cliente recebe uma notificação por e-mail após enviar seus detalhes através de um formulário no Aplicativo Frontend, por exemplo, através do formulário de Contato"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Notificação de pagamento de ordem",
+      "description": "O cliente recebe uma notificação por e-mail quando todos os pagamentos relacionados a uma ordem foram concluídos"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Notificação de ordem enviada",
+      "description": "O cliente recebe uma notificação por e-mail quando todos os itens pedidos foram enviados"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Notificação de mudança de status de pagamentos",
+      "description": "O cliente recebe uma notificação por e-mail com todos os status de pagamento alterados"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Notificação de mudança de status de envios",
+      "description": "O cliente recebe uma notificação por e-mail com todos os status de envio alterados"
+    }
+  }
+}

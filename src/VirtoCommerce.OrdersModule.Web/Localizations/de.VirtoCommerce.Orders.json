@@ -4,49 +4,56 @@
     "blades": {
       "customerOrder-detail": {
         "title": "Bestellung von {{customer}}",
-        "subtitle": "Bearbeiten Sie die Details und die damit zusammenhängenden Dokumente an.",
+        "subtitle": "Bestelldetails und zugehörige Dokumente bearbeiten",
         "labels": {
           "approved": "Genehmigt",
-          "employee": "Zugewiesen zu",
-          "order-number": "Bestellnummer",
+          "employee": "Zugewiesen an",
+          "order-number": "Kundenbestellnummer",
           "status": "Status",
-          "store": "Store",
-          "from": "Von",
+          "store": "Geschäft",
+          "from": "Erstellt am",
           "channel": "Kanal",
           "customer": "Kunde",
           "organization": "Organisation",
-          "invoice": "Erhalten Sie die Rechnung als PDF",
-          "withPrototypes": "Mit vorlagen"
+          "invoice": "Rechnung als PDF abrufen",
+          "withPrototypes": "Mit Vorlagen"
         },
         "placeholders": {
-          "employee": "Wählen Sie den Zuständiger aus",
-          "status": "Wählen Sie aus...",
-          "store": "Wählen Sie aus..."
+          "employee": "Zuständigen auswählen",
+          "status": "Auswählen...",
+          "store": "Auswählen..."
         }
       },
       "customerOrder-items": {
         "labels": {
           "item": "Artikel",
-          "quantity": "Anz.",
-          "available": "Frei",
-          "await": "Warten auf",
-          "price": "Einheit Preis (exkl. Mwst.)",
-          "tax": "Steuern",
-          "priceWithTax": "Einheit Preis (inkl. Mwst.)",
-          "discount": "Rabatt (exkl. Mwst.)",
-          "discountWithTax": "Rabatt (inkl. Mwst.)",
-          "total": "Total",
+          "status": "Status",
+          "quantity": "Menge",
+          "available": "Verfügbar",
+          "await": "Ausstehend",
+          "price": "Stückpreis (ohne MwSt.)",
+          "tax": "Steuer",
+          "priceWithTax": "Stückpreis (inkl. MwSt.)",
+          "discount": "Rabatt (ohne MwSt.)",
+          "discountWithTax": "Rabatt (inkl. MwSt.)",
+          "total": "Gesamtbetrag Positionen",
           "dynamic-properties": "Dynamische Eigenschaften",
           "sub-total": "Zwischensumme",
-          "discount-total": "Rabatt total",
-          "tax-total": "Gesamtbetrag Steuern"
+          "discount-total": "Gesamtrabatt",
+          "tax-total": "Gesamtsteuer",
+          "fee-total": "Gesamtgebühr"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Produktname"
         }
       },
       "customerOrder-list": {
-        "title": "Bestellungen",
+        "title": "Kundenbestellungen",
         "labels": {
           "new-filter": "Neuen Filter hinzufügen",
-          "unnamed-filter": "Unbenannter Filter",
+          "unnamed-filter": "Filtern nach",
           "today-filter": "Heute",
           "last-day-filter": "Gestern",
           "last-week-filter": "Letzte Woche",
@@ -56,27 +63,27 @@
           "customer": "Kunde",
           "confirmed": "Bestätigt",
           "status": "Status",
-          "total": "Total",
+          "total": "Gesamt",
           "currency": "Währung",
-          "store": "Store",
+          "store": "Geschäft",
           "created": "Erstellt",
           "copy-id": "ID kopieren",
           "copy-number": "Nummer kopieren",
           "filter-by": "Filtern nach"
         },
         "placeholders": {
-          "select-filter": "Wählen Sie den Filter."
+          "select-filter": "Filter auswählen"
         }
       },
       "filter-detail": {
         "subtitle": "Filter bearbeiten",
-        "new-title": "Neuen Filter",
+        "new-title": "Neuer Filter",
         "new-subtitle": "Neuen Filter erstellen",
         "labels": {
-          "name": "Name des Filters",
-          "name_": "Wie werden Sie diesen Filter?",
+          "name": "Filtername",
+          "name_": "Diesen Filter benennen",
           "criteria": "Filterkriterien",
-          "from": "Erstellt am oder nach",
+          "from": "Erstellt nach",
           "to": "Erstellt vor"
         },
         "placeholders": {
@@ -89,182 +96,488 @@
         }
       },
       "payment-detail": {
-        "title": "Zahlungseingang #{{number}}",
-        "title-new": "Neu eingehende Zahlung",
-        "subtitle": "Zahlung bearbeiten Details und zugehörige Dokumente",
+        "title": "Eingehende Zahlung #{{number}}",
+        "title-new": "Neue eingehende Zahlung",
+        "subtitle": "Zahlungsdetails und zugehörige Dokumente bearbeiten",
         "labels": {
           "approved": "Genehmigt",
-          "payment-number": "Zahlungsnummer",
+          "payment-number": "Zahlungs-ID",
           "status": "Status",
           "amount": "Betrag",
-          "from": "Von",
-          "payment-gateway": "Zahlungsgateway",
-          "payment-purpose": "Zahlung",
-          "price": "Zahlung Gebühren",
-          "price-with-tax": "Zahlung Gebühren (inkl. Mwst.)",
-          "vendor": "Verkäufer"
+          "from": "Datum und Uhrzeit",
+          "payment-gateway": "Zahlungs-Gateway",
+          "payment-purpose": "Zahlungszweck",
+          "price": "Zahlungsgebühren",
+          "price-with-tax": "Zahlungsgebühren (inkl. MwSt.)",
+          "vendor": "Anbieter",
+          "capture-payment": "Zahlung erfassen",
+          "refund-payment": "Zahlung erstatten"
         },
         "placeholders": {
-          "status": "Wählen Sie aus...",
-          "payment-gateway": "Wählen Sie aus...",
-          "vendor": "Wählen Sie aus..."
+          "status": "Auswählen...",
+          "payment-gateway": "Auswählen...",
+          "vendor": "Auswählen..."
         }
       },
-      "transactions-list": {
-        "title": "Zahlungsgateway Transaktionen",
-        "subtitle": "Liste aller Zahlungsgateway Interaktionen"
-      },
-      "transaction-detail": {
-        "title": "Transaktionsdetails",
-        "subtitle": "Raw Transaktionsdaten"
-      },
-      "shipment-detail": {
-        "title": "Lieferungsnummer #{{number}}",
-        "title-new": "Neue Lieferung",
-        "subtitle": "Versanddetails eingeben",
+      "refund-add": {
+        "title": "Rückerstattung erstellen",
         "labels": {
-          "shipment-method": "Versandart",
+          "amount": "Rückerstattungsbetrag",
+          "reasonCode": "Rückerstattungsgrund",
+          "message": "Rückerstattungsnachricht",
+          "transactionId": "Transaktions-ID",
+          "outerId": "Externe ID"
+        },
+        "placeholders": {
+          "amount": "Eingeben...",
+          "reasonCode": "Auswählen...",
+          "message": "Eingeben...",
+          "transactionId": "Eingeben...",
+          "outerId": "Eingeben..."
+        }
+      },
+      "refund-details": {
+        "title": "Rückerstattung #{{number}}",
+        "subtitle": "Zahlungsdetails und zugehörige Dokumente bearbeiten",
+        "labels": {
+          "status": "Status",
+          "amount": "Betrag",
+          "vendor": "Anbieter",
+          "reasonCode": "Rückerstattungsgrund"
+        },
+        "refund-status": {
+          "pending": "Ausstehend",
           "approved": "Genehmigt",
-          "shipment-number": "Sendungsnummer",
-          "status": "Status",
-          "fulfillment-center": "Erfüllungszentrum",
-          "from": "Von",
-          "employee": "Zugewiesen zu",
-          "price": "Versandmenge",
-          "price-with-tax": "Versandbetrag mit Steuer",
-          "shipment-method-option": "Verzendmethode optie",
-          "tracking-number": "Auftragsnummer",
-          "tracking-url": "Tracking-URL",
-          "delivery-date": "Lieferdatum",
-          "vendor": "Verkäufer"
+          "rejected": "Abgelehnt",
+          "processed": "Verarbeitet"
         },
         "placeholders": {
-          "status": "Wählen Sie aus...",
-          "shipment-method": "Wählen Sie aus...",
-          "fulfillment-center": "Wählen Sie Oder suchen Sie ein Zentrum...",
-          "shipment-method-option": "Standaard verzendmethode",
-          "vendor": "Wählen Sie aus..."
+          "status": "Auswählen...",
+          "vendor": "Auswählen...",
+          "reasonCode": "Auswählen..."
         }
       },
-      "shipment-items": {
-        "title": "{{title}} Einzelposten",
-        "subtitle": "Bearbeiten von Sendungsposten",
+      "refund-detail": {
         "labels": {
-          "item": "Artikel",
-          "status": "Status",
-          "quantity": "Anz.",
-          "price": "Preis",
-          "total": "Total"
+          "transactionId": "Transaktions-ID",
+          "outerId": "Externe ID"
         }
       },
-      "catalog-items-select": {
-        "title": "Artikel zur Bestellung hinzufügen"
+      "capture-add": {
+        "title": "Zahlungserfassung erstellen",
+        "labels": {
+          "amount": "Erfassungsbetrag",
+          "message": "Erfassungsnachricht",
+          "transactionId": "Transaktions-ID",
+          "outerId": "Externe ID",
+          "closeTransaction": "Transaktion schließen"
+        },
+        "placeholders": {
+          "amount": "Eingeben...",
+          "message": "Eingeben...",
+          "transactionId": "Eingeben...",
+          "outerId": "Eingeben..."
+        },
+        "descr": {
+          "closeTransaction": "Transaktion schließen und zukünftige Erfassungsvorgänge für diese Bestellung einschränken"
+        }
       },
-      "newOperation-wizard": {
-        "title": "Neue Maßnahme",
-        "subtitle": "Funktion auswählen",
-        "menu": {
-          "shipment-operation": {
-            "description": "Versand Dokument"
-          },
-          "payment-operation": {
-            "description": "Eingehende zahlung Dokument"
-          }
+      "capture-details": {
+        "title": "Erfassung #{{number}}",
+        "subtitle": "Zahlungsdetails und zugehörige Dokumente bearbeiten",
+        "labels": {
+          "amount": "Betrag",
+          "vendor": "Anbieter",
+          "closeTransaction": "Transaktion schließen"
+        },
+        "placeholders": {
+          "amount": "Eingeben...",
+          "vendor": "Auswählen..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Transaktions-ID",
+          "outerId": "Externe ID"
         }
       }
     },
+    "transactions-list": {
+      "title": "Zahlungs-Gateway-Transaktionen",
+      "subtitle": "Liste aller Zahlungs-Gateway-Interaktionen"
+    },
+    "transaction-detail": {
+      "title": "Transaktionsdetails",
+      "subtitle": "Rohe Transaktionsdaten"
+    },
+    "shipment-detail": {
+      "title": "Versand #{{number}}",
+      "title-new": "Neuer Versand",
+      "subtitle": "Versanddetails bearbeiten",
+      "labels": {
+        "shipment-method": "Versandmethode",
+        "approved": "Genehmigt",
+        "shipment-number": "Versand-ID",
+        "status": "Status",
+        "fulfillment-center": "Fulfillment-Center",
+        "from": "Datum und Uhrzeit",
+        "employee": "Zugewiesen an",
+        "price": "Versandbetrag",
+        "price-with-tax": "Versandbetrag mit Steuern",
+        "shipment-method-option": "Versandmethode",
+        "tracking-number": "Sendungsverfolgungsnummer",
+        "tracking-url": "Sendungsverfolgung-URL",
+        "delivery-date": "Lieferdatum",
+        "vendor": "Anbieter"
+      },
+      "placeholders": {
+        "status": "Auswählen...",
+        "shipment-method": "Auswählen...",
+        "fulfillment-center": "Center auswählen oder suchen...",
+        "shipment-method-option": "Standard-Versandmethode",
+        "vendor": "Auswählen..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} Positionen",
+      "subtitle": "Versandpositionen bearbeiten",
+      "labels": {
+        "item": "Artikel",
+        "status": "Status",
+        "quantity": "Menge",
+        "price": "Preis",
+        "total": "Gesamt"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Artikel zur Bestellung hinzufügen"
+    },
+    "newOperation-wizard": {
+      "title": "Neue Operation",
+      "subtitle": "Operationstyp auswählen",
+      "menu": {
+        "shipment-operation": {
+          "description": "Versanddokument"
+        },
+        "payment-operation": {
+          "description": "Eingehendes Zahlungsdokument"
+        },
+        "refund-operation": {
+          "description": "Rückerstattungsdokument"
+        }
+      }
+    },
+    "configuration": {
+      "title": "Konfiguration",
+      "labels": {
+        "picture": "Bild",
+        "quantity": "Menge",
+        "product-name": "Produktname"
+      },
+      "descr": {
+        "no-configuration": "Dieses Produkt unterstützt keine Konfiguration."
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Rabatte",
+      "labels": {
+        "name": "Name",
+        "coupon": "Gutschein",
+        "discountAmount": "Rabattbetrag",
+        "discountAmountWithTax": "Rabattbetrag mit Steuern",
+        "currency": "Währung"
+      },
+      "descr": {
+        "no-discounts": "Dieses Objekt hat noch keine Rabatte."
+      }
+    },
     "widgets": {
+      "notifications": {
+        "title": "Benachrichtigungsfeed",
+        "subtitle": "Bestellbenachrichtigungsfeed"
+      },
       "customerOrder-address": {
         "title": "Adressen",
         "blade-title": "Adressen verwalten"
       },
       "customerOrder-items": {
-        "title": "Artikel",
+        "title": "Positionen",
         "blade-title": "{{title}} Positionen",
-        "blade-subtitle": "Positionen Einzelposten"
+        "blade-subtitle": "Positionen bearbeiten"
       },
       "customerOrder-totals": {
         "sub-total": "Zwischensumme",
-        "shipping-total": "Versandkosten Gesamtpreis",
+        "shipping-total": "Versandkosten gesamt",
         "shipping-sub-total": "Versandkosten Zwischensumme",
-        "payment-sub-total": "Zahlung Gebühren",
-        "tax-total": "Gesamtbetrag Steuern",
+        "payment-sub-total": "Zahlungen Zwischensumme",
+        "tax-total": "Steuern gesamt",
+        "fee-total": "Gebühren gesamt",
         "discount": "Rabatt",
-        "discount-total": "Rabatt total",
-        "discount-total-with-tax": "Rabatt gesamt mit Steuer",
-        "total": "Total"
+        "discount-total": "Rabatt gesamt",
+        "discount-total-with-tax": "Rabatt gesamt (inkl. MwSt.)",
+        "total": "Gesamt"
       },
       "operation-comment": {
         "no-comments": "Keine Kommentare",
-        "blade-title": "Kommentare schreiben"
+        "blade-title": "Kommentar hinterlassen"
       },
       "shipment-address": {
-        "blade-title": "Verwalten der Lieferadresse",
+        "blade-title": "Lieferadresse verwalten",
         "title": "Lieferadresse"
       },
       "shipment-items": {
-        "title": "Versand Produkte"
+        "title": "Versandpositionen"
       },
       "shipment-totals": {
-        "tax-total": "Gesamtbetrag Steuern",
-        "shipment-total": "Versand gesamt",
-        "shipment-price": "Liefer- und Versandkosten",
-        "discount-total": "Rabatt total",
-        "total": "Total"
+        "tax-total": "Steuern gesamt",
+        "fee-total": "Gebühren gesamt",
+        "shipment-total": "Versandkosten gesamt",
+        "shipment-price": "Versandpreis",
+        "discount-total": "Rabatt gesamt",
+        "total": "Gesamt"
       },
       "payment-totals": {
-        "tax-total": "Gesamtbetrag Steuern",
-        "payment-total": "Zahlungen total",
-        "payment-price": "Zahlung Preis",
-        "discount-total": "Rabatt total",
-        "total": "Total"
+        "tax-total": "Steuern gesamt",
+        "payment-total": "Zahlung gesamt",
+        "payment-price": "Zahlungspreis",
+        "discount-total": "Rabatt gesamt",
+        "total": "Gesamt"
       },
       "payment-address": {
-        "blade-title": "Verwalten der Rechnungsadresse",
+        "blade-title": "Rechnungsadresse verwalten",
         "title": "Zahlungsadresse"
       },
       "statistics-templates": {
-        "revenue": "Einnahmen",
+        "revenue": "Umsatz",
         "customers-with-orders": "Kunden mit Bestellungen",
-        "average-order-value": "Durchschnittliche Auftragswert",
-        "items-purchased": "Die Anzahl der gekauften Artikel",
-        "lines-per-order": "Zeilen pro Bestellung",
-        "revenue-per-customer": "Umsatz pro Kunde"
+        "average-order-value": "Durchschnittlicher Bestellwert",
+        "items-purchased": "Gekaufte Artikel",
+        "lines-per-order": "Positionen pro Bestellung",
+        "revenue-per-customer": "Umsatz pro Kunde",
+        "title": "Bestellstatistiken",
+        "not-authorized": "Sie haben derzeit keinen Zugriff auf diese Funktion. Bitte wenden Sie sich an Ihren Kontoadministrator, um Zugriff zu erhalten"
+      },
+      "customerOrder-list": {
+        "title": "Bestellungen"
       },
       "configuration": {
         "title": "Konfiguration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatte"
       }
     },
     "dialogs": {
       "concurrency-сonflict": {
-        "title": "Parallelitätskonflikt erkannt",
-        "message": "Die Bestellung wurde von einem anderen Benutzer geändert. Klicken Sie auf OK, um die neuesten Daten neu zu laden und es erneut zu versuchen."
+        "title": "Gleichzeitigkeitskonflikt erkannt",
+        "message": "Die Bestellung wurde von einem anderen Benutzer geändert. Klicken Sie auf OK, um die neuesten Daten zu laden und es erneut zu versuchen"
       },
       "orders-delete": {
-        "title": "Bestätigung löschen",
-        "message": "Möchten Sie die ausgewählten Bestellungen wirklich löschen?"
+        "title": "Löschbestätigung",
+        "message": "Sind Sie sicher, dass Sie die ausgewählten Kundenbestellungen löschen möchten?"
       },
       "operation-save": {
         "title": "Änderungen speichern",
         "message": "Die Operation wurde geändert. Möchten Sie die Änderungen speichern?"
       },
       "operation-delete": {
-        "title": "Bestätigung löschen",
-        "message": "Sind Sie sicher, dass Sie den aktuellen Vorgang wirklich löschen?"
+        "title": "Löschbestätigung",
+        "message": "Sind Sie sicher, dass Sie die aktuelle Operation löschen möchten?"
       },
       "operation-cancel": {
-        "title": "Vorgang abbrechen",
-        "message": "Möchten Sie das Dokument wirklich abbrechen?",
+        "title": "Operation abbrechen",
+        "message": "Sind Sie sicher, dass Sie dieses Dokument entfernen möchten?",
         "placeholders": {
-          "reason": "Bitte geben Sie einen Grund hier abzubrechen..."
+          "reason": "Geben Sie den Grund für die Entfernung ein..."
         }
+      },
+      "payment-capture": {
+        "title": "Zahlungserfassungsbestätigung",
+        "message": "Sind Sie sicher, dass Sie die Zahlung über {{amount}} erfassen möchten?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "Neu",
+        "not payed": "Nicht bezahlt",
+        "pending": "Ausstehend",
+        "processing": "In Bearbeitung",
+        "ready to send": "Versandbereit",
+        "cancelled": "Storniert",
+        "partially sent": "Teilweise versendet",
+        "completed": "Abgeschlossen"
+      },
+      "line-item-status": {
+        "pending": "Ausstehend",
+        "inprogress": "In Bearbeitung",
+        "shipped": "Versendet",
+        "delivered": "Geliefert",
+        "cancelled": "Storniert"
+      },
+      "shipment-status": {
+        "new": "Neu",
+        "pickpack": "Kommissionierung",
+        "cancelled": "Storniert",
+        "readytosend": "Versandbereit",
+        "sent": "Versendet"
+      },
+      "paymentin-status": {
+        "new": "Neu",
+        "pending": "Ausstehend",
+        "authorized": "Autorisiert",
+        "paid": "Bezahlt",
+        "partiallyrefunded": "Teilweise erstattet",
+        "refunded": "Erstattet",
+        "voided": "Storniert",
+        "custom": "Benutzerdefiniert",
+        "cancelled": "Abgebrochen"
+      },
+      "refund-status": {
+        "pending": "Ausstehend",
+        "rejected": "Abgelehnt",
+        "processed": "Verarbeitet"
+      },
+      "reason-codes": {
+        "duplicate": "Duplikat",
+        "fraudulent": "Betrügerisch",
+        "requestedbycustomer": "Vom Kunden angefordert",
+        "other": "Sonstiges"
       }
     },
     "commands": {
       "new-document": "Neues Dokument",
-      "cancel-document": "Beleg stornieren",
+      "cancel-document": "Dokument stornieren",
       "add-selected": "Ausgewählte hinzufügen",
       "add-item": "Artikel hinzufügen"
+    }
+  },
+  "permissions": {
+    "order:read": "Bestellbezogene Daten anzeigen",
+    "order:create": "Bestellbezogene Daten erstellen",
+    "order:update": "Bestellbezogene Daten aktualisieren",
+    "order:delete": "Bestellbezogene Daten löschen",
+    "order:access": "Auf bestellbezogene Daten zugreifen",
+    "order:read_prices": "Bestellpreise anzeigen"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Kundenbestellstatus",
+      "description": "Liste der verfügbaren Status für Kundenbestellungen"
+    },
+    "Order.InitialStatus": {
+      "title": "Anfangsstatus der Kundenbestellung",
+      "description": "Der Anfangsstatus einer neuen Kundenbestellung"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Anfangsstatus für Bestellungen mit beendeter Zahlung",
+      "description": "Dieser Status wird für alle Bestellungen verwendet, bei denen die Zahlung nicht verarbeitet wurde"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Status der Bestellpositionen",
+      "description": "Die Liste der verfügbaren Status für Bestellpositionen"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Anfangsstatus der Bestellposition",
+      "description": "Der Anfangsstatus einer Bestellposition in einer neuen Kundenbestellung"
+    },
+    "Shipment.Status": {
+      "description": "Versandstatus",
+      "title": "Versandstatus"
+    },
+    "PaymentIn.Status": {
+      "description": "Status eingehender Zahlungen",
+      "title": "Zahlungsstatus"
+    },
+    "Refund.Status": {
+      "title": "Rückerstattungsstatus",
+      "description": "Rückerstattungsstatus"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Kundenbestellnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Bestellnummernvorlage"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Versandnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Versandnummernvorlage für Bestellungen"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Zahlungsnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Zahlungsnummernvorlage für Bestellungen"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Rückerstattungsnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Rückerstattungsnummernvorlage für Bestellungen"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Sendet eine Benachrichtigung, wenn sich der Bestellstatus ändert",
+      "title": "Benachrichtigungen für Bestellungen aktivieren"
+    },
+    "Order.AdjustInventory": {
+      "description": "Passt den Bestand an, wenn sich der Bestellstatus ändert",
+      "title": "Bestand für Bestellungen anpassen"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Bestelländerungen protokollieren",
+      "description": "Protokolliert Bestelländerungen im Plattform-Betriebsprotokoll"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Ereignisbasierte Indexierung für Bestellentitäten",
+      "description": "Jede Änderung an der Kundenentität löst eine Hintergrundaufgabe aus, um diese Änderungen auf den Suchindex anzuwenden"
+    },
+    "Order.Validation.Enable": {
+      "title": "Validierung beim Speichern von Bestellungen",
+      "description": "Aktiviert die Validierung beim Speichern einer Bestellung"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Datum und Uhrzeit der Bestellindexierung",
+      "description": "Datum und Uhrzeit der letzten Bestellindexierungsaufgabe"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Benachrichtigungen für bezahlte und versendete Bestellungen verwenden",
+      "description": "Benachrichtigungen für bezahlte und versendete Bestellungen verwenden"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Benachrichtigungen für Statusänderungen bei Zahlungen/Versand verwenden",
+      "description": "Für Statusänderungen bei Zahlungen/Versand Benachrichtigungen verwenden"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Kundenbestellungen mit allen zugehörigen Objekten exportieren/importieren (Bestellpositionen, Versand, Zahlungen usw.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Benachrichtigung über stornierte Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn eine Bestellung storniert wird"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Rechnung für Kundenbestellung",
+      "description": "Dies ist eine Vorlage für die Kundenbestellrechnung, die zur Generierung der PDF-Version verwendet wird"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Benachrichtigung über neuen Bestellstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn sich der Status einer Bestellung ändert"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Benachrichtigung über erstellte Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, nachdem er seine Daten über ein Formular in der Frontend-Anwendung übermittelt hat, z.B. über das Kontaktformular"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Benachrichtigung über Bestellungszahlung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn alle mit einer Bestellung verbundenen Zahlungen abgeschlossen sind"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Benachrichtigung über versendete Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn alle bestellten Artikel versendet wurden"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Benachrichtigung über geänderte Zahlungsstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung mit allen geänderten Zahlungsstatus"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Benachrichtigung über geänderte Versandstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung mit allen geänderten Versandstatus"
     }
   }
 }
