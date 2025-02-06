@@ -22,6 +22,10 @@ public class ConfigurationItem : AuditableEntity
 
     public string CategoryId { get; set; }
 
+    public ConfigurationItemType Type { get; set; }
+
+    public string CustomText { get; set; }
+
     public object Clone()
     {
         return MemberwiseClone();

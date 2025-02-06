@@ -8,6 +8,7 @@ public class ConfigurationItemEntity : AuditableEntity
 {
     [StringLength(128)]
     public string LineItemId { get; set; }
+
     public LineItemEntity LineItem { get; set; }
 
     [StringLength(128)]
@@ -30,6 +31,12 @@ public class ConfigurationItemEntity : AuditableEntity
     [StringLength(128)]
     public string CategoryId { get; set; }
 
+    [Required]
+    public byte Type { get; set; }
+
+    [StringLength(255)]
+    public string CustomText { get; set; }
+
     public virtual ConfigurationItem ToModel(ConfigurationItem configurationItem)
     {
         System.ArgumentNullException.ThrowIfNull(configurationItem);
@@ -48,6 +55,8 @@ public class ConfigurationItemEntity : AuditableEntity
         configurationItem.ImageUrl = ImageUrl;
         configurationItem.CatalogId = CatalogId;
         configurationItem.CategoryId = CategoryId;
+        configurationItem.Type = EnumUtility.SafeParse(Type.ToString(), ConfigurationItemType.Product);
+        configurationItem.CustomText = CustomText;
 
         return configurationItem;
     }
@@ -72,6 +81,8 @@ public class ConfigurationItemEntity : AuditableEntity
         ImageUrl = configurationItem.ImageUrl;
         CatalogId = configurationItem.CatalogId;
         CategoryId = configurationItem.CategoryId;
+        Type = (byte)configurationItem.Type;
+        CustomText = configurationItem.CustomText;
 
         return this;
     }
@@ -86,5 +97,7 @@ public class ConfigurationItemEntity : AuditableEntity
         target.ImageUrl = ImageUrl;
         target.CatalogId = CatalogId;
         target.CategoryId = CategoryId;
+        target.Type = Type;
+        target.CustomText = CustomText;
     }
 }
