@@ -1,33 +1,30 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderItemConfigurationController', [
-        '$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService',
-        function ($scope, uiGridHelper, bladeNavigationService) {
+        '$scope', 'platformWebApp.bladeNavigationService',
+        function ($scope, bladeNavigationService) {
             var blade = $scope.blade;
-            blade.title = 'orders.blades.configuration.title';
+            blade.title = 'orders.blades.customerOrder-item-configuration.title';
             blade.headIcon = 'fas fa-sliders';
 
-            $scope.setGridOptions = function (gridOptions) {
-                uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
-                    $scope.gridApi = gridApi;
-                });
-            };
-
-            $scope.selectNode = function (item) {
-                $scope.selectedNodeId = item.id;
-
+            $scope.showProducts = function() {
                 var newBlade = {
-                    id: "listItemDetail",
-                    controller: 'virtoCommerce.catalogModule.itemDetailController',
-                    template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
-                    title: item.name,
-                    itemId: item.productId
+                    id: "сonfigurationProducts",
+                    controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationProductsController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-configuration-products.tpl.html',
+                    currentEntity: blade.currentEntity,
                 };
-                bladeNavigationService.showBlade(newBlade, blade);
+                bladeNavigationService.showBlade(newBlade, $scope.blade.parentBlade);
             }
 
-            function initialize() {
-                blade.isLoading = false;
+            $scope.showTexts = function () {
+                var newBlade = {
+                    id: "сonfigurationProducts",
+                    controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationTextsController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-configuration-texts.tpl.html',
+                    currentEntity: blade.currentEntity,
+                };
+                bladeNavigationService.showBlade(newBlade, $scope.blade.parentBlade);
             }
 
-            initialize();
+            blade.isLoading = false;
         }]);

@@ -200,6 +200,17 @@
           "transactionId": "Id transakcji",
           "outerId": "Id zewnętrzne"
         }
+      },
+      "customerOrder-item-configuration": {
+        "title": "Konfiguracja",
+        "labels": {
+          "picture": "Obraz",
+          "quantity": "Ilość",
+          "product-name": "Nazwa produktu"
+        },
+        "descr": {
+          "no-configuration": "Ten produkt nie obsługuje konfiguracji."
+        }
       }
     },
     "transactions-list": {
@@ -265,17 +276,6 @@
         "refund-operation": {
           "description": "Dokument zwrotu"
         }
-      }
-    },
-    "configuration": {
-      "title": "Konfiguracja",
-      "labels": {
-        "picture": "Obraz",
-        "quantity": "Ilość",
-        "product-name": "Nazwa produktu"
-      },
-      "descr": {
-        "no-configuration": "Ten produkt nie obsługuje konfiguracji."
       }
     },
     "customerOrder-item-discounts": {

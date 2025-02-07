@@ -200,6 +200,17 @@
           "transactionId": "取引ID",
           "outerId": "外部ID"
         }
+      },
+      "customerOrder-item-configuration": {
+        "title": "構成",
+        "labels": {
+          "picture": "画像",
+          "quantity": "数量",
+          "product-name": "商品名"
+        },
+        "descr": {
+          "no-configuration": "この商品は構成をサポートしていません。"
+        }
       }
     },
     "transactions-list": {
@@ -265,17 +276,6 @@
         "refund-operation": {
           "description": "返金文書"
         }
-      }
-    },
-    "configuration": {
-      "title": "構成",
-      "labels": {
-        "picture": "画像",
-        "quantity": "数量",
-        "product-name": "商品名"
-      },
-      "descr": {
-        "no-configuration": "この商品は構成をサポートしていません。"
       }
     },
     "customerOrder-item-discounts": {
