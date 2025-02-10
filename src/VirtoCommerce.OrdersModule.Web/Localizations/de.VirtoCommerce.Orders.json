@@ -206,10 +206,23 @@
         "labels": {
           "picture": "Bild",
           "quantity": "Menge",
+          "text": "Text",
           "product-name": "Produktname"
         },
-        "descr": {
-          "no-configuration": "Dieses Produkt unterstützt keine Konfiguration."
+        "menu": {
+          "products": {
+            "title": "Konfigurationsprodukte",
+            "description": "Produkte, die die Konfiguration ausmachen"
+          },
+          "texts": {
+            "title": "Konfigurationstexte",
+            "description": "Verschiedene individuell angepasste Texte zur Erstellung einer einzigartigen Produktkonfiguration"
+          }
+        },
+        "description": {
+          "no-configuration": "Dieses Produkt unterstützt keine Konfiguration.",
+          "no-products": "Dieses Konfiguration enthält noch keine Produkte.",
+          "no-texts": "Dieses Konfiguration enthält noch keine Texte."
         }
       }
     },

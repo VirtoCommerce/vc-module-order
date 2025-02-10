@@ -221,8 +221,8 @@
         },
         "description": {
           "no-configuration": "This product does not support configuration.",
-          "no-products": "This product does not support configuration.",
-          "no-texts": "This product does not support configuration."
+          "no-products": "This configuration does not have any products yet.",
+          "no-texts": "This configuration does not have any texts yet."
         }
       }
     },

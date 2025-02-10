@@ -206,10 +206,23 @@
         "labels": {
           "picture": "Imagen",
           "quantity": "Cantidad",
+          "text": "Texto",
           "product-name": "Nombre del producto"
         },
-        "descr": {
-          "no-configuration": "Este producto no admite configuración."
+        "menu": {
+          "products": {
+            "title": "Productos de configuración",
+            "description": "Productos que forman parte de la configuración"
+          },
+          "texts": {
+            "title": "Textos de configuración",
+            "description": "Varios textos personalizados utilizados para crear una configuración de producto única"
+          }
+        },
+        "description": {
+          "no-configuration": "Este producto no admite configuración.",
+          "no-products": "Este configuración aún no tiene productos.",
+          "no-texts": "Este configuración aún no tiene textos."
         }
       }
     },
