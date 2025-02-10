@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
@@ -313,7 +312,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.ImageUrl = configurationItem.ImageUrl;
             retVal.CatalogId = configurationItem.CatalogId;
             retVal.CategoryId = configurationItem.CategoryId;
-            retVal.Type = (ConfigurationItemType)Enum.Parse(typeof(ConfigurationItemType), configurationItem.SectionType.ToString());
+            retVal.Type = (Core.Model.ConfigurationItemType)Enum.Parse(typeof(Core.Model.ConfigurationItemType), configurationItem.Type.ToString());
             retVal.CustomText = configurationItem.CustomText;
 
             return retVal;
