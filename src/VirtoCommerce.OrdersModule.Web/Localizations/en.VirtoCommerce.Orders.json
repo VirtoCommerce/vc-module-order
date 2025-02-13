@@ -200,95 +200,95 @@
           "transactionId": "Transaction Id",
           "outerId": "Outer Id"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Payment gateway transactions",
-      "subtitle": "List of all payment gateway interactions"
-    },
-    "transaction-detail": {
-      "title": "Transaction details",
-      "subtitle": "Raw transaction data "
-    },
-    "shipment-detail": {
-      "title": "Shipment #{{number}}",
-      "title-new": "New shipment",
-      "subtitle": "Edit shipment details",
-      "labels": {
-        "shipment-method": "Shipment method",
-        "approved": "Approved",
-        "shipment-number": "Shipment ID",
-        "status": "Status",
-        "fulfillment-center": "Fulfillment center",
-        "from": "Date and time",
-        "employee": "Assigned to",
-        "price": "Shipment amount",
-        "price-with-tax": "Shipment amount with tax",
-        "shipment-method-option": "Shipment method",
-        "tracking-number": "Tracking number",
-        "tracking-url": "Tracking URL",
-        "delivery-date": "Delivery date",
-        "vendor": "Vendor"
       },
-      "placeholders": {
-        "status": "Select...",
-        "shipment-method": "Select...",
-        "fulfillment-center": "Select or search a center...",
-        "shipment-method-option": "Default shipment method",
-        "vendor": "Select..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}} line items",
-      "subtitle": "Edit shipment items",
-      "labels": {
-        "item": "Item",
-        "status": "Status",
-        "quantity": "Qty",
-        "price": "Price",
-        "total": "Total"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Add item to order"
-    },
-    "newOperation-wizard": {
-      "title": "New operation",
-      "subtitle": "Select operation type",
-      "menu": {
-        "shipment-operation": {
-          "description": "Shipment document"
+      "transactions-list": {
+        "title": "Payment gateway transactions",
+        "subtitle": "List of all payment gateway interactions"
+      },
+      "transaction-detail": {
+        "title": "Transaction details",
+        "subtitle": "Raw transaction data "
+      },
+      "shipment-detail": {
+        "title": "Shipment #{{number}}",
+        "title-new": "New shipment",
+        "subtitle": "Edit shipment details",
+        "labels": {
+          "shipment-method": "Shipment method",
+          "approved": "Approved",
+          "shipment-number": "Shipment ID",
+          "status": "Status",
+          "fulfillment-center": "Fulfillment center",
+          "from": "Date and time",
+          "employee": "Assigned to",
+          "price": "Shipment amount",
+          "price-with-tax": "Shipment amount with tax",
+          "shipment-method-option": "Shipment method",
+          "tracking-number": "Tracking number",
+          "tracking-url": "Tracking URL",
+          "delivery-date": "Delivery date",
+          "vendor": "Vendor"
         },
-        "payment-operation": {
-          "description": "Incoming payment document"
-        },
-        "refund-operation": {
-          "description": "Refund document"
+        "placeholders": {
+          "status": "Select...",
+          "shipment-method": "Select...",
+          "fulfillment-center": "Select or search a center...",
+          "shipment-method-option": "Default shipment method",
+          "vendor": "Select..."
         }
-      }
-    },
-    "configuration": {
-      "title": "Configuration",
-      "labels": {
-        "picture": "Image",
-        "quantity": "Quantity",
-        "product-name": "Product name"
       },
-      "descr": {
-        "no-configuration": "This product does not support configuration."
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Discounts",
-      "labels": {
-        "name": "Name",
-        "coupon": "Coupon",
-        "discountAmount": "Discount amount",
-        "discountAmountWithTax": "Discount amount with tax",
-        "currency": "Currency"
+      "shipment-items": {
+        "title": "{{title}} line items",
+        "subtitle": "Edit shipment items",
+        "labels": {
+          "item": "Item",
+          "status": "Status",
+          "quantity": "Qty",
+          "price": "Price",
+          "total": "Total"
+        }
       },
-      "descr": {
-        "no-discounts": "This entity doesn't have any discounts yet."
+      "catalog-items-select": {
+        "title": "Add item to order"
+      },
+      "newOperation-wizard": {
+        "title": "New operation",
+        "subtitle": "Select operation type",
+        "menu": {
+          "shipment-operation": {
+            "description": "Shipment document"
+          },
+          "payment-operation": {
+            "description": "Incoming payment document"
+          },
+          "refund-operation": {
+            "description": "Refund document"
+          }
+        }
+      },
+      "configuration": {
+        "title": "Configuration",
+        "labels": {
+          "picture": "Image",
+          "quantity": "Quantity",
+          "product-name": "Product name"
+        },
+        "descr": {
+          "no-configuration": "This product does not support configuration."
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Discounts",
+        "labels": {
+          "name": "Name",
+          "coupon": "Coupon",
+          "discountAmount": "Discount amount",
+          "discountAmountWithTax": "Discount amount with tax",
+          "currency": "Currency"
+        },
+        "descr": {
+          "no-discounts": "This entity doesn't have any discounts yet."
+        }
       }
     },
     "widgets": {

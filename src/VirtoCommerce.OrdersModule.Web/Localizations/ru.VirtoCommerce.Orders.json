@@ -200,95 +200,95 @@
           "transactionId": "ID транзакции",
           "outerId": "Внешний ID"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Транзакции платежного шлюза",
-      "subtitle": "Список всех взаимодействий с платежным шлюзом"
-    },
-    "transaction-detail": {
-      "title": "Детали транзакции",
-      "subtitle": "Необработанные данные транзакции"
-    },
-    "shipment-detail": {
-      "title": "Отправка #{{number}}",
-      "title-new": "Новая отправка",
-      "subtitle": "Редактировать детали отправки",
-      "labels": {
-        "shipment-method": "Метод отправки",
-        "approved": "Утверждено",
-        "shipment-number": "ID отправки",
-        "status": "Статус",
-        "fulfillment-center": "Центр выполнения",
-        "from": "Дата и время",
-        "employee": "Назначено",
-        "price": "Сумма отправки",
-        "price-with-tax": "Сумма отправки с налогом",
-        "shipment-method-option": "Метод отправки",
-        "tracking-number": "Номер отслеживания",
-        "tracking-url": "URL отслеживания",
-        "delivery-date": "Дата доставки",
-        "vendor": "Поставщик"
       },
-      "placeholders": {
-        "status": "Выберите...",
-        "shipment-method": "Выберите...",
-        "fulfillment-center": "Выберите или найдите центр...",
-        "shipment-method-option": "Метод отправки по умолчанию",
-        "vendor": "Выберите..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}} позиции",
-      "subtitle": "Редактировать позиции отправки",
-      "labels": {
-        "item": "Товар",
-        "status": "Статус",
-        "quantity": "Кол-во",
-        "price": "Цена",
-        "total": "Итого"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Добавить товар в заказ"
-    },
-    "newOperation-wizard": {
-      "title": "Новая операция",
-      "subtitle": "Выберите тип операции",
-      "menu": {
-        "shipment-operation": {
-          "description": "Документ отправки"
+      "transactions-list": {
+        "title": "Транзакции платежного шлюза",
+        "subtitle": "Список всех взаимодействий с платежным шлюзом"
+      },
+      "transaction-detail": {
+        "title": "Детали транзакции",
+        "subtitle": "Необработанные данные транзакции"
+      },
+      "shipment-detail": {
+        "title": "Отправка #{{number}}",
+        "title-new": "Новая отправка",
+        "subtitle": "Редактировать детали отправки",
+        "labels": {
+          "shipment-method": "Метод отправки",
+          "approved": "Утверждено",
+          "shipment-number": "ID отправки",
+          "status": "Статус",
+          "fulfillment-center": "Центр выполнения",
+          "from": "Дата и время",
+          "employee": "Назначено",
+          "price": "Сумма отправки",
+          "price-with-tax": "Сумма отправки с налогом",
+          "shipment-method-option": "Метод отправки",
+          "tracking-number": "Номер отслеживания",
+          "tracking-url": "URL отслеживания",
+          "delivery-date": "Дата доставки",
+          "vendor": "Поставщик"
         },
-        "payment-operation": {
-          "description": "Документ входящего платежа"
-        },
-        "refund-operation": {
-          "description": "Документ возврата"
+        "placeholders": {
+          "status": "Выберите...",
+          "shipment-method": "Выберите...",
+          "fulfillment-center": "Выберите или найдите центр...",
+          "shipment-method-option": "Метод отправки по умолчанию",
+          "vendor": "Выберите..."
         }
-      }
-    },
-    "configuration": {
-      "title": "Конфигурация",
-      "labels": {
-        "picture": "Изображение",
-        "quantity": "Количество",
-        "product-name": "Название продукта"
       },
-      "descr": {
-        "no-configuration": "Этот продукт не поддерживает конфигурацию."
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Скидки",
-      "labels": {
-        "name": "Имя",
-        "coupon": "Купон",
-        "discountAmount": "Сумма скидки",
-        "discountAmountWithTax": "Сумма скидки с налогом",
-        "currency": "Валюта"
+      "shipment-items": {
+        "title": "{{title}} позиции",
+        "subtitle": "Редактировать позиции отправки",
+        "labels": {
+          "item": "Товар",
+          "status": "Статус",
+          "quantity": "Кол-во",
+          "price": "Цена",
+          "total": "Итого"
+        }
       },
-      "descr": {
-        "no-discounts": "У этой сущности пока нет скидок."
+      "catalog-items-select": {
+        "title": "Добавить товар в заказ"
+      },
+      "newOperation-wizard": {
+        "title": "Новая операция",
+        "subtitle": "Выберите тип операции",
+        "menu": {
+          "shipment-operation": {
+            "description": "Документ отправки"
+          },
+          "payment-operation": {
+            "description": "Документ входящего платежа"
+          },
+          "refund-operation": {
+            "description": "Документ возврата"
+          }
+        }
+      },
+      "configuration": {
+        "title": "Конфигурация",
+        "labels": {
+          "picture": "Изображение",
+          "quantity": "Количество",
+          "product-name": "Название продукта"
+        },
+        "descr": {
+          "no-configuration": "Этот продукт не поддерживает конфигурацию."
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Скидки",
+        "labels": {
+          "name": "Имя",
+          "coupon": "Купон",
+          "discountAmount": "Сумма скидки",
+          "discountAmountWithTax": "Сумма скидки с налогом",
+          "currency": "Валюта"
+        },
+        "descr": {
+          "no-discounts": "У этой сущности пока нет скидок."
+        }
       }
     },
     "widgets": {

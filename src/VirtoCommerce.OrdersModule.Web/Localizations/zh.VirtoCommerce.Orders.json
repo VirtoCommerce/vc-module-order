@@ -200,95 +200,95 @@
           "transactionId": "交易ID",
           "outerId": "外部ID"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "支付网关交易",
-      "subtitle": "所有支付网关交互列表"
-    },
-    "transaction-detail": {
-      "title": "交易详情",
-      "subtitle": "原始交易数据"
-    },
-    "shipment-detail": {
-      "title": "发货 #{{number}}",
-      "title-new": "新发货",
-      "subtitle": "编辑发货详情",
-      "labels": {
-        "shipment-method": "发货方式",
-        "approved": "已批准",
-        "shipment-number": "发货ID",
-        "status": "状态",
-        "fulfillment-center": "履行中心",
-        "from": "日期和时间",
-        "employee": "分配给",
-        "price": "发货金额",
-        "price-with-tax": "发货金额（含税）",
-        "shipment-method-option": "发货方式",
-        "tracking-number": "跟踪号",
-        "tracking-url": "跟踪URL",
-        "delivery-date": "交付日期",
-        "vendor": "供应商"
       },
-      "placeholders": {
-        "status": "选择...",
-        "shipment-method": "选择...",
-        "fulfillment-center": "选择或搜索中心...",
-        "shipment-method-option": "默认发货方式",
-        "vendor": "选择..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}} 行项目",
-      "subtitle": "编辑发货项目",
-      "labels": {
-        "item": "项目",
-        "status": "状态",
-        "quantity": "数量",
-        "price": "价格",
-        "total": "总计"
-      }
-    },
-    "catalog-items-select": {
-      "title": "添加项目到订单"
-    },
-    "newOperation-wizard": {
-      "title": "新操作",
-      "subtitle": "选择操作类型",
-      "menu": {
-        "shipment-operation": {
-          "description": "发货文档"
+      "transactions-list": {
+        "title": "支付网关交易",
+        "subtitle": "所有支付网关交互列表"
+      },
+      "transaction-detail": {
+        "title": "交易详情",
+        "subtitle": "原始交易数据"
+      },
+      "shipment-detail": {
+        "title": "发货 #{{number}}",
+        "title-new": "新发货",
+        "subtitle": "编辑发货详情",
+        "labels": {
+          "shipment-method": "发货方式",
+          "approved": "已批准",
+          "shipment-number": "发货ID",
+          "status": "状态",
+          "fulfillment-center": "履行中心",
+          "from": "日期和时间",
+          "employee": "分配给",
+          "price": "发货金额",
+          "price-with-tax": "发货金额（含税）",
+          "shipment-method-option": "发货方式",
+          "tracking-number": "跟踪号",
+          "tracking-url": "跟踪URL",
+          "delivery-date": "交付日期",
+          "vendor": "供应商"
         },
-        "payment-operation": {
-          "description": "收到付款文档"
-        },
-        "refund-operation": {
-          "description": "退款文档"
+        "placeholders": {
+          "status": "选择...",
+          "shipment-method": "选择...",
+          "fulfillment-center": "选择或搜索中心...",
+          "shipment-method-option": "默认发货方式",
+          "vendor": "选择..."
         }
-      }
-    },
-    "configuration": {
-      "title": "配置",
-      "labels": {
-        "picture": "图片",
-        "quantity": "数量",
-        "product-name": "产品名称"
       },
-      "descr": {
-        "no-configuration": "此产品不支持配置。"
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "折扣",
-      "labels": {
-        "name": "名称",
-        "coupon": "优惠券",
-        "discountAmount": "折扣金额",
-        "discountAmountWithTax": "折扣金额（含税）",
-        "currency": "货币"
+      "shipment-items": {
+        "title": "{{title}} 行项目",
+        "subtitle": "编辑发货项目",
+        "labels": {
+          "item": "项目",
+          "status": "状态",
+          "quantity": "数量",
+          "price": "价格",
+          "total": "总计"
+        }
       },
-      "descr": {
-        "no-discounts": "此实体尚无任何折扣。"
+      "catalog-items-select": {
+        "title": "添加项目到订单"
+      },
+      "newOperation-wizard": {
+        "title": "新操作",
+        "subtitle": "选择操作类型",
+        "menu": {
+          "shipment-operation": {
+            "description": "发货文档"
+          },
+          "payment-operation": {
+            "description": "收到付款文档"
+          },
+          "refund-operation": {
+            "description": "退款文档"
+          }
+        }
+      },
+      "configuration": {
+        "title": "配置",
+        "labels": {
+          "picture": "图片",
+          "quantity": "数量",
+          "product-name": "产品名称"
+        },
+        "descr": {
+          "no-configuration": "此产品不支持配置。"
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "折扣",
+        "labels": {
+          "name": "名称",
+          "coupon": "优惠券",
+          "discountAmount": "折扣金额",
+          "discountAmountWithTax": "折扣金额（含税）",
+          "currency": "货币"
+        },
+        "descr": {
+          "no-discounts": "此实体尚无任何折扣。"
+        }
       }
     },
     "widgets": {
