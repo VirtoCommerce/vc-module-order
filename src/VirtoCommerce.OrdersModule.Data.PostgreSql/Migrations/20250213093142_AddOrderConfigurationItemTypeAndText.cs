@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
+namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 {
     /// <inheritdoc />
-    public partial class AddConfigurationTypeAndText : Migration
+    public partial class AddOrderConfigurationItemTypeAndText : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,17 +13,17 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "CustomText",
                 table: "OrderConfigurationItem",
-                type: "varchar(255)",
+                type: "character varying(255)",
                 maxLength: 255,
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+                nullable: true);
 
-            migrationBuilder.AddColumn<byte>(
+            migrationBuilder.AddColumn<string>(
                 name: "Type",
                 table: "OrderConfigurationItem",
-                type: "tinyint unsigned",
+                type: "character varying(64)",
+                maxLength: 64,
                 nullable: false,
-                defaultValue: (byte)0);
+                defaultValue: "Product");
         }
 
         /// <inheritdoc />

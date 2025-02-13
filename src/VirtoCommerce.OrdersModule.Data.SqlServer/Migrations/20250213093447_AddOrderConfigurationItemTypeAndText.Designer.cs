@@ -12,8 +12,8 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
 {
     [DbContext(typeof(OrderDbContext))]
-    [Migration("20250206160339_AddConfigurationTypeAndText")]
-    partial class AddConfigurationTypeAndText
+    [Migration("20250213093447_AddOrderConfigurationItemTypeAndText")]
+    partial class AddOrderConfigurationItemTypeAndText
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -325,8 +325,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
 

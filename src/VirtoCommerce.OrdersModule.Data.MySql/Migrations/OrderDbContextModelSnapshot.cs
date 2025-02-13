@@ -323,8 +323,10 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("varchar(128)");
 
-                    b.Property<byte>("Type")
-                        .HasColumnType("tinyint unsigned");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
 

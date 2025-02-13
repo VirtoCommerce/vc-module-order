@@ -312,7 +312,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.ImageUrl = configurationItem.ImageUrl;
             retVal.CatalogId = configurationItem.CatalogId;
             retVal.CategoryId = configurationItem.CategoryId;
-            retVal.Type = (Core.Model.ConfigurationItemType)Enum.Parse(typeof(Core.Model.ConfigurationItemType), configurationItem.Type.ToString());
+            retVal.Type = configurationItem.Type;
             retVal.CustomText = configurationItem.CustomText;
 
             return retVal;
