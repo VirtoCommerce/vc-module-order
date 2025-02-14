@@ -200,95 +200,95 @@
           "transactionId": "Id de transacción",
           "outerId": "Id externo"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Transacciones de pasarela de pago",
-      "subtitle": "Lista de todas las interacciones de la pasarela de pago"
-    },
-    "transaction-detail": {
-      "title": "Detalles de la transacción",
-      "subtitle": "Datos brutos de la transacción"
-    },
-    "shipment-detail": {
-      "title": "Envío #{{number}}",
-      "title-new": "Nuevo envío",
-      "subtitle": "Editar detalles del envío",
-      "labels": {
-        "shipment-method": "Método de envío",
-        "approved": "Aprobado",
-        "shipment-number": "ID de envío",
-        "status": "Estado",
-        "fulfillment-center": "Centro de distribución",
-        "from": "Fecha y hora",
-        "employee": "Asignado a",
-        "price": "Monto del envío",
-        "price-with-tax": "Monto del envío con impuestos",
-        "shipment-method-option": "Método de envío",
-        "tracking-number": "Número de seguimiento",
-        "tracking-url": "URL de seguimiento",
-        "delivery-date": "Fecha de entrega",
-        "vendor": "Proveedor"
       },
-      "placeholders": {
-        "status": "Seleccionar...",
-        "shipment-method": "Seleccionar...",
-        "fulfillment-center": "Seleccionar o buscar un centro...",
-        "shipment-method-option": "Método de envío predeterminado",
-        "vendor": "Seleccionar..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}} líneas de artículos",
-      "subtitle": "Editar artículos del envío",
-      "labels": {
-        "item": "Artículo",
-        "status": "Estado",
-        "quantity": "Cant.",
-        "price": "Precio",
-        "total": "Total"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Añadir artículo a la orden"
-    },
-    "newOperation-wizard": {
-      "title": "Nueva operación",
-      "subtitle": "Seleccionar tipo de operación",
-      "menu": {
-        "shipment-operation": {
-          "description": "Documento de envío"
+      "transactions-list": {
+        "title": "Transacciones de pasarela de pago",
+        "subtitle": "Lista de todas las interacciones de la pasarela de pago"
+      },
+      "transaction-detail": {
+        "title": "Detalles de la transacción",
+        "subtitle": "Datos brutos de la transacción"
+      },
+      "shipment-detail": {
+        "title": "Envío #{{number}}",
+        "title-new": "Nuevo envío",
+        "subtitle": "Editar detalles del envío",
+        "labels": {
+          "shipment-method": "Método de envío",
+          "approved": "Aprobado",
+          "shipment-number": "ID de envío",
+          "status": "Estado",
+          "fulfillment-center": "Centro de distribución",
+          "from": "Fecha y hora",
+          "employee": "Asignado a",
+          "price": "Monto del envío",
+          "price-with-tax": "Monto del envío con impuestos",
+          "shipment-method-option": "Método de envío",
+          "tracking-number": "Número de seguimiento",
+          "tracking-url": "URL de seguimiento",
+          "delivery-date": "Fecha de entrega",
+          "vendor": "Proveedor"
         },
-        "payment-operation": {
-          "description": "Documento de pago entrante"
-        },
-        "refund-operation": {
-          "description": "Documento de reembolso"
+        "placeholders": {
+          "status": "Seleccionar...",
+          "shipment-method": "Seleccionar...",
+          "fulfillment-center": "Seleccionar o buscar un centro...",
+          "shipment-method-option": "Método de envío predeterminado",
+          "vendor": "Seleccionar..."
         }
-      }
-    },
-    "configuration": {
-      "title": "Configuración",
-      "labels": {
-        "picture": "Imagen",
-        "quantity": "Cantidad",
-        "product-name": "Nombre del producto"
       },
-      "descr": {
-        "no-configuration": "Este producto no admite configuración."
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Descuentos",
-      "labels": {
-        "name": "Nombre",
-        "coupon": "Cupón",
-        "discountAmount": "Monto del descuento",
-        "discountAmountWithTax": "Monto del descuento con impuestos",
-        "currency": "Moneda"
+      "shipment-items": {
+        "title": "{{title}} líneas de artículos",
+        "subtitle": "Editar artículos del envío",
+        "labels": {
+          "item": "Artículo",
+          "status": "Estado",
+          "quantity": "Cant.",
+          "price": "Precio",
+          "total": "Total"
+        }
       },
-      "descr": {
-        "no-discounts": "Esta entidad aún no tiene descuentos."
+      "catalog-items-select": {
+        "title": "Añadir artículo a la orden"
+      },
+      "newOperation-wizard": {
+        "title": "Nueva operación",
+        "subtitle": "Seleccionar tipo de operación",
+        "menu": {
+          "shipment-operation": {
+            "description": "Documento de envío"
+          },
+          "payment-operation": {
+            "description": "Documento de pago entrante"
+          },
+          "refund-operation": {
+            "description": "Documento de reembolso"
+          }
+        }
+      },
+      "configuration": {
+        "title": "Configuración",
+        "labels": {
+          "picture": "Imagen",
+          "quantity": "Cantidad",
+          "product-name": "Nombre del producto"
+        },
+        "descr": {
+          "no-configuration": "Este producto no admite configuración."
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Descuentos",
+        "labels": {
+          "name": "Nombre",
+          "coupon": "Cupón",
+          "discountAmount": "Monto del descuento",
+          "discountAmountWithTax": "Monto del descuento con impuestos",
+          "currency": "Moneda"
+        },
+        "descr": {
+          "no-discounts": "Esta entidad aún no tiene descuentos."
+        }
       }
     },
     "widgets": {

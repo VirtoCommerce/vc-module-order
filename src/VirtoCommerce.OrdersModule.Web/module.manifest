@@ -19,7 +19,7 @@
   </dependencies>
 
   <title>Order Management</title>
-  <description>Document based flexible order management system</description>
+  <description>Document based flexible order management system.</description>
   <authors>
     <author>Virto Commerce</author>
   </authors>
@@ -29,7 +29,7 @@
   <projectUrl>https://github.com/VirtoCommerce/vc-module-order</projectUrl>
   <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
-  <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2025 Virto Commerce. All rights reserved</copyright>
   <tags>order system</tags>
   <assemblyFile>VirtoCommerce.OrdersModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.OrdersModule.Web.Module, VirtoCommerce.OrdersModule.Web</moduleType>

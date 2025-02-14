@@ -200,95 +200,95 @@
           "transactionId": "ID Transazione",
           "outerId": "ID Esterno"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Transazioni gateway di pagamento",
-      "subtitle": "Elenco di tutte le interazioni del gateway di pagamento"
-    },
-    "transaction-detail": {
-      "title": "Dettagli transazione",
-      "subtitle": "Dati grezzi della transazione"
-    },
-    "shipment-detail": {
-      "title": "Spedizione #{{number}}",
-      "title-new": "Nuova spedizione",
-      "subtitle": "Modifica dettagli spedizione",
-      "labels": {
-        "shipment-method": "Metodo di spedizione",
-        "approved": "Approvato",
-        "shipment-number": "ID Spedizione",
-        "status": "Stato",
-        "fulfillment-center": "Centro di evasione",
-        "from": "Data e ora",
-        "employee": "Assegnato a",
-        "price": "Importo spedizione",
-        "price-with-tax": "Importo spedizione con tasse",
-        "shipment-method-option": "Metodo di spedizione",
-        "tracking-number": "Numero di tracciamento",
-        "tracking-url": "URL di tracciamento",
-        "delivery-date": "Data di consegna",
-        "vendor": "Fornitore"
       },
-      "placeholders": {
-        "status": "Seleziona...",
-        "shipment-method": "Seleziona...",
-        "fulfillment-center": "Seleziona o cerca un centro...",
-        "shipment-method-option": "Metodo di spedizione predefinito",
-        "vendor": "Seleziona..."
-      }
-    },
-    "shipment-items": {
-      "title": "Articoli {{title}}",
-      "subtitle": "Modifica articoli spedizione",
-      "labels": {
-        "item": "Articolo",
-        "status": "Stato",
-        "quantity": "Qtà",
-        "price": "Prezzo",
-        "total": "Totale"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Aggiungi articolo all'ordine"
-    },
-    "newOperation-wizard": {
-      "title": "Nuova operazione",
-      "subtitle": "Seleziona tipo di operazione",
-      "menu": {
-        "shipment-operation": {
-          "description": "Documento di spedizione"
+      "transactions-list": {
+        "title": "Transazioni gateway di pagamento",
+        "subtitle": "Elenco di tutte le interazioni del gateway di pagamento"
+      },
+      "transaction-detail": {
+        "title": "Dettagli transazione",
+        "subtitle": "Dati grezzi della transazione"
+      },
+      "shipment-detail": {
+        "title": "Spedizione #{{number}}",
+        "title-new": "Nuova spedizione",
+        "subtitle": "Modifica dettagli spedizione",
+        "labels": {
+          "shipment-method": "Metodo di spedizione",
+          "approved": "Approvato",
+          "shipment-number": "ID Spedizione",
+          "status": "Stato",
+          "fulfillment-center": "Centro di evasione",
+          "from": "Data e ora",
+          "employee": "Assegnato a",
+          "price": "Importo spedizione",
+          "price-with-tax": "Importo spedizione con tasse",
+          "shipment-method-option": "Metodo di spedizione",
+          "tracking-number": "Numero di tracciamento",
+          "tracking-url": "URL di tracciamento",
+          "delivery-date": "Data di consegna",
+          "vendor": "Fornitore"
         },
-        "payment-operation": {
-          "description": "Documento di pagamento in entrata"
-        },
-        "refund-operation": {
-          "description": "Documento di rimborso"
+        "placeholders": {
+          "status": "Seleziona...",
+          "shipment-method": "Seleziona...",
+          "fulfillment-center": "Seleziona o cerca un centro...",
+          "shipment-method-option": "Metodo di spedizione predefinito",
+          "vendor": "Seleziona..."
         }
-      }
-    },
-    "configuration": {
-      "title": "Configurazione",
-      "labels": {
-        "picture": "Immagine",
-        "quantity": "Quantità",
-        "product-name": "Nome prodotto"
       },
-      "descr": {
-        "no-configuration": "Questo prodotto non supporta la configurazione."
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Sconti",
-      "labels": {
-        "name": "Nome",
-        "coupon": "Coupon",
-        "discountAmount": "Importo sconto",
-        "discountAmountWithTax": "Importo sconto con tasse",
-        "currency": "Valuta"
+      "shipment-items": {
+        "title": "Articoli {{title}}",
+        "subtitle": "Modifica articoli spedizione",
+        "labels": {
+          "item": "Articolo",
+          "status": "Stato",
+          "quantity": "Qtà",
+          "price": "Prezzo",
+          "total": "Totale"
+        }
       },
-      "descr": {
-        "no-discounts": "Questa entità non ha ancora sconti."
+      "catalog-items-select": {
+        "title": "Aggiungi articolo all'ordine"
+      },
+      "newOperation-wizard": {
+        "title": "Nuova operazione",
+        "subtitle": "Seleziona tipo di operazione",
+        "menu": {
+          "shipment-operation": {
+            "description": "Documento di spedizione"
+          },
+          "payment-operation": {
+            "description": "Documento di pagamento in entrata"
+          },
+          "refund-operation": {
+            "description": "Documento di rimborso"
+          }
+        }
+      },
+      "configuration": {
+        "title": "Configurazione",
+        "labels": {
+          "picture": "Immagine",
+          "quantity": "Quantità",
+          "product-name": "Nome prodotto"
+        },
+        "descr": {
+          "no-configuration": "Questo prodotto non supporta la configurazione."
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Sconti",
+        "labels": {
+          "name": "Nome",
+          "coupon": "Coupon",
+          "discountAmount": "Importo sconto",
+          "discountAmountWithTax": "Importo sconto con tasse",
+          "currency": "Valuta"
+        },
+        "descr": {
+          "no-discounts": "Questa entità non ha ancora sconti."
+        }
       }
     },
     "widgets": {

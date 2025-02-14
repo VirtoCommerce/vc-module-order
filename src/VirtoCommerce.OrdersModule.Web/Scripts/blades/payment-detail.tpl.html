@@ -7,11 +7,15 @@
                 <div class="reason" ng-bind="blade.currentEntity.cancelReason" ng-if="blade.currentEntity.isCancelled"></div>
             </div>
             <div class="order-brand" ng-if="!blade.isNew">
-                <div class="brand-image">
+                <div class="brand-image" ng-if="blade.currentEntity.paymentMethod">
                     <img class="brand-logo" ng-src="{{blade.currentEntity.paymentMethod.logoUrl}}" alt="" ng-if="blade.currentEntity.paymentMethod.logoUrl">
                 </div>
-                <div class="brand-t" title="{{blade.currentEntity.paymentMethod.description}}">{{blade.currentEntity.paymentMethod.name}}</div>
-                <div class="brand-descr" ng-if="blade.currentEntity.paymentMethod.paymentMethodGroupType">{{blade.currentEntity.paymentMethod.paymentMethodGroupType}}</div>
+                <div class="brand-t" title="{{blade.currentEntity.paymentMethod ? blade.currentEntity.paymentMethod.description : blade.currentEntity.gatewayCode}}">
+                    {{blade.currentEntity.paymentMethod ? blade.currentEntity.paymentMethod.name : blade.currentEntity.gatewayCode}}
+                </div>
+                <div class="brand-descr" ng-if="blade.currentEntity.paymentMethod && blade.currentEntity.paymentMethod.paymentMethodGroupType">
+                    {{blade.currentEntity.paymentMethod.paymentMethodGroupType}}
+                </div>
             </div>
 
             <form class="form" name="detailForm">
