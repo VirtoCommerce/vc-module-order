@@ -95,7 +95,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy Addresses
             order.Addresses = cart.Addresses != null
                 ? ToOrderModel(cart.Addresses)
-                : new List<Address>();
+                : [];
 
             CopyOtherAddress(cart, order);
 
@@ -312,6 +312,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.ImageUrl = configurationItem.ImageUrl;
             retVal.CatalogId = configurationItem.CatalogId;
             retVal.CategoryId = configurationItem.CategoryId;
+            retVal.Type = configurationItem.Type;
+            retVal.CustomText = configurationItem.CustomText;
 
             return retVal;
         }

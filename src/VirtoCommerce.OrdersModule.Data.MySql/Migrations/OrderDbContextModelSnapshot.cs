@@ -288,6 +288,10 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("CustomText")
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(1028)
                         .HasColumnType("varchar(1028)");
@@ -318,6 +322,11 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
                     b.Property<string>("Sku")
                         .HasMaxLength(128)
                         .HasColumnType("varchar(128)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("varchar(64)");
 
                     b.HasKey("Id");
 
