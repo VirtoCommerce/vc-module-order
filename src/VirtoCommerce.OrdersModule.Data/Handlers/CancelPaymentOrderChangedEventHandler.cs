@@ -102,6 +102,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 paymentToCancel.CancelledDate = DateTime.UtcNow;
             }
 
+            paymentToCancel.Status = paymentToCancel.PaymentStatus.ToString();
             paymentToCancel.CancelledState = CancelledState.Completed;
         }
     }
