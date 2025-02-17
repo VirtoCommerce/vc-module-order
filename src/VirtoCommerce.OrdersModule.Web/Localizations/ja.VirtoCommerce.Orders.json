@@ -200,6 +200,30 @@
           "transactionId": "取引ID",
           "outerId": "外部ID"
         }
+      },
+      "customerOrder-item-configuration": {
+        "title": "構成",
+        "labels": {
+          "picture": "画像",
+          "quantity": "数量",
+          "text": "テキスト",
+          "product-name": "商品名"
+        },
+        "menu": {
+          "products": {
+            "title": "構成商品の設定",
+            "description": "構成を構成する製品"
+          },
+          "texts": {
+            "title": "構成テキスト",
+            "description": "独自の製品構成を作成するために使用されるさまざまなカスタマイズされたテキスト"
+          }
+        },
+        "description": {
+          "no-configuration": "この製品は構成をサポートしていません。",
+          "no-products": "この構成にはまだ製品がありません。",
+          "no-texts": "この構成にはまだテキストがありません。"
+        }
       }
     },
     "transactions-list": {
@@ -265,17 +289,6 @@
         "refund-operation": {
           "description": "返金文書"
         }
-      }
-    },
-    "configuration": {
-      "title": "構成",
-      "labels": {
-        "picture": "画像",
-        "quantity": "数量",
-        "product-name": "商品名"
-      },
-      "descr": {
-        "no-configuration": "この商品は構成をサポートしていません。"
       }
     },
     "customerOrder-item-discounts": {

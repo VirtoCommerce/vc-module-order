@@ -200,6 +200,30 @@
           "transactionId": "交易ID",
           "outerId": "外部ID"
         }
+      },
+      "customerOrder-item-configuration": {
+        "title": "配置",
+        "labels": {
+          "picture": "图片",
+          "quantity": "数量",
+          "text": "文本",
+          "product-name": "产品名称"
+        },
+        "menu": {
+          "products": {
+            "title": "配置产品",
+            "description": "构成配置的产品"
+          },
+          "texts": {
+            "title": "配置文本",
+            "description": "用于创建独特产品配置的各种自定义文本"
+          }
+        },
+        "description": {
+          "no-configuration": "此产品不支持配置。",
+          "no-products": "此配置尚无任何产品。",
+          "no-texts": "此配置尚无任何文本。"
+        }
       }
     },
     "transactions-list": {
@@ -265,17 +289,6 @@
         "refund-operation": {
           "description": "退款文档"
         }
-      }
-    },
-    "configuration": {
-      "title": "配置",
-      "labels": {
-        "picture": "图片",
-        "quantity": "数量",
-        "product-name": "产品名称"
-      },
-      "descr": {
-        "no-configuration": "此产品不支持配置。"
       }
     },
     "customerOrder-item-discounts": {

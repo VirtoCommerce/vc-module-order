@@ -200,6 +200,30 @@
           "transactionId": "ID транзакции",
           "outerId": "Внешний ID"
         }
+      },
+      "customerOrder-item-configuration": {
+        "title": "Конфигурация",
+        "labels": {
+          "picture": "Изображение",
+          "quantity": "Количество",
+          "text": "Текст",
+          "product-name": "Название продукта"
+        },
+        "menu": {
+          "products": {
+            "title": "Продукты конфигурации",
+            "description": "Продукты, составляющие конфигурацию"
+          },
+          "texts": {
+            "title": "Тексты конфигурации",
+            "description": "Различные индивидуальные тексты, используемые для создания уникальной конфигурации продукта"
+          }
+        },
+        "description": {
+          "no-configuration": "Этот продукт не поддерживает конфигурацию.",
+          "no-products": "Эта конфигурация ещё не имеет продуктов.",
+          "no-texts": "Эта конфигурация ещё не имеет текстов."
+        }
       }
     },
     "transactions-list": {
@@ -265,17 +289,6 @@
         "refund-operation": {
           "description": "Документ возврата"
         }
-      }
-    },
-    "configuration": {
-      "title": "Конфигурация",
-      "labels": {
-        "picture": "Изображение",
-        "quantity": "Количество",
-        "product-name": "Название продукта"
-      },
-      "descr": {
-        "no-configuration": "Этот продукт не поддерживает конфигурацию."
       }
     },
     "customerOrder-item-discounts": {
