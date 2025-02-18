@@ -50,7 +50,7 @@ VirtoCommerce Orders Module supports the following functionalities:
 * Installation: https://docs.virtocommerce.org/platform/user-guide/modules-installation/
 Home: https://virtocommerce.com
 * Community: https://www.virtocommerce.org
-* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-order/releases/)
+* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-order/releases/latest)
 
 ## License
 
