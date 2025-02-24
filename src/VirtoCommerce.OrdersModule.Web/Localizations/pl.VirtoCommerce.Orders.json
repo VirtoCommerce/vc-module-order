@@ -201,94 +201,107 @@
           "outerId": "Id zewnętrzne"
         }
       },
-      "transactions-list": {
-        "title": "Transakcje bramki płatności",
-        "subtitle": "Lista wszystkich interakcji bramki płatności"
-      },
-      "transaction-detail": {
-        "title": "Szczegóły transakcji",
-        "subtitle": "Surowe dane transakcji"
-      },
-      "shipment-detail": {
-        "title": "Wysyłka #{{number}}",
-        "title-new": "Nowa wysyłka",
-        "subtitle": "Edytuj szczegóły wysyłki",
-        "labels": {
-          "shipment-method": "Metoda wysyłki",
-          "approved": "Zatwierdzone",
-          "shipment-number": "ID wysyłki",
-          "status": "Status",
-          "fulfillment-center": "Centrum realizacji",
-          "from": "Data i godzina",
-          "employee": "Przypisane do",
-          "price": "Kwota wysyłki",
-          "price-with-tax": "Kwota wysyłki z podatkiem",
-          "shipment-method-option": "Metoda wysyłki",
-          "tracking-number": "Numer śledzenia",
-          "tracking-url": "URL śledzenia",
-          "delivery-date": "Data dostawy",
-          "vendor": "Dostawca"
-        },
-        "placeholders": {
-          "status": "Wybierz...",
-          "shipment-method": "Wybierz...",
-          "fulfillment-center": "Wybierz lub wyszukaj centrum...",
-          "shipment-method-option": "Domyślna metoda wysyłki",
-          "vendor": "Wybierz..."
-        }
-      },
-      "shipment-items": {
-        "title": "Pozycje {{title}}",
-        "subtitle": "Edytuj pozycje wysyłki",
-        "labels": {
-          "item": "Przedmiot",
-          "status": "Status",
-          "quantity": "Ilość",
-          "price": "Cena",
-          "total": "Suma"
-        }
-      },
-      "catalog-items-select": {
-        "title": "Dodaj przedmiot do zamówienia"
-      },
-      "newOperation-wizard": {
-        "title": "Nowa operacja",
-        "subtitle": "Wybierz typ operacji",
-        "menu": {
-          "shipment-operation": {
-            "description": "Dokument wysyłki"
-          },
-          "payment-operation": {
-            "description": "Dokument płatności przychodzącej"
-          },
-          "refund-operation": {
-            "description": "Dokument zwrotu"
-          }
-        }
-      },
-      "configuration": {
+      "customerOrder-item-configuration": {
         "title": "Konfiguracja",
         "labels": {
           "picture": "Obraz",
           "quantity": "Ilość",
+          "text": "Tekst",
           "product-name": "Nazwa produktu"
         },
-        "descr": {
-          "no-configuration": "Ten produkt nie obsługuje konfiguracji."
-        }
-      },
-      "customerOrder-item-discounts": {
-        "title": "Rabaty",
-        "labels": {
-          "name": "Nazwa",
-          "coupon": "Kupon",
-          "discountAmount": "Kwota rabatu",
-          "discountAmountWithTax": "Kwota rabatu z podatkiem",
-          "currency": "Waluta"
+        "menu": {
+          "products": {
+            "title": "Produkty konfiguracyjne",
+            "description": "Produkty, które składają się na konfigurację"
+          },
+          "texts": {
+            "title": "Teksty konfiguracyjne",
+            "description": "Różne spersonalizowane teksty używane do tworzenia unikalnej konfiguracji produktu"
+          }
         },
-        "descr": {
-          "no-discounts": "Ta jednostka nie ma jeszcze żadnych rabatów."
+        "description": {
+          "no-configuration": "Ten produkt nie obsługuje konfiguracji.",
+          "no-products": "Ten konfiguracji nie zawiera jeszcze żadnych produktów.",
+          "no-texts": "Ten konfiguracji nie zawiera jeszcze żadnych tekstów."
         }
+      }
+    },
+    "transactions-list": {
+      "title": "Transakcje bramki płatności",
+      "subtitle": "Lista wszystkich interakcji bramki płatności"
+    },
+    "transaction-detail": {
+      "title": "Szczegóły transakcji",
+      "subtitle": "Surowe dane transakcji"
+    },
+    "shipment-detail": {
+      "title": "Wysyłka #{{number}}",
+      "title-new": "Nowa wysyłka",
+      "subtitle": "Edytuj szczegóły wysyłki",
+      "labels": {
+        "shipment-method": "Metoda wysyłki",
+        "approved": "Zatwierdzone",
+        "shipment-number": "ID wysyłki",
+        "status": "Status",
+        "fulfillment-center": "Centrum realizacji",
+        "from": "Data i godzina",
+        "employee": "Przypisane do",
+        "price": "Kwota wysyłki",
+        "price-with-tax": "Kwota wysyłki z podatkiem",
+        "shipment-method-option": "Metoda wysyłki",
+        "tracking-number": "Numer śledzenia",
+        "tracking-url": "URL śledzenia",
+        "delivery-date": "Data dostawy",
+        "vendor": "Dostawca"
+      },
+      "placeholders": {
+        "status": "Wybierz...",
+        "shipment-method": "Wybierz...",
+        "fulfillment-center": "Wybierz lub wyszukaj centrum...",
+        "shipment-method-option": "Domyślna metoda wysyłki",
+        "vendor": "Wybierz..."
+      }
+    },
+    "shipment-items": {
+      "title": "Pozycje {{title}}",
+      "subtitle": "Edytuj pozycje wysyłki",
+      "labels": {
+        "item": "Przedmiot",
+        "status": "Status",
+        "quantity": "Ilość",
+        "price": "Cena",
+        "total": "Suma"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Dodaj przedmiot do zamówienia"
+    },
+    "newOperation-wizard": {
+      "title": "Nowa operacja",
+      "subtitle": "Wybierz typ operacji",
+      "menu": {
+        "shipment-operation": {
+          "description": "Dokument wysyłki"
+        },
+        "payment-operation": {
+          "description": "Dokument płatności przychodzącej"
+        },
+        "refund-operation": {
+          "description": "Dokument zwrotu"
+        }
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Rabaty",
+      "labels": {
+        "name": "Nazwa",
+        "coupon": "Kupon",
+        "discountAmount": "Kwota rabatu",
+        "discountAmountWithTax": "Kwota rabatu z podatkiem",
+        "currency": "Waluta"
+      },
+      "descr": {
+        "no-discounts": "Ta jednostka nie ma jeszcze żadnych rabatów."
       }
     },
     "widgets": {

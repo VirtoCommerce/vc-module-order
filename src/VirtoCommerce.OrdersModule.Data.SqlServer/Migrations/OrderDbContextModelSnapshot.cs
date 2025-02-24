@@ -287,6 +287,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CustomText")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("ImageUrl")
                         .HasMaxLength(1028)
                         .HasColumnType("nvarchar(1028)");
@@ -317,6 +321,11 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Property<string>("Sku")
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
 

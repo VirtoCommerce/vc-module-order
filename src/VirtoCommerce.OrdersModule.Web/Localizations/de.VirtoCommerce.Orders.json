@@ -201,94 +201,107 @@
           "outerId": "Externe ID"
         }
       },
-      "transactions-list": {
-        "title": "Zahlungs-Gateway-Transaktionen",
-        "subtitle": "Liste aller Zahlungs-Gateway-Interaktionen"
-      },
-      "transaction-detail": {
-        "title": "Transaktionsdetails",
-        "subtitle": "Rohe Transaktionsdaten"
-      },
-      "shipment-detail": {
-        "title": "Versand #{{number}}",
-        "title-new": "Neuer Versand",
-        "subtitle": "Versanddetails bearbeiten",
-        "labels": {
-          "shipment-method": "Versandmethode",
-          "approved": "Genehmigt",
-          "shipment-number": "Versand-ID",
-          "status": "Status",
-          "fulfillment-center": "Fulfillment-Center",
-          "from": "Datum und Uhrzeit",
-          "employee": "Zugewiesen an",
-          "price": "Versandbetrag",
-          "price-with-tax": "Versandbetrag mit Steuern",
-          "shipment-method-option": "Versandmethode",
-          "tracking-number": "Sendungsverfolgungsnummer",
-          "tracking-url": "Sendungsverfolgung-URL",
-          "delivery-date": "Lieferdatum",
-          "vendor": "Anbieter"
-        },
-        "placeholders": {
-          "status": "Auswählen...",
-          "shipment-method": "Auswählen...",
-          "fulfillment-center": "Center auswählen oder suchen...",
-          "shipment-method-option": "Standard-Versandmethode",
-          "vendor": "Auswählen..."
-        }
-      },
-      "shipment-items": {
-        "title": "{{title}} Positionen",
-        "subtitle": "Versandpositionen bearbeiten",
-        "labels": {
-          "item": "Artikel",
-          "status": "Status",
-          "quantity": "Menge",
-          "price": "Preis",
-          "total": "Gesamt"
-        }
-      },
-      "catalog-items-select": {
-        "title": "Artikel zur Bestellung hinzufügen"
-      },
-      "newOperation-wizard": {
-        "title": "Neue Operation",
-        "subtitle": "Operationstyp auswählen",
-        "menu": {
-          "shipment-operation": {
-            "description": "Versanddokument"
-          },
-          "payment-operation": {
-            "description": "Eingehendes Zahlungsdokument"
-          },
-          "refund-operation": {
-            "description": "Rückerstattungsdokument"
-          }
-        }
-      },
-      "configuration": {
+      "customerOrder-item-configuration": {
         "title": "Konfiguration",
         "labels": {
           "picture": "Bild",
           "quantity": "Menge",
+          "text": "Text",
           "product-name": "Produktname"
         },
-        "descr": {
-          "no-configuration": "Dieses Produkt unterstützt keine Konfiguration."
-        }
-      },
-      "customerOrder-item-discounts": {
-        "title": "Rabatte",
-        "labels": {
-          "name": "Name",
-          "coupon": "Gutschein",
-          "discountAmount": "Rabattbetrag",
-          "discountAmountWithTax": "Rabattbetrag mit Steuern",
-          "currency": "Währung"
+        "menu": {
+          "products": {
+            "title": "Konfigurationsprodukte",
+            "description": "Produkte, die die Konfiguration ausmachen"
+          },
+          "texts": {
+            "title": "Konfigurationstexte",
+            "description": "Verschiedene individuell angepasste Texte zur Erstellung einer einzigartigen Produktkonfiguration"
+          }
         },
-        "descr": {
-          "no-discounts": "Dieses Objekt hat noch keine Rabatte."
+        "description": {
+          "no-configuration": "Dieses Produkt unterstützt keine Konfiguration.",
+          "no-products": "Dieses Konfiguration enthält noch keine Produkte.",
+          "no-texts": "Dieses Konfiguration enthält noch keine Texte."
         }
+      }
+    },
+    "transactions-list": {
+      "title": "Zahlungs-Gateway-Transaktionen",
+      "subtitle": "Liste aller Zahlungs-Gateway-Interaktionen"
+    },
+    "transaction-detail": {
+      "title": "Transaktionsdetails",
+      "subtitle": "Rohe Transaktionsdaten"
+    },
+    "shipment-detail": {
+      "title": "Versand #{{number}}",
+      "title-new": "Neuer Versand",
+      "subtitle": "Versanddetails bearbeiten",
+      "labels": {
+        "shipment-method": "Versandmethode",
+        "approved": "Genehmigt",
+        "shipment-number": "Versand-ID",
+        "status": "Status",
+        "fulfillment-center": "Fulfillment-Center",
+        "from": "Datum und Uhrzeit",
+        "employee": "Zugewiesen an",
+        "price": "Versandbetrag",
+        "price-with-tax": "Versandbetrag mit Steuern",
+        "shipment-method-option": "Versandmethode",
+        "tracking-number": "Sendungsverfolgungsnummer",
+        "tracking-url": "Sendungsverfolgung-URL",
+        "delivery-date": "Lieferdatum",
+        "vendor": "Anbieter"
+      },
+      "placeholders": {
+        "status": "Auswählen...",
+        "shipment-method": "Auswählen...",
+        "fulfillment-center": "Center auswählen oder suchen...",
+        "shipment-method-option": "Standard-Versandmethode",
+        "vendor": "Auswählen..."
+      }
+    },
+    "shipment-items": {
+      "title": "{{title}} Positionen",
+      "subtitle": "Versandpositionen bearbeiten",
+      "labels": {
+        "item": "Artikel",
+        "status": "Status",
+        "quantity": "Menge",
+        "price": "Preis",
+        "total": "Gesamt"
+      }
+    },
+    "catalog-items-select": {
+      "title": "Artikel zur Bestellung hinzufügen"
+    },
+    "newOperation-wizard": {
+      "title": "Neue Operation",
+      "subtitle": "Operationstyp auswählen",
+      "menu": {
+        "shipment-operation": {
+          "description": "Versanddokument"
+        },
+        "payment-operation": {
+          "description": "Eingehendes Zahlungsdokument"
+        },
+        "refund-operation": {
+          "description": "Rückerstattungsdokument"
+        }
+      }
+    },
+    "customerOrder-item-discounts": {
+      "title": "Rabatte",
+      "labels": {
+        "name": "Name",
+        "coupon": "Gutschein",
+        "discountAmount": "Rabattbetrag",
+        "discountAmountWithTax": "Rabattbetrag mit Steuern",
+        "currency": "Währung"
+      },
+      "descr": {
+        "no-discounts": "Dieses Objekt hat noch keine Rabatte."
       }
     },
     "widgets": {
