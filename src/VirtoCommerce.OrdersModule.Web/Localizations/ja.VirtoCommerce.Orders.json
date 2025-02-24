@@ -224,84 +224,84 @@
           "no-products": "この構成にはまだ製品がありません。",
           "no-texts": "この構成にはまだテキストがありません。"
         }
-      }
-    },
-    "transactions-list": {
-      "title": "決済ゲートウェイ取引",
-      "subtitle": "すべての決済ゲートウェイ相互作用のリスト"
-    },
-    "transaction-detail": {
-      "title": "取引詳細",
-      "subtitle": "生の取引データ"
-    },
-    "shipment-detail": {
-      "title": "配送 #{{number}}",
-      "title-new": "新規配送",
-      "subtitle": "配送詳細を編集",
-      "labels": {
-        "shipment-method": "配送方法",
-        "approved": "承認済み",
-        "shipment-number": "配送ID",
-        "status": "ステータス",
-        "fulfillment-center": "フルフィルメントセンター",
-        "from": "日時",
-        "employee": "担当者",
-        "price": "配送料",
-        "price-with-tax": "配送料（税込）",
-        "shipment-method-option": "配送方法",
-        "tracking-number": "追跡番号",
-        "tracking-url": "追跡URL",
-        "delivery-date": "配達日",
-        "vendor": "ベンダー"
       },
-      "placeholders": {
-        "status": "選択...",
-        "shipment-method": "選択...",
-        "fulfillment-center": "センターを選択または検索...",
-        "shipment-method-option": "デフォルトの配送方法",
-        "vendor": "選択..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}}の品目",
-      "subtitle": "配送品目を編集",
-      "labels": {
-        "item": "商品",
-        "status": "ステータス",
-        "quantity": "数量",
-        "price": "価格",
-        "total": "合計"
-      }
-    },
-    "catalog-items-select": {
-      "title": "注文に商品を追加"
-    },
-    "newOperation-wizard": {
-      "title": "新規操作",
-      "subtitle": "操作タイプを選択",
-      "menu": {
-        "shipment-operation": {
-          "description": "配送文書"
+      "transactions-list": {
+        "title": "決済ゲートウェイ取引",
+        "subtitle": "すべての決済ゲートウェイ相互作用のリスト"
+      },
+      "transaction-detail": {
+        "title": "取引詳細",
+        "subtitle": "生の取引データ"
+      },
+      "shipment-detail": {
+        "title": "配送 #{{number}}",
+        "title-new": "新規配送",
+        "subtitle": "配送詳細を編集",
+        "labels": {
+          "shipment-method": "配送方法",
+          "approved": "承認済み",
+          "shipment-number": "配送ID",
+          "status": "ステータス",
+          "fulfillment-center": "フルフィルメントセンター",
+          "from": "日時",
+          "employee": "担当者",
+          "price": "配送料",
+          "price-with-tax": "配送料（税込）",
+          "shipment-method-option": "配送方法",
+          "tracking-number": "追跡番号",
+          "tracking-url": "追跡URL",
+          "delivery-date": "配達日",
+          "vendor": "ベンダー"
         },
-        "payment-operation": {
-          "description": "入金文書"
-        },
-        "refund-operation": {
-          "description": "返金文書"
+        "placeholders": {
+          "status": "選択...",
+          "shipment-method": "選択...",
+          "fulfillment-center": "センターを選択または検索...",
+          "shipment-method-option": "デフォルトの配送方法",
+          "vendor": "選択..."
         }
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "割引",
-      "labels": {
-        "name": "名前",
-        "coupon": "クーポン",
-        "discountAmount": "割引額",
-        "discountAmountWithTax": "割引額（税込）",
-        "currency": "通貨"
       },
-      "descr": {
-        "no-discounts": "このエンティティにはまだ割引がありません。"
+      "shipment-items": {
+        "title": "{{title}}の品目",
+        "subtitle": "配送品目を編集",
+        "labels": {
+          "item": "商品",
+          "status": "ステータス",
+          "quantity": "数量",
+          "price": "価格",
+          "total": "合計"
+        }
+      },
+      "catalog-items-select": {
+        "title": "注文に商品を追加"
+      },
+      "newOperation-wizard": {
+        "title": "新規操作",
+        "subtitle": "操作タイプを選択",
+        "menu": {
+          "shipment-operation": {
+            "description": "配送文書"
+          },
+          "payment-operation": {
+            "description": "入金文書"
+          },
+          "refund-operation": {
+            "description": "返金文書"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "割引",
+        "labels": {
+          "name": "名前",
+          "coupon": "クーポン",
+          "discountAmount": "割引額",
+          "discountAmountWithTax": "割引額（税込）",
+          "currency": "通貨"
+        },
+        "descr": {
+          "no-discounts": "このエンティティにはまだ割引がありません。"
+        }
       }
     },
     "widgets": {
@@ -379,7 +379,7 @@
       "customerOrder-item-discounts": {
         "title": "割引"
       }
-      },
+    },
     "dialogs": {
       "concurrency-сonflict": {
         "title": "同時実行の競合が検出されました",

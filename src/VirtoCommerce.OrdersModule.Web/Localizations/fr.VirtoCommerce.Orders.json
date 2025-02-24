@@ -224,84 +224,84 @@
           "no-products": "Ce configuration n'a pas encore de produits.",
           "no-texts": "Ce configuration n'a pas encore de textes."
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Transactions de la passerelle de paiement",
-      "subtitle": "Liste de toutes les interactions avec la passerelle de paiement"
-    },
-    "transaction-detail": {
-      "title": "Détails de la transaction",
-      "subtitle": "Données brutes de la transaction"
-    },
-    "shipment-detail": {
-      "title": "Expédition #{{number}}",
-      "title-new": "Nouvelle expédition",
-      "subtitle": "Modifier les détails de l'expédition",
-      "labels": {
-        "shipment-method": "Méthode d'expédition",
-        "approved": "Approuvé",
-        "shipment-number": "ID d'expédition",
-        "status": "Statut",
-        "fulfillment-center": "Centre de traitement",
-        "from": "Date et heure",
-        "employee": "Assigné à",
-        "price": "Montant de l'expédition",
-        "price-with-tax": "Montant de l'expédition avec taxe",
-        "shipment-method-option": "Méthode d'expédition",
-        "tracking-number": "Numéro de suivi",
-        "tracking-url": "URL de suivi",
-        "delivery-date": "Date de livraison",
-        "vendor": "Fournisseur"
       },
-      "placeholders": {
-        "status": "Sélectionner...",
-        "shipment-method": "Sélectionner...",
-        "fulfillment-center": "Sélectionner ou rechercher un centre...",
-        "shipment-method-option": "Méthode d'expédition par défaut",
-        "vendor": "Sélectionner..."
-      }
-    },
-    "shipment-items": {
-      "title": "Articles de {{title}}",
-      "subtitle": "Modifier les articles de l'expédition",
-      "labels": {
-        "item": "Article",
-        "status": "Statut",
-        "quantity": "Qté",
-        "price": "Prix",
-        "total": "Total"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Ajouter un article à la commande"
-    },
-    "newOperation-wizard": {
-      "title": "Nouvelle opération",
-      "subtitle": "Sélectionner le type d'opération",
-      "menu": {
-        "shipment-operation": {
-          "description": "Document d'expédition"
+      "transactions-list": {
+        "title": "Transactions de la passerelle de paiement",
+        "subtitle": "Liste de toutes les interactions avec la passerelle de paiement"
+      },
+      "transaction-detail": {
+        "title": "Détails de la transaction",
+        "subtitle": "Données brutes de la transaction"
+      },
+      "shipment-detail": {
+        "title": "Expédition #{{number}}",
+        "title-new": "Nouvelle expédition",
+        "subtitle": "Modifier les détails de l'expédition",
+        "labels": {
+          "shipment-method": "Méthode d'expédition",
+          "approved": "Approuvé",
+          "shipment-number": "ID d'expédition",
+          "status": "Statut",
+          "fulfillment-center": "Centre de traitement",
+          "from": "Date et heure",
+          "employee": "Assigné à",
+          "price": "Montant de l'expédition",
+          "price-with-tax": "Montant de l'expédition avec taxe",
+          "shipment-method-option": "Méthode d'expédition",
+          "tracking-number": "Numéro de suivi",
+          "tracking-url": "URL de suivi",
+          "delivery-date": "Date de livraison",
+          "vendor": "Fournisseur"
         },
-        "payment-operation": {
-          "description": "Document de paiement entrant"
-        },
-        "refund-operation": {
-          "description": "Document de remboursement"
+        "placeholders": {
+          "status": "Sélectionner...",
+          "shipment-method": "Sélectionner...",
+          "fulfillment-center": "Sélectionner ou rechercher un centre...",
+          "shipment-method-option": "Méthode d'expédition par défaut",
+          "vendor": "Sélectionner..."
         }
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Remises",
-      "labels": {
-        "name": "Nom",
-        "coupon": "Coupon",
-        "discountAmount": "Montant de la remise",
-        "discountAmountWithTax": "Montant de la remise avec taxe",
-        "currency": "Devise"
       },
-      "descr": {
-        "no-discounts": "Cette entité n'a pas encore de remises."
+      "shipment-items": {
+        "title": "Articles de {{title}}",
+        "subtitle": "Modifier les articles de l'expédition",
+        "labels": {
+          "item": "Article",
+          "status": "Statut",
+          "quantity": "Qté",
+          "price": "Prix",
+          "total": "Total"
+        }
+      },
+      "catalog-items-select": {
+        "title": "Ajouter un article à la commande"
+      },
+      "newOperation-wizard": {
+        "title": "Nouvelle opération",
+        "subtitle": "Sélectionner le type d'opération",
+        "menu": {
+          "shipment-operation": {
+            "description": "Document d'expédition"
+          },
+          "payment-operation": {
+            "description": "Document de paiement entrant"
+          },
+          "refund-operation": {
+            "description": "Document de remboursement"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Remises",
+        "labels": {
+          "name": "Nom",
+          "coupon": "Coupon",
+          "discountAmount": "Montant de la remise",
+          "discountAmountWithTax": "Montant de la remise avec taxe",
+          "currency": "Devise"
+        },
+        "descr": {
+          "no-discounts": "Cette entité n'a pas encore de remises."
+        }
       }
     },
     "widgets": {
