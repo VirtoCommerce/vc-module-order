@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.FileExperienceApi.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
@@ -15,6 +16,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Settings;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 using ConfigurationItem = VirtoCommerce.OrdersModule.Core.Model.ConfigurationItem;
+using ConfigurationItemFile = VirtoCommerce.OrdersModule.Core.Model.ConfigurationItemFile;
 using LineItem = VirtoCommerce.OrdersModule.Core.Model.LineItem;
 using OrderSettings = VirtoCommerce.OrdersModule.Core.ModuleConstants.Settings.General;
 using Shipment = VirtoCommerce.OrdersModule.Core.Model.Shipment;
@@ -24,15 +26,19 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class CustomerOrderBuilder : ICustomerOrderBuilder
     {
+        private const string _attachmentsUrlPrefix = "/api/files/";
+
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService)
+        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService, IFileUploadService fileUploadService)
         {
             _customerOrderService = customerOrderService;
             _settingsManager = settingsManager;
             _paymentMethodSearchService = paymentMethodSearchService;
+            _fileUploadService = fileUploadService;
         }
 
         #region ICustomerOrderConverter Members
@@ -40,7 +46,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         public virtual async Task<CustomerOrder> PlaceCustomerOrderFromCartAsync(ShoppingCart cart)
         {
             var customerOrder = ConvertCartToOrder(cart);
+
             await _customerOrderService.SaveChangesAsync([customerOrder]);
+            await UpdateConfigurationFiles(customerOrder.Items);
+
             return customerOrder;
         }
 
@@ -234,10 +243,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual LineItem ToOrderModel(CartModule.Core.Model.LineItem lineItem)
         {
-            if (lineItem == null)
-            {
-                throw new ArgumentNullException(nameof(lineItem));
-            }
+            ArgumentNullException.ThrowIfNull(lineItem);
 
             var retVal = AbstractTypeFactory<LineItem>.TryCreateInstance();
 
@@ -315,15 +321,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Type = configurationItem.Type;
             retVal.CustomText = configurationItem.CustomText;
 
+            if (configurationItem.Files != null)
+            {
+                retVal.Files = configurationItem.Files.Select(ToOrderModel).ToList();
+            }
+
             return retVal;
         }
 
         protected virtual Discount ToOrderModel(Discount discount)
         {
-            if (discount == null)
-            {
-                throw new ArgumentNullException(nameof(discount));
-            }
+            ArgumentNullException.ThrowIfNull(discount);
 
             var retVal = AbstractTypeFactory<Discount>.TryCreateInstance();
 
@@ -384,10 +392,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual ShipmentItem ToOrderModel(CartModule.Core.Model.ShipmentItem shipmentItem)
         {
-            if (shipmentItem == null)
-            {
-                throw new ArgumentNullException(nameof(shipmentItem));
-            }
+            ArgumentNullException.ThrowIfNull(shipmentItem);
 
             var retVal = AbstractTypeFactory<ShipmentItem>.TryCreateInstance();
             retVal.BarCode = shipmentItem.BarCode;
@@ -397,10 +402,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual PaymentIn ToOrderModel(Payment payment)
         {
-            if (payment == null)
-            {
-                throw new ArgumentNullException(nameof(payment));
-            }
+            ArgumentNullException.ThrowIfNull(payment);
 
             var retVal = AbstractTypeFactory<PaymentIn>.TryCreateInstance();
             retVal.Purpose = payment.Purpose;
@@ -430,10 +432,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual Address ToOrderModel(CoreModule.Core.Common.Address address)
         {
-            if (address == null)
-            {
-                throw new ArgumentNullException(nameof(address));
-            }
+            ArgumentNullException.ThrowIfNull(address);
 
             var retVal = AbstractTypeFactory<Address>.TryCreateInstance();
             retVal.Name = address.Name;
@@ -468,6 +467,20 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 ValueType = item.ValueType,
                 Values = item.Values
             };
+        }
+
+        protected virtual ConfigurationItemFile ToOrderModel(CartModule.Core.Model.ConfigurationItemFile file)
+        {
+            ArgumentNullException.ThrowIfNull(file);
+
+            var retVal = AbstractTypeFactory<ConfigurationItemFile>.TryCreateInstance();
+
+            retVal.Url = file.Url;
+            retVal.Name = file.Name;
+            retVal.ContentType = file.ContentType;
+            retVal.Size = file.Size;
+
+            return retVal;
         }
 
         protected virtual void CopyOtherAddress(ShoppingCart cart, CustomerOrder order)
@@ -535,6 +548,52 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
         {
+        }
+
+        protected virtual async Task UpdateConfigurationFiles(ICollection<LineItem> configuredItems)
+        {
+            var configurationItems = configuredItems.Where(x => !x.ConfigurationItems.IsNullOrEmpty()).SelectMany(x => x.ConfigurationItems.Where(y => y.Files != null));
+
+            var fileUrls = configurationItems
+                .SelectMany(y => y.Files)
+                .Where(x => !string.IsNullOrEmpty(x.Url))
+                .Select(x => x.Url)
+                .Distinct().ToArray();
+
+            var ids = fileUrls
+                .Select(GetFileId)
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToList();
+
+            var files = await _fileUploadService.GetAsync(ids);
+
+            files = files
+                .Where(x => x.Scope == CatalogModule.Core.ModuleConstants.ConfigurationSectionFilesScope && (!string.IsNullOrEmpty(x.OwnerEntityId) || !string.IsNullOrEmpty(x.OwnerEntityType)))
+                .ToList();
+
+            if (!files.IsNullOrEmpty())
+            {
+                foreach (var file in files)
+                {
+                    var configurationItem = configurationItems.FirstOrDefault(x => x.Files.Any(y => y.Url == GetFileUrl(file.Id)));
+                    file.OwnerEntityId = configurationItem?.Id;
+                    file.OwnerEntityType = nameof(ConfigurationItem);
+                }
+
+                await _fileUploadService.SaveChangesAsync(files);
+            }
+        }
+
+        private static string GetFileId(string url)
+        {
+            return url != null && url.StartsWith(_attachmentsUrlPrefix)
+                ? url[_attachmentsUrlPrefix.Length..]
+                : null;
+        }
+
+        private static string GetFileUrl(string id)
+        {
+            return $"{_attachmentsUrlPrefix}{id}";
         }
     }
 }

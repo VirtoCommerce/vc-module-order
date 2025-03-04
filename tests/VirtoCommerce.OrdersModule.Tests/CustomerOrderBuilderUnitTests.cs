@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using VirtoCommerce.FileExperienceApi.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.PaymentModule.Core.Services;
@@ -99,7 +100,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         private static CustomerOrderBuilder GetCustomerOrderBuilder()
         {
-            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object, new Mock<IPaymentMethodsSearchService>().Object);
+            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object, new Mock<IPaymentMethodsSearchService>().Object, new Mock<IFileUploadService>().Object);
         }
     }
 }

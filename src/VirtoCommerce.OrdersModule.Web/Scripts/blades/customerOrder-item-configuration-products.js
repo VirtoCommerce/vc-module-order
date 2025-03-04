@@ -11,7 +11,7 @@ angular.module('virtoCommerce.orderModule')
                     name: "platform.navigation.back",
                     icon: 'fas fa-arrow-left',
                     canExecuteMethod: function () { return true; },
-                    executeMethod: function() {
+                    executeMethod: function () {
                         var newBlade = {
                             id: "itemConfiguration",
                             controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationController',

@@ -35,6 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<CaptureEntity> Captures => DbContext.Set<CaptureEntity>();
         public IQueryable<CaptureItemEntity> CaptureItems => DbContext.Set<CaptureItemEntity>();
         public IQueryable<ConfigurationItemEntity> ConfigurationItems => DbContext.Set<ConfigurationItemEntity>();
+        public IQueryable<ConfigurationItemFileEntity> ConfigurationItemFiles => DbContext.Set<ConfigurationItemFileEntity>();
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
@@ -109,11 +110,19 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     }
 
                     var configurationItemIds = lineItems.Where(x => x.IsConfigured).Select(x => x.Id).ToArray();
-                    if (configurationItemIds.Any())
+                    if (configurationItemIds.Length > 0)
                     {
-                        await ConfigurationItems
+                        var configurationItems = await ConfigurationItems
                             .Where(x => configurationItemIds.Contains(x.LineItemId))
-                            .LoadAsync();
+                            .ToListAsync();
+
+                        if (configurationItems.Count > 0)
+                        {
+                            var configurationItemExistIds = configurationItems.Select(x => x.Id).ToList();
+                            await ConfigurationItemFiles
+                                .Where(x => configurationItemExistIds.Contains(x.ConfigurationItemId))
+                                .LoadAsync();
+                        }
                     }
                 }
             }

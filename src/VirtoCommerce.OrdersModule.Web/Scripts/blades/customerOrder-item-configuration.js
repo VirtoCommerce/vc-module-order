@@ -26,5 +26,15 @@ angular.module('virtoCommerce.orderModule')
                 bladeNavigationService.showBlade(newBlade, $scope.blade.parentBlade);
             }
 
+            $scope.showFiles = function () {
+                var newBlade = {
+                    id: "сonfigurationFiles",
+                    controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationFilesController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-configuration-files.tpl.html',
+                    currentEntity: blade.currentEntity,
+                };
+                bladeNavigationService.showBlade(newBlade, $scope.blade.parentBlade);
+            }
+
             blade.isLoading = false;
         }]);
