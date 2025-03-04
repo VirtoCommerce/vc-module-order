@@ -289,8 +289,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected override IList<CustomerOrder> ProcessModels(IList<CustomerOrderEntity> entities, string responseGroup)
         {
-            var orders = base.ProcessModels(entities, responseGroup).ToList();
-            orders.ForEach(ResolveFileUrls);
+            var orders = base.ProcessModels(entities, responseGroup);
+            if (!orders.IsNullOrEmpty())
+            {
+                orders.ToList().ForEach(ResolveFileUrls);
+            }
             return orders;
         }
 
