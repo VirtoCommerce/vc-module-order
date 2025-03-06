@@ -207,7 +207,10 @@
           "picture": "Imagem",
           "quantity": "Quantidade",
           "text": "Texto",
-          "product-name": "Nome do produto"
+          "product-name": "Nome do produto",
+          "file-name": "Nome do arquivo",
+          "file-size": "Tamanho do arquivo",
+          "file-content-type": "Tipo de arquivo"
         },
         "menu": {
           "products": {
@@ -217,12 +220,17 @@
           "texts": {
             "title": "Textos de configuração",
             "description": "Vários textos personalizados usados para criar uma configuração de produto única"
+          },
+          "files": {
+            "title": "Ficheiros de configuração",
+            "description": "Vários arquivos usados para criar uma configuração de produto única"
           }
         },
         "description": {
           "no-configuration": "Este produto não suporta configuração.",
           "no-products": "Este configuração ainda não possui produtos.",
-          "no-texts": "Este configuração ainda não possui textos."
+          "no-texts": "Este configuração ainda não possui textos.",
+          "no-files": "Esta configuração ainda não tem nenhum ficheiro."
         }
       },
       "transactions-list": {
