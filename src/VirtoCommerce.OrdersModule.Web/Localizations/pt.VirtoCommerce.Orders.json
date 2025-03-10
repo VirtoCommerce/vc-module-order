@@ -224,84 +224,84 @@
           "no-products": "Este configuração ainda não possui produtos.",
           "no-texts": "Este configuração ainda não possui textos."
         }
-      }
-    },
-    "transactions-list": {
-      "title": "Transações do gateway de pagamento",
-      "subtitle": "Lista de todas as interações do gateway de pagamento"
-    },
-    "transaction-detail": {
-      "title": "Detalhes da transação",
-      "subtitle": "Dados brutos da transação"
-    },
-    "shipment-detail": {
-      "title": "Envio #{{number}}",
-      "title-new": "Novo envio",
-      "subtitle": "Editar detalhes do envio",
-      "labels": {
-        "shipment-method": "Método de envio",
-        "approved": "Aprovado",
-        "shipment-number": "ID do envio",
-        "status": "Status",
-        "fulfillment-center": "Centro de distribuição",
-        "from": "Data e hora",
-        "employee": "Atribuído a",
-        "price": "Valor do envio",
-        "price-with-tax": "Valor do envio com impostos",
-        "shipment-method-option": "Método de envio",
-        "tracking-number": "Número de rastreamento",
-        "tracking-url": "URL de rastreamento",
-        "delivery-date": "Data de entrega",
-        "vendor": "Fornecedor"
       },
-      "placeholders": {
-        "status": "Selecionar...",
-        "shipment-method": "Selecionar...",
-        "fulfillment-center": "Selecionar ou pesquisar um centro...",
-        "shipment-method-option": "Método de envio padrão",
-        "vendor": "Selecionar..."
-      }
-    },
-    "shipment-items": {
-      "title": "{{title}} itens de linha",
-      "subtitle": "Editar itens de envio",
-      "labels": {
-        "item": "Item",
-        "status": "Status",
-        "quantity": "Qtd",
-        "price": "Preço",
-        "total": "Total"
-      }
-    },
-    "catalog-items-select": {
-      "title": "Adicionar item à ordem"
-    },
-    "newOperation-wizard": {
-      "title": "Nova operação",
-      "subtitle": "Selecionar tipo de operação",
-      "menu": {
-        "shipment-operation": {
-          "description": "Documento de envio"
+      "transactions-list": {
+        "title": "Transações do gateway de pagamento",
+        "subtitle": "Lista de todas as interações do gateway de pagamento"
+      },
+      "transaction-detail": {
+        "title": "Detalhes da transação",
+        "subtitle": "Dados brutos da transação"
+      },
+      "shipment-detail": {
+        "title": "Envio #{{number}}",
+        "title-new": "Novo envio",
+        "subtitle": "Editar detalhes do envio",
+        "labels": {
+          "shipment-method": "Método de envio",
+          "approved": "Aprovado",
+          "shipment-number": "ID do envio",
+          "status": "Status",
+          "fulfillment-center": "Centro de distribuição",
+          "from": "Data e hora",
+          "employee": "Atribuído a",
+          "price": "Valor do envio",
+          "price-with-tax": "Valor do envio com impostos",
+          "shipment-method-option": "Método de envio",
+          "tracking-number": "Número de rastreamento",
+          "tracking-url": "URL de rastreamento",
+          "delivery-date": "Data de entrega",
+          "vendor": "Fornecedor"
         },
-        "payment-operation": {
-          "description": "Documento de pagamento recebido"
-        },
-        "refund-operation": {
-          "description": "Documento de reembolso"
+        "placeholders": {
+          "status": "Selecionar...",
+          "shipment-method": "Selecionar...",
+          "fulfillment-center": "Selecionar ou pesquisar um centro...",
+          "shipment-method-option": "Método de envio padrão",
+          "vendor": "Selecionar..."
         }
-      }
-    },
-    "customerOrder-item-discounts": {
-      "title": "Descontos",
-      "labels": {
-        "name": "Nome",
-        "coupon": "Cupom",
-        "discountAmount": "Valor do desconto",
-        "discountAmountWithTax": "Valor do desconto com impostos",
-        "currency": "Moeda"
       },
-      "descr": {
-        "no-discounts": "Esta entidade ainda não possui descontos."
+      "shipment-items": {
+        "title": "{{title}} itens de linha",
+        "subtitle": "Editar itens de envio",
+        "labels": {
+          "item": "Item",
+          "status": "Status",
+          "quantity": "Qtd",
+          "price": "Preço",
+          "total": "Total"
+        }
+      },
+      "catalog-items-select": {
+        "title": "Adicionar item à ordem"
+      },
+      "newOperation-wizard": {
+        "title": "Nova operação",
+        "subtitle": "Selecionar tipo de operação",
+        "menu": {
+          "shipment-operation": {
+            "description": "Documento de envio"
+          },
+          "payment-operation": {
+            "description": "Documento de pagamento recebido"
+          },
+          "refund-operation": {
+            "description": "Documento de reembolso"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Descontos",
+        "labels": {
+          "name": "Nome",
+          "coupon": "Cupom",
+          "discountAmount": "Valor do desconto",
+          "discountAmountWithTax": "Valor do desconto com impostos",
+          "currency": "Moeda"
+        },
+        "descr": {
+          "no-discounts": "Esta entidade ainda não possui descontos."
+        }
       }
     },
     "widgets": {

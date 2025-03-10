@@ -1,8 +1,8 @@
-# Overview
+# Virto Commerce Order Module
 
 [![CI status](https://github.com/VirtoCommerce/vc-module-order/workflows/Module%20CI/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-order/actions?query=workflow%3A"Module+CI") [![Quality gate](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-order&metric=alert_status&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-order) [![Reliability rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-order&metric=reliability_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-order) [![Security rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-order&metric=security_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-order) [![Sqale rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-order&metric=sqale_rating&branch=dev)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-order)
 
-The Order module in VirtoCommerce is a document based flexible orders management system with possibility to add unlimited number of documents related to customer order.
+The Order module in Virto Commerce is a document based flexible orders management system with possibility to add unlimited number of documents related to customer order.
 
 The Order module main purpose is to store order details and manage orders created by users on client side. This module is not designed to be a full order processing system like ERP but serves as storage for customer orders details and can be synchronized with different external processing systems.
 
@@ -43,6 +43,7 @@ Virto Commerce Order module supports the following functionalities:
 
 * [Order module user documentation](https://docs.virtocommerce.org/platform/user-guide/order-management/overview/)
 * [GraphQL API documentation](https://docs.virtocommerce.org/platform/developer-guide/GraphQL-Storefront-API-Reference-xAPI/Order/overview/)
+* [REST API](https://virtostart-demo-admin.govirto.com/docs/index.html?urls.primaryName=VirtoCommerce.Orders)
 * [View on GitHub](https://github.com/VirtoCommerce/vc-module-order/)
 
 ## References

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.841.0</version>
+  <version>3.842.0</version>
   <version-tag />
 
   <platformVersion>3.867.0</platformVersion>
@@ -19,7 +19,7 @@
   </dependencies>
 
   <title>Order Management</title>
-  <description>Document based flexible order management system</description>
+  <description>Document based flexible order management system.</description>
   <authors>
     <author>Virto Commerce</author>
   </authors>
