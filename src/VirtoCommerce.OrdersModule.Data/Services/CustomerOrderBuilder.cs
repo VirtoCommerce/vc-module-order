@@ -25,8 +25,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 {
     public class CustomerOrderBuilder : ICustomerOrderBuilder
     {
-        private const string _attachmentsUrlPrefix = "/api/files/";
-
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
