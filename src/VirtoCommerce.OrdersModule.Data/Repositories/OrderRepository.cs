@@ -94,9 +94,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
-                var lineItems = await LineItems.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
+                var lineItems = await LineItems
+                    .Where(x => ids.Contains(x.CustomerOrderId))
+                    .ToArrayAsync();
 
-                if (lineItems.Any())
+                if (lineItems.Length > 0)
                 {
                     var lineItemIds = lineItems.Select(x => x.Id).ToArray();
 
@@ -114,15 +116,9 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     {
                         var configurationItems = await ConfigurationItems
                             .Where(x => configurationItemIds.Contains(x.LineItemId))
+                            .Include(x => x.Files)
+                            .AsSplitQuery()
                             .ToListAsync();
-
-                        if (configurationItems.Count > 0)
-                        {
-                            var configurationItemExistIds = configurationItems.Select(x => x.Id).ToList();
-                            await ConfigurationItemFiles
-                                .Where(x => configurationItemExistIds.Contains(x.ConfigurationItemId))
-                                .LoadAsync();
-                        }
                     }
                 }
             }

@@ -292,7 +292,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var orders = base.ProcessModels(entities, responseGroup);
             if (!orders.IsNullOrEmpty())
             {
-                orders.ToList().ForEach(ResolveFileUrls);
+                foreach (var order in orders)
+                {
+                    ResolveFileUrls(order);
+                }
             }
             return orders;
         }

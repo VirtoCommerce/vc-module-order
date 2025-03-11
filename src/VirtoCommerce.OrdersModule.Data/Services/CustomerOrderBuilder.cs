@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
-using VirtoCommerce.FileExperienceApi.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.PaymentModule.Core.Model;
@@ -31,14 +30,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
-        private readonly IFileUploadService _fileUploadService;
 
-        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService, IFileUploadService fileUploadService)
+        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService)
         {
             _customerOrderService = customerOrderService;
             _settingsManager = settingsManager;
             _paymentMethodSearchService = paymentMethodSearchService;
-            _fileUploadService = fileUploadService;
         }
 
         #region ICustomerOrderConverter Members
@@ -48,7 +45,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var customerOrder = ConvertCartToOrder(cart);
 
             await _customerOrderService.SaveChangesAsync([customerOrder]);
-            await UpdateConfigurationFiles(customerOrder.Items);
 
             return customerOrder;
         }
@@ -548,52 +544,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
         {
-        }
-
-        protected virtual async Task UpdateConfigurationFiles(ICollection<LineItem> configuredItems)
-        {
-            var configurationItems = configuredItems.Where(x => !x.ConfigurationItems.IsNullOrEmpty()).SelectMany(x => x.ConfigurationItems.Where(y => y.Files != null));
-
-            var fileUrls = configurationItems
-                .SelectMany(y => y.Files)
-                .Where(x => !string.IsNullOrEmpty(x.Url))
-                .Select(x => x.Url)
-                .Distinct().ToArray();
-
-            var ids = fileUrls
-                .Select(GetFileId)
-                .Where(x => !string.IsNullOrEmpty(x))
-                .ToList();
-
-            var files = await _fileUploadService.GetAsync(ids);
-
-            files = files
-                .Where(x => x.Scope == CatalogModule.Core.ModuleConstants.ConfigurationSectionFilesScope && (!string.IsNullOrEmpty(x.OwnerEntityId) || !string.IsNullOrEmpty(x.OwnerEntityType)))
-                .ToList();
-
-            if (!files.IsNullOrEmpty())
-            {
-                foreach (var file in files)
-                {
-                    var configurationItem = configurationItems.FirstOrDefault(x => x.Files.Any(y => y.Url == GetFileUrl(file.Id)));
-                    file.OwnerEntityId = configurationItem?.Id;
-                    file.OwnerEntityType = nameof(ConfigurationItem);
-                }
-
-                await _fileUploadService.SaveChangesAsync(files);
-            }
-        }
-
-        private static string GetFileId(string url)
-        {
-            return url != null && url.StartsWith(_attachmentsUrlPrefix)
-                ? url[_attachmentsUrlPrefix.Length..]
-                : null;
-        }
-
-        private static string GetFileUrl(string id)
-        {
-            return $"{_attachmentsUrlPrefix}{id}";
         }
     }
 }
