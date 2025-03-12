@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.AssetsModule.Core.Assets;
-using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -273,6 +272,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             LoadOrderDependenciesAsync(model).GetAwaiter().GetResult();
             model.ReduceDetails(responseGroup);
+            ResolveFileUrls(model);
             return model;
         }
 
@@ -287,29 +287,23 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
         }
 
-        protected override IList<CustomerOrder> ProcessModels(IList<CustomerOrderEntity> entities, string responseGroup)
-        {
-            var orders = base.ProcessModels(entities, responseGroup);
-            if (!orders.IsNullOrEmpty())
-            {
-                foreach (var order in orders)
-                {
-                    ResolveFileUrls(order);
-                }
-            }
-            return orders;
-        }
-
         private void ResolveFileUrls(CustomerOrder order)
         {
-            if (order.Items != null)
+            if (order.Items is null)
             {
-                var files = order.Items.Where(x => x.ConfigurationItems != null).SelectMany(x => x.ConfigurationItems.Where(y => y.Files != null).SelectMany(y => y.Files));
+                return;
+            }
 
-                foreach (var file in files.Where(x => !string.IsNullOrEmpty(x.Url)))
-                {
-                    file.Url = file.Url.StartsWith("/api") ? file.Url : _blobUrlResolver.GetAbsoluteUrl(file.Url);
-                }
+            var files = order.Items
+                .Where(i => i.ConfigurationItems != null)
+                .SelectMany(i => i.ConfigurationItems
+                    .Where(c => c.Files != null)
+                    .SelectMany(c => c.Files
+                        .Where(f => !string.IsNullOrEmpty(f.Url))));
+
+            foreach (var file in files)
+            {
+                file.Url = file.Url.StartsWith("/api") ? file.Url : _blobUrlResolver.GetAbsoluteUrl(file.Url);
             }
         }
     }
