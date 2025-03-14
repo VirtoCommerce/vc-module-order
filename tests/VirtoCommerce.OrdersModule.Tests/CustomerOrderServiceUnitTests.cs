@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -38,6 +39,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<ICustomerOrderTotalsCalculator> _customerOrderTotalsCalculatorMock;
         private readonly Mock<IShippingMethodsSearchService> _shippingMethodsSearchServiceMock;
         private readonly Mock<IPaymentMethodsSearchService> _paymentMethodsSearchServiceMock;
+        private readonly Mock<IBlobUrlResolver> _blobUrlResolver;
 
         public CustomerOrderServiceUnitTests()
         {
@@ -49,6 +51,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _customerOrderTotalsCalculatorMock = new Mock<ICustomerOrderTotalsCalculator>();
             _shippingMethodsSearchServiceMock = new Mock<IShippingMethodsSearchService>();
             _paymentMethodsSearchServiceMock = new Mock<IPaymentMethodsSearchService>();
+            _blobUrlResolver = new Mock<IBlobUrlResolver>();
         }
 
         [Fact]
@@ -166,6 +169,10 @@ namespace VirtoCommerce.OrdersModule.Tests
                 .Setup(x => x.SearchAsync(It.IsAny<PaymentMethodsSearchCriteria>(), It.IsAny<bool>()))
                 .ReturnsAsync(new PaymentMethodsSearchResult());
 
+            _blobUrlResolver
+                .Setup(x => x.GetAbsoluteUrl(It.IsAny<string>()))
+                .Returns<string>(x => x);
+
             return new CustomerOrderService(() => orderRepository,
                 platformMemoryCache,
                 _eventPublisherMock.Object,
@@ -173,7 +180,8 @@ namespace VirtoCommerce.OrdersModule.Tests
                 _storeServiceMock.Object,
                 _customerOrderTotalsCalculatorMock.Object,
                 _shippingMethodsSearchServiceMock.Object,
-                _paymentMethodsSearchServiceMock.Object);
+                _paymentMethodsSearchServiceMock.Object,
+                _blobUrlResolver.Object);
         }
     }
 }

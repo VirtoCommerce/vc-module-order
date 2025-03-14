@@ -207,7 +207,10 @@
           "picture": "Bild",
           "quantity": "Menge",
           "text": "Text",
-          "product-name": "Produktname"
+          "product-name": "Produktname",
+          "file-name": "Dateiname",
+          "file-size": "Dateigröße",
+          "file-content-type": "Dateityp"
         },
         "menu": {
           "products": {
@@ -217,12 +220,17 @@
           "texts": {
             "title": "Konfigurationstexte",
             "description": "Verschiedene individuell angepasste Texte zur Erstellung einer einzigartigen Produktkonfiguration"
+          },
+          "files": {
+            "title": "Konfigurationsdateien",
+            "description": "Verschiedene Dateien, die zur Erstellung einer eindeutigen Produktkonfiguration verwendet werden"
           }
         },
         "description": {
           "no-configuration": "Dieses Produkt unterstützt keine Konfiguration.",
           "no-products": "Dieses Konfiguration enthält noch keine Produkte.",
-          "no-texts": "Dieses Konfiguration enthält noch keine Texte."
+          "no-texts": "Dieses Konfiguration enthält noch keine Texte.",
+          "no-files": "Diese Konfiguration hat noch keine Dateien."
         }
       },
       "transactions-list": {

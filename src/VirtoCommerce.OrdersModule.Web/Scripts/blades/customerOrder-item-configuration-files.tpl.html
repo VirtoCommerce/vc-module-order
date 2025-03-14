@@ -1,0 +1,38 @@
+<div class="blade-content __medium-wide">
+  <div class="blade-inner">
+    <div class="inner-block" ng-init="setGridOptions({
+                rowTemplate: 'configuration-file.row.html',
+                data: 'blade.items',
+                rowHeight: 61,
+                enableSorting: false,
+                columnDefs: [
+                    { name: 'name', displayName: 'orders.blades.customerOrder-item-configuration.labels.file-name', cellTemplate: 'file-name.cell.html' },
+                    { name: 'url', displayName: '', enableColumnResizing: false, width: 61, cellTemplate: 'file-donwload.cell.html', pinnedRight: true }
+                ]})">
+      <div class="table-wrapper" ng-if="blade.items.length" style="margin: 0 -21px 0;">
+        <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-pinning ui-grid-height></div>
+      </div>
+      <div class="note" ng-if="!blade.items.length">{{ 'orders.blades.customerOrder-item-configuration.description.no-files' | translate }}</div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="configuration-file.row.html">
+  <div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid" ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'" class="ui-grid-cell" ng-class="{'ui-grid-row-header-cell': col.isRowHeader, '__hovered': grid.appScope.contextMenuEntity === row.entity}" role="{{col.isRowHeader ? 'rowheader' : 'gridcell' }}" ui-grid-cell></div>
+</script>
+
+<script type="text/ng-template" id="file-name.cell.html">
+  <div class="ui-grid-cell-contents">
+    <div class="inner-contents">
+      <div class="table-t">{{COL_FIELD}}</div>
+      <div class="table-descr">{{ 'orders.blades.customerOrder-item-configuration.labels.file-content-type' | translate }}: {{row.entity.contentType}}</div>
+      <div class="table-descr">{{ 'orders.blades.customerOrder-item-configuration.labels.file-size' | translate }}: {{row.entity.size}}</div>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="file-donwload.cell.html">
+  <div class="ui-grid-actions" style="z-index: 1">
+    <a href="{{COL_FIELD}}"><span class="table-ico fa fa-download"></span></a>
+  </div>
+</script>

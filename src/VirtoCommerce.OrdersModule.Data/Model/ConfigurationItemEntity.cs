@@ -1,4 +1,6 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -38,6 +40,10 @@ public class ConfigurationItemEntity : AuditableEntity
     [StringLength(255)]
     public string CustomText { get; set; }
 
+    #region Navigation Properties
+    public virtual ObservableCollection<ConfigurationItemFileEntity> Files { get; set; } = new NullCollection<ConfigurationItemFileEntity>();
+    #endregion
+
     public virtual ConfigurationItem ToModel(ConfigurationItem configurationItem)
     {
         System.ArgumentNullException.ThrowIfNull(configurationItem);
@@ -58,6 +64,8 @@ public class ConfigurationItemEntity : AuditableEntity
         configurationItem.CategoryId = CategoryId;
         configurationItem.Type = Type;
         configurationItem.CustomText = CustomText;
+
+        configurationItem.Files = Files.Select(x => x.ToModel(AbstractTypeFactory<ConfigurationItemFile>.TryCreateInstance())).ToList();
 
         return configurationItem;
     }
@@ -85,6 +93,11 @@ public class ConfigurationItemEntity : AuditableEntity
         Type = configurationItem.Type;
         CustomText = configurationItem.CustomText;
 
+        if (configurationItem.Files != null)
+        {
+            Files = new ObservableCollection<ConfigurationItemFileEntity>(configurationItem.Files.Select(x => AbstractTypeFactory<ConfigurationItemFileEntity>.TryCreateInstance().FromModel(x, pkMap)));
+        }
+
         return this;
     }
 
@@ -100,5 +113,10 @@ public class ConfigurationItemEntity : AuditableEntity
         target.CategoryId = CategoryId;
         target.Type = Type;
         target.CustomText = CustomText;
+
+        if (!Files.IsNullCollection())
+        {
+            Files.Patch(target.Files, (sourceImage, targetImage) => sourceImage.Patch(targetImage));
+        }
     }
 }

@@ -334,6 +334,55 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.ToTable("OrderConfigurationItem", (string)null);
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemFileEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ConfigurationItemId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("ContentType")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(2083)
+                        .HasColumnType("nvarchar(2083)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConfigurationItemId");
+
+                    b.ToTable("OrderConfigurationItemFile", (string)null);
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -1747,6 +1796,17 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Navigation("LineItem");
                 });
 
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemFileEntity", b =>
+                {
+                    b.HasOne("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", "ConfigurationItem")
+                        .WithMany("Files")
+                        .HasForeignKey("ConfigurationItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ConfigurationItem");
+                });
+
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.DiscountEntity", b =>
                 {
                     b.HasOne("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", "CustomerOrder")
@@ -2010,6 +2070,11 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.Navigation("DynamicPropertyObjectValues");
 
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.ConfigurationItemEntity", b =>
+                {
+                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("VirtoCommerce.OrdersModule.Data.Model.CustomerOrderEntity", b =>

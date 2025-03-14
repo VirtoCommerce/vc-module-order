@@ -35,6 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<CaptureEntity> Captures => DbContext.Set<CaptureEntity>();
         public IQueryable<CaptureItemEntity> CaptureItems => DbContext.Set<CaptureItemEntity>();
         public IQueryable<ConfigurationItemEntity> ConfigurationItems => DbContext.Set<ConfigurationItemEntity>();
+        public IQueryable<ConfigurationItemFileEntity> ConfigurationItemFiles => DbContext.Set<ConfigurationItemFileEntity>();
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
@@ -93,9 +94,11 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
-                var lineItems = await LineItems.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
+                var lineItems = await LineItems
+                    .Where(x => ids.Contains(x.CustomerOrderId))
+                    .ToArrayAsync();
 
-                if (lineItems.Any())
+                if (lineItems.Length > 0)
                 {
                     var lineItemIds = lineItems.Select(x => x.Id).ToArray();
 
@@ -109,10 +112,12 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                     }
 
                     var configurationItemIds = lineItems.Where(x => x.IsConfigured).Select(x => x.Id).ToArray();
-                    if (configurationItemIds.Any())
+                    if (configurationItemIds.Length > 0)
                     {
                         await ConfigurationItems
                             .Where(x => configurationItemIds.Contains(x.LineItemId))
+                            .Include(x => x.Files)
+                            .AsSplitQuery()
                             .LoadAsync();
                     }
                 }

@@ -207,7 +207,10 @@
           "picture": "画像",
           "quantity": "数量",
           "text": "テキスト",
-          "product-name": "商品名"
+          "product-name": "商品名",
+          "file-name": "ファイル名",
+          "file-size": "ファイルサイズ",
+          "file-content-type": "ファイル形式"
         },
         "menu": {
           "products": {
@@ -217,12 +220,17 @@
           "texts": {
             "title": "構成テキスト",
             "description": "独自の製品構成を作成するために使用されるさまざまなカスタマイズされたテキスト"
+          },
+          "files": {
+            "title": "設定ファイル",
+            "description": "ユニークな製品構成を作成するために使用される様々なファイル"
           }
         },
         "description": {
           "no-configuration": "この製品は構成をサポートしていません。",
           "no-products": "この構成にはまだ製品がありません。",
-          "no-texts": "この構成にはまだテキストがありません。"
+          "no-texts": "この構成にはまだテキストがありません。",
+          "no-files": "この構成にはまだファイルがありません。"
         }
       },
       "transactions-list": {
