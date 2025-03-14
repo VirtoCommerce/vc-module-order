@@ -8,7 +8,7 @@
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.809.0" />
     <dependency id="VirtoCommerce.Cart" version="3.825.0-alpha.728-vcst-2565" />
-    <dependency id="VirtoCommerce.Catalog" version="3.845.0-alpha.2300-vcst-2565" />
+    <dependency id="VirtoCommerce.Catalog" version="3.847.0-alpha.2307-vcst-2565" />
     <dependency id="VirtoCommerce.Core" version="3.813.0" />
     <dependency id="VirtoCommerce.Customer" version="3.817.0" />
     <dependency id="VirtoCommerce.Inventory" version="3.805.0" />
