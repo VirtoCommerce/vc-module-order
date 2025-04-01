@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -36,6 +37,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICustomerOrderTotalsCalculator _totalsCalculator;
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
+        private readonly IBlobUrlResolver _blobUrlResolver;
 
         public CustomerOrderService(
             Func<IOrderRepository> repositoryFactory,
@@ -45,7 +47,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             IStoreService storeService,
             ICustomerOrderTotalsCalculator totalsCalculator,
             IShippingMethodsSearchService shippingMethodsSearchService,
-            IPaymentMethodsSearchService paymentMethodSearchService)
+            IPaymentMethodsSearchService paymentMethodSearchService,
+            IBlobUrlResolver blobUrlResolver)
             : base(repositoryFactory, platformMemoryCache, eventPublisher)
         {
             _repositoryFactory = repositoryFactory;
@@ -56,6 +59,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _totalsCalculator = totalsCalculator;
             _shippingMethodsSearchService = shippingMethodsSearchService;
             _paymentMethodSearchService = paymentMethodSearchService;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         public override async Task SaveChangesAsync(IList<CustomerOrder> models)
@@ -268,6 +272,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             LoadOrderDependenciesAsync(model).GetAwaiter().GetResult();
             model.ReduceDetails(responseGroup);
+            ResolveFileUrls(model);
             return model;
         }
 
@@ -279,6 +284,26 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(model.Id);
                 GenericCachingRegion<CustomerOrder>.ExpireTokenForKey(model.CustomerId);
+            }
+        }
+
+        private void ResolveFileUrls(CustomerOrder order)
+        {
+            if (order.Items is null)
+            {
+                return;
+            }
+
+            var files = order.Items
+                .Where(i => i.ConfigurationItems != null)
+                .SelectMany(i => i.ConfigurationItems
+                    .Where(c => c.Files != null)
+                    .SelectMany(c => c.Files
+                        .Where(f => !string.IsNullOrEmpty(f.Url))));
+
+            foreach (var file in files)
+            {
+                file.Url = file.Url.StartsWith("/api") ? file.Url : _blobUrlResolver.GetAbsoluteUrl(file.Url);
             }
         }
     }
