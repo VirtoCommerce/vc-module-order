@@ -16,7 +16,8 @@
           "customer": "Client",
           "fee-total": null,
           "invoice": "Obtenir la facture PDF",
-          "withPrototypes": "Avec modèles"
+          "withPrototypes": "Avec modèles",
+          "organization": "Organiser"
         },
         "placeholders": {
           "employee": "Sélectionner un responsable",
@@ -207,7 +208,10 @@
           "picture": "Image",
           "quantity": "Quantité",
           "text": "Texte",
-          "product-name": "Nom du produit"
+          "product-name": "Nom du produit",
+          "file-name": "Nom du fichier",
+          "file-size": "Taille du fichier",
+          "file-content-type": "Type de fichier"
         },
         "menu": {
           "products": {
@@ -217,12 +221,17 @@
           "texts": {
             "title": "Textes de configuration",
             "description": "Divers textes personnalisés utilisés pour créer une configuration de produit unique"
+          },
+          "files": {
+            "title": "Fichiers de configuration",
+            "description": "Fichiers utilisés pour créer une configuration de produit unique"
           }
         },
         "description": {
           "no-configuration": "Ce produit ne prend pas en charge la configuration.",
           "no-products": "Ce configuration n'a pas encore de produits.",
-          "no-texts": "Ce configuration n'a pas encore de textes."
+          "no-texts": "Ce configuration n'a pas encore de textes.",
+          "no-files": "Cette configuration ne contient aucun fichier pour le moment."
         }
       },
       "transactions-list": {

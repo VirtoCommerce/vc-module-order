@@ -1,10 +1,10 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderItemConfigurationTextsController', [
+    .controller('virtoCommerce.orderModule.customerOrderItemConfigurationFilesController', [
         '$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService',
         function ($scope, uiGridHelper, bladeNavigationService) {
             var blade = $scope.blade;
-            blade.title = 'orders.blades.customerOrder-item-configuration.menu.texts.title';
-            blade.headIcon = 'fa fa-font';
+            blade.title = 'orders.blades.customerOrder-item-configuration.menu.files.title';
+            blade.headIcon = 'fa fa-file';
 
             blade.toolbarCommands = [
                 {
@@ -31,7 +31,8 @@ angular.module('virtoCommerce.orderModule')
 
             function initialize() {
                 blade.isLoading = false;
-                blade.items = blade.currentEntity.configurationItems.filter(x => x.type === 'Text');
+                var itemFiles = blade.currentEntity.configurationItems.filter(x => x.type === 'File').map(x => x.files);
+                blade.items = [].concat.apply([], itemFiles);
             }
 
             initialize();

@@ -207,7 +207,10 @@
           "picture": "图片",
           "quantity": "数量",
           "text": "文本",
-          "product-name": "产品名称"
+          "product-name": "产品名称",
+          "file-name": "文件名",
+          "file-size": "文件大小",
+          "file-content-type": "文件类型"
         },
         "menu": {
           "products": {
@@ -217,12 +220,17 @@
           "texts": {
             "title": "配置文本",
             "description": "用于创建独特产品配置的各种自定义文本"
+          },
+          "files": {
+            "title": "配置文件",
+            "description": "用于创建独特产品配置的各种文件"
           }
         },
         "description": {
           "no-configuration": "此产品不支持配置。",
           "no-products": "此配置尚无任何产品。",
-          "no-texts": "此配置尚无任何文本。"
+          "no-texts": "此配置尚无任何文本。",
+          "no-files": "此配置尚无任何文件。"
         }
       },
       "transactions-list": {
