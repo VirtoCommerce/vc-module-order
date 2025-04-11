@@ -338,6 +338,13 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #endregion ConfigurationItemImage
 
+            #region PurchasedProduct
+
+            modelBuilder.Entity<PurchasedProductEntity>().ToTable("PurchasedProduct").HasKey(x => x.Id);
+            modelBuilder.Entity<PurchasedProductEntity>().Property(x => x.Id).HasMaxLength(IdLength).ValueGeneratedOnAdd();
+
+            #endregion 
+
             base.OnModelCreating(modelBuilder);
 
             // Allows configuration for an entity type for different database types.

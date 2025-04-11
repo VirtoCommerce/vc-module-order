@@ -36,6 +36,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public IQueryable<CaptureItemEntity> CaptureItems => DbContext.Set<CaptureItemEntity>();
         public IQueryable<ConfigurationItemEntity> ConfigurationItems => DbContext.Set<ConfigurationItemEntity>();
         public IQueryable<ConfigurationItemFileEntity> ConfigurationItemFiles => DbContext.Set<ConfigurationItemFileEntity>();
+        public IQueryable<PurchasedProductEntity> PurchasedProducts => DbContext.Set<PurchasedProductEntity>();
 
         public IQueryable<OrderDynamicPropertyObjectValueEntity> OrderDynamicPropertyObjectValues => DbContext.Set<OrderDynamicPropertyObjectValueEntity>();
 
@@ -242,6 +243,18 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
 
             return result;
+        }
+
+        public virtual async Task<IList<PurchasedProductEntity>> GetPurchasedProductsByIdsAsync(IList<string> ids, string responseGroup)
+        {
+            if (ids.IsNullOrEmpty())
+            {
+                return [];
+            }
+
+            return ids.Count == 1
+                ? await PurchasedProducts.Where(x => x.Id == ids.First()).ToListAsync()
+                : await PurchasedProducts.Where(x => ids.Contains(x.Id)).ToListAsync();
         }
 
         public void PatchRowVersion(CustomerOrderEntity entity, byte[] rowVersion)

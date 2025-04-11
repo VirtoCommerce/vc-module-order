@@ -13,10 +13,12 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         IQueryable<PaymentInEntity> InPayments { get; }
         IQueryable<AddressEntity> Addresses { get; }
         IQueryable<LineItemEntity> LineItems { get; }
+        IQueryable<PurchasedProductEntity> PurchasedProducts { get; }
 
         Task<IList<CustomerOrderEntity>> GetCustomerOrdersByIdsAsync(IList<string> ids, string responseGroup = null);
         Task<IList<PaymentInEntity>> GetPaymentsByIdsAsync(IList<string> ids);
         Task<IList<ShipmentEntity>> GetShipmentsByIdsAsync(IList<string> ids);
+        Task<IList<PurchasedProductEntity>> GetPurchasedProductsByIdsAsync(IList<string> ids, string responseGroup);
 
         Task RemoveOrdersByIdsAsync(IList<string> ids);
 

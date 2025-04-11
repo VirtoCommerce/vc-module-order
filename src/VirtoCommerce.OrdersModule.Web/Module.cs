@@ -100,6 +100,9 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
 
+            serviceCollection.AddTransient<IPurchasedProductService, PurchasedProductService>();
+            serviceCollection.AddTransient<IPurchasedProductSearchService, PurchasedProductSearchService>();
+
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
