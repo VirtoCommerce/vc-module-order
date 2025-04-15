@@ -4,25 +4,33 @@ angular.module('virtoCommerce.orderModule')
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
-        blade.refresh = function () {
+        blade.refresh = function (entity) {
             if (blade.id === 'operationDetail') {
                 if (!blade.isNew)
-                    blade.initialize(blade.currentEntity);
+                    blade.initialize(entity == null ? blade.currentEntity : entity, entity != null);
             }
             else {
-                blade.isLoading = true;
-                customerOrders.get({ id: blade.customerOrder.id }, function (result) {
-                    blade.initialize(result);
+                if (entity == null) {
+                    blade.isLoading = true;
+                    customerOrders.get({ id: blade.customerOrder.id },
+                        function(result) {
+                            blade.initialize(result);
+                            blade.customerOrder = blade.currentEntity;
+                            //necessary for scope bounded ACL checks 
+                            blade.securityScopes = result.scopes;
+                        });
+                } else {
+                    blade.initialize(entity, true);
                     blade.customerOrder = blade.currentEntity;
                     //necessary for scope bounded ACL checks 
-                    blade.securityScopes = result.scopes;
-                });
+                    blade.securityScopes = entity.scopes;
+                }
             }
         }
 
-        blade.initialize = function (operation) {
-            blade.origEntity = operation;
-            blade.currentEntity = angular.copy(operation);
+        blade.initialize = function (operation, invert) {
+            blade.origEntity = invert ? angular.copy(operation) : operation;
+            blade.currentEntity = invert ? operation : angular.copy(operation);
             $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
