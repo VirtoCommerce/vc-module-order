@@ -7,7 +7,7 @@ angular.module('virtoCommerce.orderModule')
         blade.refresh = function (entity) {
             if (blade.id === 'operationDetail') {
                 if (!blade.isNew)
-                    blade.initialize(entity == null ? blade.currentEntity : entity, entity != null);
+                    blade.initialize(blade.currentEntity, entity);
             }
             else {
                 if (entity == null) {
@@ -20,7 +20,7 @@ angular.module('virtoCommerce.orderModule')
                             blade.securityScopes = result.scopes;
                         });
                 } else {
-                    blade.initialize(entity, true);
+                    blade.initialize(blade.currentEntity, entity);
                     blade.customerOrder = blade.currentEntity;
                     //necessary for scope bounded ACL checks 
                     blade.securityScopes = entity.scopes;
@@ -28,9 +28,14 @@ angular.module('virtoCommerce.orderModule')
             }
         }
 
-        blade.initialize = function (operation, invert) {
-            blade.origEntity = invert ? angular.copy(operation) : operation;
-            blade.currentEntity = invert ? operation : angular.copy(operation);
+        blade.initialize = function (operation1, operation2) {
+            if (operation2 != null) {
+                blade.origEntity = angular.copy(operation2);
+                blade.currentEntity = operation2;
+            } else {
+                blade.origEntity = operation1;
+                blade.currentEntity = angular.copy(operation1);
+            }
             $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
