@@ -28,13 +28,13 @@ angular.module('virtoCommerce.orderModule')
             }
         }
 
-        blade.initialize = function (operation1, operation2) {
-            if (operation2 != null) {
-                blade.origEntity = angular.copy(operation2);
-                blade.currentEntity = operation2;
+        blade.initialize = function (originalEntity, updatedEntity) {
+            if (updatedEntity != null) {
+                blade.origEntity = angular.copy(updatedEntity);
+                blade.currentEntity = updatedEntity;
             } else {
-                blade.origEntity = operation1;
-                blade.currentEntity = angular.copy(operation1);
+                blade.origEntity = originalEntity;
+                blade.currentEntity = angular.copy(originalEntity);
             }
             $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
