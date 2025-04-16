@@ -32,6 +32,11 @@ public class PurchasedProductSearchService(
             query = query.Where(x => x.UserId == criteria.UserId);
         }
 
+        if (!criteria.ProductIds.IsNullOrEmpty())
+        {
+            query = query.Where(x => criteria.ProductIds.Contains(x.ProductId));
+        }
+
         return query;
     }
 
