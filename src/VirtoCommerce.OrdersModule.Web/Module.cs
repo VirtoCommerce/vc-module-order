@@ -99,7 +99,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IPaymentFlowService, PaymentFlowService>();
             serviceCollection.AddTransient<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
-
+            serviceCollection.AddTransient<IPurchasedBeforeService, PurchasedBeforeService>();
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
