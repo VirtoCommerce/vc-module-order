@@ -560,6 +560,18 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "Benachrichtigungen für Statusänderungen bei Zahlungen/Versand verwenden",
       "description": "Für Statusänderungen bei Zahlungen/Versand Benachrichtigungen verwenden"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Aktivierung der Indizierung gekaufter Produkte",
+      "description": "Aktiviert den Prozess zur Indizierung gekaufter Produkte. Diese Einstellung ist global."
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Ereignisbasierte Indizierung gekaufter Produkte",
+      "description": "Alle Änderungen an der Bestellentität lösen eine Hintergrundaufgabe aus, um Kaufdaten zum Produktindex hinzuzufügen."
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Aktivierung des Store-Filters für gekaufte Produkte",
+      "description": "Zeigt den Filter für gekaufte Produkte im Store an."
     }
   },
   "module": {

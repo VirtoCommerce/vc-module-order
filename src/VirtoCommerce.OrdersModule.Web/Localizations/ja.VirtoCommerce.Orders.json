@@ -560,6 +560,18 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "支払い/配送ステータス変更通知を使用",
       "description": "支払い/配送ステータス変更通知に使用します"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "購入済み商品のインデックス化を有効にする",
+      "description": "購入済み商品のインデックス化プロセスを有効にします。この設定はグローバルです。"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "イベントベースの購入済み商品インデックス化",
+      "description": "注文エンティティの変更は、購入データを商品インデックスに追加するバックグラウンドタスクをトリガーします。"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "購入済み商品ストアフィルターを有効にする",
+      "description": "ストアで購入済み商品フィルターを表示します。"
     }
   },
   "module": {

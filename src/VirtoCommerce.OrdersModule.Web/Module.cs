@@ -39,6 +39,7 @@ using VirtoCommerce.Platform.Core.ExportImport;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Core.Settings.Events;
 using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Data.MySql.Extensions;
 using VirtoCommerce.Platform.Data.PostgreSql.Extensions;
@@ -99,8 +100,14 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IPaymentFlowService, PaymentFlowService>();
             serviceCollection.AddTransient<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
-            serviceCollection.AddTransient<IPurchasedBeforeService, PurchasedBeforeService>();
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
+
+            serviceCollection.AddTransient<IPurchasedProductsService, PurchasedProductsService>();
+            serviceCollection.AddTransient<PurchasedProductsChangesProvider>();
+            serviceCollection.AddTransient<PurchasedProductsDocumentBuilder>();
+            serviceCollection.AddTransient<PurchasedProductsIndexConfigurator>();
+            serviceCollection.AddTransient<IndexPurchasedProductsCustomerOrderChangedEventHandler>();
+            serviceCollection.AddTransient<PurchasedProductIndexationSettingChangedEventHandler>();
 
             serviceCollection.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             serviceCollection.AddOptions<HtmlToPdfOptions>().Configure<IConfiguration>((opts, config) =>
@@ -185,6 +192,8 @@ namespace VirtoCommerce.OrdersModule.Web
             appBuilder.RegisterEventHandler<OrderChangedEvent, LogChangesOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, SendNotificationsOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, IndexCustomerOrderChangedEventHandler>();
+            appBuilder.RegisterEventHandler<OrderChangedEvent, IndexPurchasedProductsCustomerOrderChangedEventHandler>();
+            appBuilder.RegisterEventHandler<ObjectSettingChangedEvent, PurchasedProductIndexationSettingChangedEventHandler>();
 
             if (fullTextSearchEnabled)
             {
@@ -217,6 +226,10 @@ namespace VirtoCommerce.OrdersModule.Web
             // enable polymorphic types in API controller methods
             var mvcJsonOptions = appBuilder.ApplicationServices.GetService<IOptions<MvcNewtonsoftJsonOptions>>();
             mvcJsonOptions.Value.SerializerSettings.Converters.Add(appBuilder.ApplicationServices.GetService<PolymorphicOperationJsonConverter>());
+
+            // Purchased products indexing
+            var moduleConfigurator = appBuilder.ApplicationServices.GetService<PurchasedProductsIndexConfigurator>();
+            moduleConfigurator.Configure().GetAwaiter().GetResult();
         }
 
         public void Uninstall()

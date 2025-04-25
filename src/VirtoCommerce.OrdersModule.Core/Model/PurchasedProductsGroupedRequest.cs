@@ -1,8 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class PurchasedProductsResult
+    public class PurchasedProductsGroupedRequest
     {
         public IList<string> ProductIds { get; set; } = [];
     }

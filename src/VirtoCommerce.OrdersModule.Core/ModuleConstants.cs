@@ -13,6 +13,8 @@ namespace VirtoCommerce.OrdersModule.Core
 
         public static string OrderIndexDocumentType { get; } = OrderIndexDocumentTypeConstant;
 
+        public const string PurchasedProductDocumentPrefix = "__purchased_by_user";
+
         public static class Security
         {
             public static class Permissions
@@ -249,6 +251,31 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false,
                 };
 
+                public static SettingDescriptor PurchasedProductIndexation { get; } = new SettingDescriptor
+                {
+                    Name = "Order.PurchasedProductIndexation.Enable",
+                    GroupName = "Orders|Products",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
+                };
+
+                public static SettingDescriptor EventBasedPurchasedProductIndexation { get; } = new SettingDescriptor
+                {
+                    Name = "Order.EventBasedPurchasedProductIndexation.Enable",
+                    GroupName = "Orders|Products",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false
+                };
+
+                public static SettingDescriptor PurchasedProductStoreFilter { get; } = new SettingDescriptor
+                {
+                    Name = "Order.PurchasedProductStoreFilter.Enable",
+                    GroupName = "Orders|Products",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
+                    IsPublic = true,
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -271,6 +298,9 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return CustomerOrderValidation;
                         yield return OrderPaidAndOrderSentNotifications;
                         yield return PaymentShipmentStatusChangedNotifications;
+                        yield return PurchasedProductIndexation;
+                        yield return EventBasedPurchasedProductIndexation;
+                        yield return PurchasedProductStoreFilter;
                     }
                 }
             }
@@ -283,6 +313,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     yield return General.OrderPaymentInNewNumberTemplate;
                     yield return General.OrderShipmentNewNumberTemplate;
                     yield return General.RefundNewNumberTemplate;
+                    yield return General.PurchasedProductStoreFilter;
                 }
             }
 
