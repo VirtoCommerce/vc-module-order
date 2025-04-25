@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
-using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.SearchModule.Core.Model;
 using VirtoCommerce.SearchModule.Core.Services;
@@ -14,16 +13,13 @@ public class PurchasedProductsChangesProvider : IIndexDocumentChangesProvider
 {
     public const string ChangeLogObjectType = nameof(CustomerOrder);
 
-    private readonly Func<IOrderRepository> _orderRepositoryFactory;
     private readonly ICustomerOrderService _customerOrderService;
     private readonly IChangeLogSearchService _changeLogSearchService;
 
     public PurchasedProductsChangesProvider(
-        Func<IOrderRepository> orderRepositoryFactory,
         ICustomerOrderService customerOrderService,
         IChangeLogSearchService changeLogSearchService)
     {
-        _orderRepositoryFactory = orderRepositoryFactory;
         _customerOrderService = customerOrderService;
         _changeLogSearchService = changeLogSearchService;
     }

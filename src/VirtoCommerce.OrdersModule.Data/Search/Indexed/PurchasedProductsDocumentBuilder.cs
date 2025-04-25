@@ -12,18 +12,13 @@ using static VirtoCommerce.OrdersModule.Core.ModuleConstants;
 namespace VirtoCommerce.OrdersModule.Data.Search.Indexed;
 public class PurchasedProductsDocumentBuilder : IIndexDocumentBuilder
 {
-    private readonly ICustomerOrderService _customerOrderService;
-    private readonly IPurchasedProductsService _purchasedBeforeService;
-    private readonly ISettingsManager _settingsManager;
+    private readonly IPurchasedProductsService _purchasedProductsService;
 
     public PurchasedProductsDocumentBuilder(
-        ICustomerOrderService customerOrderService,
         IPurchasedProductsService purchasedBeforeService,
         ISettingsManager settingsManager)
     {
-        _customerOrderService = customerOrderService;
-        _purchasedBeforeService = purchasedBeforeService;
-        _settingsManager = settingsManager;
+        _purchasedProductsService = purchasedBeforeService;
     }
 
     public async Task<IList<IndexDocument>> GetDocumentsAsync(IList<string> documentIds)
@@ -33,7 +28,7 @@ public class PurchasedProductsDocumentBuilder : IIndexDocumentBuilder
             ProductIds = documentIds,
         };
 
-        var products = await _purchasedBeforeService.GetGroupedPurchasedProductsAsync(request);
+        var products = await _purchasedProductsService.GetGroupedPurchasedProductsAsync(request);
 
         var result = products
             .Select(g => CreateDocument(g.Key, g.Value))

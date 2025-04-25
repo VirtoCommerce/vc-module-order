@@ -11,6 +11,8 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Services;
 public class PurchasedProductsService : IPurchasedProductsService
@@ -18,7 +20,11 @@ public class PurchasedProductsService : IPurchasedProductsService
     private readonly Func<IOrderRepository> _repositoryFactory;
     private readonly IPlatformMemoryCache _platformMemoryCache;
 
-    public PurchasedProductsService(Func<IOrderRepository> repositoryFactory, IPlatformMemoryCache platformMemoryCache)
+    public PurchasedProductsService(
+        Func<IOrderRepository> repositoryFactory,
+        IPlatformMemoryCache platformMemoryCache,
+        ISettingsManager settingsManager,
+        IStoreService storeService)
     {
         _repositoryFactory = repositoryFactory;
         _platformMemoryCache = platformMemoryCache;
@@ -74,6 +80,7 @@ public class PurchasedProductsService : IPurchasedProductsService
             .Select(x => new PurchasedProductEntity { Id = x, UserId = userId, StoreId = storeId, PurchasedBefore = true })
             .ToListAsync();
 
+        // Add not purchased
         result.AddRange(productIds.Except(result.Select(x => x.Id))
             .Select(x => new PurchasedProductEntity { Id = x, UserId = userId, StoreId = storeId, PurchasedBefore = false }));
 
@@ -109,14 +116,13 @@ public class PurchasedProductsService : IPurchasedProductsService
             })
             .ToListAsync();
 
-        // Add missing products
-        var missingProducts = productIds.Except(result.SelectMany(x => x.Items).Select(x => x.Id))
+        // Add empty
+        result.AddRange(productIds.Except(result.Select(x => x.Id))
             .Select(x => new PurchasedProductGroup
             {
                 Id = x,
-                Items = []
-            })
-            .ToList();
+                Items = [],
+            }));
 
         return result;
     }

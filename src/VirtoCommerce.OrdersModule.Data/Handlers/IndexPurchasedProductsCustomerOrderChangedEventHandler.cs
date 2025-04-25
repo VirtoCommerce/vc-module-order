@@ -44,7 +44,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 foreach (var productId in changedEntry.NewEntry.Items.Select(x => x.ProductId))
                 {
                     productIds.Add(productId);
-                };
+                }
             }
 
             var indexEntries = productIds
