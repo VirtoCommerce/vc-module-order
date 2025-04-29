@@ -16,13 +16,13 @@ angular.module('virtoCommerce.orderModule')
                         function(result) {
                             blade.initialize(result);
                             blade.customerOrder = blade.currentEntity;
-                            //necessary for scope bounded ACL checks 
+                            //necessary for scope bounded ACL checks
                             blade.securityScopes = result.scopes;
                         });
                 } else {
                     blade.initialize(blade.currentEntity, entity);
                     blade.customerOrder = blade.currentEntity;
-                    //necessary for scope bounded ACL checks 
+                    //necessary for scope bounded ACL checks
                     blade.securityScopes = entity.scopes;
                 }
             }
