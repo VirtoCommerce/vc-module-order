@@ -12,6 +12,7 @@ angular.module('virtoCommerce.orderModule')
                 id: 'customerOrderItems',
                 currentEntity: $scope.operation,
                 recalculateFn: blade.recalculate,
+                parentRefresh: blade.refresh,
                 controller: 'virtoCommerce.orderModule.customerOrderItemsController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-items.tpl.html'
             };

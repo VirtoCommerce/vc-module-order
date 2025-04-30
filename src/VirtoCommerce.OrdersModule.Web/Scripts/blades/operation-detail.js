@@ -4,25 +4,38 @@ angular.module('virtoCommerce.orderModule')
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
 
-        blade.refresh = function () {
+        blade.refresh = function (entity) {
             if (blade.id === 'operationDetail') {
                 if (!blade.isNew)
-                    blade.initialize(blade.currentEntity);
+                    blade.initialize(blade.currentEntity, entity);
             }
             else {
-                blade.isLoading = true;
-                customerOrders.get({ id: blade.customerOrder.id }, function (result) {
-                    blade.initialize(result);
+                if (entity == null) {
+                    blade.isLoading = true;
+                    customerOrders.get({ id: blade.customerOrder.id },
+                        function(result) {
+                            blade.initialize(result);
+                            blade.customerOrder = blade.currentEntity;
+                            //necessary for scope bounded ACL checks
+                            blade.securityScopes = result.scopes;
+                        });
+                } else {
+                    blade.initialize(blade.currentEntity, entity);
                     blade.customerOrder = blade.currentEntity;
-                    //necessary for scope bounded ACL checks 
-                    blade.securityScopes = result.scopes;
-                });
+                    //necessary for scope bounded ACL checks
+                    blade.securityScopes = entity.scopes;
+                }
             }
         }
 
-        blade.initialize = function (operation) {
-            blade.origEntity = operation;
-            blade.currentEntity = angular.copy(operation);
+        blade.initialize = function (originalEntity, updatedEntity) {
+            if (updatedEntity != null) {
+                blade.origEntity = angular.copy(updatedEntity);
+                blade.currentEntity = updatedEntity;
+            } else {
+                blade.origEntity = originalEntity;
+                blade.currentEntity = angular.copy(originalEntity);
+            }
             $scope.$broadcast("blade.currentEntity.documentLoaded");
             blade.isLoading = false;
         };
