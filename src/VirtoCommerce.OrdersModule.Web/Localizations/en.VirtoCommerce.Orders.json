@@ -606,6 +606,18 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "Use payments/shipments status changed notifications",
       "description": "Use for payments/shipments status change notifications"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Enable purchased product indexation",
+      "description": "Enables purchased product indexation process. This setting is global"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Event-based purchased product indexation",
+      "description": "Any changes to the order entity will trigger a background task to add purchase data to the product index"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Enable purchased product store filter",
+      "description": "Display the purchased product filter for the store"
     }
   },
   "module": {

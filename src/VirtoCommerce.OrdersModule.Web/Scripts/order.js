@@ -51,7 +51,7 @@ angular.module(moduleName, [
         }]
     )
     // define known Operations to be accessible platform-wide
-    .factory('virtoCommerce.orderModule.knownOperations', ['platformWebApp.bladeNavigationService', function (bladeNavigationService) {
+    .factory('virtoCommerce.orderModule.knownOperations', function () {
         var map = {};
 
         function registerOperation(op) {
@@ -84,7 +84,7 @@ angular.module(moduleName, [
             getOperation: getOperation,
             isLocked: isLocked
         };
-    }])
+    })
     .run(
         [
             '$rootScope',
@@ -566,7 +566,7 @@ angular.module(moduleName, [
                     controller: statisticsController,
                     size: [6, 1],
                     template: 'order-statistics-not-authorized.html',
-                    isVisible: function (blade) { return !checkPermissionToViewDashboard(); }
+                    isVisible: function () { return !checkPermissionToViewDashboard(); }
                 }, 'mainDashboard');
 
                 $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
@@ -865,7 +865,7 @@ angular.module(moduleName, [
                 var customerOrderItemConfigurationWidget = {
                     controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationWidgetController',
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-item-configuration-widget.tpl.html',
-                    isVisible: function (blade) { return blade.currentEntity.configurationItems.length && authService.checkPermission('catalog:configurations:read'); }
+                    isVisible: function (blade) { return blade.currentEntity.configurationItems?.length && authService.checkPermission('catalog:configurations:read'); }
                 };
                 widgetService.registerWidget(customerOrderItemConfigurationWidget, 'customerOrderItemDetailWidgets');
             }]);
