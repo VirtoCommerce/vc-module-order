@@ -310,6 +310,44 @@
         "descr": {
           "no-discounts": "Ta jednostka nie ma jeszcze żadnych rabatów."
         }
+      },
+      "address-details": {
+        "labels": {
+          "name": "Nazwa adresu",
+          "address-type": "Typ adresu",
+          "first-name": "Imię",
+          "middle-name": "Drugie imię",
+          "last-name": "Nazwisko",
+          "country": "Kraj",
+          "region": "Region",
+          "city": "Miasto",
+          "address1": "Adres - linia 1",
+          "address2": "Adres - linia 2",
+          "zip-code": "Kod pocztowy",
+          "email": "E-mail",
+          "phone": "Telefon",
+          "description": "Opis"
+        },
+        "placeholders": {
+          "address-type": "Wybierz typ adresu...",
+          "first-name": "Wpisz imię...",
+          "middle-name": "Wpisz drugie imię...",
+          "last-name": "Wpisz nazwisko...",
+          "country": "Wybierz kraj...",
+          "region": "Wybierz region...",
+          "city": "Wpisz miasto...",
+          "address1": "Wpisz adres - linia 1...",
+          "address2": "Wpisz adres - linia 2...",
+          "zip-code": "Wpisz kod pocztowy...",
+          "email": "Wpisz e-mail...",
+          "phone": "Wpisz telefon...",
+          "description": "Wpisz opis..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "Brak adresów"
+        }
       }
     },
     "widgets": {
@@ -415,6 +453,14 @@
       "payment-capture": {
         "title": "Potwierdzenie przechwycenia",
         "message": "Czy na pewno chcesz przechwycić płatność na {{amount}}?"
+      },
+      "address-delete": {
+        "title": "Potwierdź usunięcie",
+        "message": "Czy na pewno chcesz usunąć ten adres?"
+      },
+      "address-save": {
+        "title": "Zapisz zmiany",
+        "message": "Adres został zmodyfikowany. Czy chcesz zapisać zmiany?"
       }
     },
     "settings": {
