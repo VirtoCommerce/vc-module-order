@@ -606,6 +606,18 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "使用支付/发货状态变更通知",
       "description": "用于支付/发货状态变更通知"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "启用已购买产品索引",
+      "description": "启用已购买产品的索引过程。此设置是全局性的。"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "基于事件的已购买产品索引",
+      "description": "对订单实体的任何更改将触发后台任务，将购买数据添加到产品索引中。"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "启用已购买产品的商店过滤器",
+      "description": "在商店中显示已购买产品的过滤器。"
     }
   },
   "module": {
