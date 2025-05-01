@@ -149,8 +149,8 @@ angular.module('virtoCommerce.orderModule')
                         blade,
                         $scope.saveChanges,
                         closeCallback,
-                        'order.dialogs.address-save.title',
-                        'order.dialogs.address-save.message'
+                        'orders.dialogs.address-save.title',
+                        'orders.dialogs.address-save.message'
                     );
                 };
 
@@ -169,8 +169,8 @@ angular.module('virtoCommerce.orderModule')
                 function deleteEntry() {
                     const dialog = {
                         id: 'confirmDelete',
-                        title: 'order.dialogs.address-delete.title',
-                        message: 'order.dialogs.address-delete.message',
+                        title: 'orders.dialogs.address-delete.title',
+                        message: 'orders.dialogs.address-delete.message',
                         callback: function (remove) {
                             if (remove) {
                                 if (blade.deleteFn) {
