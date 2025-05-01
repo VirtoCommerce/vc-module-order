@@ -1,4 +1,4 @@
-﻿angular.module('virtoCommerce.orderModule')
+angular.module('virtoCommerce.orderModule')
 .controller('virtoCommerce.orderModule.customerOrderAddressWidgetController', ['$scope', 'platformWebApp.bladeNavigationService', function ($scope, bladeNavigationService) {
 	$scope.operation = {};
 	$scope.openAddressesBlade = function () {
@@ -6,8 +6,8 @@
 			id: 'orderOperationAddresses',
 			title: 'orders.widgets.customerOrder-address.blade-title',
 			currentEntities: $scope.operation.addresses,
-			controller: 'virtoCommerce.coreModule.common.coreAddressListController',
-			template: 'Modules/$(VirtoCommerce.Core)/Scripts/common/blades/address-list.tpl.html'
+			controller: 'virtoCommerce.orderModule.addressListController',
+			template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/addresses/address-list.tpl.html'
 		};
 		bladeNavigationService.showBlade(newBlade, $scope.blade);
 	};

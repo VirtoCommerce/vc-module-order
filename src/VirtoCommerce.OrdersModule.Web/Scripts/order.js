@@ -617,6 +617,95 @@ angular.module(moduleName, [
                     }
                 ]);
 
+                metaFormsService.registerMetaFields('OrderAddressDetails', [
+                    {
+                        name: 'description',
+                        templateUrl: 'description.html',
+                        priority: 0
+                    },
+                    {
+                        templateUrl: 'addressTypeSelector.html',
+                        priority: 1
+                    },
+                    {
+                        name: 'firstName',
+                        title: 'orders.blades.address-details.labels.first-name',
+                        placeholder: 'orders.blades.address-details.placeholders.first-name',
+                        valueType: 'ShortText',
+                        isRequired: false,
+                        priority: 2
+                    },
+                    {
+                        name: 'middleName',
+                        title: 'orders.blades.address-details.labels.middle-name',
+                        placeholder: 'orders.blades.address-details.placeholders.middle-name',
+                        valueType: 'ShortText',
+                        isRequired: false,
+                        priority: 3
+                    },
+                    {
+                        name: 'lastName',
+                        title: 'orders.blades.address-details.labels.last-name',
+                        placeholder: 'orders.blades.address-details.placeholders.last-name',
+                        valueType: 'ShortText',
+                        isRequired: false,
+                        priority: 4
+                    },
+                    {
+                        templateUrl: 'countrySelector.html',
+                        priority: 5
+                    },
+                    {
+                        templateUrl: 'countryRegionSelector.html',
+                        priority: 6
+                    },
+                    {
+                        name: 'city',
+                        title: 'orders.blades.address-details.labels.city',
+                        placeholder: 'orders.blades.address-details.placeholders.city',
+                        valueType: 'ShortText',
+                        isRequired: true,
+                        priority: 7
+                    },
+                    {
+                        name: 'line1',
+                        title: 'orders.blades.address-details.labels.address1',
+                        placeholder: 'orders.blades.address-details.placeholders.address1',
+                        valueType: 'ShortText',
+                        isRequired: true,
+                        priority: 8
+                    },
+                    {
+                        name: 'line2',
+                        title: 'orders.blades.address-details.labels.address2',
+                        placeholder: 'orders.blades.address-details.placeholders.address2',
+                        valueType: 'ShortText',
+                        priority: 9
+                    },
+                    {
+                        name: 'postalCode',
+                        title: 'orders.blades.address-details.labels.zip-code',
+                        placeholder: 'orders.blades.address-details.placeholders.zip-code',
+                        valueType: 'ShortText',
+                        isRequired: true,
+                        priority: 10
+                    },
+                    {
+                        name: 'email',
+                        title: 'orders.blades.address-details.labels.email',
+                        placeholder: 'orders.blades.address-details.placeholders.email',
+                        valueType: 'Email',
+                        priority: 11
+                    },
+                    {
+                        name: 'phone',
+                        title: 'orders.blades.address-details.labels.phone',
+                        placeholder: 'orders.blades.address-details.placeholders.phone',
+                        valueType: 'ShortText',
+                        priority: 12
+                    }
+                ]);
+
                 //Register permission scopes templates used for scope bounded definition in role management ui
                 var orderStoreScope = {
                     type: 'OrderSelectedStoreScope',

@@ -441,6 +441,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.City = address.City;
             retVal.Email = address.Email;
             retVal.FirstName = address.FirstName;
+            retVal.MiddleName = address.MiddleName;
             retVal.LastName = address.LastName;
             retVal.Line1 = address.Line1;
             retVal.Line2 = address.Line2;
