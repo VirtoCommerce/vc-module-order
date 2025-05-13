@@ -13,7 +13,10 @@ angular.module('virtoCommerce.orderModule')
                 blade.subtitle = 'orders.widgets.customerOrder-items.blade-subtitle';
             });
 
-            blade.refresh = function () {
+            blade.refresh = function (entity) {
+                if (entity != null) {
+                    blade.currentEntity = entity;
+                }
                 blade.isLoading = false;
                 blade.selectedAll = false;
             };
