@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.CatalogModule.Core.Model;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Core.ChangeLog;
@@ -45,13 +47,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 }
             }
 
-            var criteria = new ChangeLogSearchCriteria
-            {
-                ObjectType = ChangeLogObjectType,
-                StartDate = startDate,
-                EndDate = endDate,
-                Take = 0
-            };
+            var criteria = GetChangeLogSearchCriteria(startDate, endDate, 0, 0);
 
             // Get changes count from operation log
             return (await _changeLogSearchService.SearchAsync(criteria)).TotalCount;
@@ -87,15 +83,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// </summary>
         private async Task<IList<IndexDocumentChange>> GetChangesFromOperaionLog(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
-            var criteria = new ChangeLogSearchCriteria
-            {
-                ObjectType = ChangeLogObjectType,
-                StartDate = startDate,
-                EndDate = endDate,
-                Skip = (int)skip,
-                Take = (int)take
-            };
-
+            var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip, take);
             var operations = (await _changeLogSearchService.SearchAsync(criteria)).Results;
 
             return operations.Select(o =>
@@ -106,6 +94,30 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                     ChangeDate = o.ModifiedDate ?? o.CreatedDate,
                 }
             ).ToArray();
+        }
+
+        protected virtual ChangeLogSearchCriteria GetChangeLogSearchCriteria(DateTime? startDate, DateTime? endDate, long skip, long take)
+        {
+            var criteria = AbstractTypeFactory<ChangeLogSearchCriteria>.TryCreateInstance();
+
+            var types = AbstractTypeFactory<CustomerOrder>.AllTypeInfos.Select(x => x.TypeName).ToList();
+
+            if (types.Count != 0)
+            {
+                types.Add(nameof(CustomerOrder));
+                criteria.ObjectTypes = types;
+            }
+            else
+            {
+                criteria.ObjectType = nameof(CustomerOrder);
+            }
+
+            criteria.StartDate = startDate;
+            criteria.EndDate = endDate;
+            criteria.Skip = (int)skip;
+            criteria.Take = (int)take;
+
+            return criteria;
         }
     }
 }
