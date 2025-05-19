@@ -193,7 +193,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
                     if (!string.IsNullOrEmpty(languageCode) && !localizedValues.IsNullOrEmpty())
                     {
-                        var localizedValue = localizedValues.FirstOrDefault(y => y.Key.EqualsInvariant(x.Id));
+                        var localizedValue = localizedValues.FirstOrDefault(y => y.Key.EqualsIgnoreCase(x.Id));
 
                         if (localizedValue != null)
                         {

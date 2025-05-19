@@ -563,7 +563,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var paymentMethodCode = parameters.Get("code");
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
-            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsInvariant(paymentMethodCode))))
+            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
             {
                 //Each payment method must check that these parameters are addressed to it
                 var result = inPayment.PaymentMethod.ValidatePostProcessRequest(parameters);
