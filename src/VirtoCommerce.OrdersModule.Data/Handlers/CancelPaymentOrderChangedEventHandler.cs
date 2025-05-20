@@ -43,7 +43,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var order = ordersByIdDict[jobArgument.CustomerOrderId];
                 if (order != null)
                 {
-                    var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsInvariant(jobArgument.PaymentId));
+                    var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsIgnoreCase(jobArgument.PaymentId));
                     if (paymentToCancel != null && !paymentToCancel.IsCancelled)
                     {
                         CancelPayment(paymentToCancel, order);
