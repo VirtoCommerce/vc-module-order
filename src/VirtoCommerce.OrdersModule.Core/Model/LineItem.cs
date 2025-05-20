@@ -10,7 +10,7 @@ using VirtoCommerce.Platform.Core.Swagger;
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderLineItem")]
-    public class LineItem : AuditableEntity, IHasTaxDetalization, ISupportCancellation, IHasDimension,
+    public class LineItem : AuditableEntity, IHasOuterId, IHasTaxDetalization, ISupportCancellation, IHasDimension,
         IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         /// <summary>

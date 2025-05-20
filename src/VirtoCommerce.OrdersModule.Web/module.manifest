@@ -4,7 +4,7 @@
   <version>3.848.0</version>
   <version-tag />
 
-  <platformVersion>3.867.0</platformVersion>
+  <platformVersion>3.888.0-alpha.13082-vcst-3154</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.809.0" />
     <dependency id="VirtoCommerce.Cart" version="3.825.0" />

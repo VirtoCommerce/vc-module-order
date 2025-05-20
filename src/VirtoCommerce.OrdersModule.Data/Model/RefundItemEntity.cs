@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class RefundItemEntity : AuditableEntity
+    public class RefundItemEntity : AuditableEntity, IHasOuterId
     {
         public int Quantity { get; set; }
 

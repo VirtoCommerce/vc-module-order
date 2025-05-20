@@ -125,6 +125,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             var result = new List<IFilter>();
 
+            if (!criteria.OuterIds.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("outerid", criteria.OuterIds));
+            }
+
             if (!criteria.StoreIds.IsNullOrEmpty())
             {
                 result.Add(FilterHelper.CreateTermFilter("storeid", criteria.StoreIds));

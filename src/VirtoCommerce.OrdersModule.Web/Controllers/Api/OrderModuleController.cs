@@ -168,14 +168,42 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<CustomerOrder>> GetById(string id, [SwaggerOptional][FromQuery] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            searchCriteria.Ids = new[] { id };
+            searchCriteria.Ids = [id];
             searchCriteria.ResponseGroup = respGroup;
             searchCriteria.WithPrototypes = true;
+
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
+
+            var result = await _searchService.SearchAsync(searchCriteria);
+
+            return Ok(result.Results.FirstOrDefault());
+        }
+
+        /// <summary>
+        /// Find customer order by outer id
+        /// </summary>
+        /// <remarks>Return a single customer order with all nested documents or null if order was not found</remarks>
+        /// <param name="outerId">customer order outer id</param>
+        /// <param name="responseGroup"></param>
+        [HttpGet]
+        [Route("outer/{outerId}")]
+        public async Task<ActionResult<CustomerOrder>> GetByOuterId(string outerId, [SwaggerOptional][FromQuery] string responseGroup = null)
+        {
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.OuterIds = [outerId];
+            searchCriteria.ResponseGroup = responseGroup;
+            searchCriteria.WithPrototypes = true;
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
             var result = await _searchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());

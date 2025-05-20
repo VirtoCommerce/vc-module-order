@@ -579,6 +579,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OuterId");
+
                     b.ToTable("CustomerOrder", (string)null);
                 });
 
@@ -1222,6 +1224,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.HasIndex("CustomerOrderId");
 
+                    b.HasIndex("OuterId");
+
                     b.HasIndex("ShipmentId");
 
                     b.ToTable("OrderPaymentIn", (string)null);
@@ -1560,6 +1564,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerOrderId");
+
+                    b.HasIndex("OuterId");
 
                     b.ToTable("OrderShipment", (string)null);
                 });

@@ -15,7 +15,7 @@ using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class ShipmentService : CrudService<Shipment, ShipmentEntity, ShipmentChangeEvent, ShipmentChangedEvent>, IShipmentService
+    public class ShipmentService : OuterEntityService<Shipment, ShipmentEntity, ShipmentChangeEvent, ShipmentChangedEvent>, IShipmentService
     {
         public ShipmentService(
             Func<IOrderRepository> repositoryFactory,
@@ -29,6 +29,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override Task<IList<ShipmentEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((IOrderRepository)repository).GetShipmentsByIdsAsync(ids);
+        }
+
+        protected override IQueryable<ShipmentEntity> GetEntitiesQuery(IRepository repository)
+        {
+            return ((IOrderRepository)repository).Shipments;
         }
 
         protected override void ClearCache(IList<Shipment> models)

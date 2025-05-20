@@ -15,7 +15,7 @@ using VirtoCommerce.Platform.Data.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class PaymentService : CrudService<PaymentIn, PaymentInEntity, PaymentChangeEvent, PaymentChangedEvent>, IPaymentService
+    public class PaymentService : OuterEntityService<PaymentIn, PaymentInEntity, PaymentChangeEvent, PaymentChangedEvent>, IPaymentService
     {
         private readonly Func<IOrderRepository> _repositoryFactory;
         private readonly ICustomerOrderService _customerOrderService;
@@ -88,6 +88,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override Task<IList<PaymentInEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((IOrderRepository)repository).GetPaymentsByIdsAsync(ids);
+        }
+
+        protected override IQueryable<PaymentInEntity> GetEntitiesQuery(IRepository repository)
+        {
+            return ((IOrderRepository)repository).InPayments;
         }
 
         protected override void ClearCache(IList<PaymentIn> models)

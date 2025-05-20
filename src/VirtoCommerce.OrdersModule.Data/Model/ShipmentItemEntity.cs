@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentItemEntity : AuditableEntity
+    public class ShipmentItemEntity : AuditableEntity, IHasOuterId
     {
         [StringLength(128)]
         public string BarCode { get; set; }

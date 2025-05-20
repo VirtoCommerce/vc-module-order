@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class CaptureItemEntity : AuditableEntity
+    public class CaptureItemEntity : AuditableEntity, IHasOuterId
     {
         public int Quantity { get; set; }
 
