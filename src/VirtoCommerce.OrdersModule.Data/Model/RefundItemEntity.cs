@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class RefundItemEntity : AuditableEntity, IHasOuterId
+    public class RefundItemEntity : AuditableEntity, IHasOuterId, IDataEntity<RefundItemEntity, RefundItem>
     {
         public int Quantity { get; set; }
 

@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public abstract class OperationEntity : AuditableEntity, IHasOuterId
+    public abstract class OperationEntity : AuditableEntity, IHasOuterId, IDataEntity<OperationEntity, OrderOperation>
     {
         [Required]
         [StringLength(64)]

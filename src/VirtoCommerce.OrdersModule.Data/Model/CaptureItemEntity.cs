@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class CaptureItemEntity : AuditableEntity, IHasOuterId
+    public class CaptureItemEntity : AuditableEntity, IHasOuterId, IDataEntity<CaptureItemEntity, CaptureItem>
     {
         public int Quantity { get; set; }
 

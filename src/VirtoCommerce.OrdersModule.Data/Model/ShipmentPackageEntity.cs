@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentPackageEntity : AuditableEntity
+    public class ShipmentPackageEntity : AuditableEntity, IDataEntity<ShipmentPackageEntity, ShipmentPackage>
     {
         [StringLength(128)]
         public string BarCode { get; set; }
