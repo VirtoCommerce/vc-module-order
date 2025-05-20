@@ -3,7 +3,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class CaptureItem : AuditableEntity, ICloneable
+    public class CaptureItem : AuditableEntity, IHasOuterId, ICloneable
     {
         public int Quantity { get; set; }
 

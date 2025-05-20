@@ -82,16 +82,43 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult<PaymentIn>> GetById(string id, [SwaggerOptional][FromQuery] string respGroup = null)
         {
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
-            searchCriteria.Ids = new[] { id };
+            searchCriteria.Ids = [id];
             searchCriteria.ResponseGroup = respGroup;
+
             var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
+
             var result = await _paymentSearchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
+        }
+
+        /// <summary>
+        /// Get order payment by outer id
+        /// </summary>
+        /// <remarks>Return a single order payment with all nested documents or null if payment was not found</remarks>
+        /// <param name="outerId"> order payment outer id</param>
+        /// <param name="responseGroup"></param>
+        [HttpGet]
+        [Route("outer/{outerId}")]
+        public async Task<ActionResult<PaymentIn>> GetByOuterId(string outerId, [SwaggerOptional][FromQuery] string responseGroup = null)
+        {
+            var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
+            searchCriteria.OuterIds = [outerId];
+            searchCriteria.ResponseGroup = responseGroup;
+
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var searchResult = await _paymentSearchService.SearchAsync(searchCriteria);
+
+            return Ok(searchResult.Results.FirstOrDefault());
         }
 
         /// <summary>
@@ -129,7 +156,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                     Errors = validationResult.Errors
                 });
             }
-            await _paymentService.SaveChangesAsync(new[] { payment });
+            await _paymentService.SaveChangesAsync([payment]);
             return Ok(payment);
         }
 

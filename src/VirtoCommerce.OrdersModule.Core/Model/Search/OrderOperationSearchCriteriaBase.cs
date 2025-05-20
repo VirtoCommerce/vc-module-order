@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model.Search
@@ -6,6 +7,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
     public abstract class OrderOperationSearchCriteriaBase : SearchCriteriaBase
     {
         public string[] Ids { get; set; }
+
+        public IList<string> OuterIds { get; set; }
 
         public bool? HasParentOperation { get; set; }
 

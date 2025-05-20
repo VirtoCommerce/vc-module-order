@@ -8,11 +8,12 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class LineItemEntity : AuditableEntity, IHasOuterId
+    public class LineItemEntity : AuditableEntity, IHasOuterId, IDataEntity<LineItemEntity, LineItem>
     {
         [StringLength(128)]
         public string PriceId { get; set; }

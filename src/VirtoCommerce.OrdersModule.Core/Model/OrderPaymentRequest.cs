@@ -1,6 +1,8 @@
+using VirtoCommerce.Platform.Core.Common;
+
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class OrderPaymentRequest
+    public class OrderPaymentRequest : IHasOuterId
     {
         public string OrderId { get; set; }
 

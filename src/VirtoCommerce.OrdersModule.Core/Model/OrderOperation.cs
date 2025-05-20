@@ -8,7 +8,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public abstract class OrderOperation : AuditableEntity, IOperation, ISupportCancellation, IHasDynamicProperties, IHasChangesHistory, ICloneable
+    public abstract class OrderOperation : AuditableEntity, IHasOuterId, IOperation, ISupportCancellation, IHasDynamicProperties, IHasChangesHistory, ICloneable
     {
         protected OrderOperation()
         {

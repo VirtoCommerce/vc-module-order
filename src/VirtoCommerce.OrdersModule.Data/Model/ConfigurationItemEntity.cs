@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model;
 
-public class ConfigurationItemEntity : AuditableEntity
+public class ConfigurationItemEntity : AuditableEntity, IDataEntity<ConfigurationItemEntity, ConfigurationItem>
 {
     [StringLength(128)]
     public string LineItemId { get; set; }

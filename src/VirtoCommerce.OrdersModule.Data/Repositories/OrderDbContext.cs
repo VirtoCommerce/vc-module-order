@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Data.Model;
+using VirtoCommerce.Platform.Data.Extensions;
 using VirtoCommerce.Platform.Data.Infrastructure;
 
 namespace VirtoCommerce.OrdersModule.Data.Repositories
@@ -21,11 +22,17 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             #region CustomerOrder
 
-            modelBuilder.Entity<CustomerOrderEntity>().ToTable("CustomerOrder").HasKey(x => x.Id);
-            modelBuilder.Entity<CustomerOrderEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
-            modelBuilder.Entity<CustomerOrderEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
+            modelBuilder.Entity<CustomerOrderEntity>(builder =>
+            {
+
+                builder.ToAuditableEntityTable("CustomerOrder");
+                builder.Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
+                builder.HasIndex(x => x.OuterId);
+            });
 
             #endregion
 
@@ -78,17 +85,21 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #region Shipment
 
-            modelBuilder.Entity<ShipmentEntity>().HasKey(x => x.Id);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.VolumetricWeight).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Weight).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Height).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Length).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.Width).HasPrecision(18, 4);
-            modelBuilder.Entity<ShipmentEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
-            modelBuilder.Entity<ShipmentEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.Shipments)
-                        .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            modelBuilder.Entity<ShipmentEntity>().ToTable("OrderShipment");
+            modelBuilder.Entity<ShipmentEntity>(builder =>
+            {
+                builder.ToAuditableEntityTable("OrderShipment");
+                builder.Property(x => x.VolumetricWeight).HasPrecision(18, 4);
+                builder.Property(x => x.Weight).HasPrecision(18, 4);
+                builder.Property(x => x.Height).HasPrecision(18, 4);
+                builder.Property(x => x.Length).HasPrecision(18, 4);
+                builder.Property(x => x.Width).HasPrecision(18, 4);
+                builder.Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
+
+                builder.HasOne(x => x.CustomerOrder).WithMany(x => x.Shipments)
+                            .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade).IsRequired();
+
+                builder.HasIndex(x => x.OuterId);
+            });
 
             #endregion
 
@@ -111,17 +122,19 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #region PaymentIn
 
-            modelBuilder.Entity<PaymentInEntity>().HasKey(x => x.Id);
-            modelBuilder.Entity<PaymentInEntity>().Property(x => x.Id).HasMaxLength(MaxLength).ValueGeneratedOnAdd();
+            modelBuilder.Entity<PaymentInEntity>(builder =>
+            {
+                builder.ToAuditableEntityTable("OrderPaymentIn");
+                builder.Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
 
-            modelBuilder.Entity<PaymentInEntity>().Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
-            modelBuilder.Entity<PaymentInEntity>().HasOne(x => x.CustomerOrder).WithMany(x => x.InPayments)
-                        .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
+                builder.HasOne(x => x.CustomerOrder).WithMany(x => x.InPayments)
+                            .HasForeignKey(x => x.CustomerOrderId).OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PaymentInEntity>().HasOne(x => x.Shipment).WithMany(x => x.InPayments)
-                        .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Restrict);
+                builder.HasOne(x => x.Shipment).WithMany(x => x.InPayments)
+                            .HasForeignKey(x => x.ShipmentId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<PaymentInEntity>().ToTable("OrderPaymentIn");
+                builder.HasIndex(x => x.OuterId);
+            });
 
             #endregion
 
@@ -338,11 +351,9 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 
             #endregion ConfigurationItemImage
 
-            base.OnModelCreating(modelBuilder);
-
             // Allows configuration for an entity type for different database types.
             // Applies configuration from all <see cref="IEntityTypeConfiguration{TEntity}" in VirtoCommerce.OrdersModule.Data.XXX project. /> 
-            switch (this.Database.ProviderName)
+            switch (Database.ProviderName)
             {
                 case "Pomelo.EntityFrameworkCore.MySql":
                     modelBuilder.ApplyConfigurationsFromAssembly(Assembly.Load("VirtoCommerce.OrdersModule.Data.MySql"));

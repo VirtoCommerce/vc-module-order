@@ -3,7 +3,7 @@ using VirtoCommerce.Platform.Core.GenericCrud;
 
 namespace VirtoCommerce.OrdersModule.Core.Services
 {
-    public interface IPaymentService : ICrudService<PaymentIn>
+    public interface IPaymentService : IOuterEntityService<PaymentIn>
     {
     }
 }
