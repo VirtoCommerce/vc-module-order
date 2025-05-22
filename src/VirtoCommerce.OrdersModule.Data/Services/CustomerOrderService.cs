@@ -210,14 +210,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 foreach (var shipment in order.Shipments)
                 {
-                    shipment.ShippingMethod = searchShippingMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsInvariant(shipment.ShipmentMethodCode));
+                    shipment.ShippingMethod = searchShippingMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsIgnoreCase(shipment.ShipmentMethodCode));
                 }
             }
             if (!searchPaymentMethodsTask.Result.Results.IsNullOrEmpty() && !order.InPayments.IsNullOrEmpty())
             {
                 foreach (var payment in order.InPayments)
                 {
-                    payment.PaymentMethod = searchPaymentMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsInvariant(payment.GatewayCode));
+                    payment.PaymentMethod = searchPaymentMethodsTask.Result.Results.FirstOrDefault(x => x.Code.EqualsIgnoreCase(payment.GatewayCode));
                 }
             }
         }

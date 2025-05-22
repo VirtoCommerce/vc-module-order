@@ -186,7 +186,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             foreach (var property in properties)
             {
                 var objectProperty = order.DynamicProperties?.FirstOrDefault(x => x.Id == property.Id) ??
-                     order.DynamicProperties?.FirstOrDefault(x => x.Name.EqualsInvariant(property.Name) && x.HasValuesOfType(property.ValueType));
+                     order.DynamicProperties?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(property.Name) && x.HasValuesOfType(property.ValueType));
 
                 IndexDynamicProperty(document, property, objectProperty);
             }
