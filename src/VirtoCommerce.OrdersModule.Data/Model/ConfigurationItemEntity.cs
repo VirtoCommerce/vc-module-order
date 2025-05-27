@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -47,7 +48,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
 
     public virtual ConfigurationItem ToModel(ConfigurationItem configurationItem)
     {
-        System.ArgumentNullException.ThrowIfNull(configurationItem);
+        ArgumentNullException.ThrowIfNull(configurationItem);
 
         configurationItem.Id = Id;
         configurationItem.CreatedBy = CreatedBy;
@@ -73,7 +74,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
 
     public virtual ConfigurationItemEntity FromModel(ConfigurationItem configurationItem, PrimaryKeyResolvingMap pkMap)
     {
-        System.ArgumentNullException.ThrowIfNull(configurationItem);
+        ArgumentNullException.ThrowIfNull(configurationItem);
 
         pkMap.AddPair(configurationItem, this);
 
@@ -104,6 +105,8 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
 
     public virtual void Patch(ConfigurationItemEntity target)
     {
+        ArgumentNullException.ThrowIfNull(target);
+
         target.LineItemId = LineItemId;
         target.ProductId = ProductId;
         target.Name = Name;

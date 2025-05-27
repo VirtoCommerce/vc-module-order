@@ -29,10 +29,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual RefundItem ToModel(RefundItem refundItem)
         {
-            if (refundItem == null)
-            {
-                throw new ArgumentNullException(nameof(refundItem));
-            }
+            ArgumentNullException.ThrowIfNull(refundItem);
 
             refundItem.Id = Id;
             refundItem.CreatedDate = CreatedDate;
@@ -55,10 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual RefundItemEntity FromModel(RefundItem refundItem, PrimaryKeyResolvingMap pkMap)
         {
-            if (refundItem == null)
-            {
-                throw new ArgumentNullException(nameof(refundItem));
-            }
+            ArgumentNullException.ThrowIfNull(refundItem);
 
             Id = refundItem.Id;
             CreatedDate = refundItem.CreatedDate;
@@ -82,11 +76,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(RefundItemEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
+            target.OuterId = OuterId;
             target.RefundId = RefundId;
             target.Quantity = Quantity;
         }

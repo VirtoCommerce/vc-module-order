@@ -35,8 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ShipmentPackage ToModel(ShipmentPackage package)
         {
-            if (package == null)
-                throw new ArgumentNullException(nameof(package));
+            ArgumentNullException.ThrowIfNull(package);
 
             package.Id = Id;
             package.CreatedDate = CreatedDate;
@@ -59,8 +58,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ShipmentPackageEntity FromModel(ShipmentPackage package, PrimaryKeyResolvingMap pkMap)
         {
-            if (package == null)
-                throw new ArgumentNullException(nameof(package));
+            ArgumentNullException.ThrowIfNull(package);
 
             Id = package.Id;
             CreatedDate = package.CreatedDate;
@@ -92,8 +90,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(ShipmentPackageEntity target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
 
             target.PackageType = PackageType;
             target.ShipmentId = ShipmentId;

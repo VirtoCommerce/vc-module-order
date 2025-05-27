@@ -136,8 +136,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual LineItem ToModel(LineItem lineItem)
         {
-            if (lineItem == null)
-                throw new ArgumentNullException(nameof(lineItem));
+            ArgumentNullException.ThrowIfNull(lineItem);
 
             lineItem.Id = Id;
             lineItem.CreatedDate = CreatedDate;
@@ -206,10 +205,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual LineItemEntity FromModel(LineItem lineItem, PrimaryKeyResolvingMap pkMap)
         {
-            if (lineItem == null)
-            {
-                throw new ArgumentNullException(nameof(lineItem));
-            }
+            ArgumentNullException.ThrowIfNull(lineItem);
 
             ModelLineItem = lineItem;
             pkMap.AddPair(lineItem, this);
@@ -299,10 +295,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(LineItemEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
             target.OuterId = OuterId;
             target.Quantity = Quantity;

@@ -55,8 +55,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentGatewayTransaction ToModel(PaymentGatewayTransaction transaction)
         {
-            if (transaction == null)
-                throw new ArgumentNullException(nameof(transaction));
+            ArgumentNullException.ThrowIfNull(transaction);
 
             transaction.Id = Id;
             transaction.CreatedBy = CreatedBy;
@@ -83,8 +82,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentGatewayTransactionEntity FromModel(PaymentGatewayTransaction transaction, PrimaryKeyResolvingMap pkMap)
         {
-            if (transaction == null)
-                throw new ArgumentNullException(nameof(transaction));
+            ArgumentNullException.ThrowIfNull(transaction);
 
             pkMap.AddPair(transaction, this);
 
@@ -113,8 +111,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(PaymentGatewayTransactionEntity target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
 
             target.Amount = Amount;
 

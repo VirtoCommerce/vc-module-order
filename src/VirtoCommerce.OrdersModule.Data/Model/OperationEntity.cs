@@ -50,10 +50,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual OrderOperation ToModel(OrderOperation operation)
         {
-            if (operation == null)
-            {
-                throw new ArgumentNullException(nameof(operation));
-            }
+            ArgumentNullException.ThrowIfNull(operation);
 
             operation.Id = Id;
             operation.CreatedDate = CreatedDate;
@@ -80,10 +77,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            if (operation == null)
-            {
-                throw new ArgumentNullException(nameof(operation));
-            }
+            ArgumentNullException.ThrowIfNull(operation);
 
             pkMap.AddPair(operation, this);
 
@@ -111,10 +105,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(OperationEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
             target.Comment = Comment;
             target.Currency = Currency;
