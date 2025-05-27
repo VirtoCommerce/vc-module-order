@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public abstract class OperationEntity : AuditableEntity, IHasOuterId
+    public abstract class OperationEntity : AuditableEntity, IHasOuterId, IDataEntity<OperationEntity, OrderOperation>
     {
         [Required]
         [StringLength(64)]
@@ -49,10 +50,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual OrderOperation ToModel(OrderOperation operation)
         {
-            if (operation == null)
-            {
-                throw new ArgumentNullException(nameof(operation));
-            }
+            ArgumentNullException.ThrowIfNull(operation);
 
             operation.Id = Id;
             operation.CreatedDate = CreatedDate;
@@ -79,10 +77,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual OperationEntity FromModel(OrderOperation operation, PrimaryKeyResolvingMap pkMap)
         {
-            if (operation == null)
-            {
-                throw new ArgumentNullException(nameof(operation));
-            }
+            ArgumentNullException.ThrowIfNull(operation);
 
             pkMap.AddPair(operation, this);
 
@@ -110,10 +105,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(OperationEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
             target.Comment = Comment;
             target.Currency = Currency;

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class RefundItem : AuditableEntity, ICloneable
+    public class RefundItem : AuditableEntity, IHasOuterId, ICloneable
     {
         // The quantity to refund.
         public int Quantity { get; set; }

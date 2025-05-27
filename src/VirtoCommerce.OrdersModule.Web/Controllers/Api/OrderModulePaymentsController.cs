@@ -29,8 +29,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         ISettingsManager settingsManager,
         IPaymentFlowService paymentFlowService,
         IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
-        IDistributedLockService distributedLockService
-        ) : Controller
+        IDistributedLockService distributedLockService)
+        : Controller
     {
         /// <summary>
         /// Search  order payments by given criteria
@@ -64,14 +64,41 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
             searchCriteria.Ids = [id];
             searchCriteria.ResponseGroup = respGroup;
+
             var authorizationResult = await authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
+
             var result = await paymentSearchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
+        }
+
+        /// <summary>
+        /// Get order payment by outer id
+        /// </summary>
+        /// <remarks>Return a single order payment with all nested documents or null if payment was not found</remarks>
+        /// <param name="outerId"> order payment outer id</param>
+        /// <param name="responseGroup"></param>
+        [HttpGet]
+        [Route("outer/{outerId}")]
+        public async Task<ActionResult<PaymentIn>> GetByOuterId(string outerId, [SwaggerOptional][FromQuery] string responseGroup = null)
+        {
+            var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
+            searchCriteria.OuterIds = [outerId];
+            searchCriteria.ResponseGroup = responseGroup;
+
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+
+            var searchResult = await paymentSearchService.SearchAsync(searchCriteria);
+
+            return Ok(searchResult.Results.FirstOrDefault());
         }
 
         /// <summary>

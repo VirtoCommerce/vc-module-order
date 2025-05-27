@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class RefundItemEntity : AuditableEntity
+    public class RefundItemEntity : AuditableEntity, IHasOuterId, IDataEntity<RefundItemEntity, RefundItem>
     {
         public int Quantity { get; set; }
 
@@ -28,10 +29,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual RefundItem ToModel(RefundItem refundItem)
         {
-            if (refundItem == null)
-            {
-                throw new ArgumentNullException(nameof(refundItem));
-            }
+            ArgumentNullException.ThrowIfNull(refundItem);
 
             refundItem.Id = Id;
             refundItem.CreatedDate = CreatedDate;
@@ -54,10 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual RefundItemEntity FromModel(RefundItem refundItem, PrimaryKeyResolvingMap pkMap)
         {
-            if (refundItem == null)
-            {
-                throw new ArgumentNullException(nameof(refundItem));
-            }
+            ArgumentNullException.ThrowIfNull(refundItem);
 
             Id = refundItem.Id;
             CreatedDate = refundItem.CreatedDate;
@@ -81,11 +76,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(RefundItemEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
+            target.OuterId = OuterId;
             target.RefundId = RefundId;
             target.Quantity = Quantity;
         }

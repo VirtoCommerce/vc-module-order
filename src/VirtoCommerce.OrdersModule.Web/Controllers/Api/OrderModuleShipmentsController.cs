@@ -16,8 +16,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     [Authorize]
     public class OrderModuleShipmentsController(IShipmentService shipmentService,
         IShipmentSearchService shipmentSearchService,
-        IAuthorizationService authorizationService
-        ) : Controller
+        IAuthorizationService authorizationService)
+        : Controller
     {
         [HttpPost]
         [Authorize(ModuleConstants.Security.Permissions.UpdateShipments)]

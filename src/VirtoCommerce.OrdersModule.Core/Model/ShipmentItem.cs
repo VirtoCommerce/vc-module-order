@@ -5,7 +5,7 @@ using VirtoCommerce.Platform.Core.Swagger;
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
     [SwaggerSchemaId("OrderShipmentItem")]
-    public class ShipmentItem : AuditableEntity, ICloneable
+    public class ShipmentItem : AuditableEntity, IHasOuterId, ICloneable
     {
         public ShipmentItem()
         {
