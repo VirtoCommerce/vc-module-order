@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core;
@@ -18,40 +20,18 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
     [Route("api/order/payments")]
     [Authorize]
-    public class OrderModulePaymentsController : Controller
+    public class OrderModulePaymentsController(
+        IPaymentSearchService paymentSearchService,
+        IPaymentService paymentService,
+        IAuthorizationService authorizationService,
+        ICustomerOrderService customerOrderService,
+        IValidator<PaymentIn> paymentInValidator,
+        ISettingsManager settingsManager,
+        IPaymentFlowService paymentFlowService,
+        IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
+        IDistributedLockService distributedLockService)
+        : Controller
     {
-        private readonly IPaymentSearchService _paymentSearchService;
-        private readonly IPaymentService _paymentService;
-        private readonly IAuthorizationService _authorizationService;
-        private readonly ICustomerOrderService _customerOrderService;
-        private readonly IValidator<PaymentIn> _paymentInValidator;
-        private readonly ISettingsManager _settingsManager;
-        private readonly IPaymentFlowService _paymentFlowService;
-        private readonly PaymentDistributedLockOptions _paymentDistributedLockOptions;
-        private readonly IDistributedLockService _distributedLockService;
-
-        public OrderModulePaymentsController(
-            IPaymentSearchService paymentSearchService,
-            IPaymentService paymentService,
-            IAuthorizationService authorizationService,
-            ICustomerOrderService customerOrderService,
-            IValidator<PaymentIn> paymentInValidator,
-            ISettingsManager settingsManager,
-            IPaymentFlowService paymentFlowService,
-            IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
-            IDistributedLockService distributedLockService)
-        {
-            _paymentSearchService = paymentSearchService;
-            _paymentService = paymentService;
-            _authorizationService = authorizationService;
-            _customerOrderService = customerOrderService;
-            _paymentInValidator = paymentInValidator;
-            _settingsManager = settingsManager;
-            _paymentFlowService = paymentFlowService;
-            _paymentDistributedLockOptions = paymentDistributedLockOptions.Value;
-            _distributedLockService = distributedLockService;
-        }
-
         /// <summary>
         /// Search  order payments by given criteria
         /// </summary>
@@ -60,13 +40,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("search")]
         public async Task<ActionResult<PaymentSearchResult>> SearchOrderPayments([FromBody] PaymentSearchCriteria criteria)
         {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, criteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var result = await _paymentSearchService.SearchAsync(criteria);
+            var result = await paymentSearchService.SearchAsync(criteria);
 
             return Ok(result);
         }
@@ -85,13 +65,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             searchCriteria.Ids = [id];
             searchCriteria.ResponseGroup = respGroup;
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var result = await _paymentSearchService.SearchAsync(searchCriteria);
+            var result = await paymentSearchService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
         }
@@ -110,13 +90,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             searchCriteria.OuterIds = [outerId];
             searchCriteria.ResponseGroup = responseGroup;
 
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
 
-            var searchResult = await _paymentSearchService.SearchAsync(searchCriteria);
+            var searchResult = await paymentSearchService.SearchAsync(searchCriteria);
 
             return Ok(searchResult.Results.FirstOrDefault());
         }
@@ -137,12 +117,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return BadRequest($"{nameof(payment.OrderId)} is required");
             }
-            var customerOrder = await _customerOrderService.GetByIdAsync(payment.OrderId);
+            var customerOrder = await customerOrderService.GetByIdAsync(payment.OrderId);
             if (customerOrder == null)
             {
                 return BadRequest($"order with id: {nameof(payment.OrderId)} is not found");
             }
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
@@ -153,10 +133,10 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return BadRequest(new
                 {
                     Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
-                    Errors = validationResult.Errors
+                    validationResult.Errors
                 });
             }
-            await _paymentService.SaveChangesAsync([payment]);
+            await paymentService.SaveChangesAsync([payment]);
             return Ok(payment);
         }
 
@@ -181,13 +161,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
             var searchCriteria = AbstractTypeFactory<PaymentSearchCriteria>.TryCreateInstance();
             searchCriteria.Ids = ids;
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, searchCriteria, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Read));
             if (!authorizationResult.Succeeded)
             {
                 return Forbid();
             }
-            var result = await _paymentSearchService.SearchAsync(searchCriteria);
-            await _paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
+            var result = await paymentSearchService.SearchAsync(searchCriteria);
+            await paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
         }
 
@@ -197,11 +177,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
             var resourceKey = $"{nameof(CapturePayment)}:{request.PaymentId ?? request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey,
-                () => _paymentFlowService.CapturePaymentAsync(request),
-                _paymentDistributedLockOptions.LockTimeout,
-                _paymentDistributedLockOptions.TryLockTimeout,
-                _paymentDistributedLockOptions.RetryInterval);
+            var result = await distributedLockService.ExecuteAsync(resourceKey,
+                () => paymentFlowService.CapturePaymentAsync(request),
+                paymentDistributedLockOptions.Value.LockTimeout,
+                paymentDistributedLockOptions.Value.TryLockTimeout,
+                paymentDistributedLockOptions.Value.RetryInterval);
 
             return Ok(result);
         }
@@ -212,20 +192,69 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
         {
             var resourceKey = $"{nameof(RefundPayment)}:{request.PaymentId ?? request.OrderId}";
-            var result = await _distributedLockService.ExecuteAsync(resourceKey,
-                () => _paymentFlowService.RefundPaymentAsync(request),
-                _paymentDistributedLockOptions.LockTimeout,
-                _paymentDistributedLockOptions.TryLockTimeout,
-                _paymentDistributedLockOptions.RetryInterval);
+            var result = await distributedLockService.ExecuteAsync(resourceKey,
+                () => paymentFlowService.RefundPaymentAsync(request),
+                paymentDistributedLockOptions.Value.LockTimeout,
+                paymentDistributedLockOptions.Value.TryLockTimeout,
+                paymentDistributedLockOptions.Value.RetryInterval);
 
             return Ok(result);
         }
 
+        /// <summary>
+        /// Partial update for the specified Payment by id
+        /// </summary>
+        /// <param name="id">Payment id</param>
+        /// <param name="patchDocument">JsonPatchDocument object with fields to update</param>
+        /// <returns></returns>
+        [HttpPatch]
+        [Route("{id}")]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> PatchPayment(string id, [FromBody] JsonPatchDocument<PaymentIn> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest();
+            }
+
+            var payment = await paymentService.GetByIdAsync(id);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+
+            var customerOrder = await customerOrderService.GetByIdAsync(payment.OrderId);
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, customerOrder, new OrderAuthorizationRequirement(ModuleConstants.Security.Permissions.Update));
+            if (!authorizationResult.Succeeded)
+            {
+                return Forbid();
+            }
+            patchDocument.ApplyTo(payment, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var validationResult = await ValidateAsync(payment);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
+                    validationResult.Errors
+                });
+            }
+            await paymentService.SaveChangesAsync([payment]);
+
+            return NoContent();
+        }
+
         private async Task<ValidationResult> ValidateAsync(PaymentIn paymentIn)
         {
-            if (await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
+            if (await settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
             {
-                return await _paymentInValidator.ValidateAsync(paymentIn);
+                return await paymentInValidator.ValidateAsync(paymentIn);
             }
 
             return new ValidationResult();
