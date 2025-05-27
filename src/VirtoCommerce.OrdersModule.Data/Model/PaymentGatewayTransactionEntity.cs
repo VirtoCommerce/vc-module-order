@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class PaymentGatewayTransactionEntity : AuditableEntity
+    public class PaymentGatewayTransactionEntity : AuditableEntity, IDataEntity<PaymentGatewayTransactionEntity, PaymentGatewayTransaction>
     {
         [Column(TypeName = "Money")]
         public decimal Amount { get; set; }
@@ -54,8 +55,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentGatewayTransaction ToModel(PaymentGatewayTransaction transaction)
         {
-            if (transaction == null)
-                throw new ArgumentNullException(nameof(transaction));
+            ArgumentNullException.ThrowIfNull(transaction);
 
             transaction.Id = Id;
             transaction.CreatedBy = CreatedBy;
@@ -82,8 +82,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual PaymentGatewayTransactionEntity FromModel(PaymentGatewayTransaction transaction, PrimaryKeyResolvingMap pkMap)
         {
-            if (transaction == null)
-                throw new ArgumentNullException(nameof(transaction));
+            ArgumentNullException.ThrowIfNull(transaction);
 
             pkMap.AddPair(transaction, this);
 
@@ -112,8 +111,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(PaymentGatewayTransactionEntity target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
 
             target.Amount = Amount;
 

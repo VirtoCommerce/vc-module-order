@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentItemEntity : AuditableEntity
+    public class ShipmentItemEntity : AuditableEntity, IHasOuterId, IDataEntity<ShipmentItemEntity, ShipmentItem>
     {
         [StringLength(128)]
         public string BarCode { get; set; }
@@ -38,8 +39,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ShipmentItem ToModel(ShipmentItem shipmentItem)
         {
-            if (shipmentItem == null)
-                throw new ArgumentNullException(nameof(shipmentItem));
+            ArgumentNullException.ThrowIfNull(shipmentItem);
 
             shipmentItem.Id = Id;
             shipmentItem.CreatedDate = CreatedDate;
@@ -64,8 +64,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual ShipmentItemEntity FromModel(ShipmentItem shipmentItem, PrimaryKeyResolvingMap pkMap)
         {
-            if (shipmentItem == null)
-                throw new ArgumentNullException(nameof(shipmentItem));
+            ArgumentNullException.ThrowIfNull(shipmentItem);
 
             Id = shipmentItem.Id;
             CreatedDate = shipmentItem.CreatedDate;
@@ -90,9 +89,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(ShipmentItemEntity target)
         {
-            if (target == null)
-                throw new ArgumentNullException(nameof(target));
+            ArgumentNullException.ThrowIfNull(target);
 
+            target.OuterId = OuterId;
             target.BarCode = BarCode;
             target.Status = Status;
             target.ShipmentId = ShipmentId;

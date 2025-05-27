@@ -27,7 +27,7 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class CustomerOrderService : CrudService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService, IMemberOrdersService
+    public class CustomerOrderService : OuterEntityService<CustomerOrder, CustomerOrderEntity, OrderChangeEvent, OrderChangedEvent>, ICustomerOrderService, IMemberOrdersService
     {
         private readonly Func<IOrderRepository> _repositoryFactory;
         private readonly IPlatformMemoryCache _platformMemoryCache;
@@ -258,6 +258,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected override Task<IList<CustomerOrderEntity>> LoadEntities(IRepository repository, IList<string> ids, string responseGroup)
         {
             return ((IOrderRepository)repository).GetCustomerOrdersByIdsAsync(ids, responseGroup);
+        }
+
+        protected override IQueryable<CustomerOrderEntity> GetEntitiesQuery(IRepository repository)
+        {
+            return ((IOrderRepository)repository).CustomerOrders;
         }
 
         protected override CustomerOrder ProcessModel(string responseGroup, CustomerOrderEntity entity, CustomerOrder model)

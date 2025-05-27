@@ -1,12 +1,14 @@
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model;
 
-public class ConfigurationItemEntity : AuditableEntity
+public class ConfigurationItemEntity : AuditableEntity, IDataEntity<ConfigurationItemEntity, ConfigurationItem>
 {
     [StringLength(128)]
     public string LineItemId { get; set; }
@@ -46,7 +48,7 @@ public class ConfigurationItemEntity : AuditableEntity
 
     public virtual ConfigurationItem ToModel(ConfigurationItem configurationItem)
     {
-        System.ArgumentNullException.ThrowIfNull(configurationItem);
+        ArgumentNullException.ThrowIfNull(configurationItem);
 
         configurationItem.Id = Id;
         configurationItem.CreatedBy = CreatedBy;
@@ -72,7 +74,7 @@ public class ConfigurationItemEntity : AuditableEntity
 
     public virtual ConfigurationItemEntity FromModel(ConfigurationItem configurationItem, PrimaryKeyResolvingMap pkMap)
     {
-        System.ArgumentNullException.ThrowIfNull(configurationItem);
+        ArgumentNullException.ThrowIfNull(configurationItem);
 
         pkMap.AddPair(configurationItem, this);
 
@@ -103,6 +105,8 @@ public class ConfigurationItemEntity : AuditableEntity
 
     public virtual void Patch(ConfigurationItemEntity target)
     {
+        ArgumentNullException.ThrowIfNull(target);
+
         target.LineItemId = LineItemId;
         target.ProductId = ProductId;
         target.Name = Name;

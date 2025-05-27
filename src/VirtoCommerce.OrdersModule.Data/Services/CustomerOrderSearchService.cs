@@ -42,6 +42,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(x => criteria.Ids.Contains(x.Id));
             }
 
+            if (!criteria.OuterIds.IsNullOrEmpty())
+            {
+                query = query.Where(x => criteria.OuterIds.Contains(x.OuterId));
+            }
+
             if (!criteria.Statuses.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.Statuses.Contains(x.Status));

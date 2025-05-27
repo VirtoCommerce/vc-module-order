@@ -3,10 +3,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Domain;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class CaptureItemEntity : AuditableEntity
+    public class CaptureItemEntity : AuditableEntity, IHasOuterId, IDataEntity<CaptureItemEntity, CaptureItem>
     {
         public int Quantity { get; set; }
 
@@ -28,10 +29,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual CaptureItem ToModel(CaptureItem captureItem)
         {
-            if (captureItem == null)
-            {
-                throw new ArgumentNullException(nameof(captureItem));
-            }
+            ArgumentNullException.ThrowIfNull(captureItem);
 
             captureItem.Id = Id;
             captureItem.CreatedDate = CreatedDate;
@@ -54,10 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual CaptureItemEntity FromModel(CaptureItem captureItem, PrimaryKeyResolvingMap pkMap)
         {
-            if (captureItem == null)
-            {
-                throw new ArgumentNullException(nameof(captureItem));
-            }
+            ArgumentNullException.ThrowIfNull(captureItem);
 
             Id = captureItem.Id;
             CreatedDate = captureItem.CreatedDate;
@@ -81,11 +76,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public virtual void Patch(CaptureItemEntity target)
         {
-            if (target == null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
+            ArgumentNullException.ThrowIfNull(target);
 
+            target.OuterId = OuterId;
             target.CaptureId = CaptureId;
             target.Quantity = Quantity;
         }
