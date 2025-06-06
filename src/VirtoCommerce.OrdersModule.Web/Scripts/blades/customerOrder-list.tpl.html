@@ -4,7 +4,7 @@
         <a class="add" left-click-menu data-target="filterSearch{{blade.id}}" style="margin: 0 20px 0 0;">{{ filter.current ? filter.current.name : 'orders.blades.customerOrder-list.placeholders.select-filter' | translate }} <i class="form-ico fa fa-caret-down"></i></a>
         <ul class="menu __context" role="menu" id="filterSearch{{blade.id}}" style="width: 170px;">
           <li ng-repeat="x in $localStorage.orderSearchFilters" class="splited-element menu-item">
-            <i class="menu-ico fas fa-plus" ng-if="!x.id"></i> <span ng-click='filter.current=x;filter.change();' ng-bind-html="x.name | translate"></span>
+            <i class="menu-ico fas fa-plus" ng-if="!x.id"></i> <span ng-click='filter.current=x;filter.change();' ng-bind="x.name | translate"></span>
             <i class="fa fa-pencil right-alignment" ng-click='filter.current=x;filter.edit($event)' ng-if="x.id"></i>
           </li>
         </ul>
