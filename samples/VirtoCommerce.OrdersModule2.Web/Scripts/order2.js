@@ -7,8 +7,8 @@ if (AppDependencies != undefined) {
 
 angular.module(moduleName, [])
     .run(
-        ['virtoCommerce.orderModule.knownOperations', '$http', '$compile', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'platformWebApp.ui-grid.extension',
-            function (knownOperations, $http, $compile, scopeResolver, settings, bladeNavigationService, gridOptionExtension) {
+        ['virtoCommerce.orderModule.knownOperations', 'platformWebApp.dynamicTemplateService', 'platformWebApp.permissionScopeResolver', 'platformWebApp.settings', 'platformWebApp.bladeNavigationService', 'platformWebApp.ui-grid.extension',
+            function (knownOperations, dynamicTemplateService, scopeResolver, settings, bladeNavigationService, gridOptionExtension) {
                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                 if (foundTemplate) {
                     foundTemplate.isLocked = function () {
@@ -53,10 +53,7 @@ angular.module(moduleName, [])
                 };
                 knownOperations.registerOperation(invoiceOperation);
 
-                $http.get('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html').then(function (response) {
-                    // compile the response, which will put stuff into the cache
-                    $compile(response.data);
-                });
+                dynamicTemplateService.ensureTemplateLoaded('Modules/$(virtoCommerce.orders2)/Scripts/tree-template.html');
 
                 //Register permission scopes templates used for scope bounded definition in role management ui
                 var orderStatusesScope = {
