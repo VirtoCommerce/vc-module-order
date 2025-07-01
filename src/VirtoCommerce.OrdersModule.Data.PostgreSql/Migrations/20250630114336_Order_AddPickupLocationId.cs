@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -13,8 +13,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "PickupLocationId",
                 table: "OrderShipment",
-                type: "character varying(64)",
-                maxLength: 64,
+                type: "character varying(128)",
+                maxLength: 128,
                 nullable: true);
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -13,8 +13,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "PickupLocationId",
                 table: "OrderShipment",
-                type: "nvarchar(64)",
-                maxLength: 64,
+                type: "nvarchar(128)",
+                maxLength: 128,
                 nullable: true);
         }
 

@@ -10,6 +10,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Data.Infrastructure;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
@@ -81,7 +82,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
         [StringLength(64)]
         public string VendorId { get; set; }
 
-        [StringLength(64)]
+        [StringLength(DbContextBase.IdLength)]
         public string PickupLocationId { get; set; }
 
         #region NavigationProperties
