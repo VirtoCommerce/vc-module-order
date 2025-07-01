@@ -88,8 +88,7 @@ angular.module(moduleName, [
     .run(
         [
             '$rootScope',
-            '$http',
-            '$compile',
+            'platformWebApp.dynamicTemplateService',
             'platformWebApp.mainMenuService',
             'platformWebApp.widgetService',
             'platformWebApp.bladeNavigationService',
@@ -103,8 +102,7 @@ angular.module(moduleName, [
             'platformWebApp.metaFormsService',
             function ( // nosonar
                 $rootScope,
-                $http,
-                $compile,
+                dynamicTemplateService,
                 mainMenuService,
                 widgetService,
                 bladeNavigationService,
@@ -569,10 +567,7 @@ angular.module(moduleName, [
                     isVisible: function () { return !checkPermissionToViewDashboard(); }
                 }, 'mainDashboard');
 
-                $http.get('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html').then(function (response) {
-                    // compile the response, which will put stuff into the cache
-                    $compile(response.data);
-                });
+                dynamicTemplateService.ensureTemplateLoaded('Modules/$(VirtoCommerce.Orders)/Scripts/widgets/dashboard/statistics-templates.html');
 
                 metaFormsService.registerMetaFields('orderFilterDetail', [
                     {
