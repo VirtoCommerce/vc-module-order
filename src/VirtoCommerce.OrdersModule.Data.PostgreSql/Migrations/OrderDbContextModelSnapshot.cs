@@ -1497,6 +1497,10 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
+                    b.Property<string>("PickupLocationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("Money");
 

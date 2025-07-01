@@ -1498,6 +1498,10 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
+                    b.Property<string>("PickupLocationId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("Money");
 
