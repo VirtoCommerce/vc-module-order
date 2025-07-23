@@ -75,6 +75,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public virtual decimal DiscountAmount { get; set; }
         public virtual decimal DiscountAmountWithTax { get; set; }
 
+        public string PickupLocationId { get; set; }
+
         //Any extra Fee
         [Auditable]
         public virtual decimal Fee { get; set; }

@@ -365,6 +365,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.Status = "New";
             retVal.VendorId = shipment.VendorId;
             retVal.Comment = shipment.Comment;
+            retVal.PickupLocationId = shipment.PickupLocationId;
             if (shipment.DeliveryAddress != null)
             {
                 retVal.DeliveryAddress = ToOrderModel(shipment.DeliveryAddress);
