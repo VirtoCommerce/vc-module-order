@@ -44,7 +44,6 @@ public class ConfigurationItemFileEntity : AuditableEntity, IDataEntity<Configur
         model.Url = Url;
         model.ContentType = ContentType;
         model.Size = Size;
-        model.ConfigurationItemId = ConfigurationItemId;
 
         return model;
     }
@@ -65,7 +64,6 @@ public class ConfigurationItemFileEntity : AuditableEntity, IDataEntity<Configur
         Url = model.Url;
         ContentType = model.ContentType;
         Size = model.Size;
-        ConfigurationItemId = model.ConfigurationItemId;
 
         return this;
     }

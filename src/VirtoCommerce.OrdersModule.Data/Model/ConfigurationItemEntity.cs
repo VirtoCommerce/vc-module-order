@@ -56,7 +56,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         configurationItem.ModifiedBy = ModifiedBy;
         configurationItem.ModifiedDate = ModifiedDate;
 
-        configurationItem.LineItemId = LineItemId;
         configurationItem.ProductId = ProductId;
         configurationItem.Name = Name;
         configurationItem.Sku = Sku;
@@ -84,7 +83,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         ModifiedBy = configurationItem.ModifiedBy;
         ModifiedDate = configurationItem.ModifiedDate;
 
-        LineItemId = configurationItem.LineItemId;
         ProductId = configurationItem.ProductId;
         Name = configurationItem.Name;
         Sku = configurationItem.Sku;
@@ -107,7 +105,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
     {
         ArgumentNullException.ThrowIfNull(target);
 
-        target.LineItemId = LineItemId;
         target.ProductId = ProductId;
         target.Name = Name;
         target.Sku = Sku;
