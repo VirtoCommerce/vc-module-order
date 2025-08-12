@@ -8,8 +8,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model;
 [SwaggerSchemaId("OrderConfigurationItem")]
 public class ConfigurationItem : AuditableEntity
 {
-    public string LineItemId { get; set; }
-
     public string ProductId { get; set; }
 
     public string Name { get; set; }
