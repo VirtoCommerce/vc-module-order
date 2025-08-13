@@ -123,21 +123,17 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         }
 
-        public virtual void RestoreDetails(PaymentIn payment, string responseGroup)
+        public virtual void RestoreDetails(PaymentIn payment)
         {
-            var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-            if (orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
-            {
-                Price = payment.Price;
-                PriceWithTax = payment.PriceWithTax;
-                DiscountAmount = payment.DiscountAmount;
-                DiscountAmountWithTax = payment.DiscountAmountWithTax;
-                Total = payment.Total;
-                TotalWithTax = payment.TotalWithTax;
-                TaxTotal = payment.TaxTotal;
-                TaxPercentRate = payment.TaxPercentRate;
-                Sum = payment.Sum;
-            }
+            Price = payment.Price;
+            PriceWithTax = payment.PriceWithTax;
+            DiscountAmount = payment.DiscountAmount;
+            DiscountAmountWithTax = payment.DiscountAmountWithTax;
+            Total = payment.Total;
+            TotalWithTax = payment.TotalWithTax;
+            TaxTotal = payment.TaxTotal;
+            TaxPercentRate = payment.TaxPercentRate;
+            Sum = payment.Sum;
         }
 
 

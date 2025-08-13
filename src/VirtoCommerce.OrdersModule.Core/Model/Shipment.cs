@@ -141,21 +141,17 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         }
 
-        public virtual void RestoreDetails(Shipment shipment, string responseGroup)
+        public virtual void RestoreDetails(Shipment shipment)
         {
-            var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-            if (orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
-            {
-                Price = shipment.Price;
-                PriceWithTax = shipment.PriceWithTax;
-                DiscountAmount = shipment.DiscountAmount;
-                DiscountAmountWithTax = shipment.DiscountAmountWithTax;
-                Total = shipment.Total;
-                TotalWithTax = shipment.TotalWithTax;
-                TaxTotal = shipment.TaxTotal;
-                TaxPercentRate = shipment.TaxPercentRate;
-                Sum = shipment.Sum;
-            }
+            Price = shipment.Price;
+            PriceWithTax = shipment.PriceWithTax;
+            DiscountAmount = shipment.DiscountAmount;
+            DiscountAmountWithTax = shipment.DiscountAmountWithTax;
+            Total = shipment.Total;
+            TotalWithTax = shipment.TotalWithTax;
+            TaxTotal = shipment.TaxTotal;
+            TaxPercentRate = shipment.TaxPercentRate;
+            Sum = shipment.Sum;
         }
 
         #region ICloneable members

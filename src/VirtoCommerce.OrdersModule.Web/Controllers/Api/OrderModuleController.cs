@@ -372,7 +372,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             if (!User.HasGlobalPermission(ModuleConstants.Security.Permissions.ReadPrices))
             {
                 // Restore prices from order if user has no ReadPrices permission and receive the order without prices
-                customerOrder.RestoreDetails(order, CustomerOrderResponseGroup.WithPrices.ToString());
+                customerOrder.RestoreDetails(order);
             }
 
             try
