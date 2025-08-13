@@ -268,10 +268,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             if (payment == null)
                 throw new ArgumentException(@"target argument must be of type PaymentInEntity", nameof(target));
 
-            // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
-            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || payment.GetNonCalculatablePrices().All(x => x == 0m);
-
-            NeedPatchSum = isNeedPatch;
             base.Patch(payment);
 
             payment.TaxType = TaxType;
@@ -291,19 +287,15 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             payment.CancelReason = CancelReason;
             payment.VendorId = VendorId;
 
-            if (isNeedPatch)
-            {
-                payment.Price = Price;
-                payment.PriceWithTax = PriceWithTax;
-                payment.DiscountAmount = DiscountAmount;
-                payment.DiscountAmountWithTax = DiscountAmountWithTax;
-                payment.TaxPercentRate = TaxPercentRate;
-                payment.TaxTotal = TaxTotal;
-                payment.Total = Total;
-                payment.TotalWithTax = TotalWithTax;
-                payment.Sum = Sum;
-            }
-
+            payment.Price = Price;
+            payment.PriceWithTax = PriceWithTax;
+            payment.DiscountAmount = DiscountAmount;
+            payment.DiscountAmountWithTax = DiscountAmountWithTax;
+            payment.TaxPercentRate = TaxPercentRate;
+            payment.TaxTotal = TaxTotal;
+            payment.Total = Total;
+            payment.TotalWithTax = TotalWithTax;
+            payment.Sum = Sum;
 
             if (!Addresses.IsNullCollection())
             {

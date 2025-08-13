@@ -317,20 +317,14 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.IsConfigured = IsConfigured;
             target.IsDiscountAmountRounded = IsDiscountAmountRounded;
 
-            // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
-            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || target.GetNonCalculatablePrices().All(x => x == 0m);
-
-            if (isNeedPatch)
-            {
-                target.TaxPercentRate = TaxPercentRate;
-                target.Price = Price;
-                target.DiscountAmount = DiscountAmount;
-                target.PriceWithTax = PriceWithTax;
-                target.DiscountAmountWithTax = DiscountAmountWithTax;
-                target.TaxTotal = TaxTotal;
-                target.Fee = Fee;
-                target.FeeWithTax = FeeWithTax;
-            }
+            target.TaxPercentRate = TaxPercentRate;
+            target.Price = Price;
+            target.DiscountAmount = DiscountAmount;
+            target.PriceWithTax = PriceWithTax;
+            target.DiscountAmountWithTax = DiscountAmountWithTax;
+            target.TaxTotal = TaxTotal;
+            target.Fee = Fee;
+            target.FeeWithTax = FeeWithTax;
 
             if (!Discounts.IsNullCollection())
             {

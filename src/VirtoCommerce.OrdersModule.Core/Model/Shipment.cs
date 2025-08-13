@@ -141,6 +141,19 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         }
 
+        public virtual void RestoreDetails(Shipment shipment)
+        {
+            Price = shipment.Price;
+            PriceWithTax = shipment.PriceWithTax;
+            DiscountAmount = shipment.DiscountAmount;
+            DiscountAmountWithTax = shipment.DiscountAmountWithTax;
+            Total = shipment.Total;
+            TotalWithTax = shipment.TotalWithTax;
+            TaxTotal = shipment.TaxTotal;
+            TaxPercentRate = shipment.TaxPercentRate;
+            Sum = shipment.Sum;
+        }
+
         #region ICloneable members
 
         public override object Clone()
