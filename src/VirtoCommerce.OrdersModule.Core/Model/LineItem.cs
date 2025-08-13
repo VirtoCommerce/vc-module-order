@@ -161,6 +161,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             {
                 Discounts = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
                 Price = 0m;
@@ -169,6 +170,21 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 DiscountAmountWithTax = 0m;
                 TaxTotal = 0m;
                 TaxPercentRate = 0m;
+            }
+        }
+
+        public virtual void RestoreDetails(LineItem item, string responseGroup)
+        {
+            var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
+            if (orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
+            {
+                Price = item.Price;
+                PriceWithTax = item.PriceWithTax;
+                DiscountAmount = item.DiscountAmount;
+                DiscountAmountWithTax = item.DiscountAmountWithTax;
+                TaxTotal = item.TaxTotal;
+                TaxPercentRate = item.TaxPercentRate;
             }
         }
 
