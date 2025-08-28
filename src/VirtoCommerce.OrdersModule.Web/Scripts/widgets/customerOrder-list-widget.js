@@ -43,6 +43,7 @@ angular.module('virtoCommerce.orderModule')
 
                     var newBlade = {
                         id: 'orders',
+                        navigationGroup: 'member_orders',
                         title: 'orders.blades.customerOrder-list.title',
                         searchCriteria: searchCriteria,
                         controller: 'virtoCommerce.orderModule.customerOrderListController',
