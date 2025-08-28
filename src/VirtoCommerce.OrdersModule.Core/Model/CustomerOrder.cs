@@ -4,13 +4,12 @@ using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.SearchModule.Core.Model;
 
 namespace VirtoCommerce.OrdersModule.Core.Model
 {
-    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguage, IHasDiscounts, ICloneable, IHasFeesDetalization, IHasRelevanceScore
+    public class CustomerOrder : OrderOperation, IHasTaxDetalization, ISupportSecurityScopes, ITaxable, IHasLanguageCode, IHasDiscounts, IHasFeesDetalization, IHasRelevanceScore
     {
         public byte[] RowVersion { get; set; }
 
