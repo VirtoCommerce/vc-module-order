@@ -31,6 +31,7 @@ angular.module('virtoCommerce.orderModule')
                 if (foundTemplate) {
                     var newBlade = angular.copy(foundTemplate.detailBlade);
                     newBlade.currentEntity = member;
+                    newBlade.navigationGroup = member.id;
                     bladeNavigationService.showBlade(newBlade, blade);
                 } else {
                     dialogService.showNotificationDialog({
