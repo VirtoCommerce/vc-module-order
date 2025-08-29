@@ -4,7 +4,7 @@
   <version>3.855.0</version>
   <version-tag />
 
-  <platformVersion>3.904.0-alpha.13123-vcst-1537-navigation-group</platformVersion>
+  <platformVersion>3.904.0-alpha.13124-vcst-1537-navigation-group</platformVersion>
   <dependencies>
     <dependency id="VirtoCommerce.Assets" version="3.809.0" />
     <dependency id="VirtoCommerce.Cart" version="3.832.0" />
