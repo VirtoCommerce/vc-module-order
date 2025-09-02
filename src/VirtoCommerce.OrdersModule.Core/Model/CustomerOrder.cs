@@ -347,20 +347,20 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
             foreach (var shipment in order.Shipments ?? Array.Empty<Shipment>())
             {
-                var tatgerShipment = Shipments?.FirstOrDefault(x => x.Id == shipment.Id);
-                tatgerShipment?.RestoreDetails(shipment);
+                var targetShipment = Shipments?.FirstOrDefault(x => x.Id == shipment.Id);
+                targetShipment?.RestoreDetails(shipment);
             }
 
             foreach (var payment in order.InPayments ?? Array.Empty<PaymentIn>())
             {
-                var tatgerPayment = InPayments?.FirstOrDefault(x => x.Id == payment.Id);
-                tatgerPayment?.RestoreDetails(payment);
+                var targetPayment = InPayments?.FirstOrDefault(x => x.Id == payment.Id);
+                targetPayment?.RestoreDetails(payment);
             }
 
             foreach (var item in order.Items ?? Array.Empty<LineItem>())
             {
-                var tatgerItem = Items?.FirstOrDefault(x => x.Id == item.Id);
-                tatgerItem?.RestoreDetails(item);
+                var targetItem = Items?.FirstOrDefault(x => x.Id == item.Id);
+                targetItem?.RestoreDetails(item);
             }
         }
 
