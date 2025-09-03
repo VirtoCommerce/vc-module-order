@@ -292,10 +292,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 throw new ArgumentException(@"operation argument must be of type ShipmentEntity", nameof(target));
             }
 
-            // Patch prices if there are non 0 prices in the patching entity, or all patched entity prices are 0
-            var isNeedPatch = GetNonCalculatablePrices().Any(x => x != 0m) || shipmentEntity.GetNonCalculatablePrices().All(x => x == 0m);
-
-            NeedPatchSum = isNeedPatch;
             base.Patch(target);
 
             shipmentEntity.FulfillmentCenterId = FulfillmentCenterId;
@@ -321,19 +317,16 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             shipmentEntity.VendorId = VendorId;
             shipmentEntity.PickupLocationId = PickupLocationId;
 
-            if (isNeedPatch)
-            {
-                shipmentEntity.Price = Price;
-                shipmentEntity.PriceWithTax = PriceWithTax;
-                shipmentEntity.DiscountAmount = DiscountAmount;
-                shipmentEntity.DiscountAmountWithTax = DiscountAmountWithTax;
-                shipmentEntity.TaxPercentRate = TaxPercentRate;
-                shipmentEntity.TaxTotal = TaxTotal;
-                shipmentEntity.Total = Total;
-                shipmentEntity.TotalWithTax = TotalWithTax;
-                shipmentEntity.Fee = Fee;
-                shipmentEntity.FeeWithTax = FeeWithTax;
-            }
+            shipmentEntity.Price = Price;
+            shipmentEntity.PriceWithTax = PriceWithTax;
+            shipmentEntity.DiscountAmount = DiscountAmount;
+            shipmentEntity.DiscountAmountWithTax = DiscountAmountWithTax;
+            shipmentEntity.TaxPercentRate = TaxPercentRate;
+            shipmentEntity.TaxTotal = TaxTotal;
+            shipmentEntity.Total = Total;
+            shipmentEntity.TotalWithTax = TotalWithTax;
+            shipmentEntity.Fee = Fee;
+            shipmentEntity.FeeWithTax = FeeWithTax;
 
             if (!InPayments.IsNullCollection())
             {

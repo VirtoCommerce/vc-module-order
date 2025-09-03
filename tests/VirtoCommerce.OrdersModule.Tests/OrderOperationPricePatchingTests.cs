@@ -49,7 +49,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             sourceOperation.Patch(patchedOperation);
 
             // Assert
-            patchedOperation.Price.Should().Be(patchedPrice);
+            patchedOperation.Price.Should().Be(sourcePrice);
         }
 
         [Theory]
@@ -94,7 +94,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             sourceOperation.Patch(patchedOperation);
 
             // Assert
-            patchedOperation.Price.Should().Be(patchedPrice);
+            patchedOperation.Price.Should().Be(sourcePrice);
         }
 
         [Theory]
@@ -139,7 +139,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             sourceOperation.Patch(patchedOperation);
 
             // Assert
-            patchedOperation.Price.Should().Be(patchedPrice);
+            patchedOperation.Price.Should().Be(sourcePrice);
         }
     }
 }
