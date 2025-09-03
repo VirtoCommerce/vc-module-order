@@ -38,6 +38,7 @@ using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Json;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -366,6 +367,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                     Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
                     validationResult.Errors
                 });
+            }
+
+            if (!User.HasGlobalPermission(ModuleConstants.Security.Permissions.ReadPrices))
+            {
+                // Restore prices from order if user has no ReadPrices permission and receive the order without prices
+                customerOrder.RestoreDetails(order);
             }
 
             try

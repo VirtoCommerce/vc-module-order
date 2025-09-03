@@ -323,6 +323,47 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         }
 
+        public virtual void RestoreDetails(CustomerOrder order)
+        {
+            TaxPercentRate = order.TaxPercentRate;
+            ShippingTotalWithTax = order.ShippingTotalWithTax;
+            PaymentTotalWithTax = order.PaymentTotalWithTax;
+            DiscountAmount = order.DiscountAmount;
+            Total = order.Total;
+            SubTotal = order.SubTotal;
+            SubTotalWithTax = order.SubTotalWithTax;
+            ShippingTotal = order.ShippingTotal;
+            PaymentTotal = order.PaymentTotal;
+            DiscountTotal = order.DiscountTotal;
+            DiscountTotalWithTax = order.DiscountTotalWithTax;
+            TaxTotal = order.TaxTotal;
+            Sum = order.Sum;
+            Fee = order.Fee;
+            FeeTotalWithTax = order.FeeTotalWithTax;
+            FeeTotal = order.FeeTotal;
+            FeeWithTax = order.FeeWithTax;
+            HandlingTotal = order.HandlingTotal;
+            HandlingTotalWithTax = order.HandlingTotalWithTax;
+
+            foreach (var shipment in order.Shipments ?? Array.Empty<Shipment>())
+            {
+                var targetShipment = Shipments?.FirstOrDefault(x => x.Id == shipment.Id);
+                targetShipment?.RestoreDetails(shipment);
+            }
+
+            foreach (var payment in order.InPayments ?? Array.Empty<PaymentIn>())
+            {
+                var targetPayment = InPayments?.FirstOrDefault(x => x.Id == payment.Id);
+                targetPayment?.RestoreDetails(payment);
+            }
+
+            foreach (var item in order.Items ?? Array.Empty<LineItem>())
+            {
+                var targetItem = Items?.FirstOrDefault(x => x.Id == item.Id);
+                targetItem?.RestoreDetails(item);
+            }
+        }
+
         #region ICloneable members
 
         public override object Clone()

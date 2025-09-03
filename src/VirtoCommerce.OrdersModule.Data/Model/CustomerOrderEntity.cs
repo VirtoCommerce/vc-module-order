@@ -346,33 +346,26 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.LanguageCode = LanguageCode;
             operation.IsAnonymous = IsAnonymous;
 
-            // Checks whether calculation of sum is needed to pass the result to the property of base class before calling of base.Patch
-            var needPatchPrices = !(GetNonCalculatablePrices().All(x => x == 0m) &&
-                                    operation.GetNonCalculatablePrices().Any(x => x != 0m));
-
-            if (needPatchPrices)
-            {
-                operation.Total = Total;
-                operation.SubTotal = SubTotal;
-                operation.SubTotalWithTax = SubTotalWithTax;
-                operation.ShippingTotal = ShippingTotal;
-                operation.ShippingTotalWithTax = ShippingTotalWithTax;
-                operation.PaymentTotal = PaymentTotal;
-                operation.PaymentTotalWithTax = PaymentTotalWithTax;
-                operation.HandlingTotal = HandlingTotal;
-                operation.HandlingTotalWithTax = HandlingTotalWithTax;
-                operation.DiscountTotal = DiscountTotal;
-                operation.DiscountTotalWithTax = DiscountTotalWithTax;
-                operation.DiscountAmount = DiscountAmount;
-                operation.TaxTotal = TaxTotal;
-                operation.TaxPercentRate = TaxPercentRate;
-                operation.Fee = Fee;
-                operation.FeeWithTax = FeeWithTax;
-                operation.FeeTotal = FeeTotal;
-                operation.FeeTotalWithTax = FeeTotalWithTax;
-                operation.HandlingTotal = HandlingTotal;
-                operation.HandlingTotalWithTax = HandlingTotalWithTax;
-            }
+            operation.Total = Total;
+            operation.SubTotal = SubTotal;
+            operation.SubTotalWithTax = SubTotalWithTax;
+            operation.ShippingTotal = ShippingTotal;
+            operation.ShippingTotalWithTax = ShippingTotalWithTax;
+            operation.PaymentTotal = PaymentTotal;
+            operation.PaymentTotalWithTax = PaymentTotalWithTax;
+            operation.HandlingTotal = HandlingTotal;
+            operation.HandlingTotalWithTax = HandlingTotalWithTax;
+            operation.DiscountTotal = DiscountTotal;
+            operation.DiscountTotalWithTax = DiscountTotalWithTax;
+            operation.DiscountAmount = DiscountAmount;
+            operation.TaxTotal = TaxTotal;
+            operation.TaxPercentRate = TaxPercentRate;
+            operation.Fee = Fee;
+            operation.FeeWithTax = FeeWithTax;
+            operation.FeeTotal = FeeTotal;
+            operation.FeeTotalWithTax = FeeTotalWithTax;
+            operation.HandlingTotal = HandlingTotal;
+            operation.HandlingTotalWithTax = HandlingTotalWithTax;
 
             if (!Addresses.IsNullCollection())
             {
