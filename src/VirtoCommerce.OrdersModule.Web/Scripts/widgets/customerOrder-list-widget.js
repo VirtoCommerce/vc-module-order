@@ -17,10 +17,12 @@ angular.module('virtoCommerce.orderModule')
                     }
                 }
 
+                const memberId = searchCriteria.organizationId || searchCriteria.customerId;
+
                 function refresh() {
                     $scope.ordersCount = '...';
 
-                    if (!searchCriteria.organizationId && !searchCriteria.customerId) {
+                    if (!memberId) {
                         return;
                     }
 
@@ -37,12 +39,13 @@ angular.module('virtoCommerce.orderModule')
                 }
 
                 $scope.openBlade = function () {
-                    if (!searchCriteria.organizationId && !searchCriteria.customerId) {
+                    if (!memberId) {
                         return;
                     }
 
                     var newBlade = {
                         id: 'orders',
+                        navigationGroup: memberId,
                         title: 'orders.blades.customerOrder-list.title',
                         searchCriteria: searchCriteria,
                         controller: 'virtoCommerce.orderModule.customerOrderListController',
