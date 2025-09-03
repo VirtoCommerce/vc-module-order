@@ -110,7 +110,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             }
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-
                 Price = 0m;
                 PriceWithTax = 0m;
                 DiscountAmount = 0m;
@@ -123,6 +122,20 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             }
 
         }
+
+        public virtual void RestoreDetails(PaymentIn payment)
+        {
+            Price = payment.Price;
+            PriceWithTax = payment.PriceWithTax;
+            DiscountAmount = payment.DiscountAmount;
+            DiscountAmountWithTax = payment.DiscountAmountWithTax;
+            Total = payment.Total;
+            TotalWithTax = payment.TotalWithTax;
+            TaxTotal = payment.TaxTotal;
+            TaxPercentRate = payment.TaxPercentRate;
+            Sum = payment.Sum;
+        }
+
 
         #region ICloneable members
 
