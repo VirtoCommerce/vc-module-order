@@ -26,13 +26,6 @@ function ($rootScope, $scope, $localStorage, customerOrders, bladeUtils, dialogS
        ]}
     }
 
-    $rootScope.$on('loginStatusChanged', (securityScopes) => {
-        $translate.refresh().then(() => {
-            let gridOptions = $scope.getGridOptions();
-            $scope.setGridOptions("customerOrder-list-grid", gridOptions);
-        });
-    });
-
     blade.refresh = function () {
         var criteria = {
             responseGroup: "WithPrices",
