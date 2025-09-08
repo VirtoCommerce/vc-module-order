@@ -1,18 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.PaymentModule.Core.Model.Search;
 using VirtoCommerce.PaymentModule.Core.Services;
+using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Caching;
 using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
@@ -38,6 +44,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IShippingMethodsSearchService _shippingMethodsSearchService;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
         private readonly IBlobUrlResolver _blobUrlResolver;
+        private readonly ICustomerOrderSearchService _searchService;
+        private readonly IValidator<CustomerOrder> _customerOrderValidator;
+        private readonly ISettingsManager _settingsManager;
 
         public CustomerOrderService(
             Func<IOrderRepository> repositoryFactory,
@@ -48,7 +57,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             ICustomerOrderTotalsCalculator totalsCalculator,
             IShippingMethodsSearchService shippingMethodsSearchService,
             IPaymentMethodsSearchService paymentMethodSearchService,
-            IBlobUrlResolver blobUrlResolver)
+            IBlobUrlResolver blobUrlResolver,
+            ICustomerOrderSearchService searchService,
+            IValidator<CustomerOrder> customerOrderValidator,
+            ISettingsManager settingsManager)
             : base(repositoryFactory, platformMemoryCache, eventPublisher)
         {
             _repositoryFactory = repositoryFactory;
@@ -60,6 +72,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _shippingMethodsSearchService = shippingMethodsSearchService;
             _paymentMethodSearchService = paymentMethodSearchService;
             _blobUrlResolver = blobUrlResolver;
+            _searchService = searchService;
+            _customerOrderValidator = customerOrderValidator;
+            _settingsManager = settingsManager;
         }
 
         public override async Task SaveChangesAsync(IList<CustomerOrder> models)
@@ -310,6 +325,87 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 file.Url = file.Url.StartsWith("/api") ? file.Url : _blobUrlResolver.GetAbsoluteUrl(file.Url);
             }
+        }
+
+        public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(NameValueCollection paymentParameters)
+        {
+            var orderId = paymentParameters.Get("orderid");
+            if (string.IsNullOrEmpty(orderId))
+            {
+                throw new InvalidOperationException("the 'orderid' parameter must be passed");
+            }
+
+            //some payment method require customer number to be passed and returned. First search customer order by number
+            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
+            searchCriteria.Number = orderId;
+            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+            //if order not found by order number search by order id
+            var orders = await _searchService.SearchAsync(searchCriteria);
+            var customerOrder = orders.Results.FirstOrDefault() ?? await this.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+
+            if (customerOrder == null)
+            {
+                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
+            }
+
+            var store = await _storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            if (store == null)
+            {
+                throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
+            }
+
+            var paymentMethodCode = paymentParameters.Get("code");
+
+            //Need to use concrete  payment method if it code passed otherwise use all order payment methods
+            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
+            {
+                //Each payment method must check that these parameters are addressed to it
+                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters);
+                if (result.IsSuccess)
+                {
+
+                    var request = new PostProcessPaymentRequest
+                    {
+                        OrderId = customerOrder.Id,
+                        Order = customerOrder,
+                        PaymentId = inPayment.Id,
+                        Payment = inPayment,
+                        StoreId = customerOrder.StoreId,
+                        Store = store,
+                        OuterId = result.OuterId,
+                        Parameters = paymentParameters
+                    };
+                    var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
+                    if (retVal != null)
+                    {
+                        var validationResult = await ValidateAsync(customerOrder);
+                        if (!validationResult.IsValid)
+                        {
+                            return new PostProcessPaymentRequestNotValidResult()
+                            {
+                                Errors = validationResult.Errors,
+                                ErrorMessage = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage))
+                            };
+                        }
+                        await this.SaveChangesAsync(new[] { customerOrder });
+
+                        // order Number is required
+                        retVal.OrderId = customerOrder.Number;
+                    }
+                    return retVal;
+                }
+            }
+            return new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" };
+        }
+
+        private async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+        {
+            if (await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
+            {
+                return await _customerOrderValidator.ValidateAsync(customerOrder);
+            }
+
+            return new ValidationResult();
         }
     }
 }

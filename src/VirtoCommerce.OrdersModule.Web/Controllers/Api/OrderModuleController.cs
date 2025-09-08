@@ -30,6 +30,7 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
+using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
@@ -526,73 +527,19 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 parameters.Add(param.Key, param.Value);
             }
-            var orderId = parameters.Get("orderid");
-            if (string.IsNullOrEmpty(orderId))
+
+            var result = await customerOrderService.PostProcessPaymentAsync(parameters);
+
+            if (result is PostProcessPaymentRequestNotValidResult notValidResult)
             {
-                throw new InvalidOperationException("the 'orderid' parameter must be passed");
-            }
-
-            //some payment method require customer number to be passed and returned. First search customer order by number
-            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            searchCriteria.Number = orderId;
-            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
-            //if order not found by order number search by order id
-            var orders = await searchService.SearchAsync(searchCriteria);
-            var customerOrder = orders.Results.FirstOrDefault() ?? await customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
-
-            if (customerOrder == null)
-            {
-                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
-            }
-
-            var store = await storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
-            if (store == null)
-            {
-                throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
-            }
-
-            var paymentMethodCode = parameters.Get("code");
-
-            //Need to use concrete  payment method if it code passed otherwise use all order payment methods
-            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
-            {
-                //Each payment method must check that these parameters are addressed to it
-                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(parameters);
-                if (result.IsSuccess)
+                return BadRequest(new
                 {
-
-                    var request = new PostProcessPaymentRequest
-                    {
-                        OrderId = customerOrder.Id,
-                        Order = customerOrder,
-                        PaymentId = inPayment.Id,
-                        Payment = inPayment,
-                        StoreId = customerOrder.StoreId,
-                        Store = store,
-                        OuterId = result.OuterId,
-                        Parameters = parameters
-                    };
-                    var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
-                    if (retVal != null)
-                    {
-                        var validationResult = await ValidateAsync(customerOrder);
-                        if (!validationResult.IsValid)
-                        {
-                            return BadRequest(new
-                            {
-                                Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
-                                validationResult.Errors
-                            });
-                        }
-                        await customerOrderService.SaveChangesAsync(new[] { customerOrder });
-
-                        // order Number is required
-                        retVal.OrderId = customerOrder.Number;
-                    }
-                    return Ok(retVal);
-                }
+                    Message = notValidResult.ErrorMessage,
+                    notValidResult.Errors
+                });
             }
-            return Ok(new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" });
+
+            return Ok(result);
         }
 
         [HttpGet]

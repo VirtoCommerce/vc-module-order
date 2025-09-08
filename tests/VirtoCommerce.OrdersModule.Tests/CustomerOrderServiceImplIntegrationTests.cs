@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
@@ -27,6 +29,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -54,6 +57,10 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly ICustomerOrderSearchService _customerOrderSearchService;
         private readonly Mock<ILogger<PlatformMemoryCache>> _logMock;
         private readonly Mock<ILogger<InProcessBus>> _logEventMock;
+        private readonly Mock<IBlobUrlResolver> _blobUrlResolver;
+        private readonly Mock<ICustomerOrderSearchService> _searchServiceMock;
+        private readonly Mock<IValidator<CustomerOrder>> _customerOrderValidatorMock;
+        private readonly Mock<ISettingsManager> _settingsManagerMock;
 
         public CustomerOrderServiceImplIntegrationTests()
         {
@@ -72,6 +79,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             _changeLogServiceMock = new Mock<IChangeLogService>();
             _logMock = new Mock<ILogger<PlatformMemoryCache>>();
             _logEventMock = new Mock<ILogger<InProcessBus>>();
+            _blobUrlResolver = new Mock<IBlobUrlResolver>();
+            _searchServiceMock = new Mock<ICustomerOrderSearchService>();
+            _customerOrderValidatorMock = new Mock<IValidator<CustomerOrder>>();
+            _settingsManagerMock = new Mock<ISettingsManager>();
+
             var cachingOptions = new OptionsWrapper<CachingOptions>(new CachingOptions { CacheEnabled = true });
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
@@ -97,6 +109,10 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _platformMemoryCache);
             container.AddSingleton(x => _changeLogServiceMock.Object);
             container.AddSingleton(x => _logEventMock.Object);
+            container.AddSingleton(x => _blobUrlResolver.Object);
+            container.AddSingleton(x => _searchServiceMock.Object);
+            container.AddSingleton(x => _customerOrderValidatorMock.Object);
+            container.AddSingleton(x => _settingsManagerMock.Object);
             container.AddOptions<CrudOptions>();
 
             var serviceProvider = container.BuildServiceProvider();
