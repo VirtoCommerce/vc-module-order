@@ -329,10 +329,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(NameValueCollection paymentParameters)
         {
-            var orderId = paymentParameters.Get("orderid");
+            var orderId = GetOrderId(paymentParameters);
+            var paymentMethodCode = GetPaymentMethodCode(paymentParameters);
+
             if (string.IsNullOrEmpty(orderId))
             {
-                throw new InvalidOperationException("the 'orderid' parameter must be passed");
+                throw new InvalidOperationException("The 'orderid' parameter must be passed");
             }
 
             //some payment method require customer number to be passed and returned. First search customer order by number
@@ -353,8 +355,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
             }
-
-            var paymentMethodCode = paymentParameters.Get("code");
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
             foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
@@ -396,6 +396,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
             }
             return new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" };
+        }
+
+        protected virtual string GetOrderId(NameValueCollection paymentParameters)
+        {
+            return paymentParameters.Get("orderid");
+        }
+
+        protected virtual string GetPaymentMethodCode(NameValueCollection paymentParameters)
+        {
+            return paymentParameters.Get("code");
         }
 
         private async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
