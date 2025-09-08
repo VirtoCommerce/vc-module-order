@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using DinkToPdf;
@@ -31,6 +30,7 @@ using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.OrdersModule.Data.Model;
+using VirtoCommerce.OrdersModule.Web.Converters;
 using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
@@ -70,6 +70,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
         IValidator<CustomerOrder> customerOrderValidator,
         ISettingsManager settingsManager,
+        IPaymentParametersConverter paymentParametersConverter,
         ICustomerOrderPaymentService customerOrderPaymentService)
         : Controller
     {
@@ -523,11 +524,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/paymentcallback")]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
-            var parameters = new NameValueCollection();
-            foreach (var param in callback?.Parameters ?? Array.Empty<KeyValuePair>())
-            {
-                parameters.Add(param.Key, param.Value);
-            }
+            var parameters = paymentParametersConverter.GetPaymentParameters(callback);
 
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
@@ -550,7 +547,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/paymentcallback-raw")]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
         {
-            var parameters = await PopulatePaymentCallbackParameters();
+            var parameters = paymentParametersConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
 
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
@@ -566,14 +563,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return Ok(result);
         }
 
-        private async Task<NameValueCollection> PopulatePaymentCallbackParameters()
+        private async Task<string> GetRequestBody()
         {
-            var result = new NameValueCollection();
             using (var reader = new System.IO.StreamReader(Request.Body, System.Text.Encoding.UTF8, true, 1024, true))
             {
-                string requestBody = await reader.ReadToEndAsync();
+                return await reader.ReadToEndAsync();
             }
-            return result;
         }
 
         [HttpGet]

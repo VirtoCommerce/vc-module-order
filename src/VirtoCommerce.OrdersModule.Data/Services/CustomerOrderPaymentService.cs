@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -25,27 +24,26 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         ISettingsManager settingsManager)
         : ICustomerOrderPaymentService
     {
-        public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(NameValueCollection paymentParameters)
+        public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(PaymentParameters paymentParameters)
         {
-            var orderId = GetOrderId(paymentParameters);
-            var paymentMethodCode = GetPaymentMethodCode(paymentParameters);
+            ArgumentNullException.ThrowIfNull(paymentParameters);
 
-            if (string.IsNullOrEmpty(orderId))
+            if (string.IsNullOrEmpty(paymentParameters.OrderId))
             {
                 throw new InvalidOperationException("The 'orderid' parameter must be passed");
             }
 
             //some payment method require customer number to be passed and returned. First search customer order by number
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            searchCriteria.Number = orderId;
+            searchCriteria.Number = paymentParameters.OrderId;
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
             //if order not found by order number search by order id
             var orders = await customerOrderSearchService.SearchAsync(searchCriteria);
-            var customerOrder = orders.Results.FirstOrDefault() ?? await customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var customerOrder = orders.Results.FirstOrDefault() ?? await customerOrderService.GetByIdAsync(paymentParameters.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
             {
-                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
+                throw new InvalidOperationException($"Cannot find order with ID {paymentParameters.OrderId}");
             }
 
             var store = await storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
@@ -55,10 +53,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             //Need to use concrete  payment method if it code passed otherwise use all order payment methods
-            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
+            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentParameters.PaymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentParameters.PaymentMethodCode))))
             {
                 //Each payment method must check that these parameters are addressed to it
-                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters);
+                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters.Parameters);
                 if (result.IsSuccess)
                 {
 
@@ -71,7 +69,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         StoreId = customerOrder.StoreId,
                         Store = store,
                         OuterId = result.OuterId,
-                        Parameters = paymentParameters
+                        Parameters = paymentParameters.Parameters
                     };
                     var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
                     if (retVal != null)
@@ -94,16 +92,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
             }
             return new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" };
-        }
-
-        protected virtual string GetOrderId(NameValueCollection paymentParameters)
-        {
-            return paymentParameters.Get("orderid");
-        }
-
-        protected virtual string GetPaymentMethodCode(NameValueCollection paymentParameters)
-        {
-            return paymentParameters.Get("code");
         }
 
         protected virtual async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
