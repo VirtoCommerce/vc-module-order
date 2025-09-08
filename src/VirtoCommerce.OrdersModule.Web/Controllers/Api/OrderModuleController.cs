@@ -69,7 +69,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         IOptions<HtmlToPdfOptions> htmlToPdfOptions,
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
         IValidator<CustomerOrder> customerOrderValidator,
-        ISettingsManager settingsManager)
+        ISettingsManager settingsManager,
+        ICustomerOrderPaymentService customerOrderPaymentService)
         : Controller
     {
         /// <summary>
@@ -528,7 +529,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 parameters.Add(param.Key, param.Value);
             }
 
-            var result = await customerOrderService.PostProcessPaymentAsync(parameters);
+            var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
             if (result is PostProcessPaymentRequestNotValidResult notValidResult)
             {
@@ -540,6 +541,39 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             }
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        [HttpPost]
+        [Route("~/api/paymentcallback-raw")]
+        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
+        {
+            var parameters = await PopulatePaymentCallbackParameters();
+
+            var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
+
+            if (result is PostProcessPaymentRequestNotValidResult notValidResult)
+            {
+                return BadRequest(new
+                {
+                    Message = notValidResult.ErrorMessage,
+                    notValidResult.Errors
+                });
+            }
+
+            return Ok(result);
+        }
+
+        private async Task<NameValueCollection> PopulatePaymentCallbackParameters()
+        {
+            var result = new NameValueCollection();
+            using (var reader = new System.IO.StreamReader(Request.Body, System.Text.Encoding.UTF8, true, 1024, true))
+            {
+                string requestBody = await reader.ReadToEndAsync();
+            }
+            return result;
         }
 
         [HttpGet]

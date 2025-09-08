@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,7 +21,6 @@ using VirtoCommerce.Platform.Core.Caching;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.Events;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -42,9 +40,6 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<IShippingMethodsSearchService> _shippingMethodsSearchServiceMock;
         private readonly Mock<IPaymentMethodsSearchService> _paymentMethodsSearchServiceMock;
         private readonly Mock<IBlobUrlResolver> _blobUrlResolver;
-        private readonly Mock<ICustomerOrderSearchService> _searchServiceMock;
-        private readonly Mock<IValidator<CustomerOrder>> _customerOrderValidatorMock;
-        private readonly Mock<ISettingsManager> _settingsManagerMock;
 
         public CustomerOrderServiceUnitTests()
         {
@@ -57,9 +52,6 @@ namespace VirtoCommerce.OrdersModule.Tests
             _shippingMethodsSearchServiceMock = new Mock<IShippingMethodsSearchService>();
             _paymentMethodsSearchServiceMock = new Mock<IPaymentMethodsSearchService>();
             _blobUrlResolver = new Mock<IBlobUrlResolver>();
-            _searchServiceMock = new Mock<ICustomerOrderSearchService>();
-            _customerOrderValidatorMock = new Mock<IValidator<CustomerOrder>>();
-            _settingsManagerMock = new Mock<ISettingsManager>();
         }
 
         [Fact]
@@ -189,10 +181,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 _customerOrderTotalsCalculatorMock.Object,
                 _shippingMethodsSearchServiceMock.Object,
                 _paymentMethodsSearchServiceMock.Object,
-                _blobUrlResolver.Object,
-                _searchServiceMock.Object,
-                _customerOrderValidatorMock.Object,
-                _settingsManagerMock.Object);
+                _blobUrlResolver.Object);
         }
     }
 }
