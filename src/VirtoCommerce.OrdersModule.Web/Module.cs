@@ -102,7 +102,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<SendNotificationsOrderChangedEventHandler>();
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
-            serviceCollection.AddTransient<IPaymentParametersConverter, PaymentParametersDefaultConverter>();
+            serviceCollection.AddTransient<IPaymentRequestConverter, PaymentRequestDefaultConverter>();
 
             serviceCollection.AddTransient<IPurchasedProductsService, PurchasedProductsService>();
             serviceCollection.AddTransient<PurchasedProductsChangesProvider>();

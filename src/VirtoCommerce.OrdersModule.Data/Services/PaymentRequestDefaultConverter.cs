@@ -3,10 +3,12 @@ using System.Collections.Specialized;
 using Newtonsoft.Json;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Model;
+using VirtoCommerce.PaymentModule.Model.Requests;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class PaymentParametersDefaultConverter : IPaymentParametersConverter
+    public class PaymentRequestDefaultConverter : IPaymentRequestConverter
     {
         public virtual PaymentParameters GetPaymentParameters(PaymentCallbackParameters request)
         {
@@ -28,6 +30,27 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var paymentCallbackParameters = JsonConvert.DeserializeObject<PaymentCallbackParameters>(requestBody);
             return GetPaymentParameters(paymentCallbackParameters);
+        }
+
+        public virtual bool IsFailure(PostProcessPaymentRequestResult result)
+        {
+            return result is PostProcessPaymentRequestNotValidResult;
+        }
+
+        public virtual object GetResponse(PostProcessPaymentRequestResult result)
+        {
+            if (IsFailure(result))
+            {
+                return new
+                {
+                    Message = (result as PostProcessPaymentRequestNotValidResult)?.ErrorMessage,
+                    Errors = (result as PostProcessPaymentRequestNotValidResult)?.Errors
+                };
+            }
+            else
+            {
+                return result;
+            }
         }
     }
 }

@@ -29,7 +29,6 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
-using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
@@ -68,7 +67,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
         IValidator<CustomerOrder> customerOrderValidator,
         ISettingsManager settingsManager,
-        IPaymentParametersConverter paymentParametersConverter,
+        IPaymentRequestConverter paymentParametersConverter,
         ICustomerOrderPaymentService customerOrderPaymentService)
         : Controller
     {
@@ -526,16 +525,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            if (result is PostProcessPaymentRequestNotValidResult notValidResult)
+            object response = paymentParametersConverter.GetResponse(result);
+
+            if (paymentParametersConverter.IsFailure(result))
             {
-                return BadRequest(new
-                {
-                    Message = notValidResult.ErrorMessage,
-                    notValidResult.Errors
-                });
+                return BadRequest(response);
             }
 
-            return Ok(result);
+            return Ok(response);
         }
 
         /// <summary>
@@ -549,16 +546,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            if (result is PostProcessPaymentRequestNotValidResult notValidResult)
+            object response = paymentParametersConverter.GetResponse(result);
+
+            if (paymentParametersConverter.IsFailure(result))
             {
-                return BadRequest(new
-                {
-                    Message = notValidResult.ErrorMessage,
-                    notValidResult.Errors
-                });
+                return BadRequest(response);
             }
 
-            return Ok(result);
+            return Ok(response);
         }
 
         private async Task<string> GetRequestBody()
