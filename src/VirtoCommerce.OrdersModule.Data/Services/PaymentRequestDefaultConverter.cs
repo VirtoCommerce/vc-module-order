@@ -15,6 +15,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var result = new PaymentParameters();
 
             result.Parameters = new NameValueCollection();
+
             foreach (var parameter in request?.Parameters ?? Array.Empty<KeyValuePair>())
             {
                 result.Parameters.Add(parameter.Key, parameter.Value);
@@ -47,10 +48,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     Errors = (result as PostProcessPaymentRequestNotValidResult)?.Errors
                 };
             }
-            else
-            {
-                return result;
-            }
+
+            return result;
         }
     }
 }

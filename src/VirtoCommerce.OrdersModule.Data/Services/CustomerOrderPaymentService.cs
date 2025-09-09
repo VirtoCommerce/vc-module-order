@@ -37,8 +37,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
             searchCriteria.Number = paymentParameters.OrderId;
             searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
+
             //if order not found by order number search by order id
             var orders = await customerOrderSearchService.SearchAsync(searchCriteria);
+
             var customerOrder = orders.Results.FirstOrDefault() ?? await customerOrderService.GetByIdAsync(paymentParameters.OrderId, CustomerOrderResponseGroup.Full.ToString());
 
             if (customerOrder == null)
@@ -47,6 +49,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
             var store = await storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
+
             if (store == null)
             {
                 throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
@@ -57,9 +60,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             {
                 //Each payment method must check that these parameters are addressed to it
                 var result = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters.Parameters);
+
                 if (result.IsSuccess)
                 {
-
                     var request = new PostProcessPaymentRequest
                     {
                         OrderId = customerOrder.Id,
@@ -71,7 +74,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         OuterId = result.OuterId,
                         Parameters = paymentParameters.Parameters
                     };
+
                     var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
+
                     if (retVal != null)
                     {
                         var validationResult = await ValidateAsync(customerOrder);
@@ -88,9 +93,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                         // order Number is required
                         retVal.OrderId = customerOrder.Number;
                     }
+
                     return retVal;
                 }
             }
+
             return new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" };
         }
 
