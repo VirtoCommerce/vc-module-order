@@ -17,7 +17,6 @@ namespace VirtoCommerce.OrdersModule.Tests
         [Fact]
         public void GetJobArgumentsForChangedEntry_PaymentsCancelledStateChanged()
         {
-            Assert.Fail("FAILED TEST");
             // Arrange
             var paymentId = Guid.NewGuid().ToString();
             var oldPayment = new PaymentIn
