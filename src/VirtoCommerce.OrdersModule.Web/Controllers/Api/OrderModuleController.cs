@@ -30,8 +30,6 @@ using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.OrdersModule.Data.Model;
-using VirtoCommerce.OrdersModule.Web.Converters;
-using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;

@@ -30,7 +30,6 @@ using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Data.SqlServer;
 using VirtoCommerce.OrdersModule.Web.Authorization;
-using VirtoCommerce.OrdersModule.Web.Converters;
 using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
 using VirtoCommerce.Platform.Core.Common;
