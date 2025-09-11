@@ -59,43 +59,49 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentParameters.PaymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentParameters.PaymentMethodCode))))
             {
                 //Each payment method must check that these parameters are addressed to it
-                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters.Parameters);
+                var paymentMethodValidationResult = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters.Parameters);
 
-                if (result.IsSuccess)
+                if (!paymentMethodValidationResult.IsSuccess)
                 {
-                    var request = new PostProcessPaymentRequest
-                    {
-                        OrderId = customerOrder.Id,
-                        Order = customerOrder,
-                        PaymentId = inPayment.Id,
-                        Payment = inPayment,
-                        StoreId = customerOrder.StoreId,
-                        Store = store,
-                        OuterId = result.OuterId,
-                        Parameters = paymentParameters.Parameters
-                    };
-
-                    var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
-
-                    if (retVal != null)
-                    {
-                        var validationResult = await ValidateAsync(customerOrder);
-                        if (!validationResult.IsValid)
-                        {
-                            return new PostProcessPaymentRequestNotValidResult()
-                            {
-                                Errors = validationResult.Errors,
-                                ErrorMessage = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage))
-                            };
-                        }
-                        await customerOrderService.SaveChangesAsync(new[] { customerOrder });
-
-                        // order Number is required
-                        retVal.OrderId = customerOrder.Number;
-                    }
-
-                    return retVal;
+                    continue;
                 }
+
+                var paymentMethodRequest = new PostProcessPaymentRequest
+                {
+                    OrderId = customerOrder.Id,
+                    Order = customerOrder,
+                    PaymentId = inPayment.Id,
+                    Payment = inPayment,
+                    StoreId = customerOrder.StoreId,
+                    Store = store,
+                    OuterId = paymentMethodValidationResult.OuterId,
+                    Parameters = paymentParameters.Parameters
+                };
+
+                var paymentMethodPostProcessResult = inPayment.PaymentMethod.PostProcessPayment(paymentMethodRequest);
+
+                if (paymentMethodPostProcessResult == null)
+                {
+                    continue;
+                }
+
+                var customerOrderValidationResult = await ValidateAsync(customerOrder);
+
+                if (!customerOrderValidationResult.IsValid)
+                {
+                    return new PostProcessPaymentRequestNotValidResult()
+                    {
+                        Errors = customerOrderValidationResult.Errors,
+                        ErrorMessage = string.Join(" ", customerOrderValidationResult.Errors.Select(x => x.ErrorMessage))
+                    };
+                }
+
+                await customerOrderService.SaveChangesAsync(new[] { customerOrder });
+
+                // order Number is required
+                paymentMethodPostProcessResult.OrderId = customerOrder.Number;
+
+                return paymentMethodPostProcessResult;
             }
 
             return new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" };
