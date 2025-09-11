@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
@@ -54,6 +55,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly ICustomerOrderSearchService _customerOrderSearchService;
         private readonly Mock<ILogger<PlatformMemoryCache>> _logMock;
         private readonly Mock<ILogger<InProcessBus>> _logEventMock;
+        private readonly Mock<IBlobUrlResolver> _blobUrlResolver;
 
         public CustomerOrderServiceImplIntegrationTests()
         {
@@ -72,6 +74,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             _changeLogServiceMock = new Mock<IChangeLogService>();
             _logMock = new Mock<ILogger<PlatformMemoryCache>>();
             _logEventMock = new Mock<ILogger<InProcessBus>>();
+            _blobUrlResolver = new Mock<IBlobUrlResolver>();
             var cachingOptions = new OptionsWrapper<CachingOptions>(new CachingOptions { CacheEnabled = true });
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
@@ -97,6 +100,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _platformMemoryCache);
             container.AddSingleton(x => _changeLogServiceMock.Object);
             container.AddSingleton(x => _logEventMock.Object);
+            container.AddSingleton(x => _blobUrlResolver.Object);
             container.AddOptions<CrudOptions>();
 
             var serviceProvider = container.BuildServiceProvider();
