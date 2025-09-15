@@ -34,7 +34,6 @@
     <ProjectReference Include="..\VirtoCommerce.OrdersModule.Data\VirtoCommerce.OrdersModule.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
     <Folder Include="Scripts\blades\addresses\" />
     <NotificationTemplates Include="NotificationTemplates\**" />
     <Folder Include="Properties\" />

@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -67,7 +69,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
         IValidator<CustomerOrder> customerOrderValidator,
         ISettingsManager settingsManager,
-        IPaymentRequestConverter paymentParametersConverter,
+        IPaymentRequestConverter paymentRequestConverter,
         ICustomerOrderPaymentService customerOrderPaymentService)
         : Controller
     {
@@ -521,18 +523,14 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/paymentcallback")]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
-            var parameters = paymentParametersConverter.GetPaymentParameters(callback);
-
+            var parameters = paymentRequestConverter.GetPaymentParameters(callback);
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            object response = paymentParametersConverter.GetResponse(result);
+            var (response, succeeded) = paymentRequestConverter.GetResponse(result);
 
-            if (paymentParametersConverter.IsFailure(result))
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return succeeded
+                ? Ok(response)
+                : BadRequest(response);
         }
 
         /// <summary>
@@ -542,26 +540,20 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/paymentcallback-raw")]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
         {
-            var parameters = paymentParametersConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
-
+            var parameters = paymentRequestConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
             var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            object response = paymentParametersConverter.GetResponse(result);
+            var (response, succeeded) = paymentRequestConverter.GetResponse(result);
 
-            if (paymentParametersConverter.IsFailure(result))
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return succeeded
+                ? Ok(response)
+                : BadRequest(response);
         }
 
         private async Task<string> GetRequestBody()
         {
-            using (var reader = new System.IO.StreamReader(Request.Body, System.Text.Encoding.UTF8, true, 1024, true))
-            {
-                return await reader.ReadToEndAsync();
-            }
+            using var reader = new StreamReader(Request.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, 1024, leaveOpen: true);
+            return await reader.ReadToEndAsync();
         }
 
         [HttpGet]
