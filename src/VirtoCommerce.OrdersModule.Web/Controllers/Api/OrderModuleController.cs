@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -30,7 +31,6 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
 using VirtoCommerce.OrdersModule.Data.Extensions;
-using VirtoCommerce.OrdersModule.Web.Model;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
@@ -68,7 +68,9 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         IOptions<HtmlToPdfOptions> htmlToPdfOptions,
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
         IValidator<CustomerOrder> customerOrderValidator,
-        ISettingsManager settingsManager)
+        ISettingsManager settingsManager,
+        IPaymentRequestConverter paymentRequestConverter,
+        ICustomerOrderPaymentService customerOrderPaymentService)
         : Controller
     {
         /// <summary>
@@ -521,78 +523,37 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("~/api/paymentcallback")]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
-            var parameters = new NameValueCollection();
-            foreach (var param in callback?.Parameters ?? Array.Empty<KeyValuePair>())
-            {
-                parameters.Add(param.Key, param.Value);
-            }
-            var orderId = parameters.Get("orderid");
-            if (string.IsNullOrEmpty(orderId))
-            {
-                throw new InvalidOperationException("the 'orderid' parameter must be passed");
-            }
+            var parameters = paymentRequestConverter.GetPaymentParameters(callback);
+            var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            //some payment method require customer number to be passed and returned. First search customer order by number
-            var searchCriteria = AbstractTypeFactory<CustomerOrderSearchCriteria>.TryCreateInstance();
-            searchCriteria.Number = orderId;
-            searchCriteria.ResponseGroup = CustomerOrderResponseGroup.Full.ToString();
-            //if order not found by order number search by order id
-            var orders = await searchService.SearchAsync(searchCriteria);
-            var customerOrder = orders.Results.FirstOrDefault() ?? await customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
+            var (response, succeeded) = paymentRequestConverter.GetResponse(result);
 
-            if (customerOrder == null)
-            {
-                throw new InvalidOperationException($"Cannot find order with ID {orderId}");
-            }
+            return succeeded
+                ? Ok(response)
+                : BadRequest(response);
+        }
 
-            var store = await storeService.GetByIdAsync(customerOrder.StoreId, StoreResponseGroup.StoreInfo.ToString());
-            if (store == null)
-            {
-                throw new InvalidOperationException($"Cannot find store with ID {customerOrder.StoreId}");
-            }
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        [HttpPost]
+        [Route("~/api/paymentcallback-raw")]
+        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
+        {
+            var parameters = paymentRequestConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
+            var result = await customerOrderPaymentService.PostProcessPaymentAsync(parameters);
 
-            var paymentMethodCode = parameters.Get("code");
+            var (response, succeeded) = paymentRequestConverter.GetResponse(result);
 
-            //Need to use concrete  payment method if it code passed otherwise use all order payment methods
-            foreach (var inPayment in customerOrder.InPayments.Where(x => x.PaymentMethod != null && (string.IsNullOrEmpty(paymentMethodCode) || x.GatewayCode.EqualsIgnoreCase(paymentMethodCode))))
-            {
-                //Each payment method must check that these parameters are addressed to it
-                var result = inPayment.PaymentMethod.ValidatePostProcessRequest(parameters);
-                if (result.IsSuccess)
-                {
+            return succeeded
+                ? Ok(response)
+                : BadRequest(response);
+        }
 
-                    var request = new PostProcessPaymentRequest
-                    {
-                        OrderId = customerOrder.Id,
-                        Order = customerOrder,
-                        PaymentId = inPayment.Id,
-                        Payment = inPayment,
-                        StoreId = customerOrder.StoreId,
-                        Store = store,
-                        OuterId = result.OuterId,
-                        Parameters = parameters
-                    };
-                    var retVal = inPayment.PaymentMethod.PostProcessPayment(request);
-                    if (retVal != null)
-                    {
-                        var validationResult = await ValidateAsync(customerOrder);
-                        if (!validationResult.IsValid)
-                        {
-                            return BadRequest(new
-                            {
-                                Message = string.Join(" ", validationResult.Errors.Select(x => x.ErrorMessage)),
-                                validationResult.Errors
-                            });
-                        }
-                        await customerOrderService.SaveChangesAsync(new[] { customerOrder });
-
-                        // order Number is required
-                        retVal.OrderId = customerOrder.Number;
-                    }
-                    return Ok(retVal);
-                }
-            }
-            return Ok(new PostProcessPaymentRequestResult { ErrorMessage = "Payment method not found" });
+        private async Task<string> GetRequestBody()
+        {
+            using var reader = new StreamReader(Request.Body, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, 1024, leaveOpen: true);
+            return await reader.ReadToEndAsync();
         }
 
         [HttpGet]
