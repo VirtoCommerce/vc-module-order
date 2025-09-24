@@ -26,11 +26,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly IValidator<OrderPaymentInfo> _validator;
         private readonly ITenantUniqueNumberGenerator _uniqueNumberGenerator;
 
-        protected virtual string[] CaptureRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet };
-        protected virtual string[] RefundRuleSets => new[] { PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet };
+        protected virtual string[] CaptureRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet];
+        protected virtual string[] RefundRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet];
 
-        protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => new[] { PaymentStatus.Authorized, PaymentStatus.Paid };
-        protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => new[] { PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded };
+        protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => [PaymentStatus.Authorized, PaymentStatus.Paid];
+        protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
 
         public PaymentFlowService(
             ICustomerOrderService customerOrderService,
@@ -109,7 +109,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
 
 
-            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             result.Succeeded = true;
 
@@ -144,7 +144,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.ErrorMessage = refundResult.ErrorMessage;
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             return result;
         }
@@ -185,7 +185,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 paymentInfo.Payment.Captures.Add(capture);
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             result.Succeeded = true;
 
@@ -222,7 +222,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 result.ErrorMessage = captureResult.ErrorMessage;
             }
 
-            await _customerOrderService.SaveChangesAsync(new[] { paymentInfo.CustomerOrder });
+            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             return result;
         }
