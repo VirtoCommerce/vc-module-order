@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -292,13 +291,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             result.CaptureAmount = request.Amount ?? paymentInfo.Payment.Sum;
             result.OuterId = request.OuterId;
 
-            var parameters = new NameValueCollection
-            {
-                { nameof(request.CloseTransaction), request.CloseTransaction.ToString() },
-                { nameof(request.CaptureDetails), request.CaptureDetails ?? string.Empty }
-            };
+            result.Parameters ??= [];
 
-            result.Parameters = parameters;
+            result.Parameters.Add(nameof(request.CloseTransaction), request.CloseTransaction.ToString());
+            result.Parameters.Add(nameof(request.CaptureDetails), request.CaptureDetails ?? string.Empty);
+            result.Parameters.Add(nameof(request.TransactionId), request.TransactionId ?? string.Empty);
+
 
             return result;
         }
@@ -313,6 +311,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             result.Reason = request.ReasonCode;
             result.Notes = request.ReasonMessage;
             result.OuterId = request.OuterId;
+
+            result.Parameters ??= [];
+
+            result.Parameters.Add(nameof(request.TransactionId), request.TransactionId ?? string.Empty);
 
             return result;
         }
