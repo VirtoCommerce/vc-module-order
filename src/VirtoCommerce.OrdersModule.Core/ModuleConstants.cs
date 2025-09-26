@@ -216,7 +216,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     Name = "Order.Search.EventBasedIndexation.Enable",
                     GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
-                    DefaultValue = false,
+                    DefaultValue = true,
                 };
 
                 public static SettingDescriptor CustomerOrderIndexationDate { get; } = new SettingDescriptor
@@ -264,7 +264,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     Name = "Order.EventBasedPurchasedProductIndexation.Enable",
                     GroupName = "Orders|Products",
                     ValueType = SettingValueType.Boolean,
-                    DefaultValue = false
+                    DefaultValue = true
                 };
 
                 public static SettingDescriptor PurchasedProductStoreFilter { get; } = new SettingDescriptor
