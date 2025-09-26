@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.Platform.Core.Common;
@@ -17,6 +18,9 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
         public OrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork = null)
             : base(dbContext, unitOfWork)
         {
+            // Resolves Breaking changes in EF Core 7.0 (EF7) when EF Core will not automatically delete orphans because all FKs are nullable.
+            // https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-7.0/breaking-changes?tabs=v7#orphaned-dependents-of-optional-relationships-are-not-automatically-deleted
+            dbContext.SavingChanges += OnSavingChanges;
         }
 
         public IQueryable<CustomerOrderEntity> CustomerOrders => DbContext.Set<CustomerOrderEntity>();
@@ -247,5 +251,72 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             }
         }
 #pragma warning restore S109
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && DbContext != null)
+            {
+                DbContext.SavingChanges -= OnSavingChanges;
+            }
+            base.Dispose(disposing);
+        }
+
+        protected virtual bool IsOrphanedEntity(EntityEntry entry)
+        {
+            switch (entry.Entity)
+            {
+                case CaptureEntity capture
+                    when capture.PaymentId == null:
+                case RefundEntity refund
+                    when refund.PaymentId == null:
+                case PaymentInEntity payment
+                    when payment.CustomerOrderId == null
+                        && payment.ShipmentId == null:
+                case AddressEntity a
+                    when a.CustomerOrderId == null
+                        && a.ShipmentId == null
+                        && a.PaymentInId == null:
+                case DiscountEntity d
+                    when d.CustomerOrderId == null
+                        && d.ShipmentId == null
+                        && d.LineItemId == null
+                        && d.PaymentInId == null:
+                case TaxDetailEntity t
+                    when t.CustomerOrderId == null
+                        && t.ShipmentId == null
+                        && t.LineItemId == null
+                        && t.PaymentInId == null:
+                case FeeDetailEntity f
+                    when f.CustomerOrderId == null
+                        && f.ShipmentId == null
+                        && f.LineItemId == null
+                        && f.PaymentInId == null:
+                case OrderDynamicPropertyObjectValueEntity v
+                    when v.CustomerOrderId == null
+                      && v.PaymentInId == null
+                      && v.ShipmentId == null
+                      && v.RefundId == null
+                      && v.LineItemId == null
+                      && v.CaptureId == null:
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void OnSavingChanges(object sender, SavingChangesEventArgs args)
+        {
+            var ctx = (DbContext)sender;
+            var entries = ctx.ChangeTracker.Entries();
+
+            foreach (var entry in entries)
+            {
+                if (entry.State == EntityState.Modified &&
+                    IsOrphanedEntity(entry))
+                {
+                    entry.State = EntityState.Deleted;
+                }
+            }
+        }
     }
 }
