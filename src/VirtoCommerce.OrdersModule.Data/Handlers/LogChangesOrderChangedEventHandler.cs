@@ -80,34 +80,11 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             {
                 var logs = new List<string>();
 
-                var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
+                var diff = GetOperationDifferences(changedEntry, logs);
 
-                if (changedEntry.OldEntry is Shipment shipment)
-                {
-                    logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
-                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
-                }
-                else if (changedEntry.OldEntry is PaymentIn payment)
-                {
-                    logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
-                    diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
-                }
-                else if (changedEntry.OldEntry is CustomerOrder order)
-                {
-                    logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
-                    diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
-                }
+                var auditableProperties = GetAuditableProperties(changedEntry);
 
-                var type = changedEntry.OldEntry.GetType();
-                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
-                {
-                    auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
-                                                              .Select(x => x.Name)
-                                                              .ToList();
-                    _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
-                }
-
-                if (auditableProperties.Any())
+                if (auditableProperties.Count != 0)
                 {
                     var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
                     foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
@@ -132,6 +109,51 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
 
             return result;
+        }
+
+        protected List<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
+        {
+            var type = changedEntry.OldEntry.GetType();
+            if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
+            {
+                auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
+                                                          .Select(x => x.Name)
+                                                          .ToList();
+                _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
+            }
+
+            return auditableProperties;
+        }
+
+        protected virtual IList<Difference> GetOperationDifferences(GenericChangedEntry<IOperation> changedEntry, List<string> logs)
+        {
+            var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
+
+            if (changedEntry.OldEntry is Shipment shipment)
+            {
+                logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
+                diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
+            }
+            else if (changedEntry.OldEntry is PaymentIn payment)
+            {
+                logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
+                diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
+            }
+            else if (changedEntry.OldEntry is CustomerOrder order)
+            {
+                logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
+                diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
+            }
+            else if (changedEntry.OldEntry is Capture capture)
+            {
+                diff.AddRange(Comparer.Compare(capture, changedEntry.NewEntry as Capture));
+            }
+            else if (changedEntry.OldEntry is Refund refund)
+            {
+                diff.AddRange(Comparer.Compare(refund, changedEntry.NewEntry as Refund));
+            }
+
+            return diff;
         }
 
         protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
