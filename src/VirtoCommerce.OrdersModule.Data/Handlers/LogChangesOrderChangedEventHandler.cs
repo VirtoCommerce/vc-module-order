@@ -75,7 +75,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var result = new List<OperationLog>();
 
-            //TDB: Rework to make more extensible
             if (changedEntry.EntryState == EntryState.Modified)
             {
                 var logs = new List<string>();
@@ -97,14 +96,16 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
             else if (changedEntry.EntryState == EntryState.Deleted)
             {
-                var record = GetLogRecord(changedEntry.NewEntry, $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted");
-                record.OperationType = EntryState.Deleted;
+                var record = GetLogRecord(changedEntry.NewEntry,
+                    $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
+                    EntryState.Deleted);
                 result.Add(record);
             }
             else if (changedEntry.EntryState == EntryState.Added)
             {
-                var record = GetLogRecord(changedEntry.NewEntry, $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added");
-                record.OperationType = EntryState.Added;
+                var record = GetLogRecord(changedEntry.NewEntry,
+                    $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
+                    EntryState.Added);
                 result.Add(record);
             }
 
@@ -218,13 +219,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return result;
         }
 
-        protected virtual OperationLog GetLogRecord(IOperation operation, string template)
+        protected virtual OperationLog GetLogRecord(IOperation operation, string template, EntryState operationType = EntryState.Modified)
         {
             var result = AbstractTypeFactory<OperationLog>.TryCreateInstance();
 
             result.ObjectId = operation.Id;
             result.ObjectType = operation.GetType().Name;
-            result.OperationType = EntryState.Modified;
+            result.OperationType = operationType;
             result.Detail = template;
 
             return result;
