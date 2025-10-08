@@ -75,39 +75,15 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var result = new List<OperationLog>();
 
-            //TDB: Rework to make more extensible
             if (changedEntry.EntryState == EntryState.Modified)
             {
                 var logs = new List<string>();
 
-                var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
+                var diff = GetOperationDifferences(changedEntry, logs);
 
-                if (changedEntry.OldEntry is Shipment shipment)
-                {
-                    logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
-                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
-                }
-                else if (changedEntry.OldEntry is PaymentIn payment)
-                {
-                    logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
-                    diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
-                }
-                else if (changedEntry.OldEntry is CustomerOrder order)
-                {
-                    logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
-                    diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
-                }
+                var auditableProperties = GetAuditableProperties(changedEntry);
 
-                var type = changedEntry.OldEntry.GetType();
-                if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
-                {
-                    auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
-                                                              .Select(x => x.Name)
-                                                              .ToList();
-                    _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
-                }
-
-                if (auditableProperties.Any())
+                if (auditableProperties.Count != 0)
                 {
                     var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
                     foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
@@ -120,18 +96,65 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
             else if (changedEntry.EntryState == EntryState.Deleted)
             {
-                var record = GetLogRecord(changedEntry.NewEntry, $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted");
-                record.OperationType = EntryState.Deleted;
+                var record = GetLogRecord(changedEntry.NewEntry,
+                    $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
+                    EntryState.Deleted);
                 result.Add(record);
             }
             else if (changedEntry.EntryState == EntryState.Added)
             {
-                var record = GetLogRecord(changedEntry.NewEntry, $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added");
-                record.OperationType = EntryState.Added;
+                var record = GetLogRecord(changedEntry.NewEntry,
+                    $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
+                    EntryState.Added);
                 result.Add(record);
             }
 
             return result;
+        }
+
+        protected List<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
+        {
+            var type = changedEntry.OldEntry.GetType();
+            if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
+            {
+                auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
+                                                          .Select(x => x.Name)
+                                                          .ToList();
+                _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
+            }
+
+            return auditableProperties;
+        }
+
+        protected virtual IList<Difference> GetOperationDifferences(GenericChangedEntry<IOperation> changedEntry, List<string> logs)
+        {
+            var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
+
+            if (changedEntry.OldEntry is Shipment shipment)
+            {
+                logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
+                diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
+            }
+            else if (changedEntry.OldEntry is PaymentIn payment)
+            {
+                logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
+                diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
+            }
+            else if (changedEntry.OldEntry is CustomerOrder order)
+            {
+                logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
+                diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
+            }
+            else if (changedEntry.OldEntry is Capture capture)
+            {
+                diff.AddRange(Comparer.Compare(capture, changedEntry.NewEntry as Capture));
+            }
+            else if (changedEntry.OldEntry is Refund refund)
+            {
+                diff.AddRange(Comparer.Compare(refund, changedEntry.NewEntry as Refund));
+            }
+
+            return diff;
         }
 
         protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
@@ -196,13 +219,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return result;
         }
 
-        protected virtual OperationLog GetLogRecord(IOperation operation, string template)
+        protected virtual OperationLog GetLogRecord(IOperation operation, string template, EntryState operationType = EntryState.Modified)
         {
             var result = AbstractTypeFactory<OperationLog>.TryCreateInstance();
 
             result.ObjectId = operation.Id;
             result.ObjectType = operation.GetType().Name;
-            result.OperationType = EntryState.Modified;
+            result.OperationType = operationType;
             result.Detail = template;
 
             return result;
