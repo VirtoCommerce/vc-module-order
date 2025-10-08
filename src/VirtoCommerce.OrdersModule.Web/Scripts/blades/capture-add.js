@@ -5,13 +5,18 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.orderModule.order_res_customerOrders',
     function ($scope, bladeNavigationService, customerOrders) {
         var blade = $scope.blade;
+
+        var operationsCount = blade.payment.childrenOperations ? (blade.payment.childrenOperations.length + 1) : 1;
+        var newTransactionId = `${blade.payment.number}-${operationsCount.toString().padStart(3, '0')}`;
+
         blade.title = 'orders.blades.capture-add.title';
-        blade.subtitle = blade.payment.number;
+        blade.subtitle = newTransactionId;
+
 
         blade.initialize = function () {
             blade.currentEntity = {
                 amount: blade.payment.sum,
-                transactionId: blade.payment.number
+                transactionId: newTransactionId
             };
 
             blade.isLoading = false;
