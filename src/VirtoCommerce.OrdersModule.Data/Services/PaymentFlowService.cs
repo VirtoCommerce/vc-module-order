@@ -35,7 +35,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => [PaymentStatus.Authorized, PaymentStatus.Paid];
         protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
 
-        public virtual async Task<string> GetResourceKey(OrderPaymentRequest request)
+        public virtual async Task<string> GetResourceKeyAsync(OrderPaymentRequest request)
         {
             string partKey = null;
 
@@ -49,14 +49,16 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 partKey = payment?.OrderId;
             }
 
-            return $"{nameof(PaymentFlowService)}:{partKey ?? Guid.NewGuid().ToString()}";
+            ArgumentNullException.ThrowIfNull(partKey);
+
+            return $"{nameof(PaymentFlowService)}:{partKey}";
         }
 
         #region Refund
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            var resourceKey = await GetResourceKey(request);
+            var resourceKey = await GetResourceKeyAsync(request);
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => RefundPaymentInternalAsync(request),
                 paymentDistributedLockOptions.Value.LockTimeout,
@@ -229,7 +231,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
-            var resourceKey = await GetResourceKey(request);
+            var resourceKey = await GetResourceKeyAsync(request);
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => CapturePaymentInternalAsync(request),
                 paymentDistributedLockOptions.Value.LockTimeout,
