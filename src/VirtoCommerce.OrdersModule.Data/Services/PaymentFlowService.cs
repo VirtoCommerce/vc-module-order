@@ -58,7 +58,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            var resourceKey = await GetResourceKeyAsync(request);
+            string resourceKey;
+
+            try
+            {
+                resourceKey = await GetResourceKeyAsync(request);
+            }
+            catch (Exception ex)
+            {
+                return new RefundOrderPaymentResult
+                {
+                    Succeeded = false,
+                    ErrorCode = PaymentFlowErrorCodes.PaymentFailed,
+                    ErrorMessage = ex.Message
+                };
+            }
+
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => RefundPaymentInternalAsync(request),
                 paymentDistributedLockOptions.Value.LockTimeout,
@@ -231,7 +246,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
-            var resourceKey = await GetResourceKeyAsync(request);
+            string resourceKey;
+
+            try
+            {
+                resourceKey = await GetResourceKeyAsync(request);
+            }
+            catch (Exception ex)
+            {
+                return new CaptureOrderPaymentResult
+                {
+                    Succeeded = false,
+                    ErrorCode = PaymentFlowErrorCodes.PaymentFailed,
+                    ErrorMessage = ex.Message
+                };
+            }
+
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => CapturePaymentInternalAsync(request),
                 paymentDistributedLockOptions.Value.LockTimeout,
