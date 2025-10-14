@@ -60,16 +60,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
         {
-            string resourceKey;
-
             try
             {
-                resourceKey = await GetLockResourceKeyAsync(request);
+                var resourceKey = await GetLockResourceKeyAsync(request);
 
                 if (string.IsNullOrEmpty(resourceKey))
                 {
                     throw new InvalidOperationException("Lock resource key is null or empty.");
                 }
+
+                var result = await distributedLockService.ExecuteAsync(resourceKey,
+                    () => RefundPaymentInternalAsync(request),
+                    _lockOptions.LockTimeout,
+                    _lockOptions.TryLockTimeout,
+                    _lockOptions.RetryInterval);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -80,14 +86,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     ErrorMessage = ex.Message
                 };
             }
-
-            var result = await distributedLockService.ExecuteAsync(resourceKey,
-                () => RefundPaymentInternalAsync(request),
-                _lockOptions.LockTimeout,
-                _lockOptions.TryLockTimeout,
-                _lockOptions.RetryInterval);
-
-            return result;
         }
 
         protected virtual async Task<RefundOrderPaymentResult> RefundPaymentInternalAsync(RefundOrderPaymentRequest request)
@@ -253,16 +251,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
         {
-            string resourceKey;
-
             try
             {
-                resourceKey = await GetLockResourceKeyAsync(request);
+                var resourceKey = await GetLockResourceKeyAsync(request);
 
                 if (string.IsNullOrEmpty(resourceKey))
                 {
                     throw new InvalidOperationException("Lock resource key is null or empty.");
                 }
+
+                var result = await distributedLockService.ExecuteAsync(resourceKey,
+                    () => CapturePaymentInternalAsync(request),
+                    _lockOptions.LockTimeout,
+                    _lockOptions.TryLockTimeout,
+                    _lockOptions.RetryInterval);
+
+                return result;
             }
             catch (Exception ex)
             {
@@ -273,14 +277,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     ErrorMessage = ex.Message
                 };
             }
-
-            var result = await distributedLockService.ExecuteAsync(resourceKey,
-                () => CapturePaymentInternalAsync(request),
-                _lockOptions.LockTimeout,
-                _lockOptions.TryLockTimeout,
-                _lockOptions.RetryInterval);
-
-            return result;
         }
 
         // Validate, add new capture request, save to DB
