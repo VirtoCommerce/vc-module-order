@@ -29,13 +29,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
         IDistributedLockService distributedLockService) : IPaymentFlowService
     {
+        private readonly PaymentDistributedLockOptions _lockOptions = paymentDistributedLockOptions.Value;
+
         protected virtual string[] CaptureRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet];
         protected virtual string[] RefundRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet];
 
         protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => [PaymentStatus.Authorized, PaymentStatus.Paid];
         protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
 
-        public virtual async Task<string> GetResourceKeyAsync(OrderPaymentRequest request)
+        public virtual async Task<string> GetLockResourceKeyAsync(OrderPaymentRequest request)
         {
             string partKey = null;
 
@@ -49,9 +51,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 partKey = payment?.OrderId;
             }
 
-            ArgumentNullException.ThrowIfNull(partKey);
-
-            return $"{nameof(PaymentFlowService)}:{partKey}";
+            return string.IsNullOrEmpty(partKey)
+                ? throw new InvalidOperationException("Unable to determine lock resource key: the parameter was not passed or the object was not found.")
+                : $"{nameof(CustomerOrder)}:{partKey}";
         }
 
         #region Refund
@@ -62,7 +64,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             try
             {
-                resourceKey = await GetResourceKeyAsync(request);
+                resourceKey = await GetLockResourceKeyAsync(request);
+
+                if (string.IsNullOrEmpty(resourceKey))
+                {
+                    throw new InvalidOperationException("Lock resource key is null or empty.");
+                }
             }
             catch (Exception ex)
             {
@@ -76,9 +83,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => RefundPaymentInternalAsync(request),
-                paymentDistributedLockOptions.Value.LockTimeout,
-                paymentDistributedLockOptions.Value.TryLockTimeout,
-                paymentDistributedLockOptions.Value.RetryInterval);
+                _lockOptions.LockTimeout,
+                _lockOptions.TryLockTimeout,
+                _lockOptions.RetryInterval);
 
             return result;
         }
@@ -133,7 +140,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Refund document.
             var refund = paymentInfo.Payment.Refunds.FirstOrDefault(r => r.TransactionId == request.TransactionId
-                && r.Status != RefundStatus.Processed.ToString());
+                && r.Status != nameof(RefundStatus.Processed));
 
             if (refund != null)
             {
@@ -161,7 +168,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             refund.OuterId = request.OuterId;
             refund.TransactionId = request.TransactionId;
 
-            refund.Status = RefundStatus.Pending.ToString();
+            refund.Status = nameof(RefundStatus.Pending);
             refund.Currency = payment.Currency;
             refund.CustomerOrderId = payment.OrderId;
             refund.VendorId = payment.VendorId;
@@ -181,7 +188,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             refund.OuterId = request.OuterId;
             refund.TransactionId = request.TransactionId;
 
-            refund.Status = RefundStatus.Pending.ToString();
+            refund.Status = nameof(RefundStatus.Pending);
             refund.Currency = payment.Currency;
             refund.CustomerOrderId = payment.OrderId;
             refund.VendorId = payment.VendorId;
@@ -230,7 +237,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
             else
             {
-                refund.Status = RefundStatus.Rejected.ToString();
+                refund.Status = nameof(RefundStatus.Rejected);
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = refundResult.ErrorMessage;
             }
@@ -250,7 +257,12 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             try
             {
-                resourceKey = await GetResourceKeyAsync(request);
+                resourceKey = await GetLockResourceKeyAsync(request);
+
+                if (string.IsNullOrEmpty(resourceKey))
+                {
+                    throw new InvalidOperationException("Lock resource key is null or empty.");
+                }
             }
             catch (Exception ex)
             {
@@ -264,9 +276,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             var result = await distributedLockService.ExecuteAsync(resourceKey,
                 () => CapturePaymentInternalAsync(request),
-                paymentDistributedLockOptions.Value.LockTimeout,
-                paymentDistributedLockOptions.Value.TryLockTimeout,
-                paymentDistributedLockOptions.Value.RetryInterval);
+                _lockOptions.LockTimeout,
+                _lockOptions.TryLockTimeout,
+                _lockOptions.RetryInterval);
 
             return result;
         }
@@ -294,7 +306,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Capture document.
             var capture = paymentInfo.Payment.Captures.FirstOrDefault(c => c.TransactionId == request.TransactionId
-                && c.Status != CaptureStatus.Processed.ToString());
+                && c.Status != nameof(CaptureStatus.Processed));
 
             if (capture != null)
             {
@@ -322,14 +334,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (captureResult.IsSuccess)
             {
-                capture.Status = CaptureStatus.Processed.ToString();
+                capture.Status = nameof(CaptureStatus.Processed);
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                 result.PaymentStatus = paymentInfo.Payment.Status;
                 result.Succeeded = true;
             }
             else
             {
-                capture.Status = CaptureStatus.Rejected.ToString();
+                capture.Status = nameof(CaptureStatus.Rejected);
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = captureResult.ErrorMessage;
             }
@@ -408,7 +420,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.TransactionId = request.TransactionId;
             capture.CloseTransaction = request.CloseTransaction;
 
-            capture.Status = CaptureStatus.Pending.ToString();
+            capture.Status = nameof(CaptureStatus.Pending);
             capture.Currency = payment.Currency;
             capture.CustomerOrderId = payment.OrderId;
             capture.VendorId = payment.VendorId;
@@ -424,7 +436,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.TransactionId = request.TransactionId;
             capture.CloseTransaction = request.CloseTransaction;
 
-            capture.Status = CaptureStatus.Pending.ToString();
+            capture.Status = nameof(CaptureStatus.Pending);
             capture.Currency = payment.Currency;
             capture.CustomerOrderId = payment.OrderId;
             capture.VendorId = payment.VendorId;
@@ -438,7 +450,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (!string.IsNullOrEmpty(request.OrderId))
             {
-                result.CustomerOrder = await customerOrderService.GetByIdAsync(request.OrderId, CustomerOrderResponseGroup.Full.ToString());
+                result.CustomerOrder = await customerOrderService.GetByIdAsync(request.OrderId, nameof(CustomerOrderResponseGroup.Full));
 
                 result.Payment = string.IsNullOrEmpty(request.PaymentId)
                     ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => allowedStatuses.Contains(x.PaymentStatus))
@@ -447,13 +459,13 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             else if (!string.IsNullOrEmpty(request.PaymentId))
             {
                 result.Payment = await paymentService.GetByIdAsync(request.PaymentId);
-                result.CustomerOrder = await customerOrderService.GetByIdAsync(result.Payment?.OrderId, CustomerOrderResponseGroup.Full.ToString());
+                result.CustomerOrder = await customerOrderService.GetByIdAsync(result.Payment?.OrderId, nameof(CustomerOrderResponseGroup.Full));
 
                 // take payment from order since Order payment contains instanced PaymentMethod (payment taken from service doesn't)
                 result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
             }
 
-            result.Store = await storeService.GetByIdAsync(result.CustomerOrder?.StoreId, StoreResponseGroup.StoreInfo.ToString());
+            result.Store = await storeService.GetByIdAsync(result.CustomerOrder?.StoreId, nameof(StoreResponseGroup.StoreInfo));
 
             return result;
         }
