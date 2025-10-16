@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Polly;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -12,19 +13,23 @@ using VirtoCommerce.OrdersModule.Data.Validators;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.DistributedLock;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule.Data.Services
 {
-    public class PaymentFlowService : IPaymentFlowService
+    public class PaymentFlowService(
+        ICustomerOrderService customerOrderService,
+        IPaymentService paymentService,
+        IStoreService storeService,
+        IValidator<OrderPaymentInfo> validator,
+        ITenantUniqueNumberGenerator uniqueNumberGenerator,
+        IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
+        IDistributedLockService distributedLockService) : IPaymentFlowService
     {
-        private readonly ICustomerOrderService _customerOrderService;
-        private readonly IPaymentService _paymentService;
-        private readonly IStoreService _storeService;
-        private readonly IValidator<OrderPaymentInfo> _validator;
-        private readonly ITenantUniqueNumberGenerator _uniqueNumberGenerator;
+        private readonly PaymentDistributedLockOptions _lockOptions = paymentDistributedLockOptions.Value;
 
         protected virtual string[] CaptureRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.CaptureRuleSet];
         protected virtual string[] RefundRuleSets => [PaymentRequestValidator.DefaultRuleSet, PaymentRequestValidator.RefundRuleSet];
@@ -32,21 +37,58 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         protected virtual PaymentStatus[] CaptureAllowedPaymentStatuses => [PaymentStatus.Authorized, PaymentStatus.Paid];
         protected virtual PaymentStatus[] RefundAllowedPaymentStatuses => [PaymentStatus.Paid, PaymentStatus.PartiallyRefunded, PaymentStatus.Refunded];
 
-        public PaymentFlowService(
-            ICustomerOrderService customerOrderService,
-            IPaymentService paymentService,
-            IStoreService storeService,
-            IValidator<OrderPaymentInfo> validator,
-            ITenantUniqueNumberGenerator uniqueNumberGenerator)
+        public virtual async Task<string> GetLockResourceKeyAsync(OrderPaymentRequest request)
         {
-            _customerOrderService = customerOrderService;
-            _paymentService = paymentService;
-            _storeService = storeService;
-            _validator = validator;
-            _uniqueNumberGenerator = uniqueNumberGenerator;
+            string partKey = null;
+
+            if (!string.IsNullOrEmpty(request.OrderId))
+            {
+                partKey = request.OrderId;
+            }
+            else if (!string.IsNullOrEmpty(request.PaymentId))
+            {
+                var payment = await paymentService.GetByIdAsync(request.PaymentId);
+                partKey = payment?.OrderId;
+            }
+
+            return string.IsNullOrEmpty(partKey)
+                ? throw new InvalidOperationException("Unable to determine lock resource key: the parameter was not passed or the object was not found.")
+                : $"{nameof(CustomerOrder)}:{partKey}";
         }
 
+        #region Refund
+
         public virtual async Task<RefundOrderPaymentResult> RefundPaymentAsync(RefundOrderPaymentRequest request)
+        {
+            try
+            {
+                var resourceKey = await GetLockResourceKeyAsync(request);
+
+                if (string.IsNullOrEmpty(resourceKey))
+                {
+                    throw new InvalidOperationException("Lock resource key is null or empty.");
+                }
+
+                var result = await distributedLockService.ExecuteAsync(resourceKey,
+                    () => RefundPaymentInternalAsync(request),
+                    _lockOptions.LockTimeout,
+                    _lockOptions.TryLockTimeout,
+                    _lockOptions.RetryInterval);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new RefundOrderPaymentResult
+                {
+                    Succeeded = false,
+                    ErrorCode = PaymentFlowErrorCodes.PaymentFailed,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+        protected virtual async Task<RefundOrderPaymentResult> RefundPaymentInternalAsync(RefundOrderPaymentRequest request)
         {
             var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateRefundDocument(request));
@@ -82,7 +124,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
 
             // validate payment
-            var validationResult = await _validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
+            var validationResult = await validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(RefundRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();
@@ -96,7 +138,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Refund document.
             var refund = paymentInfo.Payment.Refunds.FirstOrDefault(r => r.TransactionId == request.TransactionId
-                && r.Status != RefundStatus.Processed.ToString());
+                && r.Status != nameof(RefundStatus.Processed));
 
             if (refund != null)
             {
@@ -108,12 +150,48 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 paymentInfo.Payment.Refunds.Add(refund);
             }
 
-
-            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
+            await customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             result.Succeeded = true;
 
             return result;
+        }
+
+        protected virtual void UpdateRefund(Refund refund, PaymentIn payment, Store store, RefundOrderPaymentRequest request)
+        {
+            refund.Amount = request.Amount ?? payment.Sum;
+            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
+            refund.ReasonMessage = request.ReasonMessage;
+            refund.Comment = request.ReasonMessage;
+            refund.OuterId = request.OuterId;
+            refund.TransactionId = request.TransactionId;
+
+            refund.Status = nameof(RefundStatus.Pending);
+            refund.Currency = payment.Currency;
+            refund.CustomerOrderId = payment.OrderId;
+            refund.VendorId = payment.VendorId;
+        }
+
+        protected virtual Refund CreateRefund(PaymentIn payment, Store store, RefundOrderPaymentRequest request)
+        {
+            var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
+
+            var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.RefundNewNumberTemplate);
+            refund.Number = uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
+
+            refund.Amount = request.Amount ?? payment.Sum;
+            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
+            refund.ReasonMessage = request.ReasonMessage;
+            refund.Comment = request.ReasonMessage;
+            refund.OuterId = request.OuterId;
+            refund.TransactionId = request.TransactionId;
+
+            refund.Status = nameof(RefundStatus.Pending);
+            refund.Currency = payment.Currency;
+            refund.CustomerOrderId = payment.OrderId;
+            refund.VendorId = payment.VendorId;
+
+            return refund;
         }
 
         protected virtual async Task<RefundPaymentRequestResult> ProcessRefund(RefundOrderPaymentRequest request)
@@ -122,6 +200,24 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
 
             return paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
+        }
+
+        protected virtual RefundPaymentRequest GetRefundPaymentRequest(OrderPaymentInfo paymentInfo, RefundOrderPaymentRequest request)
+        {
+            var result = AbstractTypeFactory<RefundPaymentRequest>.TryCreateInstance();
+
+            FillPaymentRequestBase(paymentInfo, result);
+
+            result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
+            result.Reason = request.ReasonCode;
+            result.Notes = request.ReasonMessage;
+            result.OuterId = request.OuterId;
+
+            result.Parameters ??= [];
+
+            result.Parameters.Add(nameof(request.TransactionId), request.TransactionId ?? string.Empty);
+
+            return result;
         }
 
         protected virtual async Task<RefundOrderPaymentResult> SaveResultToRefundDocument(RefundOrderPaymentRequest request, RefundPaymentRequestResult refundResult)
@@ -139,16 +235,49 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
             else
             {
-                refund.Status = RefundStatus.Rejected.ToString();
+                refund.Status = nameof(RefundStatus.Rejected);
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = refundResult.ErrorMessage;
             }
 
-            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
+            await customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             return result;
         }
 
+        #endregion
+
+        #region Capture
+
+        public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
+        {
+            try
+            {
+                var resourceKey = await GetLockResourceKeyAsync(request);
+
+                if (string.IsNullOrEmpty(resourceKey))
+                {
+                    throw new InvalidOperationException("Lock resource key is null or empty.");
+                }
+
+                var result = await distributedLockService.ExecuteAsync(resourceKey,
+                    () => CapturePaymentInternalAsync(request),
+                    _lockOptions.LockTimeout,
+                    _lockOptions.TryLockTimeout,
+                    _lockOptions.RetryInterval);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new CaptureOrderPaymentResult
+                {
+                    Succeeded = false,
+                    ErrorCode = PaymentFlowErrorCodes.PaymentFailed,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
 
         // Validate, add new capture request, save to DB
         public virtual async Task<CaptureOrderPaymentResult> CreateCaptureDocument(CaptureOrderPaymentRequest request)
@@ -158,8 +287,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
             var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
 
-            // validate payment
-            var validationResult = await _validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
+            // Validate payment
+            var validationResult = await validator.ValidateAsync(paymentInfo, options => options.IncludeRuleSets(CaptureRuleSets));
             if (!validationResult.IsValid)
             {
                 var error = validationResult.Errors.FirstOrDefault();
@@ -173,7 +302,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             // Allows to Update and Retry Rejected Capture document.
             var capture = paymentInfo.Payment.Captures.FirstOrDefault(c => c.TransactionId == request.TransactionId
-                && c.Status != CaptureStatus.Processed.ToString());
+                && c.Status != nameof(CaptureStatus.Processed));
 
             if (capture != null)
             {
@@ -185,9 +314,35 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 paymentInfo.Payment.Captures.Add(capture);
             }
 
-            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
+            await customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             result.Succeeded = true;
+
+            return result;
+        }
+
+        public virtual async Task<CaptureOrderPaymentResult> SaveResultToCaptureDocument(CaptureOrderPaymentRequest request, CapturePaymentRequestResult captureResult)
+        {
+            var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
+
+            var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
+            var capture = paymentInfo.Payment.Captures.First(c => c.TransactionId == request.TransactionId);
+
+            if (captureResult.IsSuccess)
+            {
+                capture.Status = nameof(CaptureStatus.Processed);
+                paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
+                result.PaymentStatus = paymentInfo.Payment.Status;
+                result.Succeeded = true;
+            }
+            else
+            {
+                capture.Status = nameof(CaptureStatus.Rejected);
+                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
+                result.ErrorMessage = captureResult.ErrorMessage;
+            }
+
+            await customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
 
             return result;
         }
@@ -201,33 +356,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
         }
 
-        public virtual async Task<CaptureOrderPaymentResult> SaveResultToCaptureDocument(CaptureOrderPaymentRequest request, CapturePaymentRequestResult captureResult)
-        {
-            var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
-
-            var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
-            var capture = paymentInfo.Payment.Captures.First(c => c.TransactionId == request.TransactionId);
-
-            if (captureResult.IsSuccess)
-            {
-                capture.Status = CaptureStatus.Processed.ToString();
-                paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
-                result.PaymentStatus = paymentInfo.Payment.Status;
-                result.Succeeded = true;
-            }
-            else
-            {
-                capture.Status = CaptureStatus.Rejected.ToString();
-                result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
-                result.ErrorMessage = captureResult.ErrorMessage;
-            }
-
-            await _customerOrderService.SaveChangesAsync([paymentInfo.CustomerOrder]);
-
-            return result;
-        }
-
-        public virtual async Task<CaptureOrderPaymentResult> CapturePaymentAsync(CaptureOrderPaymentRequest request)
+        protected virtual async Task<CaptureOrderPaymentResult> CapturePaymentInternalAsync(CaptureOrderPaymentRequest request)
         {
             var dbConcurrencyRetryPolicy = Policy.Handle<DbUpdateConcurrencyException>().WaitAndRetryAsync(retryCount: 5, _ => TimeSpan.FromMilliseconds(500));
             var result = await dbConcurrencyRetryPolicy.ExecuteAsync(async () => await CreateCaptureDocument(request));
@@ -256,32 +385,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request, params PaymentStatus[] allowedStatuses)
-        {
-            var result = AbstractTypeFactory<OrderPaymentInfo>.TryCreateInstance();
-
-            if (!string.IsNullOrEmpty(request.OrderId))
-            {
-                result.CustomerOrder = await _customerOrderService.GetByIdAsync(request.OrderId, CustomerOrderResponseGroup.Full.ToString());
-
-                result.Payment = string.IsNullOrEmpty(request.PaymentId)
-                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => allowedStatuses.Contains(x.PaymentStatus))
-                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
-            }
-            else if (!string.IsNullOrEmpty(request.PaymentId))
-            {
-                result.Payment = await _paymentService.GetByIdAsync(request.PaymentId);
-                result.CustomerOrder = await _customerOrderService.GetByIdAsync(result.Payment?.OrderId, CustomerOrderResponseGroup.Full.ToString());
-
-                // take payment from order since Order payment contains instanced PaymentMethod (payment taken from service doesn't)
-                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
-            }
-
-            result.Store = await _storeService.GetByIdAsync(result.CustomerOrder?.StoreId, StoreResponseGroup.StoreInfo.ToString());
-
-            return result;
-        }
-
         protected virtual CapturePaymentRequest GetCapturePaymentRequest(OrderPaymentInfo paymentInfo, CaptureOrderPaymentRequest request)
         {
             var result = AbstractTypeFactory<CapturePaymentRequest>.TryCreateInstance();
@@ -297,63 +400,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             result.Parameters.Add(nameof(request.CaptureDetails), request.CaptureDetails ?? string.Empty);
             result.Parameters.Add(nameof(request.TransactionId), request.TransactionId ?? string.Empty);
 
-
             return result;
-        }
-
-        protected virtual RefundPaymentRequest GetRefundPaymentRequest(OrderPaymentInfo paymentInfo, RefundOrderPaymentRequest request)
-        {
-            var result = AbstractTypeFactory<RefundPaymentRequest>.TryCreateInstance();
-
-            FillPaymentRequestBase(paymentInfo, result);
-
-            result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
-            result.Reason = request.ReasonCode;
-            result.Notes = request.ReasonMessage;
-            result.OuterId = request.OuterId;
-
-            result.Parameters ??= [];
-
-            result.Parameters.Add(nameof(request.TransactionId), request.TransactionId ?? string.Empty);
-
-            return result;
-        }
-
-        protected virtual Refund CreateRefund(PaymentIn payment, Store store, RefundOrderPaymentRequest request)
-        {
-            var refund = AbstractTypeFactory<Refund>.TryCreateInstance();
-
-            var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.RefundNewNumberTemplate);
-            refund.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
-
-            refund.Amount = request.Amount ?? payment.Sum;
-            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
-            refund.ReasonMessage = request.ReasonMessage;
-            refund.Comment = request.ReasonMessage;
-            refund.OuterId = request.OuterId;
-            refund.TransactionId = request.TransactionId;
-
-            refund.Status = RefundStatus.Pending.ToString();
-            refund.Currency = payment.Currency;
-            refund.CustomerOrderId = payment.OrderId;
-            refund.VendorId = payment.VendorId;
-
-            return refund;
-        }
-
-        protected virtual void UpdateRefund(Refund refund, PaymentIn payment, Store store, RefundOrderPaymentRequest request)
-        {
-            refund.Amount = request.Amount ?? payment.Sum;
-            refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
-            refund.ReasonMessage = request.ReasonMessage;
-            refund.Comment = request.ReasonMessage;
-            refund.OuterId = request.OuterId;
-            refund.TransactionId = request.TransactionId;
-
-            refund.Status = RefundStatus.Pending.ToString();
-            refund.Currency = payment.Currency;
-            refund.CustomerOrderId = payment.OrderId;
-            refund.VendorId = payment.VendorId;
         }
 
         protected virtual Capture CreateCapture(PaymentIn payment, Store store, CaptureOrderPaymentRequest request)
@@ -361,7 +408,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var capture = AbstractTypeFactory<Capture>.TryCreateInstance();
 
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate);
-            capture.Number = _uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
+            capture.Number = uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
             capture.Amount = request.Amount ?? payment.Sum;
             capture.Comment = request.CaptureDetails;
@@ -369,7 +416,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.TransactionId = request.TransactionId;
             capture.CloseTransaction = request.CloseTransaction;
 
-            capture.Status = CaptureStatus.Pending.ToString();
+            capture.Status = nameof(CaptureStatus.Pending);
             capture.Currency = payment.Currency;
             capture.CustomerOrderId = payment.OrderId;
             capture.VendorId = payment.VendorId;
@@ -385,10 +432,38 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             capture.TransactionId = request.TransactionId;
             capture.CloseTransaction = request.CloseTransaction;
 
-            capture.Status = CaptureStatus.Pending.ToString();
+            capture.Status = nameof(CaptureStatus.Pending);
             capture.Currency = payment.Currency;
             capture.CustomerOrderId = payment.OrderId;
             capture.VendorId = payment.VendorId;
+        }
+
+        #endregion
+
+        protected virtual async Task<OrderPaymentInfo> GetPaymentInfoAsync(OrderPaymentRequest request, params PaymentStatus[] allowedStatuses)
+        {
+            var result = AbstractTypeFactory<OrderPaymentInfo>.TryCreateInstance();
+
+            if (!string.IsNullOrEmpty(request.OrderId))
+            {
+                result.CustomerOrder = await customerOrderService.GetByIdAsync(request.OrderId, nameof(CustomerOrderResponseGroup.Full));
+
+                result.Payment = string.IsNullOrEmpty(request.PaymentId)
+                    ? result.CustomerOrder?.InPayments?.FirstOrDefault(x => allowedStatuses.Contains(x.PaymentStatus))
+                    : result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
+            }
+            else if (!string.IsNullOrEmpty(request.PaymentId))
+            {
+                result.Payment = await paymentService.GetByIdAsync(request.PaymentId);
+                result.CustomerOrder = await customerOrderService.GetByIdAsync(result.Payment?.OrderId, nameof(CustomerOrderResponseGroup.Full));
+
+                // take payment from order since Order payment contains instanced PaymentMethod (payment taken from service doesn't)
+                result.Payment = result.CustomerOrder?.InPayments?.FirstOrDefault(x => x.Id == request.PaymentId && allowedStatuses.Contains(x.PaymentStatus));
+            }
+
+            result.Store = await storeService.GetByIdAsync(result.CustomerOrder?.StoreId, nameof(StoreResponseGroup.StoreInfo));
+
+            return result;
         }
 
         private static void FillPaymentRequestBase(OrderPaymentInfo paymentInfo, PaymentRequestBase result)

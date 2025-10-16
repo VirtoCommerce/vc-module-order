@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DistributedLock;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
@@ -27,9 +25,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         ICustomerOrderService customerOrderService,
         IValidator<PaymentIn> paymentInValidator,
         ISettingsManager settingsManager,
-        IPaymentFlowService paymentFlowService,
-        IOptions<PaymentDistributedLockOptions> paymentDistributedLockOptions,
-        IDistributedLockService distributedLockService)
+        IPaymentFlowService paymentFlowService)
         : Controller
     {
         /// <summary>
@@ -176,13 +172,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.CapturePayment)]
         public async Task<ActionResult> CapturePayment([FromBody] CaptureOrderPaymentRequest request)
         {
-            var resourceKey = $"{nameof(CapturePayment)}:{request.PaymentId ?? request.OrderId}";
-            var result = await distributedLockService.ExecuteAsync(resourceKey,
-                () => paymentFlowService.CapturePaymentAsync(request),
-                paymentDistributedLockOptions.Value.LockTimeout,
-                paymentDistributedLockOptions.Value.TryLockTimeout,
-                paymentDistributedLockOptions.Value.RetryInterval);
-
+            var result = await paymentFlowService.CapturePaymentAsync(request);
             return Ok(result);
         }
 
@@ -191,13 +181,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.RefundPayment)]
         public async Task<ActionResult> RefundPayment([FromBody] RefundOrderPaymentRequest request)
         {
-            var resourceKey = $"{nameof(RefundPayment)}:{request.PaymentId ?? request.OrderId}";
-            var result = await distributedLockService.ExecuteAsync(resourceKey,
-                () => paymentFlowService.RefundPaymentAsync(request),
-                paymentDistributedLockOptions.Value.LockTimeout,
-                paymentDistributedLockOptions.Value.TryLockTimeout,
-                paymentDistributedLockOptions.Value.RetryInterval);
-
+            var result = await paymentFlowService.RefundPaymentAsync(request);
             return Ok(result);
         }
 
