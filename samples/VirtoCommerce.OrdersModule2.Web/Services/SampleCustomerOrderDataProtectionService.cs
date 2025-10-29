@@ -13,7 +13,7 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.OrdersModule2.Web.Services;
 
-public sealed class PricingSamplesCustomerOrderDataProtectionService(
+public sealed class SampleCustomerOrderDataProtectionService(
     ICustomerOrderService crudService,
     ICustomerOrderSearchService searchService,
     IUserNameResolver userNameResolver,

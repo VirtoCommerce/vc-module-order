@@ -39,7 +39,7 @@ namespace VirtoCommerce.OrdersModule2.Web
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
             serviceCollection.AddTransient<IAuthorizationHandler, CustomOrderAuthorizationHandler>();
-            serviceCollection.AddScoped<ICustomerOrderDataProtectionService, PricingSamplesCustomerOrderDataProtectionService>();
+            serviceCollection.AddScoped<ICustomerOrderDataProtectionService, SampleCustomerOrderDataProtectionService>();
 
             serviceCollection.AddValidators();
         }
