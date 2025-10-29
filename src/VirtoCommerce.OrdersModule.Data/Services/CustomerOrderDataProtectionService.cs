@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
+using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
@@ -15,10 +16,19 @@ namespace VirtoCommerce.OrdersModule.Data.Services;
 public class CustomerOrderDataProtectionService(
     ICustomerOrderService crudService,
     ICustomerOrderSearchService searchService,
+    IIndexedCustomerOrderSearchService indexedSearchService,
     IUserNameResolver userNameResolver,
     SignInManager<ApplicationUser> signInManager)
     : ICustomerOrderDataProtectionService
 {
+    public async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
+    {
+        var searchResult = await indexedSearchService.SearchCustomerOrdersAsync(criteria);
+        await ReduceDetailsForCurrentUser(searchResult.Results, cloned: true);
+
+        return searchResult;
+    }
+
     public virtual async Task<CustomerOrderSearchResult> SearchAsync(CustomerOrderSearchCriteria criteria, bool clone = true)
     {
         var searchResult = await searchService.SearchAsync(criteria, clone);
@@ -73,7 +83,7 @@ public class CustomerOrderDataProtectionService(
         return crudService.DeleteAsync(ids, softDelete);
     }
 
-    public virtual async Task ReduceDetailsForCurrentUser(IList<CustomerOrder> orders, bool cloned)
+    protected virtual async Task ReduceDetailsForCurrentUser(IList<CustomerOrder> orders, bool cloned)
     {
         if (orders.IsNullOrEmpty())
         {

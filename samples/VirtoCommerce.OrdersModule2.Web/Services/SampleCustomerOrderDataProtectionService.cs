@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.Platform.Core.Common;
@@ -16,11 +17,12 @@ namespace VirtoCommerce.OrdersModule2.Web.Services;
 public sealed class SampleCustomerOrderDataProtectionService(
     ICustomerOrderService crudService,
     ICustomerOrderSearchService searchService,
+    IIndexedCustomerOrderSearchService indexedSearchService,
     IUserNameResolver userNameResolver,
     SignInManager<ApplicationUser> signInManager,
     IStoreService storeService,
     IOptions<MvcNewtonsoftJsonOptions> jsonOptions)
-    : CustomerOrderDataProtectionService(crudService, searchService, userNameResolver, signInManager)
+    : CustomerOrderDataProtectionService(crudService, searchService, indexedSearchService, userNameResolver, signInManager)
 {
     private readonly MvcNewtonsoftJsonOptions _jsonOptions = jsonOptions.Value;
 

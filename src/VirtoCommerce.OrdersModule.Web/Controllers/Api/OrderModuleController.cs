@@ -26,7 +26,6 @@ using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Notifications;
-using VirtoCommerce.OrdersModule.Core.Search.Indexed;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.Caching;
@@ -62,7 +61,6 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         ICustomerOrderTotalsCalculator totalsCalculator,
         IAuthorizationService authorizationService,
         IConverter converter,
-        IIndexedCustomerOrderSearchService indexedSearchService,
         IConfiguration configuration,
         IOptions<HtmlToPdfOptions> htmlToPdfOptions,
         IOptions<OutputJsonSerializerSettings> outputJsonSerializerSettings,
@@ -671,8 +669,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Forbid();
             }
 
-            var result = await indexedSearchService.SearchCustomerOrdersAsync(criteria);
-            await customerOrderDataProtectionService.ReduceDetailsForCurrentUser(result.Results, cloned: true);
+            var result = await customerOrderDataProtectionService.SearchCustomerOrdersAsync(criteria);
 
             return Content(JsonConvert.SerializeObject(result, outputJsonSerializerSettings.Value), "application/json");
         }
