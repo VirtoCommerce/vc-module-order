@@ -21,7 +21,7 @@ public class CustomerOrderDataProtectionService(
     SignInManager<ApplicationUser> signInManager)
     : ICustomerOrderDataProtectionService
 {
-    public async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
+    public virtual async Task<CustomerOrderIndexedSearchResult> SearchCustomerOrdersAsync(CustomerOrderIndexedSearchCriteria criteria)
     {
         var searchResult = await indexedSearchService.SearchCustomerOrdersAsync(criteria);
         await ReduceDetailsForCurrentUser(searchResult.Results, cloned: true);
@@ -83,6 +83,7 @@ public class CustomerOrderDataProtectionService(
         return crudService.DeleteAsync(ids, softDelete);
     }
 
+
     protected virtual async Task ReduceDetailsForCurrentUser(IList<CustomerOrder> orders, bool cloned)
     {
         if (orders.IsNullOrEmpty())
@@ -123,7 +124,6 @@ public class CustomerOrderDataProtectionService(
             await RestorePrices(order);
         }
     }
-
 
     protected virtual Task<bool> CanReadPrices(ClaimsPrincipal user, CustomerOrder order)
     {
