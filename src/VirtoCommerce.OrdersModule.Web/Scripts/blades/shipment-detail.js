@@ -11,7 +11,7 @@ angular.module('virtoCommerce.orderModule')
         function ($scope, bladeNavigationService, customerOrders, fulfillments,
             authService, shippingMethods, members, knownOperations) {
         var blade = $scope.blade;
-        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+        blade.isVisiblePrices = blade.currentEntity.withPrices;
         blade.shippingMethods = [];
 
         if (blade.isNew) {
