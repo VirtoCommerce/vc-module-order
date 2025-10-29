@@ -4,7 +4,7 @@ angular.module('virtoCommerce.orderModule')
         function ($scope, bladeNavigationService, authService) {
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
-            blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.isVisiblePrices = blade.order.withPrices;
             blade.formScope = null;
             blade.metaFields = [
                 {

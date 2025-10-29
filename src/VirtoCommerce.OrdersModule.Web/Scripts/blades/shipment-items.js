@@ -2,7 +2,7 @@ angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.shipmentItemsController', ['$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.dialogService', 'platformWebApp.authService', function ($scope, bladeNavigationService, dialogService, authService) {
         var blade = $scope.blade;
         blade.updatePermission = 'order:update';
-        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+        blade.isVisiblePrices = blade.currentEntity.withPrices;
 
         blade.currentEntity.items = blade.currentEntity.items || [];
 
