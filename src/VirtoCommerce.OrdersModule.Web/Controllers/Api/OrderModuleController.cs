@@ -521,6 +521,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="callback">payment callback parameters</param>
         [HttpPost]
         [Route("~/api/paymentcallback")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
             var parameters = paymentRequestConverter.GetPaymentParameters(callback);
@@ -538,6 +539,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// </summary>
         [HttpPost]
         [Route("~/api/paymentcallback-raw")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
         {
             var parameters = paymentRequestConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
@@ -548,6 +550,27 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return succeeded
                 ? Ok(response)
                 : BadRequest(response);
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        [HttpPost]
+        [Route("~/api/paymentcallback-form")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
+        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentForm([FromForm] IFormCollection form)
+        {
+            var callbackParameters = new PaymentCallbackParameters()
+            {
+                Parameters = form.Select(kvp => new KeyValuePair()
+                    {
+                        Key = kvp.Key,
+                        Value = kvp.Value.FirstOrDefault() ?? string.Empty,
+                    })
+                    .ToArray(),
+            };
+
+            return await PostProcessPayment(callbackParameters);
         }
 
         private async Task<string> GetRequestBody()
