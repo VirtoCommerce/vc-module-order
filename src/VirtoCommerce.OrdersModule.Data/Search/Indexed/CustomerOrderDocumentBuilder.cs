@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -160,9 +159,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 }
             }
 
-#pragma warning disable VC0005 // Type or member is obsolete
-            await IndexDynamicProperties(order, document);
-#pragma warning restore VC0005 // Type or member is obsolete
+            await document.AddDynamicProperties(_dynamicPropertySearchService, order);
 
             return document;
         }
@@ -173,29 +170,6 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             {
                 document.AddContentString($"{address.AddressType} {address}");
             }
-        }
-
-        [Obsolete("Will be deleted in stable bundle 7", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        public static readonly string NoValueString = "__null";
-
-        [Obsolete("Use IndexDocument.AddDynamicProperties() extension method", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        protected virtual async Task IndexDynamicProperties(CustomerOrder order, IndexDocument document)
-        {
-            var properties = await _dynamicPropertySearchService.GetAllDynamicProperties(order.ObjectType);
-
-            foreach (var property in properties)
-            {
-                var objectProperty = order.DynamicProperties?.FirstOrDefault(x => x.Id == property.Id) ??
-                     order.DynamicProperties?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(property.Name) && x.HasValuesOfType(property.ValueType));
-
-                IndexDynamicProperty(document, property, objectProperty);
-            }
-        }
-
-        [Obsolete("Use IndexDocument.AddDynamicProperty() extension method", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        protected virtual void IndexDynamicProperty(IndexDocument document, DynamicProperty property, DynamicObjectProperty objectProperty)
-        {
-            document.AddDynamicProperty(property, objectProperty);
         }
     }
 }
