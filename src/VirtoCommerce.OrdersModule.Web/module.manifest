@@ -4,19 +4,19 @@
   <version>3.863.0</version>
   <version-tag />
 
-  <platformVersion>3.916.0-alpha.13164-vcst-4203-cleanup</platformVersion>
+  <platformVersion>3.917.0</platformVersion>
   <dependencies>
-    <dependency id="VirtoCommerce.Assets" version="3.814.0-alpha.161-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Cart" version="3.840.0-alpha.764-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Catalog" version="3.904.0-alpha.2432-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Core" version="3.823.0-alpha.1666-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Customer" version="3.846.0-alpha.929-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Inventory" version="3.815.0-alpha.498-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Notifications" version="3.828.0-alpha.429-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Payment" version="3.811.0-alpha.257-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Search" version="3.820.0-alpha.795-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Shipping" version="3.816.0-alpha.232-vcst-4203-cleanup" />
-    <dependency id="VirtoCommerce.Store" version="3.823.0-alpha.763-vcst-4203-cleanup" />
+    <dependency id="VirtoCommerce.Assets" version="3.814.0" />
+    <dependency id="VirtoCommerce.Cart" version="3.840.0" />
+    <dependency id="VirtoCommerce.Catalog" version="3.904.0" />
+    <dependency id="VirtoCommerce.Core" version="3.824.0" />
+    <dependency id="VirtoCommerce.Customer" version="3.846.0" />
+    <dependency id="VirtoCommerce.Inventory" version="3.815.0" />
+    <dependency id="VirtoCommerce.Notifications" version="3.830.0" />
+    <dependency id="VirtoCommerce.Payment" version="3.811.0" />
+    <dependency id="VirtoCommerce.Search" version="3.821.0" />
+    <dependency id="VirtoCommerce.Shipping" version="3.816.0" />
+    <dependency id="VirtoCommerce.Store" version="3.823.0" />
   </dependencies>
 
   <title>Order Management</title>
