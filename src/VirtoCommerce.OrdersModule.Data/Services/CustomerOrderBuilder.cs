@@ -507,12 +507,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return result;
         }
 
-        [Obsolete("Not being called. Use GetInitialOrderStatusAsync(ShoppingCart cart)")]
-        protected virtual string GetDefaultOrderStatus()
-        {
-            return _settingsManager?.GetValue<string>(OrderSettings.OrderInitialStatus);
-        }
-
         protected virtual async Task<string> GetInitialOrderStatusAsync(ShoppingCart cart)
         {
             var status = await _settingsManager.GetValueAsync<string>(OrderSettings.OrderInitialStatus);
