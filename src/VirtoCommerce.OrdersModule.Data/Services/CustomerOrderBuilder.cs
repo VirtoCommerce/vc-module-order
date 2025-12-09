@@ -305,14 +305,17 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             var retVal = AbstractTypeFactory<ConfigurationItem>.TryCreateInstance();
 
+            retVal.SectionId = configurationItem.SectionId;
+            retVal.Type = configurationItem.Type;
+            retVal.CatalogId = configurationItem.CatalogId;
+            retVal.CategoryId = configurationItem.CategoryId;
             retVal.ProductId = configurationItem.ProductId;
             retVal.Name = configurationItem.Name;
             retVal.Sku = configurationItem.Sku;
             retVal.Quantity = configurationItem.Quantity;
+            retVal.Price = configurationItem.ListPrice;
+            retVal.SalePrice = configurationItem.SalePrice;
             retVal.ImageUrl = configurationItem.ImageUrl;
-            retVal.CatalogId = configurationItem.CatalogId;
-            retVal.CategoryId = configurationItem.CategoryId;
-            retVal.Type = configurationItem.Type;
             retVal.CustomText = configurationItem.CustomText;
 
             if (configurationItem.Files != null)

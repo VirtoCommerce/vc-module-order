@@ -59,7 +59,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public decimal DiscountTotalWithTax { get; set; }
 
-        //Any extra Fee 
+        //Any extra Fee
         public virtual decimal Fee { get; set; }
 
         public virtual decimal FeeWithTax { get; set; }
@@ -108,6 +108,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string VendorId { get; set; }
 
         public bool IsConfigured { get; set; }
+
+        public string ProductSnapshot { get; set; }
 
         #region IHaveDimension Members
 

@@ -17,7 +17,7 @@
     <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.814.0" />
-    <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.904.0" />
+    <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.906.0-alpha.2434-variation-configuration-type" />
     <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.815.0" />
     <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.917.0" />
     <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.917.0" />
