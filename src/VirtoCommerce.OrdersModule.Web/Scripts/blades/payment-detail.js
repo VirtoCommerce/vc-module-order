@@ -9,7 +9,7 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.orderModule.knownOperations',
         function ($scope, bladeNavigationService, customerOrders, authService, paymentMethods, members, knownOperations) {
             var blade = $scope.blade;
-            blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.isVisiblePrices = blade.currentEntity.withPrices;
             blade.paymentMethods = [];
 
             blade.captureStatuses = ['Authorized', 'Paid'];
