@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Core.ChangeLog;
@@ -25,14 +26,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             ChangeLogSearchService = changeLogSearchService;
         }
 
-        public virtual async Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
+        public virtual Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
-            if (startDate == null && endDate == null)
-            {
-                return GetChangesFromRepository(skip, take);
-            }
-
-            return await GetChangesFromOperationLog(startDate, endDate, skip, take);
+            return startDate == null && endDate == null
+                ? GetChangesFromRepositoryAsync(skip, take)
+                : GetChangesFromOperationLogAsync(startDate, endDate, skip, take);
         }
 
         public virtual async Task<long> GetTotalChangesCountAsync(DateTime? startDate, DateTime? endDate)
@@ -42,7 +40,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 // Get total products count
                 using var repository = OrderRepositoryFactory();
 
-                return repository.CustomerOrders.Count();
+                return await repository.CustomerOrders.CountAsync();
             }
 
             var criteria = GetChangeLogSearchCriteria(startDate, endDate, 0, 0);
@@ -54,16 +52,16 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// <summary>
         /// Get documents from repository and return them as changes
         /// </summary>
-        protected virtual IList<IndexDocumentChange> GetChangesFromRepository(long skip, long take)
+        protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromRepositoryAsync(long skip, long take)
         {
             using var repository = OrderRepositoryFactory();
 
-            var productIds = repository.CustomerOrders
+            var productIds = await repository.CustomerOrders
                 .OrderBy(x => x.CreatedDate)
                 .Select(x => new { x.Id, ModifiedDate = x.ModifiedDate ?? x.CreatedDate })
                 .Skip((int)skip)
                 .Take((int)take)
-                .ToArray();
+                .ToArrayAsync();
 
             return productIds
                 .Select(x =>
@@ -79,7 +77,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// <summary>
         /// Get changes from operation log
         /// </summary>
-        protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromOperationLog(DateTime? startDate, DateTime? endDate, long skip, long take)
+        protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromOperationLogAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
             var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip, take);
             var operations = (await ChangeLogSearchService.SearchAsync(criteria)).Results;
