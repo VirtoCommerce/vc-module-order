@@ -53,7 +53,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
         }
 
-        protected virtual List<OperationLog> GetOperationLogs(IEnumerable<GenericChangedEntry<CustomerOrder>> changedEntries)
+        protected virtual IList<OperationLog> GetOperationLogs(IEnumerable<GenericChangedEntry<CustomerOrder>> changedEntries)
         {
             var operationLogs = new List<OperationLog>();
 
@@ -100,7 +100,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     {
                         var observedDifferences = diff
                             .Where(x => auditableProperties.Contains(x.Name))
-                            .Distinct();
+                            .Distinct(new DifferenceComparer());
 
                         foreach (var difference in observedDifferences)
                         {
@@ -250,6 +250,31 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             result.Detail = template;
 
             return result;
+        }
+    }
+
+    internal sealed class DifferenceComparer : EqualityComparer<Difference>
+    {
+        public override bool Equals(Difference x, Difference y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+
+            return string.Equals(x.Name, y.Name, StringComparison.Ordinal) &&
+                   Equals(x.OldValue, y.OldValue) &&
+                   Equals(x.NewValue, y.NewValue);
+        }
+
+        public override int GetHashCode(Difference obj)
+        {
+            return HashCode.Combine(obj.Name, obj.OldValue, obj.NewValue);
         }
     }
 }
