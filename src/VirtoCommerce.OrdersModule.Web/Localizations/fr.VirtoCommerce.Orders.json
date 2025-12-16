@@ -619,6 +619,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Activer le filtre de produits achetés en magasin",
       "description": "Affiche le filtre de produits achetés pour le magasin."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Nombre maximum de documents enfants par commande",
+      "description": "Définit le nombre maximum de documents enfants (paiements, expéditions, captures, remboursements, etc.) qui peuvent être créés ou stockés par commande. Cela garantit les performances du système, l'optimisation du stockage et la cohérence des données. Une exception sera levée lors de la sauvegarde si cette limite est dépassée"
     }
   },
   "module": {
