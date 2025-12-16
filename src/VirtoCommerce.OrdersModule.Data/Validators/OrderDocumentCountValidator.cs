@@ -7,7 +7,7 @@ using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Settings;
 
-namespace VirtoCommerce.OrdersModule.Web.Validation;
+namespace VirtoCommerce.OrdersModule.Data.Validators;
 
 /// <summary>
 /// Validates that the total number of child documents (operations) per order 

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Validators;
-using VirtoCommerce.OrdersModule.Web.Validation;
 
 namespace VirtoCommerce.OrdersModule.Web.Extensions
 {

@@ -9,7 +9,7 @@ using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.Platform.Core.Settings;
 
-namespace VirtoCommerce.OrdersModule.Web.Validation;
+namespace VirtoCommerce.OrdersModule.Data.Validators;
 
 public class CustomerOrderValidator : AbstractValidator<CustomerOrder>
 {
@@ -45,6 +45,24 @@ public class CustomerOrderValidator : AbstractValidator<CustomerOrder>
         }
     }
 
+    public override ValidationResult Validate(ValidationContext<CustomerOrder> context)
+    {
+        // Check if validation is enabled (synchronous version)
+        var isValidationEnabled = _settingsManager.GetValueAsync<bool>(
+            ModuleConstants.Settings.General.CustomerOrderValidation)
+            .GetAwaiter()
+            .GetResult();
+
+        if (!isValidationEnabled)
+        {
+            // Skip validation if disabled
+            return new ValidationResult();
+        }
+
+        // Perform validation if enabled
+        return base.Validate(context);
+    }
+
     public override async Task<ValidationResult> ValidateAsync(ValidationContext<CustomerOrder> context, CancellationToken cancellation = default)
     {
         // Check if validation is enabled
@@ -60,6 +78,7 @@ public class CustomerOrderValidator : AbstractValidator<CustomerOrder>
         // Perform validation if enabled
         return await base.ValidateAsync(context, cancellation);
     }
+
     protected void SetDefaultRules()
     {
 #pragma warning disable S109

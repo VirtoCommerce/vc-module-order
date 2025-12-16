@@ -67,13 +67,6 @@ public class CustomerOrderService : OuterEntityService<CustomerOrder, CustomerOr
         _customerOrderValidator = customerOrderValidator;
     }
 
-    protected override async Task BeforeSaveChanges(IList<CustomerOrder> models)
-    {
-        await ValidateOrdersAsync(models);
-
-        await base.BeforeSaveChanges(models);
-    }
-
     public override async Task SaveChangesAsync(IList<CustomerOrder> models)
     {
         var pkMap = new PrimaryKeyResolvingMap();
@@ -89,6 +82,7 @@ public class CustomerOrderService : OuterEntityService<CustomerOrder, CustomerOr
             foreach (var modifiedOrder in models)
             {
                 await EnsureThatAllOperationsHaveNumber(modifiedOrder);
+                await ValidateOrderAsync(modifiedOrder);
                 await LoadOrderDependenciesAsync(modifiedOrder);
 
                 var originalEntity = existingEntities?.FirstOrDefault(x => x.Id == modifiedOrder.Id);
@@ -324,24 +318,16 @@ public class CustomerOrderService : OuterEntityService<CustomerOrder, CustomerOr
         }
     }
 
-    /// <summary>
-    /// Validates customer orders if validation is enabled in settings
-    /// </summary>
-    /// <param name="orders">Orders to validate</param>
-    /// <exception cref="ValidationException">Thrown when validation fails</exception>
-    protected virtual async Task ValidateOrdersAsync(IList<CustomerOrder> orders)
+    protected virtual async Task ValidateOrderAsync(CustomerOrder order)
     {
-        foreach (var order in orders)
-        {
-            var validationResult = await _customerOrderValidator.ValidateAsync(order);
+        var validationResult = await _customerOrderValidator.ValidateAsync(order);
 
-            if (!validationResult.IsValid)
-            {
-                var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
-                throw new ValidationException(
-                    $"Order '{order.Number}' validation failed: {errorMessages}",
-                    validationResult.Errors);
-            }
+        if (!validationResult.IsValid)
+        {
+            var errorMessages = string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+            throw new ValidationException(
+                $"Order '{order.Number}' validation failed: {errorMessages}",
+                validationResult.Errors);
         }
     }
 }
