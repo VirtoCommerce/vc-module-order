@@ -473,7 +473,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             };
         }
 
-        private ICollection<PaymentIn> CreatePayments(int count)
+        private IList<PaymentIn> CreatePayments(int count)
         {
             var payments = new List<PaymentIn>();
             for (int i = 0; i < count; i++)
@@ -491,7 +491,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             return payments;
         }
 
-        private ICollection<Shipment> CreateShipments(int count)
+        private IList<Shipment> CreateShipments(int count)
         {
             var shipments = new List<Shipment>();
             for (int i = 0; i < count; i++)
@@ -505,7 +505,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             return shipments;
         }
 
-        private ICollection<Capture> CreateCaptures(int count)
+        private IList<Capture> CreateCaptures(int count)
         {
             var captures = new List<Capture>();
             for (int i = 0; i < count; i++)
@@ -520,7 +520,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             return captures;
         }
 
-        private ICollection<Refund> CreateRefunds(int count)
+        private IList<Refund> CreateRefunds(int count)
         {
             var refunds = new List<Refund>();
             for (int i = 0; i < count; i++)
