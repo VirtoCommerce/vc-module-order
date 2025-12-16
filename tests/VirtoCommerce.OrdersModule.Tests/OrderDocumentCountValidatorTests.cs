@@ -79,7 +79,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         {
             // Arrange
             var order = CreateOrder();
-            order.InPayments = CreatePayments(10);
+            order.InPayments = CreatePayments(9);
             order.Shipments = CreateShipments(5);
             order.InPayments.First().Captures = CreateCaptures(3);
             order.InPayments.First().Refunds = CreateRefunds(2);
@@ -112,7 +112,7 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
-            Assert.Contains("25", result.Errors.First().ErrorMessage);
+            Assert.Contains("26", result.Errors.First().ErrorMessage);
             Assert.Contains("PaymentIn=15", result.Errors.First().ErrorMessage);
             Assert.Contains("Shipment=10", result.Errors.First().ErrorMessage);
         }
@@ -134,7 +134,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
             var errorMessage = result.Errors.First().ErrorMessage;
-            Assert.Contains("23", errorMessage);
+            Assert.Contains("24", errorMessage);
             Assert.Contains("Capture=8", errorMessage);
             Assert.Contains("PaymentIn=10", errorMessage);
             Assert.Contains("Shipment=5", errorMessage);
@@ -157,7 +157,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
             var errorMessage = result.Errors.First().ErrorMessage;
-            Assert.Contains("21", errorMessage);
+            Assert.Contains("22", errorMessage);
             Assert.Contains("Refund=7", errorMessage);
             Assert.Contains("PaymentIn=8", errorMessage);
             Assert.Contains("Shipment=6", errorMessage);
@@ -183,7 +183,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
             var errorMessage = result.Errors.First().ErrorMessage;
-            Assert.Contains("22", errorMessage);
+            Assert.Contains("23", errorMessage);
             Assert.Contains("PaymentIn=8", errorMessage);
             Assert.Contains("Shipment=7", errorMessage);
             Assert.Contains("Capture=3", errorMessage);
@@ -215,7 +215,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.True(result.Errors.Count >= 1, "Expected validation errors");
             
             // Check for order-level error
-            Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("26") && e.ErrorMessage.Contains("CustomerOrder"));
+            Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("27") && e.ErrorMessage.Contains("CustomerOrder"));
             
             // Check for payment-level error (if reported separately)
             var paymentError = result.Errors.FirstOrDefault(e => e.ErrorMessage.Contains(payment.Number));
@@ -258,7 +258,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.True(result.Errors.Count >= 1, "Expected validation errors");
             
             // Check for order-level error
-            Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("38") && e.ErrorMessage.Contains("CustomerOrder"));
+            Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("39") && e.ErrorMessage.Contains("CustomerOrder"));
             
             // Check for payment-level error (if reported separately)
             var paymentError = result.Errors.FirstOrDefault(e => e.ErrorMessage.Contains(payments[1].Number));
@@ -332,7 +332,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
             var errorMessage = result.Errors.First().ErrorMessage;
-            Assert.Contains("6", errorMessage);
+            Assert.Contains("7", errorMessage);
             Assert.Contains("5", errorMessage);
             Assert.Contains("PaymentIn=4", errorMessage);
             Assert.Contains("Shipment=2", errorMessage);

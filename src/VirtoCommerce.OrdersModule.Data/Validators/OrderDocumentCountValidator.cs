@@ -41,23 +41,19 @@ public class OrderDocumentCountValidator : AbstractValidator<IOperation>
 
                 // Get all operations in the tree (excluding the root operation itself)
                 var allOperations = operation.GetFlatObjectsListWithInterface<IOperation>().ToList();
-                var childOperations = allOperations.Where(op => op.Id != operation.Id).ToList();
 
                 // Total child documents count
-                var totalDocumentCount = childOperations.Count;
+                var totalDocumentCount = allOperations.Count;
 
                 if (totalDocumentCount > maxDocumentCount)
                 {
-                    var operationBreakdown = GetOperationBreakdown(childOperations);
+                    var operationBreakdown = GetOperationBreakdown(allOperations);
                     
                     context.AddFailure(
                         operation.OperationType,
                         $"{operation.OperationType} document count ({totalDocumentCount}) exceeds the maximum allowed limit of {maxDocumentCount}. " +
                         $"Documents breakdown: {operationBreakdown}");
                 }
-
-                // Validate each operation that has children
-                ValidateOperationChildren(childOperations, maxDocumentCount, context);
             });
     }
 
@@ -72,40 +68,6 @@ public class OrderDocumentCountValidator : AbstractValidator<IOperation>
             .OrderBy(s => s);
 
         return string.Join(", ", grouped);
-    }
-
-    /// <summary>
-    /// Validates that individual operations do not have too many child operations
-    /// </summary>
-    private static void ValidateOperationChildren(
-        IList<IOperation> allOperations, 
-        int maxDocumentCount, 
-        ValidationContext<IOperation> context)
-    {
-        // Group operations by their parent to count children per operation
-        var operationsByParent = allOperations
-            .Where(op => !string.IsNullOrEmpty(op.ParentOperationId))
-            .GroupBy(op => op.ParentOperationId)
-            .ToDictionary(g => g.Key, g => g.ToList());
-
-        // Check each operation's child count
-        foreach (var operation in allOperations)
-        {
-            if (operationsByParent.TryGetValue(operation.Id, out var children))
-            {
-                var childCount = children.Count;
-                
-                if (childCount > maxDocumentCount)
-                {
-                    var childBreakdown = GetOperationBreakdown(children);
-                    
-                    context.AddFailure(
-                        operation.OperationType,
-                        $"{operation.OperationType} '{operation.Number}' has {childCount} child documents ({childBreakdown}), " +
-                        $"which exceeds the maximum allowed limit of {maxDocumentCount}.");
-                }
-            }
-        }
     }
 }
 
