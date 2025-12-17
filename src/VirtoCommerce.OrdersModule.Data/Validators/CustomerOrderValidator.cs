@@ -39,9 +39,12 @@ public class CustomerOrderValidator : AbstractValidator<CustomerOrder>
         RuleForEach(order => order.InPayments).SetValidator(paymentInValidator);
 
         // Apply all operation-level validators (e.g., document count limits)
+        // Cast CustomerOrder to IOperation to apply IValidator<IOperation> validators
+        // Cannot use Include() due to generic type invariance - IValidator<IOperation> != IValidator<CustomerOrder>
         foreach (var operationValidator in operationValidators)
         {
-            Include(operationValidator);
+            RuleFor(order => (IOperation)order)
+                .SetValidator(operationValidator);
         }
     }
 
