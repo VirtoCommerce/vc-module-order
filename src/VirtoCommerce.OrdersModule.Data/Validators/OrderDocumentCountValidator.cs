@@ -39,6 +39,12 @@ public class OrderDocumentCountValidator : AbstractValidator<IOperation>
                 var maxDocumentCount = await _settingsManager.GetValueAsync<int>(
                     ModuleConstants.Settings.General.MaxOrderDocumentCount);
 
+                // If the max document count is 0, we don't need to validate
+                if(maxDocumentCount <= 0)
+                {
+                    return;
+                }
+
                 // Get all operations in the tree (excluding the root operation itself)
                 var allOperations = operation.GetFlatObjectsListWithInterface<IOperation>().ToList();
 
