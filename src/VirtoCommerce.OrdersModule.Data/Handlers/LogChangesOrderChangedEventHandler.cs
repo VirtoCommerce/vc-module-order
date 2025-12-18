@@ -24,7 +24,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
         private readonly ISettingsManager _settingsManager;
-        private static readonly ConcurrentDictionary<Type, List<string>> _auditablePropertiesCacheByTypeDict = new();
+        private static readonly ConcurrentDictionary<Type, List<string>> _auditablePropertiesListByTypeDict = new();
 
         public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService, ISettingsManager settingsManager)
         {
@@ -135,7 +135,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var type = changedEntry.OldEntry.GetType();
 
-            return _auditablePropertiesCacheByTypeDict.GetOrAdd(type, t =>
+            return _auditablePropertiesListByTypeDict.GetOrAdd(type, t =>
                 t.GetProperties()
                     .Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
                     .Select(x => x.Name)
