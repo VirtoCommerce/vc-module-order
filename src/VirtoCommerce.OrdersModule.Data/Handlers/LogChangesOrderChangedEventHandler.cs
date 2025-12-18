@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoCompare;
 using Hangfire;
@@ -25,11 +24,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
         private readonly ISettingsManager _settingsManager;
-        private static readonly ConcurrentDictionary<Type, HashSet<string>> _auditablePropertiesCacheByTypeDict = new();
-        private static readonly PropertyInfo[] _addressProperties = typeof(Address)
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .OrderBy(p => p.Name)
-            .ToArray();
+        private static readonly ConcurrentDictionary<Type, List<string>> _auditablePropertiesCacheByTypeDict = new();
 
         public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService, ISettingsManager settingsManager)
         {
@@ -62,14 +57,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 switch (changedEntry.EntryState)
                 {
                     case EntryState.Modified:
-                    {
-                        var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
-                        var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                        {
+                            var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                            var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
 
-                        modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
-                            (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
-                        break;
-                    }
+                            modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
+                                (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
+                            break;
+                        }
                     case EntryState.Added or EntryState.Deleted:
                         operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(changedEntry.NewEntry, changedEntry.OldEntry, changedEntry.EntryState)));
                         break;
@@ -91,60 +86,60 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             switch (changedEntry.EntryState)
             {
                 case EntryState.Modified:
-                {
-                    var logs = new List<string>();
-                    var diff = GetOperationDifferences(changedEntry, logs);
-                    var auditableProperties = GetAuditableProperties(changedEntry);
-
-                    if (auditableProperties.Count > 0)
                     {
-                        var observedDifferences = diff
-                            .Where(x => auditableProperties.Contains(x.Name))
-                            .Distinct(new DifferenceComparer());
+                        var logs = new List<string>();
+                        var diff = GetOperationDifferences(changedEntry, logs);
+                        var auditableProperties = GetAuditableProperties(changedEntry);
 
-                        foreach (var difference in observedDifferences)
+                        if (auditableProperties.Count > 0)
                         {
-                            logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to '{difference.NewValue}'");
+                            var observedDifferences = diff
+                                .Where(x => auditableProperties.ContainsIgnoreCase(x.Name))
+                                .Distinct(new DifferenceComparer());
+
+                            foreach (var difference in observedDifferences)
+                            {
+                                logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to '{difference.NewValue}'");
+                            }
                         }
-                    }
 
-                    foreach (var log in logs)
-                    {
-                        result.Add(GetLogRecord(changedEntry.NewEntry, log));
-                    }
+                        foreach (var log in logs)
+                        {
+                            result.Add(GetLogRecord(changedEntry.NewEntry, log));
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case EntryState.Deleted:
-                {
-                    var record = GetLogRecord(changedEntry.NewEntry,
-                        $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
-                        EntryState.Deleted);
-                    result.Add(record);
-                    break;
-                }
+                    {
+                        var record = GetLogRecord(changedEntry.NewEntry,
+                            $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
+                            EntryState.Deleted);
+                        result.Add(record);
+                        break;
+                    }
                 case EntryState.Added:
-                {
-                    var record = GetLogRecord(changedEntry.NewEntry,
-                        $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
-                        EntryState.Added);
-                    result.Add(record);
-                    break;
-                }
+                    {
+                        var record = GetLogRecord(changedEntry.NewEntry,
+                            $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
+                            EntryState.Added);
+                        result.Add(record);
+                        break;
+                    }
             }
 
             return result;
         }
 
-        protected static HashSet<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
+        protected static List<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
         {
             var type = changedEntry.OldEntry.GetType();
 
-            return _auditablePropertiesCacheByTypeDict.GetOrAdd(type, t => new HashSet<string>(
+            return _auditablePropertiesCacheByTypeDict.GetOrAdd(type, t =>
                 t.GetProperties()
                     .Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
-                    .Select(x => x.Name),
-                StringComparer.OrdinalIgnoreCase));
+                    .Select(x => x.Name)
+                    .ToList());
         }
 
         protected virtual IList<Difference> GetOperationDifferences(GenericChangedEntry<IOperation> changedEntry, List<string> logs)
@@ -179,6 +174,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
         {
             var result = new List<string>();
+
             if (originalOrder.EmployeeId != modifiedOrder.EmployeeId)
             {
                 var employeeName = "none";
@@ -189,6 +185,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
                 result.Add($"Order employee was changed to '{employeeName}'");
             }
+
             result.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));
 
             return result;
@@ -196,18 +193,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual IEnumerable<string> GetShipmentChanges(Shipment originalShipment, Shipment modifiedShipment)
         {
-            var result = new List<string>();
-            result.AddRange(GetAddressChanges(originalShipment, [originalShipment.DeliveryAddress], [modifiedShipment.DeliveryAddress]));
-
-            return result;
+            return GetAddressChanges(originalShipment, [originalShipment.DeliveryAddress], [modifiedShipment.DeliveryAddress]);
         }
 
         protected virtual IEnumerable<string> GetPaymentChanges(PaymentIn payment, PaymentIn modifiedPayment)
         {
-            var result = new List<string>();
-            result.AddRange(GetAddressChanges(payment, [payment.BillingAddress], [modifiedPayment.BillingAddress]));
-
-            return result;
+            return GetAddressChanges(payment, [payment.BillingAddress], [modifiedPayment.BillingAddress]);
         }
 
         protected virtual IEnumerable<string> GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
@@ -217,7 +208,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             var modifiedAddressList = modifiedAddress?.Where(x => x != null).ToList() ?? [];
             var originalAddressList = originalAddress?.Where(x => x != null).ToList() ?? [];
 
-            modifiedAddressList.CompareTo(originalAddressList, EqualityComparer<Address>.Default, (state, source, target) =>
+            modifiedAddressList.CompareTo(originalAddressList, EqualityComparer<Address>.Default, (state, _, target) =>
             {
                 switch (state)
                 {
@@ -237,7 +228,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             return address is null
                 ? string.Empty
-                : string.Join(", ", _addressProperties.Select(p => p.GetValue(address)).Where(x => x != null));
+                : string.Join(", ", address.GetAllProperties().Select(p => p.GetValue(address)).Where(x => x != null));
         }
 
         protected virtual OperationLog GetLogRecord(IOperation operation, string template, EntryState operationType = EntryState.Modified)

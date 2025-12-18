@@ -16,14 +16,13 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
     {
         public const string ChangeLogObjectType = nameof(CustomerOrder);
 
-        protected Func<IOrderRepository> OrderRepositoryFactory { get; }
-
-        protected IChangeLogSearchService ChangeLogSearchService { get; }
+        private readonly Func<IOrderRepository> _orderRepositoryFactory;
+        private readonly IChangeLogSearchService _changeLogSearchService;
 
         public CustomerOrderChangesProvider(Func<IOrderRepository> orderRepositoryFactory, IChangeLogSearchService changeLogSearchService)
         {
-            OrderRepositoryFactory = orderRepositoryFactory;
-            ChangeLogSearchService = changeLogSearchService;
+            _orderRepositoryFactory = orderRepositoryFactory;
+            _changeLogSearchService = changeLogSearchService;
         }
 
         public virtual Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
@@ -38,15 +37,15 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             if (startDate == null && endDate == null)
             {
                 // Get total products count
-                using var repository = OrderRepositoryFactory();
+                using var repository = _orderRepositoryFactory();
 
                 return await repository.CustomerOrders.CountAsync();
             }
 
-            var criteria = GetChangeLogSearchCriteria(startDate, endDate, 0, 0);
+            var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip: 0, take: 0);
 
             // Get changes count from operation log
-            return (await ChangeLogSearchService.SearchAsync(criteria)).TotalCount;
+            return (await _changeLogSearchService.SearchAsync(criteria)).TotalCount;
         }
 
         /// <summary>
@@ -54,16 +53,16 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// </summary>
         protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromRepositoryAsync(long skip, long take)
         {
-            using var repository = OrderRepositoryFactory();
+            using var repository = _orderRepositoryFactory();
 
-            var productIds = await repository.CustomerOrders
+            var orders = await repository.CustomerOrders
                 .OrderBy(x => x.CreatedDate)
                 .Select(x => new { x.Id, ModifiedDate = x.ModifiedDate ?? x.CreatedDate })
                 .Skip((int)skip)
                 .Take((int)take)
                 .ToArrayAsync();
 
-            return productIds
+            return orders
                 .Select(x =>
                     new IndexDocumentChange
                     {
@@ -71,7 +70,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                         ChangeType = IndexDocumentChangeType.Modified,
                         ChangeDate = x.ModifiedDate,
                     })
-                .ToArray();
+                .ToList();
         }
 
         /// <summary>
@@ -80,7 +79,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromOperationLogAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
             var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip, take);
-            var operations = (await ChangeLogSearchService.SearchAsync(criteria)).Results;
+            var operations = (await _changeLogSearchService.SearchAsync(criteria)).Results;
 
             return operations
                 .Select(x =>
@@ -90,7 +89,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                         ChangeType = x.OperationType == EntryState.Deleted ? IndexDocumentChangeType.Deleted : IndexDocumentChangeType.Modified,
                         ChangeDate = x.ModifiedDate ?? x.CreatedDate,
                     })
-                .ToArray();
+                .ToList();
         }
 
         protected virtual ChangeLogSearchCriteria GetChangeLogSearchCriteria(DateTime? startDate, DateTime? endDate, long skip, long take)
@@ -99,7 +98,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             var types = AbstractTypeFactory<CustomerOrder>.AllTypeInfos.Select(x => x.TypeName).ToList();
 
-            if (types.Count != 0)
+            if (types.Count > 0)
             {
                 types.Add(ChangeLogObjectType);
                 criteria.ObjectTypes = types;

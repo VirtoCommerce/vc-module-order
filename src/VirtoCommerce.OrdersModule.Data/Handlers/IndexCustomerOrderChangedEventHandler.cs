@@ -17,13 +17,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
     public class IndexCustomerOrderChangedEventHandler : IEventHandler<OrderChangedEvent>
     {
-        protected ISettingsManager SettingsManager { get; }
-
-        protected IConfiguration Configuration { get; }
-
-        protected IIndexingJobService IndexingJobService { get; }
-
-        protected IEnumerable<IndexDocumentConfiguration> IndexingConfigurations { get; }
+        private readonly ISettingsManager _settingsManager;
+        private readonly IConfiguration _configuration;
+        private readonly IIndexingJobService _indexingJobService;
+        private readonly IEnumerable<IndexDocumentConfiguration> _indexingConfigurations;
 
         public IndexCustomerOrderChangedEventHandler(
             ISettingsManager settingsManager,
@@ -31,45 +28,43 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             IIndexingJobService indexingJobService,
             IEnumerable<IndexDocumentConfiguration> indexingConfigurations)
         {
-            SettingsManager = settingsManager;
-            Configuration = configuration;
-            IndexingJobService = indexingJobService;
-            IndexingConfigurations = indexingConfigurations;
+            _settingsManager = settingsManager;
+            _configuration = configuration;
+            _indexingJobService = indexingJobService;
+            _indexingConfigurations = indexingConfigurations;
         }
 
         public virtual async Task Handle(OrderChangedEvent message)
         {
-            if (!await ShouldIndexAsync())
+            if (await ShouldIndexAsync())
             {
-                return;
+                await IndexOrdersAsync(message);
             }
-
-            await IndexOrdersAsync(message);
         }
 
         protected virtual async Task<bool> ShouldIndexAsync()
         {
-            return Configuration.IsOrderFullTextSearchEnabled() &&
-                   await SettingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.EventBasedIndexation);
+            return _configuration.IsOrderFullTextSearchEnabled() &&
+                   await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.EventBasedIndexation);
         }
 
         protected virtual Task IndexOrdersAsync(OrderChangedEvent message)
         {
             var indexEntries = GetOrderIndexEntries(message);
 
-            if (indexEntries.Length > 0)
+            if (indexEntries.Count > 0)
             {
-                var documentBuilders = IndexingConfigurations
+                var documentBuilders = _indexingConfigurations
                     .GetDocumentBuilders(ModuleConstants.OrderIndexDocumentType, typeof(CustomerOrderChangesProvider))
                     .ToList();
 
-                IndexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries, JobPriority.Normal, documentBuilders);
+                _indexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries, JobPriority.Normal, documentBuilders);
             }
 
             return Task.CompletedTask;
         }
 
-        protected virtual IndexEntry[] GetOrderIndexEntries(OrderChangedEvent message)
+        protected virtual IList<IndexEntry> GetOrderIndexEntries(OrderChangedEvent message)
         {
             return message?.ChangedEntries
                 .Select(x => new IndexEntry
@@ -78,7 +73,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     EntryState = x.EntryState,
                     Type = ModuleConstants.OrderIndexDocumentType,
                 })
-                .ToArray() ?? [];
+                .ToList() ?? [];
         }
     }
 }
