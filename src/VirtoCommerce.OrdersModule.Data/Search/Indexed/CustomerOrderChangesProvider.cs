@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VirtoCommerce.CatalogModule.Core.Model;
-using VirtoCommerce.CustomerModule.Core.Model;
+using Microsoft.EntityFrameworkCore;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.Platform.Core.ChangeLog;
@@ -26,28 +25,24 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             _changeLogSearchService = changeLogSearchService;
         }
 
-        public async Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
+        public virtual Task<IList<IndexDocumentChange>> GetChangesAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
-            if (startDate == null && endDate == null)
-            {
-                return GetChangesFromRepository(skip, take);
-            }
-
-            return await GetChangesFromOperaionLog(startDate, endDate, skip, take);
+            return startDate == null && endDate == null
+                ? GetChangesFromRepositoryAsync(skip, take)
+                : GetChangesFromOperationLogAsync(startDate, endDate, skip, take);
         }
 
-        public async Task<long> GetTotalChangesCountAsync(DateTime? startDate, DateTime? endDate)
+        public virtual async Task<long> GetTotalChangesCountAsync(DateTime? startDate, DateTime? endDate)
         {
             if (startDate == null && endDate == null)
             {
                 // Get total products count
-                using (var repository = _orderRepositoryFactory())
-                {
-                    return repository.CustomerOrders.Count();
-                }
+                using var repository = _orderRepositoryFactory();
+
+                return await repository.CustomerOrders.CountAsync();
             }
 
-            var criteria = GetChangeLogSearchCriteria(startDate, endDate, 0, 0);
+            var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip: 0, take: 0);
 
             // Get changes count from operation log
             return (await _changeLogSearchService.SearchAsync(criteria)).TotalCount;
@@ -56,44 +51,45 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         /// <summary>
         /// Get documents from repository and return them as changes
         /// </summary>
-        private IList<IndexDocumentChange> GetChangesFromRepository(long skip, long take)
+        protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromRepositoryAsync(long skip, long take)
         {
-            using (var repository = _orderRepositoryFactory())
-            {
-                var productIds = repository.CustomerOrders
-                    .OrderBy(i => i.CreatedDate)
-                    .Select(i => i.Id)
-                    .Skip((int)skip)
-                    .Take((int)take)
-                    .ToArray();
+            using var repository = _orderRepositoryFactory();
 
-                return productIds.Select(id =>
+            var orders = await repository.CustomerOrders
+                .OrderBy(x => x.CreatedDate)
+                .Select(x => new { x.Id, ModifiedDate = x.ModifiedDate ?? x.CreatedDate })
+                .Skip((int)skip)
+                .Take((int)take)
+                .ToArrayAsync();
+
+            return orders
+                .Select(x =>
                     new IndexDocumentChange
                     {
-                        DocumentId = id,
+                        DocumentId = x.Id,
                         ChangeType = IndexDocumentChangeType.Modified,
-                        ChangeDate = DateTime.UtcNow
-                    }
-                ).ToArray();
-            }
+                        ChangeDate = x.ModifiedDate,
+                    })
+                .ToList();
         }
 
         /// <summary>
         /// Get changes from operation log
         /// </summary>
-        private async Task<IList<IndexDocumentChange>> GetChangesFromOperaionLog(DateTime? startDate, DateTime? endDate, long skip, long take)
+        protected virtual async Task<IList<IndexDocumentChange>> GetChangesFromOperationLogAsync(DateTime? startDate, DateTime? endDate, long skip, long take)
         {
             var criteria = GetChangeLogSearchCriteria(startDate, endDate, skip, take);
             var operations = (await _changeLogSearchService.SearchAsync(criteria)).Results;
 
-            return operations.Select(o =>
-                new IndexDocumentChange
-                {
-                    DocumentId = o.ObjectId,
-                    ChangeType = o.OperationType == EntryState.Deleted ? IndexDocumentChangeType.Deleted : IndexDocumentChangeType.Modified,
-                    ChangeDate = o.ModifiedDate ?? o.CreatedDate,
-                }
-            ).ToArray();
+            return operations
+                .Select(x =>
+                    new IndexDocumentChange
+                    {
+                        DocumentId = x.ObjectId,
+                        ChangeType = x.OperationType == EntryState.Deleted ? IndexDocumentChangeType.Deleted : IndexDocumentChangeType.Modified,
+                        ChangeDate = x.ModifiedDate ?? x.CreatedDate,
+                    })
+                .ToList();
         }
 
         protected virtual ChangeLogSearchCriteria GetChangeLogSearchCriteria(DateTime? startDate, DateTime? endDate, long skip, long take)
@@ -102,14 +98,14 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             var types = AbstractTypeFactory<CustomerOrder>.AllTypeInfos.Select(x => x.TypeName).ToList();
 
-            if (types.Count != 0)
+            if (types.Count > 0)
             {
-                types.Add(nameof(CustomerOrder));
+                types.Add(ChangeLogObjectType);
                 criteria.ObjectTypes = types;
             }
             else
             {
-                criteria.ObjectType = nameof(CustomerOrder);
+                criteria.ObjectType = ChangeLogObjectType;
             }
 
             criteria.StartDate = startDate;
