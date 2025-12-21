@@ -405,8 +405,8 @@ angular.module(moduleName, [
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-address-widget.tpl.html'
                 };
                 widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
-                function checkPermissionToReadPrices() {
-                    return authService.checkPermission('order:read_prices');
+                function checkPermissionToReadPrices(blade) {
+                    return blade.customerOrder.withPrices;
                 }
 
                 function checkPermissionToViewDashboard() {

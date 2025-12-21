@@ -5,8 +5,6 @@ angular.module('virtoCommerce.orderModule')
     var bladeNavigationService = bladeUtils.bladeNavigationService;
     $scope.uiGridConstants = uiGridConstants;
     $scope.useIndexedSearch = false;
-    
-    $scope.getPricesVisibility = () => authService.checkPermission('order:read_prices');
 
     $scope.getGridOptions = () => {
         return {
@@ -18,7 +16,7 @@ angular.module('virtoCommerce.orderModule')
                    { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
                    { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
                    { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
-                   { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellFilter: 'currency | showPrice:' + $scope.getPricesVisibility(), width: '**' },
+                   { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellTemplate: 'price.cell.html', width: '**' },
                    { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
                    { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
                    { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'settingTranslate:"Order.Status"', width: '*' },
@@ -253,7 +251,7 @@ angular.module('virtoCommerce.orderModule')
             "paymentTotal", "paymentTotalWithTax", "paymentSubTotal", "paymentSubTotalWithTax", "paymentDiscountTotal", "paymentDiscountTotalWithTax", "paymentTaxTotal",
             "discountTotal", "discountTotalWithTax", "fee", "feeWithTax", "feeTotal", "feeTotalWithTax", "taxTotal", "sum"
         ], function(name) {
-            return { name: name, cellFilter: "currency | showPrice:" + $scope.getPricesVisibility(), visible: false };
+            return { name: name, cellTemplate: 'price.cell.html', visible: false };
         }));
 
         $scope.gridOptions = gridOptions;

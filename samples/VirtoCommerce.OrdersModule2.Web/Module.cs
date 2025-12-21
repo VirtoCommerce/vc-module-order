@@ -5,12 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule2.Web.Authorization;
 using VirtoCommerce.OrdersModule2.Web.Extensions;
 using VirtoCommerce.OrdersModule2.Web.Model;
 using VirtoCommerce.OrdersModule2.Web.Repositories;
+using VirtoCommerce.OrdersModule2.Web.Services;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
@@ -37,6 +39,7 @@ namespace VirtoCommerce.OrdersModule2.Web
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
             serviceCollection.AddTransient<IAuthorizationHandler, CustomOrderAuthorizationHandler>();
+            serviceCollection.AddScoped<ICustomerOrderDataProtectionService, SampleCustomerOrderDataProtectionService>();
 
             serviceCollection.AddValidators();
         }
@@ -48,8 +51,9 @@ namespace VirtoCommerce.OrdersModule2.Web
 
             AbstractTypeFactory<PermissionScope>.RegisterType<OrderSelectedStatusScope>();
 
-            var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
-            permissionsProvider.WithAvailabeScopesForPermissions(
+            var permissionsRegistrar = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
+            permissionsRegistrar.RegisterPermissions(ModuleInfo.Id, ModuleInfo.Title, ModuleConstants.Permissions.AllPermissions);
+            permissionsRegistrar.WithAvailabeScopesForPermissions(
             [
                 // Permission list
                 OrdersModule.Core.ModuleConstants.Security.Permissions.Read
