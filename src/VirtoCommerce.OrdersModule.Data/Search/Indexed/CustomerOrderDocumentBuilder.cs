@@ -182,12 +182,9 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
         {
             if(discounts!=null)
             {
-                foreach (var discount in discounts)
+                foreach (var discount in discounts.Where(d => d != null && !string.IsNullOrEmpty(d.PromotionId)))
                 {
-                    if (discount != null && !string.IsNullOrEmpty(discount.PromotionId))
-                    {
-                        document.AddFilterableString("PromotionId", discount.PromotionId);
-                    }
+                    document.AddFilterableString("PromotionId", discount.PromotionId);
                 }
             }
         }
