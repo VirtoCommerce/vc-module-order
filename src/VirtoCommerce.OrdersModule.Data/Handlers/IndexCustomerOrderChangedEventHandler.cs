@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,20 +34,46 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             _indexingConfigurations = indexingConfigurations;
         }
 
-        public async Task Handle(OrderChangedEvent message)
+        public virtual async Task Handle(OrderChangedEvent message)
         {
-            if (!_configuration.IsOrderFullTextSearchEnabled() ||
-                !await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.EventBasedIndexation))
+            if (await ShouldIndexAsync())
             {
-                return;
+                await IndexOrdersAsync(message);
+            }
+        }
+
+        protected virtual async Task<bool> ShouldIndexAsync()
+        {
+            return _configuration.IsOrderFullTextSearchEnabled() &&
+                   await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.EventBasedIndexation);
+        }
+
+        protected virtual Task IndexOrdersAsync(OrderChangedEvent message)
+        {
+            var indexEntries = GetOrderIndexEntries(message);
+
+            if (indexEntries.Count > 0)
+            {
+                var documentBuilders = _indexingConfigurations
+                    .GetDocumentBuilders(ModuleConstants.OrderIndexDocumentType, typeof(CustomerOrderChangesProvider))
+                    .ToList();
+
+                _indexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries, JobPriority.Normal, documentBuilders);
             }
 
-            var indexEntries = message?.ChangedEntries
-                .Select(x => new IndexEntry { Id = x.OldEntry.Id, EntryState = x.EntryState, Type = ModuleConstants.OrderIndexDocumentType })
-                .ToArray() ?? Array.Empty<IndexEntry>();
+            return Task.CompletedTask;
+        }
 
-            _indexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries,
-                JobPriority.Normal, _indexingConfigurations.GetDocumentBuilders(ModuleConstants.OrderIndexDocumentType, typeof(CustomerOrderChangesProvider)).ToList());
+        protected virtual IList<IndexEntry> GetOrderIndexEntries(OrderChangedEvent message)
+        {
+            return message?.ChangedEntries
+                .Select(x => new IndexEntry
+                {
+                    Id = x.OldEntry.Id,
+                    EntryState = x.EntryState,
+                    Type = ModuleConstants.OrderIndexDocumentType,
+                })
+                .ToList() ?? [];
         }
     }
 }
