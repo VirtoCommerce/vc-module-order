@@ -89,5 +89,30 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         /// Search orders with a certain product
         /// </summary>
         public string ProductId { get; set; }
+
+        /// <summary>
+        /// Search orders with a certain promotion
+        /// </summary>
+        public string PromotionId { get; set; }
+
+        private string[] _promotionIds;
+        /// <summary>
+        /// Search orders with given promotions
+        /// </summary>
+        public string[] PromotionIds
+        {
+            get
+            {
+                if (_promotionIds == null && !string.IsNullOrEmpty(PromotionId))
+                {
+                    _promotionIds = new[] { PromotionId };
+                }
+                return _promotionIds;
+            }
+            set
+            {
+                _promotionIds = value;
+            }
+        }
     }
 }
