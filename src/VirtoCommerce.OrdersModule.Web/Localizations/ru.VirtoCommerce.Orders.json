@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Выберите исполнителя",
           "status": "Выберите...",
-          "store": "Выберите..."
+          "store": "Выберите...",
+          "sku": "Артикул"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Кол-во",
           "available": "Доступно",
           "await": "Ожидание",
-          "price": "Цена за единицу (без налога)",
+          "price": "Price per item",
           "tax": "Налог",
           "priceWithTax": "Цена за единицу (с налогом)",
-          "discount": "Скидка (без налога)",
+          "discount": "Скидка",
           "discountWithTax": "Скидка (с налогом)",
-          "total": "Всего позиций",
+          "total": "Total",
           "dynamic-properties": "Динамические свойства",
           "sub-total": "Подытог",
-          "discount-total": "Общая скидка",
-          "tax-total": "Общий налог",
-          "fee-total": "Общая комиссия"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Название продукта"
+          "product": "Название продукта",
+          "sku": "Артикул"
         }
       },
       "customerOrder-list": {

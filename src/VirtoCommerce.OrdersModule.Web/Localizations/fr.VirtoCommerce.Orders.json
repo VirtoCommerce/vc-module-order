@@ -22,7 +22,8 @@
         "placeholders": {
           "employee": "Sélectionner un responsable",
           "status": "Sélectionner...",
-          "store": "Sélectionner..."
+          "store": "Sélectionner...",
+          "sku": "UGS"
         }
       },
       "customerOrder-items": {
@@ -32,22 +33,23 @@
           "quantity": "Qté",
           "available": "Dispo",
           "await": "En attente",
-          "price": "Prix unitaire (hors taxe)",
+          "price": "Price per item",
           "tax": "Taxe",
           "priceWithTax": "Prix unitaire (taxe incluse)",
-          "discount": "Remise (hors taxe)",
+          "discount": "Remise",
           "discountWithTax": "Remise (taxe incluse)",
-          "total": "Total des articles",
+          "total": "Total",
           "dynamic-properties": "Propriétés dynamiques",
           "sub-total": "Sous-total",
-          "discount-total": "Remise totale",
-          "tax-total": "Total des taxes",
-          "fee-total": "Total des frais"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nom du produit"
+          "product": "Nom du produit",
+          "sku": "UGS"
         }
       },
       "customerOrder-list": {

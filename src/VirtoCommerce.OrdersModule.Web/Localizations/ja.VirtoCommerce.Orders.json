@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "担当者を選択",
           "status": "選択...",
-          "store": "選択..."
+          "store": "選択...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "数量",
           "available": "在庫",
           "await": "待機",
-          "price": "単価（税抜）",
+          "price": "Price per item",
           "tax": "税金",
           "priceWithTax": "単価（税込）",
-          "discount": "割引（税抜）",
+          "discount": "割引",
           "discountWithTax": "割引（税込）",
-          "total": "合計品目",
+          "total": "Total",
           "dynamic-properties": "動的プロパティ",
           "sub-total": "小計",
-          "discount-total": "割引合計",
-          "tax-total": "税金合計",
-          "fee-total": "手数料合計"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "商品名"
+          "product": "商品名",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {

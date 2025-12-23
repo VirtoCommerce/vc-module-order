@@ -1,7 +1,7 @@
 <div class="blade-content __medium-wide">
   <div class="blade-inner">
     <div class="inner-block">
-      <form style="padding: 0 0 35px 0;" name="lineItemForm">
+      <form name="lineItemForm" class="form">
         <div ng-init="blade.setForm(lineItemForm)">
           <va-metaform registered-inputs="blade.metaFields" blade="blade" column-count="2" ng-if="blade.currentEntity"></va-metaform>
         </div>
@@ -25,6 +25,11 @@
                              setting="'OrderLineItem.Statuses'"
                              ng-model="blade.currentEntity.status"
                              allow-clear="true"></va-setting-value-select>
+  </div>
+</script>
+<script type="text/ng-template" id="sku.html">
+  <div class="form-input">
+    <input required class="form-control" ng-model="blade.currentEntity.sku" id="sku" readonly="readonly" />
   </div>
 </script>
 <script type="text/ng-template" id="quantity.html">

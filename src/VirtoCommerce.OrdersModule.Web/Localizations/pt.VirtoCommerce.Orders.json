@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Selecionar responsável",
           "status": "Selecionar...",
-          "store": "Selecionar..."
+          "store": "Selecionar...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Qtd",
           "available": "Disp",
           "await": "Aguardar",
-          "price": "Preço unitário (sem impostos)",
+          "price": "Price per item",
           "tax": "Imposto",
           "priceWithTax": "Preço unitário (com impostos)",
-          "discount": "Desconto (sem impostos)",
+          "discount": "Desconto",
           "discountWithTax": "Desconto (com impostos)",
-          "total": "Total de itens de linha",
+          "total": "Total",
           "dynamic-properties": "Propriedades dinâmicas",
           "sub-total": "Subtotal",
-          "discount-total": "Desconto total",
-          "tax-total": "Imposto total",
-          "fee-total": "Taxa total"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nome do produto"
+          "product": "Nome do produto",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
