@@ -32,7 +32,7 @@
           "quantity": "Qtd",
           "available": "Disp",
           "await": "Aguardar",
-          "price": "Price per item",
+          "price": "Preço por item",
           "tax": "Imposto",
           "priceWithTax": "Preço unitário (com impostos)",
           "discount": "Desconto",
@@ -40,9 +40,9 @@
           "total": "Total",
           "dynamic-properties": "Propriedades dinâmicas",
           "sub-total": "Subtotal",
-          "discount-total": "Discount",
-          "tax-total": "Tax",
-          "fee-total": "Fee"
+          "discount-total": "Desconto",
+          "tax-total": "Imposto",
+          "fee-total": "Taxa"
         }
       },
       "customerOrder-item-detail": {

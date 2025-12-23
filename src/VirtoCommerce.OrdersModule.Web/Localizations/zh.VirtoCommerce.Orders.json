@@ -32,17 +32,17 @@
           "quantity": "数量",
           "available": "可用",
           "await": "等待",
-          "price": "Price per item",
+          "price": "单价",
           "tax": "税",
           "priceWithTax": "单价（含税）",
           "discount": "折扣",
           "discountWithTax": "折扣（含税）",
-          "total": "Total",
+          "total": "总计",
           "dynamic-properties": "动态属性",
           "sub-total": "小计",
-          "discount-total": "Discount",
-          "tax-total": "Tax",
-          "fee-total": "Fee"
+          "discount-total": "折扣",
+          "tax-total": "税",
+          "fee-total": "费用"
         }
       },
       "customerOrder-item-detail": {

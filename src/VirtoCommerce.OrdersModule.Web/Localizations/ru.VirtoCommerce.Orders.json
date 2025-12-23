@@ -32,17 +32,17 @@
           "quantity": "Кол-во",
           "available": "Доступно",
           "await": "Ожидание",
-          "price": "Price per item",
+          "price": "Цена за единицу",
           "tax": "Налог",
           "priceWithTax": "Цена за единицу (с налогом)",
           "discount": "Скидка",
           "discountWithTax": "Скидка (с налогом)",
-          "total": "Total",
+          "total": "Итого",
           "dynamic-properties": "Динамические свойства",
           "sub-total": "Подытог",
-          "discount-total": "Discount",
-          "tax-total": "Tax",
-          "fee-total": "Fee"
+          "discount-total": "Скидка",
+          "tax-total": "Налог",
+          "fee-total": "Комиссия"
         }
       },
       "customerOrder-item-detail": {

@@ -32,17 +32,17 @@
           "quantity": "Ilość",
           "available": "Dostępne",
           "await": "Oczekiwanie",
-          "price": "Price per item",
+          "price": "Cena za sztukę",
           "tax": "Podatek",
           "priceWithTax": "Cena jednostkowa (z podatkiem)",
           "discount": "Rabat",
           "discountWithTax": "Rabat (z podatkiem)",
-          "total": "Total",
+          "total": "Suma",
           "dynamic-properties": "Właściwości dynamiczne",
           "sub-total": "Suma częściowa",
-          "discount-total": "Discount",
-          "tax-total": "Tax",
-          "fee-total": "Fee"
+          "discount-total": "Rabat",
+          "tax-total": "Podatek",
+          "fee-total": "Opłata"
         }
       },
       "customerOrder-item-detail": {

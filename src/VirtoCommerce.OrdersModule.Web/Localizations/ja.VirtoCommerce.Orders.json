@@ -32,17 +32,17 @@
           "quantity": "数量",
           "available": "在庫",
           "await": "待機",
-          "price": "Price per item",
+          "price": "単価",
           "tax": "税金",
           "priceWithTax": "単価（税込）",
           "discount": "割引",
           "discountWithTax": "割引（税込）",
-          "total": "Total",
+          "total": "合計",
           "dynamic-properties": "動的プロパティ",
           "sub-total": "小計",
-          "discount-total": "Discount",
-          "tax-total": "Tax",
-          "fee-total": "Fee"
+          "discount-total": "割引",
+          "tax-total": "税",
+          "fee-total": "手数料"
         }
       },
       "customerOrder-item-detail": {
