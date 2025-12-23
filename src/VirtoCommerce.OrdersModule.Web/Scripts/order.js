@@ -24,7 +24,7 @@ angular.module(moduleName, [
                                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                                 if (foundTemplate) {
                                     var newBlade = angular.copy(foundTemplate.detailBlade);
-                                    newBlade.id = 'orderDetail';
+                                    newBlade.id = 'orders';
                                     newBlade.customerOrder = { id: orderId, customerName: 'Customer' };
                                     newBlade.isClosingDisabled = true;
                                     bladeNavigationService.showBlade(newBlade);
@@ -851,11 +851,14 @@ angular.module(moduleName, [
                     }
                 });
 
-                var customerOrderItemDiscountWidget = {
-                    controller: 'virtoCommerce.orderModule.customerOrderItemDiscountWidgetController',
-                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-item-discounts-widget.tpl.html'
+                var operationDiscountsWidget = {
+                    controller: 'virtoCommerce.orderModule.operationDiscountWidgetController',
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-discounts-widget.tpl.html'                   
                 };
-                widgetService.registerWidget(customerOrderItemDiscountWidget, 'customerOrderItemDetailWidgets');
+                widgetService.registerWidget(operationDiscountsWidget, 'customerOrderDetailWidgets');
+                widgetService.registerWidget(operationDiscountsWidget, 'paymentDetailWidgets');
+                widgetService.registerWidget(operationDiscountsWidget, 'shipmentDetailWidgets');
+                widgetService.registerWidget(operationDiscountsWidget, 'customerOrderItemDetailWidgets');
 
                 var customerOrderItemConfigurationWidget = {
                     controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationWidgetController',
