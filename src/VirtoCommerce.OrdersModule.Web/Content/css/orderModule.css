@@ -58,6 +58,10 @@
     font-size: 16px;
 }
 
+.gridster .order-totals {
+  cursor: pointer;
+}
+
 /* Sticky header for line items grid */
 .vc-order .customer-order-items .table.__line-items thead .table-col {
     background: #fff;
