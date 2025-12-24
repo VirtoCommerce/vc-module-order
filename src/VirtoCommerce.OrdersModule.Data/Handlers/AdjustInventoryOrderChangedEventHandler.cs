@@ -79,12 +79,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var reserveStockRequest = await GetReserveRequests(changedEntry);
 
-            if (reserveStockRequest.FulfillmentCenterIds.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            if (reserveStockRequest.Items.Any())
+            if (reserveStockRequest.Items.Any() &&
+                !reserveStockRequest.FulfillmentCenterIds.IsNullOrEmpty())
             {
                 await _reservationService.ReserveAsync(reserveStockRequest);
             }
