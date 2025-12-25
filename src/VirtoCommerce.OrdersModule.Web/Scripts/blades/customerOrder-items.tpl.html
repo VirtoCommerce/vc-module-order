@@ -62,7 +62,9 @@
                                         <i class="table-ico fa fa-image" aria-hidden="true" ng-if="!data.imageUrl"></i>
                                     </div>
                                     <div class="order-items__item-info">
-                                        <div class="order-items__item-name">{{data.name}}</div>
+                                        <div class="order-items__item-name" ng-attr-title="{{data.name}}">
+                                            <span class="order-items__item-name-text">{{data.name}}</span>
+                                        </div>
                                         <div class="order-items__item-sku" ng-if="data.sku">{{data.sku}}</div>
                                         <div class="order-items__item-comment" ng-if="data.comment">{{ data.comment }}</div>
                                     </div>

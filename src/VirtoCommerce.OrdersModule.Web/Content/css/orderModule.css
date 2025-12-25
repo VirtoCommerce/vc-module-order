@@ -103,10 +103,15 @@
     font-size: 13px;
     font-weight: 500;
     line-height: 1.2;
+    max-width: 200px;
+    min-width: 0;
+}
+
+.vc-order .customer-order-items .order-items__item-name-text {
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 200px;
 }
 
 .vc-order .customer-order-items .order-items__item-sku {
