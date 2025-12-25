@@ -71,6 +71,11 @@
     z-index: 2;
 }
 
+/* Status column sizing (customer order items) */
+.vc-order .customer-order-items .table.__line-items .table-col.__status .select2-container {
+    width: 150px
+}
+
 /* Reset mini input margins (requested) */
 .vc-order .customer-order-items .table-col .form-input.__mini {
     margin: 0;

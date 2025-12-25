@@ -34,7 +34,7 @@
                                 </label>
                             </th>
                             <th class="table-col __proudct-img">{{ 'orders.blades.customerOrder-items.labels.item' | translate }}</th>
-                            <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.status' | translate }}</th>
+                            <th class="table-col __status">{{ 'orders.blades.customerOrder-items.labels.status' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.quantity' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.price' | translate }}</th>
                             <th class="table-col">{{ 'orders.blades.customerOrder-items.labels.discount' | translate }}</th>
@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="table-col">
+                            <td class="table-col __status">
                                 <div class="form-input __inline" ng-click="$event.stopPropagation()">
                                     <va-setting-value-select placeholder="'orders.blades.customerOrder-detail.placeholders.status' | translate"
                                                              setting="'OrderLineItem.Statuses'"
