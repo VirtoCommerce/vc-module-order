@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Selecionar responsável",
           "status": "Selecionar...",
-          "store": "Selecionar..."
+          "store": "Selecionar...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Qtd",
           "available": "Disp",
           "await": "Aguardar",
-          "price": "Preço unitário (sem impostos)",
+          "price": "Preço por item",
           "tax": "Imposto",
           "priceWithTax": "Preço unitário (com impostos)",
-          "discount": "Desconto (sem impostos)",
+          "discount": "Desconto",
           "discountWithTax": "Desconto (com impostos)",
-          "total": "Total de itens de linha",
+          "total": "Total",
           "dynamic-properties": "Propriedades dinâmicas",
           "sub-total": "Subtotal",
-          "discount-total": "Desconto total",
-          "tax-total": "Imposto total",
-          "fee-total": "Taxa total"
+          "discount-total": "Desconto",
+          "tax-total": "Imposto",
+          "fee-total": "Taxa"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nome do produto"
+          "product": "Nome do produto",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -618,6 +620,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Ativar filtro de produtos comprados na loja",
       "description": "Exibe o filtro de produtos comprados para a loja."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Número máximo de documentos secundários por pedido",
+      "description": "Define o número máximo de documentos secundários (pagamentos, remessas, capturas, reembolsos, etc.) que podem ser criados ou armazenados por pedido. Isso garante o desempenho do sistema, otimização de armazenamento e consistência de dados. Uma exceção será lançada ao salvar se este limite for excedido"
     }
   },
   "module": {
