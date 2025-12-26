@@ -13,6 +13,11 @@ angular.module('virtoCommerce.orderModule')
                     templateUrl: "name.html"
                 },
                 {
+                    title: "orders.blades.customerOrder-item-detail.labels.sku",
+                    colSpan: 2,
+                    templateUrl: "sku.html"
+                },
+                {
                     templateUrl: "status.html"
                 },
                 {
