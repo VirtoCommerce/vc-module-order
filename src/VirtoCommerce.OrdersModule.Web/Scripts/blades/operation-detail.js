@@ -275,7 +275,7 @@ angular.module('virtoCommerce.orderModule')
         }
 
         blade.onClose = function (closeCallback) {
-            if (blade.currentEntity.operationType === "CustomerOrder") {
+            if (blade.currentEntity && blade.currentEntity.operationType === "CustomerOrder") {
                 $location.search({ orderId: null });
             }
 
