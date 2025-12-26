@@ -81,6 +81,8 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 query = query.Where(o => o.Items.Any(i => i.ProductId == criteria.ProductId));
             }
 
+            query = WithPromotionConditions(query, criteria);
+
             return query;
         }
 
@@ -171,6 +173,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (!criteria.SubscriptionIds.IsNullOrEmpty())
             {
                 query = query.Where(x => criteria.SubscriptionIds.Contains(x.SubscriptionId));
+            }
+
+            return query;
+        }
+
+        private static IQueryable<CustomerOrderEntity> WithPromotionConditions(IQueryable<CustomerOrderEntity> query, CustomerOrderSearchCriteria criteria)
+        {
+            if (!criteria.PromotionIds.IsNullOrEmpty())
+            {
+                // Check if any discount in the order, shipments, payments, or line items has the promotion ID
+                query = query.Where(o =>
+                    (o.Discounts != null && o.Discounts.Any(d => criteria.PromotionIds.Contains(d.PromotionId))) ||
+                    (o.Shipments != null && o.Shipments.Any(s => s.Discounts != null && s.Discounts.Any(d => criteria.PromotionIds.Contains(d.PromotionId)))) ||
+                    (o.InPayments != null && o.InPayments.Any(p => p.Discounts != null && p.Discounts.Any(d => criteria.PromotionIds.Contains(d.PromotionId)))) ||
+                    (o.Items != null && o.Items.Any(i => i.Discounts != null && i.Discounts.Any(d => criteria.PromotionIds.Contains(d.PromotionId))))
+                );
             }
 
             return query;

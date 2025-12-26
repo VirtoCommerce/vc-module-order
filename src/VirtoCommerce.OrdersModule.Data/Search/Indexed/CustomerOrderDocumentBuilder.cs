@@ -54,6 +54,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             schema.AddFilterableString("OuterId");
             schema.AddFilterableString("Status");
             schema.AddFilterableString("Currency");
+            schema.AddFilterableString("PromotionId");
 
             schema.AddFilterableDecimal("Total");
             schema.AddFilterableDecimal("SubTotal");
@@ -125,6 +126,8 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableBoolean("IsCancelled", order.IsCancelled);
             document.AddFilterableBoolean("IsPrototype", order.IsPrototype);
 
+            IndexDiscounts(order.Discounts, document);
+
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
                 IndexAddress(address, document);
@@ -132,12 +135,14 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             foreach (var lineItem in order.Items ?? Enumerable.Empty<LineItem>())
             {
+                IndexDiscounts(lineItem.Discounts, document);
                 document.AddContentString(lineItem.Comment);
             }
 
             foreach (var payment in order.InPayments ?? Enumerable.Empty<PaymentIn>())
             {
                 IndexAddress(payment.BillingAddress, document);
+                IndexDiscounts(payment.Discounts, document);
                 document.AddContentString(payment.Number);
                 document.AddContentString(payment.Comment);
             }
@@ -145,6 +150,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             foreach (var shipment in order.Shipments ?? Enumerable.Empty<Shipment>())
             {
                 IndexAddress(shipment.DeliveryAddress, document);
+                IndexDiscounts(shipment.Discounts, document);
                 document.AddContentString(shipment.Number);
                 document.AddContentString(shipment.Comment);
 
@@ -169,6 +175,17 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             if (address != null)
             {
                 document.AddContentString($"{address.AddressType} {address}");
+            }
+        }
+
+        protected virtual void IndexDiscounts(ICollection<VirtoCommerce.CoreModule.Core.Common.Discount> discounts, IndexDocument document)
+        {
+            if(discounts!=null)
+            {
+                foreach (var discount in discounts.Where(d => d != null && !string.IsNullOrEmpty(d.PromotionId)))
+                {
+                    document.AddFilterableString("PromotionId", discount.PromotionId);
+                }
             }
         }
     }
