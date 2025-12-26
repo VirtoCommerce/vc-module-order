@@ -22,7 +22,8 @@
         "placeholders": {
           "employee": "Sélectionner un responsable",
           "status": "Sélectionner...",
-          "store": "Sélectionner..."
+          "store": "Sélectionner...",
+          "sku": "UGS"
         }
       },
       "customerOrder-items": {
@@ -32,22 +33,23 @@
           "quantity": "Qté",
           "available": "Dispo",
           "await": "En attente",
-          "price": "Prix unitaire (hors taxe)",
+          "price": "Prix par article",
           "tax": "Taxe",
           "priceWithTax": "Prix unitaire (taxe incluse)",
-          "discount": "Remise (hors taxe)",
+          "discount": "Remise",
           "discountWithTax": "Remise (taxe incluse)",
-          "total": "Total des articles",
+          "total": "Total",
           "dynamic-properties": "Propriétés dynamiques",
           "sub-total": "Sous-total",
-          "discount-total": "Remise totale",
-          "tax-total": "Total des taxes",
-          "fee-total": "Total des frais"
+          "discount-total": "Remise",
+          "tax-total": "Taxe",
+          "fee-total": "Frais"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nom du produit"
+          "product": "Nom du produit",
+          "sku": "UGS"
         }
       },
       "customerOrder-list": {
@@ -619,6 +621,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Activer le filtre de produits achetés en magasin",
       "description": "Affiche le filtre de produits achetés pour le magasin."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Nombre maximum de documents enfants par commande",
+      "description": "Définit le nombre maximum de documents enfants (paiements, expéditions, captures, remboursements, etc.) qui peuvent être créés ou stockés par commande. Cela garantit les performances du système, l'optimisation du stockage et la cohérence des données. Une exception sera levée lors de la sauvegarde si cette limite est dépassée"
     }
   },
   "module": {

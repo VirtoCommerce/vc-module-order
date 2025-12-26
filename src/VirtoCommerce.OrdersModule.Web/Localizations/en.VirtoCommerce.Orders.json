@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Select assignee",
           "status": "Select...",
-          "store": "Select..."
+          "store": "Select...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Qty",
           "available": "Avail",
           "await": "Await",
-          "price": "Unit price (excl. tax)",
+          "price": "Price per item",
           "tax": "Tax",
           "priceWithTax": "Unit price (incl. tax)",
-          "discount": "Discount (excl. tax)",
+          "discount": "Discount",
           "discountWithTax": "Discount (incl. tax)",
-          "total": "Total line items",
+          "total": "Total",
           "dynamic-properties": "Dynamic properties",
           "sub-total": "Subtotal",
-          "discount-total": "Total discount",
-          "tax-total": "Total tax",
-          "fee-total": "Total fee"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Product name"
+          "product": "Product name",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -618,6 +620,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Enable purchased product store filter",
       "description": "Display the purchased product filter for the store"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximum number of child documents per order",
+      "description": "Defines the maximum number of child documents (payments, shipments, captures, refunds, etc.) that can be created or stored per order. This ensures system performance, storage optimization, and data consistency. An exception will be thrown on save if this limit is exceeded"
     }
   },
   "module": {

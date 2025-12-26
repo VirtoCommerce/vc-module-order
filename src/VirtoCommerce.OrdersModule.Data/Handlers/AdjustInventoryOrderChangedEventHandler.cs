@@ -79,7 +79,8 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             var reserveStockRequest = await GetReserveRequests(changedEntry);
 
-            if (reserveStockRequest.Items.Any())
+            if (reserveStockRequest.Items.Any() &&
+                !reserveStockRequest.FulfillmentCenterIds.IsNullOrEmpty())
             {
                 await _reservationService.ReserveAsync(reserveStockRequest);
             }
@@ -127,9 +128,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             if (request.Items.Any())
             {
                 var fulfillmentCenterIds = await GetFulfillmentCenterIdsAsync(order.StoreId);
-                if (!fulfillmentCenterIds.Any())
+                if (fulfillmentCenterIds.IsNullOrEmpty())
                 {
-                    _logger.LogInformation("GetReserveRequests: No fulfillment centers, store - {Store}, store - {Order}", order.StoreId, changedEntry.NewEntry.Id);
+                    _logger.LogWarning("GetReserveRequests: No fulfillment centers, store - {Store}, store - {Order}", order.StoreId, changedEntry.NewEntry.Id);
                 }
                 request.FulfillmentCenterIds = fulfillmentCenterIds;
             }
