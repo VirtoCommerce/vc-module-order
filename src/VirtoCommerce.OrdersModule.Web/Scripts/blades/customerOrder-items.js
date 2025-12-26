@@ -16,6 +16,7 @@ angular.module('virtoCommerce.orderModule')
             blade.refresh = function () {
                 blade.isLoading = false;
                 blade.selectedAll = false;
+                blade.hasItems = blade.currentEntity && blade.currentEntity.items && blade.currentEntity.items.length > 0;
             };
 
             blade.openStatusSettingManagement = function () {

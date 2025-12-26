@@ -24,7 +24,7 @@ angular.module(moduleName, [
                                 var foundTemplate = knownOperations.getOperation('CustomerOrder');
                                 if (foundTemplate) {
                                     var newBlade = angular.copy(foundTemplate.detailBlade);
-                                    newBlade.id = 'orderDetail';
+                                    newBlade.id = 'orders';
                                     newBlade.customerOrder = { id: orderId, customerName: 'Customer' };
                                     newBlade.isClosingDisabled = true;
                                     bladeNavigationService.showBlade(newBlade);

@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "选择受让人",
           "status": "选择...",
-          "store": "选择..."
+          "store": "选择...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "数量",
           "available": "可用",
           "await": "等待",
-          "price": "单价（不含税）",
+          "price": "单价",
           "tax": "税",
           "priceWithTax": "单价（含税）",
-          "discount": "折扣（不含税）",
+          "discount": "折扣",
           "discountWithTax": "折扣（含税）",
-          "total": "总行项目",
+          "total": "总计",
           "dynamic-properties": "动态属性",
           "sub-total": "小计",
-          "discount-total": "总折扣",
-          "tax-total": "总税额",
-          "fee-total": "总费用"
+          "discount-total": "折扣",
+          "tax-total": "税",
+          "fee-total": "费用"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "产品名称"
+          "product": "产品名称",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {

@@ -29,6 +29,116 @@
     margin: 0 0 0 10px;
 }
 
+/* Customer order items (line items blade) */
+.vc-order .customer-order-items .order-items-summary {
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 10px 12px;
+}
+
+.vc-order .customer-order-items .order-items-summary__item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 200px;
+}
+
+.vc-order .customer-order-items .order-items-summary__label {
+    color: #666;
+}
+
+.vc-order .customer-order-items .order-items-summary__value {
+    font-weight: 500;
+}
+
+.vc-order .customer-order-items .order-items-summary__item.__total .order-items-summary__value {
+    color: #43b0e6;
+    font-size: 16px;
+}
+
+.gridster .order-totals {
+  cursor: pointer;
+}
+
+/* Sticky header for line items grid */
+.vc-order .customer-order-items .table.__line-items thead .table-col {
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+/* Status column sizing (customer order items) */
+.vc-order .customer-order-items .table.__line-items .table-col.__status .select2-container {
+    width: 150px
+}
+
+/* Reset mini input margins (requested) */
+.vc-order .customer-order-items .table-col .form-input.__mini {
+    margin: 0;
+    padding: 0;
+    width: 78px;
+}
+
+/* Better density for "Item" cell */
+.vc-order .customer-order-items .order-items__item {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    min-width: 220px;
+}
+
+/* Product image fallback (customer order items) */
+.vc-order .customer-order-items .product-img__fallback {
+    display: none;
+}
+
+.vc-order .customer-order-items .product-img.__no-img .product-img__fallback {
+    display: inline-block;
+}
+
+.vc-order .customer-order-items .order-items__item-info {
+    min-width: 0;
+}
+
+.vc-order .customer-order-items .order-items__item-name {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    max-width: 200px;
+    min-width: 0;
+}
+
+.vc-order .customer-order-items .order-items__item-name-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vc-order .customer-order-items .order-items__item-sku {
+  color: #999;
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vc-order .customer-order-items .order-items__item-comment {
+    color: #888;
+    font-size: 12px;
+    line-height: 1.2;
+    margin-top: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Order info */
 .vc-order .order-info,
 .vc-order .__order-info {
