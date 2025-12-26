@@ -21,8 +21,7 @@ public class CustomerOrderPaymentService(
     IStoreService storeService,
     ICustomerOrderService customerOrderService,
     ICustomerOrderSearchService customerOrderSearchService,
-    IValidator<CustomerOrder> customerOrderValidator,
-    ISettingsManager settingsManager)
+    IValidator<CustomerOrder> customerOrderValidator)
     : ICustomerOrderPaymentService
 {
     public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(PaymentParameters paymentParameters)
@@ -117,13 +116,8 @@ public class CustomerOrderPaymentService(
             .ToList();
     }
 
-    protected virtual async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+    protected virtual Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
     {
-        if (await settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
-        {
-            return await customerOrderValidator.ValidateAsync(customerOrder);
-        }
-
-        return new ValidationResult();
+        return customerOrderValidator.ValidateAsync(customerOrder);
     }
 }
