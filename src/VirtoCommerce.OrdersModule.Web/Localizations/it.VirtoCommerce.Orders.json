@@ -618,6 +618,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Abilita il filtro dei prodotti acquistati nel negozio",
       "description": "Visualizza il filtro dei prodotti acquistati per il negozio."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Numero massimo di documenti secondari per ordine",
+      "description": "Definisce il numero massimo di documenti secondari (pagamenti, spedizioni, acquisizioni, rimborsi, ecc.) che possono essere creati o memorizzati per ordine. Ciò garantisce le prestazioni del sistema, l'ottimizzazione dello storage e la coerenza dei dati. Verrà generata un'eccezione durante il salvataggio se questo limite viene superato"
     }
   },
   "module": {
