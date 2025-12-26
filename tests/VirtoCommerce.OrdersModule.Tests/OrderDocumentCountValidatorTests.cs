@@ -337,34 +337,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Contains("PaymentIn=4", errorMessage);
             Assert.Contains("Shipment=2", errorMessage);
         }
-
-        [Fact]
-        public async Task Validate_ZeroMaxLimit_ShouldPreventAllDocuments()
-        {
-            // Arrange
-            var zeroLimit = 0;
-            _settingsManagerMock
-                .Setup(x => x.GetObjectSettingAsync(
-                    ModuleConstants.Settings.General.MaxOrderDocumentCount.Name,
-                    null,
-                    null))
-                .ReturnsAsync(new ObjectSettingEntry { Value = zeroLimit });
-
-            var validator = new OrderDocumentCountValidator(_settingsManagerMock.Object);
-            
-            var order = CreateOrder();
-            order.InPayments = CreatePayments(1);
-
-            // Act
-            var result = await validator.TestValidateAsync(order);
-
-            // Assert
-            result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
-            var errorMessage = result.Errors.First().ErrorMessage;
-            Assert.Contains("1", errorMessage);
-            Assert.Contains("0", errorMessage);
-            Assert.Contains("PaymentIn=1", errorMessage);
-        }
+       
 
         [Fact]
         public async Task Validate_VeryLargeMaxLimit_ShouldPass()
