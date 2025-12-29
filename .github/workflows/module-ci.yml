@@ -1,5 +1,5 @@
-# v3.800.23
-# https://virtocommerce.atlassian.net/browse/VCST-3056
+# v3.800.24
+# https://virtocommerce.atlassian.net/browse/VCST-4487
 name: Module CI
 
 on:
@@ -154,11 +154,26 @@ jobs:
           blobSAS: ${{ secrets.BLOB_TOKEN }}
           blobUrl: ${{ vars.BLOB_URL }}
 
+      - name: Sanitize branch name
+        if: ${{ github.event_name == 'pull_request' }}
+        id: sanitize_branch
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          # Keep only alphanumeric, hyphens, underscores, and forward slashes and limit length to 255 characters.
+          SANITIZED_BRANCH=$(printf '%s\n' "$BRANCH_NAME" | sed 's/[^-a-zA-Z0-9_/]//g' | cut -c1-255)
+          if [ -z "$SANITIZED_BRANCH" ]; then
+            echo "branch name is empty"
+            exit 1
+          else
+            echo "branchName=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          fi
+
       - name: Add Jira link
         if: ${{ github.event_name == 'pull_request' }}
-        uses: VirtoCommerce/vc-github-actions/publish-jira-link@VCST-4487 #master
+        uses: VirtoCommerce/vc-github-actions/publish-jira-link@master
         with:
-          branchName: ${{ github.head_ref }}
+          branchName: ${{ steps.sanitize_branch.outputs.branchName }}
           repoOrg: ${{ github.repository_owner }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
