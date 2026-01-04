@@ -173,6 +173,11 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 result.Add(FilterHelper.CreateTermFilter("isprototype", "false"));
             }
 
+            if (!criteria.PromotionIds.IsNullOrEmpty())
+            {
+                result.Add(FilterHelper.CreateTermFilter("promotionid", criteria.PromotionIds));
+            }
+
             return result;
         }
 
