@@ -853,7 +853,7 @@ angular.module(moduleName, [
 
                 var operationDiscountsWidget = {
                     controller: 'virtoCommerce.orderModule.operationDiscountWidgetController',
-                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-discounts-widget.tpl.html'                   
+                    template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/operation-discounts-widget.tpl.html'
                 };
                 widgetService.registerWidget(operationDiscountsWidget, 'customerOrderDetailWidgets');
                 widgetService.registerWidget(operationDiscountsWidget, 'paymentDetailWidgets');

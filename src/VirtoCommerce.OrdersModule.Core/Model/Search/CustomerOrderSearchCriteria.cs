@@ -103,7 +103,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model.Search
         {
             get
             {
-                if (_promotionIds == null && !string.IsNullOrEmpty(PromotionId))
+                if (_promotionIds.IsNullOrEmpty() && !string.IsNullOrEmpty(PromotionId))
                 {
                     _promotionIds = new[] { PromotionId };
                 }
