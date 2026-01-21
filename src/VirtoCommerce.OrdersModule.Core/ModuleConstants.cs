@@ -29,6 +29,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 public const string CapturePayment = "order:capture_payment";
                 public const string RefundPayment = "order:refund";
                 public const string ViewDashboardStatistics = "order:dashboardstatistics:view";
+                public const string PaymentExecuteCallback = "order:payment:execute_callback";
 
                 public static string[] AllPermissions { get; } = {
                     Read,
@@ -41,6 +42,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     CapturePayment,
                     RefundPayment,
                     ViewDashboardStatistics,
+                    PaymentExecuteCallback,
                 };
             }
         }
