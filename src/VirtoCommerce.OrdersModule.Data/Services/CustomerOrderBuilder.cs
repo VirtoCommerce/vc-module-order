@@ -572,7 +572,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             foreach (var batchIds in productToItemsMap.Keys.Paginate(ProductSnapshotBatchSize))
             {
-                var products = await _itemService.GetByIdsAsync(batchIds, null, null);
+#pragma warning disable CS0618 // Variations can be used here
+                var products = await _itemService.GetNoCloneAsync(batchIds, (ItemResponseGroup.Full & ~ItemResponseGroup.Variations).ToString());
+#pragma warning restore CS0618
                 AssignProductSnapshots(products, productToItemsMap);
             }
         }
