@@ -618,6 +618,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Enable purchased product store filter",
       "description": "Display the purchased product filter for the store"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Save product snapshots in orders",
+      "description": "Stores serialized product data in order line items to preserve historical information"
     }
   },
   "module": {

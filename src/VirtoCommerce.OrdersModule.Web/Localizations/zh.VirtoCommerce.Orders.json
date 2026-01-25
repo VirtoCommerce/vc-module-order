@@ -618,6 +618,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "启用已购买产品的商店过滤器",
       "description": "在商店中显示已购买产品的过滤器。"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "在订单中保存产品快照",
+      "description": "在订单明细中存储序列化的产品数据，以保留历史信息"
     }
   },
   "module": {

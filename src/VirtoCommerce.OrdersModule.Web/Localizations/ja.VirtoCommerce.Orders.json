@@ -618,6 +618,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "購入済み商品ストアフィルターを有効にする",
       "description": "ストアで購入済み商品フィルターを表示します。"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "注文に商品スナップショットを保存",
+      "description": "過去情報を保持するため、注文明細にシリアル化した商品データを保存します"
     }
   },
   "module": {

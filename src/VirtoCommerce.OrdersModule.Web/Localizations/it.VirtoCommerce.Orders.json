@@ -618,6 +618,10 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Abilita il filtro dei prodotti acquistati nel negozio",
       "description": "Visualizza il filtro dei prodotti acquistati per il negozio."
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Salvare le istantanee dei prodotti negli ordini",
+      "description": "Memorizza i dati serializzati del prodotto nelle righe d'ordine per preservare le informazioni storiche"
     }
   },
   "module": {

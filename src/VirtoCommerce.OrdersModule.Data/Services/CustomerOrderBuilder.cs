@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
+using VirtoCommerce.CatalogModule.Data.Search.Indexing;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -28,19 +30,29 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
+        private readonly IItemService _itemService;
 
-        public CustomerOrderBuilder(ICustomerOrderService customerOrderService, ISettingsManager settingsManager, IPaymentMethodsSearchService paymentMethodSearchService)
+        public CustomerOrderBuilder(
+            ICustomerOrderService customerOrderService,
+            ISettingsManager settingsManager,
+            IPaymentMethodsSearchService paymentMethodSearchService,
+            IItemService itemService)
         {
             _customerOrderService = customerOrderService;
             _settingsManager = settingsManager;
             _paymentMethodSearchService = paymentMethodSearchService;
+            _itemService = itemService;
         }
+
+        protected virtual int ProductSnapshotBatchSize => 50;
 
         #region ICustomerOrderConverter Members
 
         public virtual async Task<CustomerOrder> PlaceCustomerOrderFromCartAsync(ShoppingCart cart)
         {
             var customerOrder = ConvertCartToOrder(cart);
+
+            await SaveProductSnapshotsAsync(customerOrder);
 
             await _customerOrderService.SaveChangesAsync([customerOrder]);
 
@@ -74,7 +86,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy Shipments
             if (cart.Shipments != null)
             {
-                var cartShipments = vendorIds.Any()
+                var cartShipments = vendorIds.Count > 0
                     ? cart.Shipments.Where(x => string.IsNullOrEmpty(x.VendorId) || vendorIds.Contains(x.VendorId)).ToArray()
                     : cart.Shipments;
                 order.Shipments = ToOrderModel(cartShipments, cartLineItemsMap);
@@ -83,7 +95,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             // Copy Payments
             if (cart.Payments != null)
             {
-                var cartPayments = vendorIds.Any()
+                var cartPayments = vendorIds.Count > 0
                     ? cart.Payments.Where(x => string.IsNullOrEmpty(x.VendorId) || vendorIds.Contains(x.VendorId)).ToArray()
                     : cart.Payments;
                 order.InPayments = ToOrderModel(cart, cartPayments);
@@ -541,6 +553,82 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
         {
+        }
+
+        protected virtual async Task SaveProductSnapshotsAsync(CustomerOrder order)
+        {
+            if (order.Items.IsNullOrEmpty() || !await _settingsManager.GetValueAsync<bool>(OrderSettings.ProductSnapshotEnabled))
+            {
+                return;
+            }
+
+            // Build map: ProductId → list of items to assign snapshot
+            var productIdToItems = new Dictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var lineItem in order.Items)
+            {
+                AddToMap(lineItem.ProductId, lineItem);
+
+                if (lineItem.ConfigurationItems.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
+                foreach (var configurationItem in lineItem.ConfigurationItems)
+                {
+                    AddToMap(configurationItem.ProductId, lineItem, configurationItem);
+                }
+            }
+
+            if (productIdToItems.Count == 0)
+            {
+                return;
+            }
+
+            // Process in batches to limit memory usage
+            foreach (var batchIds in productIdToItems.Keys.Paginate(ProductSnapshotBatchSize))
+            {
+                var products = await _itemService.GetByIdsAsync(batchIds, null, null);
+                if (products.IsNullOrEmpty())
+                {
+                    continue;
+                }
+
+                foreach (var product in products.Where(x => x != null))
+                {
+                    var snapshot = IndexDocumentHelper.SerializeObject(product);
+
+                    if (productIdToItems.TryGetValue(product.Id, out var items))
+                    {
+                        foreach (var (lineItem, configurationItem) in items)
+                        {
+                            if (configurationItem != null)
+                            {
+                                configurationItem.ProductSnapshot = snapshot;
+                            }
+                            else
+                            {
+                                lineItem.ProductSnapshot = snapshot;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return;
+
+            void AddToMap(string productId, LineItem lineItem, ConfigurationItem configurationItem = null)
+            {
+                if (!string.IsNullOrEmpty(productId))
+                {
+                    if (!productIdToItems.TryGetValue(productId, out var itemList))
+                    {
+                        itemList = [];
+                        productIdToItems[productId] = itemList;
+                    }
+                    itemList.Add((lineItem, configurationItem));
+                }
+            }
         }
     }
 }

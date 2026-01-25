@@ -61,7 +61,7 @@ namespace VirtoCommerce.OrdersModule.Core
         {
             public static class General
             {
-                public static SettingDescriptor OrderStatus = new SettingDescriptor
+                public static SettingDescriptor OrderStatus = new()
                 {
                     Name = "Order.Status",
                     ValueType = SettingValueType.ShortText,
@@ -114,7 +114,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     GroupName = "Orders|General",
                 };
 
-                public static SettingDescriptor ShipmentStatus = new SettingDescriptor
+                public static SettingDescriptor ShipmentStatus = new()
                 {
                     Name = "Shipment.Status",
                     ValueType = SettingValueType.ShortText,
@@ -125,7 +125,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     AllowedValues = new object[] { "New", "PickPack", "Cancelled", "ReadyToSend", "Sent" }
                 };
 
-                public static SettingDescriptor PaymentInStatus = new SettingDescriptor
+                public static SettingDescriptor PaymentInStatus = new()
                 {
                     Name = "PaymentIn.Status",
                     ValueType = SettingValueType.ShortText,
@@ -136,7 +136,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     AllowedValues = new object[] { "New", "Pending", "Authorized", "Paid", "PartiallyRefunded", "Refunded", "Voided", "Custom", "Cancelled" }
                 };
 
-                public static SettingDescriptor RefundStatus { get; } = new SettingDescriptor
+                public static SettingDescriptor RefundStatus { get; } = new()
                 {
                     Name = "Refund.Status",
                     ValueType = SettingValueType.ShortText,
@@ -147,7 +147,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     AllowedValues = new object[] { "Pending", "Rejected", "Processed" }
                 };
 
-                public static SettingDescriptor OrderCustomerOrderNewNumberTemplate = new SettingDescriptor
+                public static SettingDescriptor OrderCustomerOrderNewNumberTemplate = new()
                 {
                     Name = "Order.CustomerOrderNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
@@ -155,7 +155,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "CO{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor OrderShipmentNewNumberTemplate = new SettingDescriptor
+                public static SettingDescriptor OrderShipmentNewNumberTemplate = new()
                 {
                     Name = "Order.ShipmentNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
@@ -163,7 +163,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "SH{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor OrderPaymentInNewNumberTemplate = new SettingDescriptor
+                public static SettingDescriptor OrderPaymentInNewNumberTemplate = new()
                 {
                     Name = "Order.PaymentInNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
@@ -171,7 +171,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "PI{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor RefundNewNumberTemplate { get; } = new SettingDescriptor
+                public static SettingDescriptor RefundNewNumberTemplate { get; } = new()
                 {
                     Name = "Order.RefundNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
@@ -179,7 +179,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "RE{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor CaptureNewNumberTemplate { get; } = new SettingDescriptor
+                public static SettingDescriptor CaptureNewNumberTemplate { get; } = new()
                 {
                     Name = "Order.CaptureNewNumberTemplate",
                     ValueType = SettingValueType.ShortText,
@@ -187,7 +187,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = "CA{0:yyMMdd}-{1:D5}"
                 };
 
-                public static SettingDescriptor SendOrderNotifications = new SettingDescriptor
+                public static SettingDescriptor SendOrderNotifications = new()
                 {
                     Name = "Order.SendOrderNotifications",
                     GroupName = "Orders|General",
@@ -195,7 +195,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor OrderAdjustInventory = new SettingDescriptor
+                public static SettingDescriptor OrderAdjustInventory = new()
                 {
                     Name = "Order.AdjustInventory",
                     GroupName = "Orders|General",
@@ -203,7 +203,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor LogOrderChanges { get; } = new SettingDescriptor
+                public static SettingDescriptor LogOrderChanges { get; } = new()
                 {
                     Name = "Order.LogOrderChanges",
                     GroupName = "Orders|General",
@@ -211,7 +211,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor EventBasedIndexation { get; } = new SettingDescriptor
+                public static SettingDescriptor EventBasedIndexation { get; } = new()
                 {
                     Name = "Order.Search.EventBasedIndexation.Enable",
                     GroupName = "Orders|General",
@@ -219,7 +219,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor CustomerOrderIndexationDate { get; } = new SettingDescriptor
+                public static SettingDescriptor CustomerOrderIndexationDate { get; } = new()
                 {
                     Name = "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder",
                     GroupName = "Orders|General",
@@ -227,7 +227,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = default(DateTime),
                 };
 
-                public static SettingDescriptor CustomerOrderValidation { get; } = new SettingDescriptor
+                public static SettingDescriptor CustomerOrderValidation { get; } = new()
                 {
                     Name = "Order.Validation.Enable",
                     GroupName = "Orders|General",
@@ -235,7 +235,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false
                 };
 
-                public static SettingDescriptor OrderPaidAndOrderSentNotifications { get; } = new SettingDescriptor
+                public static SettingDescriptor OrderPaidAndOrderSentNotifications { get; } = new()
                 {
                     Name = "Order.OrderPaidAndOrderSentNotifications.Enable",
                     GroupName = "Orders|Notification",
@@ -243,7 +243,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true,
                 };
 
-                public static SettingDescriptor PaymentShipmentStatusChangedNotifications { get; } = new SettingDescriptor
+                public static SettingDescriptor PaymentShipmentStatusChangedNotifications { get; } = new()
                 {
                     Name = "Order.PaymentShipmentStatusChangedNotifications.Enable",
                     GroupName = "Orders|Notification",
@@ -251,7 +251,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false,
                 };
 
-                public static SettingDescriptor PurchasedProductIndexation { get; } = new SettingDescriptor
+                public static SettingDescriptor PurchasedProductIndexation { get; } = new()
                 {
                     Name = "Order.PurchasedProductIndexation.Enable",
                     GroupName = "Orders|Products",
@@ -259,7 +259,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false,
                 };
 
-                public static SettingDescriptor EventBasedPurchasedProductIndexation { get; } = new SettingDescriptor
+                public static SettingDescriptor EventBasedPurchasedProductIndexation { get; } = new()
                 {
                     Name = "Order.EventBasedPurchasedProductIndexation.Enable",
                     GroupName = "Orders|Products",
@@ -267,13 +267,21 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = true
                 };
 
-                public static SettingDescriptor PurchasedProductStoreFilter { get; } = new SettingDescriptor
+                public static SettingDescriptor PurchasedProductStoreFilter { get; } = new()
                 {
                     Name = "Order.PurchasedProductStoreFilter.Enable",
                     GroupName = "Orders|Products",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
                     IsPublic = true,
+                };
+
+                public static SettingDescriptor ProductSnapshotEnabled { get; } = new()
+                {
+                    Name = "Order.ProductSnapshot.Enable",
+                    GroupName = "Orders|Products",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
@@ -301,6 +309,7 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return PurchasedProductIndexation;
                         yield return EventBasedPurchasedProductIndexation;
                         yield return PurchasedProductStoreFilter;
+                        yield return ProductSnapshotEnabled;
                     }
                 }
             }
