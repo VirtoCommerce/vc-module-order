@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CatalogModule.Data.Search.Indexing;
 using VirtoCommerce.CoreModule.Core.Common;
@@ -302,7 +303,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             if (lineItem.ConfigurationItems != null)
             {
-                retVal.ConfigurationItems = lineItem.ConfigurationItems.Select(ToOrderModel).ToList();
+                retVal.ConfigurationItems = lineItem.ConfigurationItems.Where(x => x.SelectedForCheckout).Select(ToOrderModel).ToList();
             }
 
             retVal.TaxDetails = lineItem.TaxDetails;
@@ -562,10 +563,25 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 return;
             }
 
-            // Build map: ProductId → list of items to assign snapshot
-            var productIdToItems = new Dictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>>(StringComparer.OrdinalIgnoreCase);
+            // Build map: ProductId → list of items to assign snapshots
+            var productToItemsMap = GetProductToItemsMap(order.Items);
+            if (productToItemsMap.Count == 0)
+            {
+                return;
+            }
 
-            foreach (var lineItem in order.Items)
+            foreach (var batchIds in productToItemsMap.Keys.Paginate(ProductSnapshotBatchSize))
+            {
+                var products = await _itemService.GetByIdsAsync(batchIds, null, null);
+                AssignProductSnapshots(products, productToItemsMap);
+            }
+        }
+
+        protected virtual IDictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>> GetProductToItemsMap(ICollection<LineItem> items)
+        {
+            var map = new Dictionary<string, List<(LineItem, ConfigurationItem)>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var lineItem in items)
             {
                 AddToMap(lineItem.ProductId, lineItem);
 
@@ -580,53 +596,51 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
             }
 
-            if (productIdToItems.Count == 0)
+            return map;
+
+            void AddToMap(string productId, LineItem lineItem, ConfigurationItem configurationItem = null)
+            {
+                if (string.IsNullOrEmpty(productId))
+                {
+                    return;
+                }
+
+                if (!map.TryGetValue(productId, out var itemList))
+                {
+                    itemList = [];
+                    map[productId] = itemList;
+                }
+
+                itemList.Add((lineItem, configurationItem));
+            }
+        }
+
+        protected virtual void AssignProductSnapshots(IList<CatalogProduct> products, IDictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>> productToItemsMap)
+        {
+            if (products.IsNullOrEmpty())
             {
                 return;
             }
 
-            // Process in batches to limit memory usage
-            foreach (var batchIds in productIdToItems.Keys.Paginate(ProductSnapshotBatchSize))
+            foreach (var product in products.Where(x => x != null))
             {
-                var products = await _itemService.GetByIdsAsync(batchIds, null, null);
-                if (products.IsNullOrEmpty())
+                if (!productToItemsMap.TryGetValue(product.Id, out var items))
                 {
                     continue;
                 }
 
-                foreach (var product in products.Where(x => x != null))
+                var snapshot = IndexDocumentHelper.SerializeObject(product);
+
+                foreach (var (lineItem, configurationItem) in items)
                 {
-                    var snapshot = IndexDocumentHelper.SerializeObject(product);
-
-                    if (productIdToItems.TryGetValue(product.Id, out var items))
+                    if (configurationItem != null)
                     {
-                        foreach (var (lineItem, configurationItem) in items)
-                        {
-                            if (configurationItem != null)
-                            {
-                                configurationItem.ProductSnapshot = snapshot;
-                            }
-                            else
-                            {
-                                lineItem.ProductSnapshot = snapshot;
-                            }
-                        }
+                        configurationItem.ProductSnapshot = snapshot;
                     }
-                }
-            }
-
-            return;
-
-            void AddToMap(string productId, LineItem lineItem, ConfigurationItem configurationItem = null)
-            {
-                if (!string.IsNullOrEmpty(productId))
-                {
-                    if (!productIdToItems.TryGetValue(productId, out var itemList))
+                    else
                     {
-                        itemList = [];
-                        productIdToItems[productId] = itemList;
+                        lineItem.ProductSnapshot = snapshot;
                     }
-                    itemList.Add((lineItem, configurationItem));
                 }
             }
         }
