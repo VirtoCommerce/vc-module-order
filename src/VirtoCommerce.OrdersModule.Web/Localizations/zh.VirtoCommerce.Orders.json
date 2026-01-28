@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "选择受让人",
           "status": "选择...",
-          "store": "选择..."
+          "store": "选择...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "数量",
           "available": "可用",
           "await": "等待",
-          "price": "单价（不含税）",
+          "price": "单价",
           "tax": "税",
           "priceWithTax": "单价（含税）",
-          "discount": "折扣（不含税）",
+          "discount": "折扣",
           "discountWithTax": "折扣（含税）",
-          "total": "总行项目",
+          "total": "总计",
           "dynamic-properties": "动态属性",
           "sub-total": "小计",
-          "discount-total": "总折扣",
-          "tax-total": "总税额",
-          "fee-total": "总费用"
+          "discount-total": "折扣",
+          "tax-total": "税",
+          "fee-total": "费用"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "产品名称"
+          "product": "产品名称",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -619,9 +621,13 @@
       "title": "启用已购买产品的商店过滤器",
       "description": "在商店中显示已购买产品的过滤器。"
     },
+    "Order.MaxOrderDocumentCount": {
+      "title": "每个订单的最大子文档数量",
+      "description": "定义每个订单可以创建或存储的子文档（付款、发货、捕获、退款等）的最大数量。这确保了系统性能、存储优化和数据一致性。如果超过此限制，保存时将抛出异常"
+    },
     "Order.ProductSnapshot.Enable": {
-      "title": "在订单中保存产品快照",
-      "description": "在订单明细中存储序列化的产品数据，以保留历史信息"
+      "title": "Save product snapshots in orders",
+      "description": "Stores serialized product data in order line items to preserve historical information"
     }
   },
   "module": {

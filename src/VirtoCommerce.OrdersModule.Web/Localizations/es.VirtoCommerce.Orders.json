@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Seleccionar asignado",
           "status": "Seleccionar...",
-          "store": "Seleccionar..."
+          "store": "Seleccionar...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Cant.",
           "available": "Disp.",
           "await": "Espera",
-          "price": "Precio unitario (sin impuestos)",
+          "price": "Precio por artículo",
           "tax": "Impuesto",
           "priceWithTax": "Precio unitario (con impuestos)",
-          "discount": "Descuento (sin impuestos)",
+          "discount": "Descuento",
           "discountWithTax": "Descuento (con impuestos)",
-          "total": "Total de líneas",
+          "total": "Total",
           "dynamic-properties": "Propiedades dinámicas",
           "sub-total": "Subtotal",
-          "discount-total": "Descuento total",
-          "tax-total": "Impuesto total",
-          "fee-total": "Tarifa total"
+          "discount-total": "Descuento",
+          "tax-total": "Impuesto",
+          "fee-total": "Tarifa"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nombre del producto"
+          "product": "Nombre del producto",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -619,9 +621,13 @@
       "title": "Habilitar el filtro de productos comprados en la tienda",
       "description": "Muestra el filtro de productos comprados en la tienda."
     },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Número máximo de documentos secundarios por pedido",
+      "description": "Define el número máximo de documentos secundarios (pagos, envíos, capturas, reembolsos, etc.) que se pueden crear o almacenar por pedido. Esto garantiza el rendimiento del sistema, la optimización del almacenamiento y la consistencia de los datos. Se generará una excepción al guardar si se excede este límite"
+    },
     "Order.ProductSnapshot.Enable": {
-      "title": "Guardar instantáneas de productos en pedidos",
-      "description": "Almacena datos serializados del producto en las líneas del pedido para conservar la información histórica"
+      "title": "Save product snapshots in orders",
+      "description": "Stores serialized product data in order line items to preserve historical information"
     }
   },
   "module": {

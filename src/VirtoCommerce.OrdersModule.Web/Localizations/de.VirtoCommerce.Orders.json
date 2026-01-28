@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Zuständigen auswählen",
           "status": "Auswählen...",
-          "store": "Auswählen..."
+          "store": "Auswählen...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Menge",
           "available": "Verfügbar",
           "await": "Ausstehend",
-          "price": "Stückpreis (ohne MwSt.)",
+          "price": "Preis pro Artikel",
           "tax": "Steuer",
           "priceWithTax": "Stückpreis (inkl. MwSt.)",
-          "discount": "Rabatt (ohne MwSt.)",
+          "discount": "Rabatt",
           "discountWithTax": "Rabatt (inkl. MwSt.)",
-          "total": "Gesamtbetrag Positionen",
+          "total": "Gesamt",
           "dynamic-properties": "Dynamische Eigenschaften",
           "sub-total": "Zwischensumme",
-          "discount-total": "Gesamtrabatt",
-          "tax-total": "Gesamtsteuer",
-          "fee-total": "Gesamtgebühr"
+          "discount-total": "Rabatt",
+          "tax-total": "Steuer",
+          "fee-total": "Gebühr"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Produktname"
+          "product": "Produktname",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -619,9 +621,13 @@
       "title": "Aktivierung des Store-Filters für gekaufte Produkte",
       "description": "Zeigt den Filter für gekaufte Produkte im Store an."
     },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximale Anzahl von Unterdokumenten pro Bestellung",
+      "description": "Definiert die maximale Anzahl von Unterdokumenten (Zahlungen, Sendungen, Captures, Rückerstattungen usw.), die pro Bestellung erstellt oder gespeichert werden können. Dies gewährleistet Systemleistung, Speicheroptimierung und Datenkonsistenz. Bei Überschreitung dieser Grenze wird beim Speichern eine Ausnahme ausgelöst"
+    },
     "Order.ProductSnapshot.Enable": {
-      "title": "Produkt-Snapshots in Bestellungen speichern",
-      "description": "Speichert serialisierte Produktdaten in Bestellpositionen, um historische Informationen zu bewahren"
+      "title": "Save product snapshots in orders",
+      "description": "Stores serialized product data in order line items to preserve historical information"
     }
   },
   "module": {
