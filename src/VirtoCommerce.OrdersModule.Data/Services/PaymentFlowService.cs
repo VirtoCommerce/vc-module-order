@@ -199,7 +199,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
             var refundRequest = GetRefundPaymentRequest(paymentInfo, request);
 
-            return paymentInfo.Payment.PaymentMethod.RefundProcessPayment(refundRequest);
+            return await paymentInfo.Payment.PaymentMethod.RefundProcessPaymentAsync(refundRequest);
         }
 
         protected virtual RefundPaymentRequest GetRefundPaymentRequest(OrderPaymentInfo paymentInfo, RefundOrderPaymentRequest request)
@@ -353,7 +353,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
             var captureRequest = GetCapturePaymentRequest(paymentInfo, request);
 
-            return paymentInfo.Payment.PaymentMethod.CaptureProcessPayment(captureRequest);
+            return await paymentInfo.Payment.PaymentMethod.CaptureProcessPaymentAsync(captureRequest);
         }
 
         protected virtual async Task<CaptureOrderPaymentResult> CapturePaymentInternalAsync(CaptureOrderPaymentRequest request)
