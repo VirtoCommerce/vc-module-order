@@ -95,11 +95,17 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         {
             if (paymentToCancel.PaymentStatus == PaymentStatus.Authorized)
             {
-                await paymentToCancel.PaymentMethod?.VoidProcessPaymentAsync(new VoidPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                if (paymentToCancel.PaymentMethod != null)
+                {
+                    await paymentToCancel.PaymentMethod.VoidProcessPaymentAsync(new VoidPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                }
             }
             else if (paymentToCancel.PaymentStatus == PaymentStatus.Paid)
             {
-                await paymentToCancel.PaymentMethod?.RefundProcessPaymentAsync(new RefundPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                if (paymentToCancel.PaymentMethod != null)
+                {
+                    await paymentToCancel.PaymentMethod.RefundProcessPaymentAsync(new RefundPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                }
             }
             else
             {
