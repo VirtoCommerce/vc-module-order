@@ -46,7 +46,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsIgnoreCase(jobArgument.PaymentId));
                     if (paymentToCancel != null && !paymentToCancel.IsCancelled)
                     {
-                        await CancelPaymentAsync(paymentToCancel, order);
+#pragma warning disable VC0012
+                        CancelPayment(paymentToCancel, order);
+#pragma warning restore VC0012
 
                         if (!changedOrders.Contains(order))
                         {
