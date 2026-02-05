@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,6 +54,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             schema.AddFilterableString("OuterId");
             schema.AddFilterableString("Status");
             schema.AddFilterableString("Currency");
+            schema.AddFilterableString("PromotionId");
 
             schema.AddFilterableDecimal("Total");
             schema.AddFilterableDecimal("SubTotal");
@@ -126,6 +126,8 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             document.AddFilterableBoolean("IsCancelled", order.IsCancelled);
             document.AddFilterableBoolean("IsPrototype", order.IsPrototype);
 
+            IndexDiscounts(order.Discounts, document);
+
             foreach (var address in order.Addresses ?? Enumerable.Empty<Address>())
             {
                 IndexAddress(address, document);
@@ -133,12 +135,14 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
 
             foreach (var lineItem in order.Items ?? Enumerable.Empty<LineItem>())
             {
+                IndexDiscounts(lineItem.Discounts, document);
                 document.AddContentString(lineItem.Comment);
             }
 
             foreach (var payment in order.InPayments ?? Enumerable.Empty<PaymentIn>())
             {
                 IndexAddress(payment.BillingAddress, document);
+                IndexDiscounts(payment.Discounts, document);
                 document.AddContentString(payment.Number);
                 document.AddContentString(payment.Comment);
             }
@@ -146,6 +150,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             foreach (var shipment in order.Shipments ?? Enumerable.Empty<Shipment>())
             {
                 IndexAddress(shipment.DeliveryAddress, document);
+                IndexDiscounts(shipment.Discounts, document);
                 document.AddContentString(shipment.Number);
                 document.AddContentString(shipment.Comment);
 
@@ -160,9 +165,7 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
                 }
             }
 
-#pragma warning disable VC0005 // Type or member is obsolete
-            await IndexDynamicProperties(order, document);
-#pragma warning restore VC0005 // Type or member is obsolete
+            await document.AddDynamicProperties(_dynamicPropertySearchService, order);
 
             return document;
         }
@@ -175,27 +178,15 @@ namespace VirtoCommerce.OrdersModule.Data.Search.Indexed
             }
         }
 
-        [Obsolete("Will be deleted in stable bundle 7", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        public static readonly string NoValueString = "__null";
-
-        [Obsolete("Use IndexDocument.AddDynamicProperties() extension method", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        protected virtual async Task IndexDynamicProperties(CustomerOrder order, IndexDocument document)
+        protected virtual void IndexDiscounts(ICollection<VirtoCommerce.CoreModule.Core.Common.Discount> discounts, IndexDocument document)
         {
-            var properties = await _dynamicPropertySearchService.GetAllDynamicProperties(order.ObjectType);
-
-            foreach (var property in properties)
+            if(discounts!=null)
             {
-                var objectProperty = order.DynamicProperties?.FirstOrDefault(x => x.Id == property.Id) ??
-                     order.DynamicProperties?.FirstOrDefault(x => x.Name.EqualsIgnoreCase(property.Name) && x.HasValuesOfType(property.ValueType));
-
-                IndexDynamicProperty(document, property, objectProperty);
+                foreach (var discount in discounts.Where(d => d != null && !string.IsNullOrEmpty(d.PromotionId)))
+                {
+                    document.AddFilterableString("PromotionId", discount.PromotionId);
+                }
             }
-        }
-
-        [Obsolete("Use IndexDocument.AddDynamicProperty() extension method", DiagnosticId = "VC0005", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
-        protected virtual void IndexDynamicProperty(IndexDocument document, DynamicProperty property, DynamicObjectProperty objectProperty)
-        {
-            document.AddDynamicProperty(property, objectProperty);
         }
     }
 }

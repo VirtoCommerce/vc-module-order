@@ -234,7 +234,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     Name = "Order.Validation.Enable",
                     GroupName = "Orders|General",
                     ValueType = SettingValueType.Boolean,
-                    DefaultValue = false
+                    DefaultValue = true
                 };
 
                 public static SettingDescriptor OrderPaidAndOrderSentNotifications { get; } = new SettingDescriptor
@@ -278,6 +278,14 @@ namespace VirtoCommerce.OrdersModule.Core
                     IsPublic = true,
                 };
 
+                public static SettingDescriptor MaxOrderDocumentCount { get; } = new SettingDescriptor
+                {
+                    Name = "Order.MaxOrderDocumentCount",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Integer,
+                    DefaultValue = 20,
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -303,6 +311,7 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return PurchasedProductIndexation;
                         yield return EventBasedPurchasedProductIndexation;
                         yield return PurchasedProductStoreFilter;
+                        yield return MaxOrderDocumentCount;
                     }
                 }
             }

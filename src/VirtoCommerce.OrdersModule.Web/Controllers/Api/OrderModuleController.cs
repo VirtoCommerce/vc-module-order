@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -198,12 +199,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// </summary>
         /// <param name="orderId">customer order id</param>
         /// <param name="paymentId">payment id</param>
+        /// <param name="cancellationToken">cancellationToken</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
+        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId, CancellationToken cancellationToken)
         {
-            return ProcessOrderPayments(orderId, paymentId, null);
+            return ProcessOrderPayments(orderId, paymentId, null, cancellationToken);
         }
 
         /// <summary>
@@ -213,10 +215,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="orderId">customer order id</param>
         /// <param name="paymentId">payment id</param>
         /// <param name="bankCardInfo">banking card information</param>
+        /// <param name="cancellationToken">cancellationToken</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [Consumes("application/json", "application/json-patch+json")] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
+        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo, CancellationToken cancellationToken)
         {
             var customerOrder = await customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
@@ -267,7 +270,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 Store = store,
                 BankCardInfo = bankCardInfo
             };
-            var result = inPayment.PaymentMethod.ProcessPayment(request);
+            var result = await inPayment.PaymentMethod.ProcessPaymentAsync(request, cancellationToken);
             if (result.OuterId != null)
             {
                 inPayment.OuterId = result.OuterId;

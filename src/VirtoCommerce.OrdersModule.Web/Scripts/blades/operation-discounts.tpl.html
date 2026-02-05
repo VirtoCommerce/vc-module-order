@@ -1,4 +1,4 @@
-<div class="blade-content vc-order __medium-wide">
+<div class="blade-content __medium-wide">
   <div class="blade-inner">
     <div class="inner-block" ng-init="setGridOptions({
                 rowTemplate: 'discounts-list.row.html',
@@ -8,13 +8,12 @@
                     { name: 'name', displayName: 'orders.blades.customerOrder-item-discounts.labels.name'},
                     { name: 'coupon', displayName: 'orders.blades.customerOrder-item-discounts.labels.coupon' },
                     { name: 'discountAmount', displayName: 'orders.blades.customerOrder-item-discounts.labels.discountAmount' },
-                    { name: 'discountAmountWithTax', displayName: 'orders.blades.customerOrder-item-discounts.labels.discountAmountWithTax' },
                     { name: 'currency', displayName: 'orders.blades.customerOrder-item-discounts.labels.currency' }
                 ]})">
-      <div class="table-wrapper" ng-if="blade.currentEntity.discounts.length" style="margin: 0 -21px 0;">
+      <div class="table-wrapper" ng-if="(blade.currentEntity.discounts || []).length" style="margin: 0 -21px 0;">
         <div ui-grid="gridOptions" ui-grid-auto-resize ui-grid-save-state ui-grid-resize-columns ui-grid-move-columns ui-grid-pinning ui-grid-height></div>
       </div>
-      <div class="note" ng-if="!blade.currentEntity.discounts.length">{{ 'orders.blades.customerOrder-item-discounts.descr.no-discounts' | translate }}</div>
+      <div class="note" ng-if="!(blade.currentEntity.discounts || []).length">{{ 'orders.blades.customerOrder-item-discounts.descr.no-discounts' | translate }}</div>
     </div>
   </div>
 </div>
@@ -22,3 +21,5 @@
 <script type="text/ng-template" id="discounts-list.row.html">
   <div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid" ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'" class="ui-grid-cell" ng-class="{'ui-grid-row-header-cell': col.isRowHeader, '__hovered': grid.appScope.contextMenuEntity === row.entity}" role="{{col.isRowHeader ? 'rowheader' : 'gridcell' }}" ui-grid-cell></div>
 </script>
+
+

@@ -4,14 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
-using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
@@ -21,8 +19,7 @@ public class CustomerOrderPaymentService(
     IStoreService storeService,
     ICustomerOrderService customerOrderService,
     ICustomerOrderSearchService customerOrderSearchService,
-    IValidator<CustomerOrder> customerOrderValidator,
-    ISettingsManager settingsManager)
+    IValidator<CustomerOrder> customerOrderValidator)
     : ICustomerOrderPaymentService
 {
     public virtual async Task<PostProcessPaymentRequestResult> PostProcessPaymentAsync(PaymentParameters paymentParameters)
@@ -46,7 +43,7 @@ public class CustomerOrderPaymentService(
         foreach (var inPayment in inPayments)
         {
             // Each payment method must check that these parameters are addressed to it
-            var paymentMethodValidationResult = inPayment.PaymentMethod.ValidatePostProcessRequest(paymentParameters.Parameters);
+            var paymentMethodValidationResult = await inPayment.PaymentMethod.ValidatePostProcessRequestAsync(paymentParameters.Parameters);
             if (!paymentMethodValidationResult.IsSuccess)
             {
                 continue;
@@ -64,7 +61,7 @@ public class CustomerOrderPaymentService(
                 Parameters = paymentParameters.Parameters,
             };
 
-            var paymentMethodPostProcessResult = inPayment.PaymentMethod.PostProcessPayment(paymentMethodRequest);
+            var paymentMethodPostProcessResult = await inPayment.PaymentMethod.PostProcessPaymentAsync(paymentMethodRequest);
             if (paymentMethodPostProcessResult == null)
             {
                 continue;
@@ -117,13 +114,8 @@ public class CustomerOrderPaymentService(
             .ToList();
     }
 
-    protected virtual async Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
+    protected virtual Task<ValidationResult> ValidateAsync(CustomerOrder customerOrder)
     {
-        if (await settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.CustomerOrderValidation))
-        {
-            return await customerOrderValidator.ValidateAsync(customerOrder);
-        }
-
-        return new ValidationResult();
+        return customerOrderValidator.ValidateAsync(customerOrder);
     }
 }
