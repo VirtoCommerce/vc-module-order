@@ -249,6 +249,22 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = false,
                 };
 
+                public static SettingDescriptor DashboardStatisticsEnabled { get; } = new SettingDescriptor
+                {
+                    Name = "Order.DashboardStatistics.Enable",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = true,
+                };
+
+                public static SettingDescriptor DashboardStatisticsRangeMonths { get; } = new SettingDescriptor
+                {
+                    Name = "Order.DashboardStatistics.RangeMonths",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.PositiveInteger,
+                    DefaultValue = 12,
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -271,6 +287,8 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return CustomerOrderValidation;
                         yield return OrderPaidAndOrderSentNotifications;
                         yield return PaymentShipmentStatusChangedNotifications;
+                        yield return DashboardStatisticsEnabled;
+                        yield return DashboardStatisticsRangeMonths;
                     }
                 }
             }

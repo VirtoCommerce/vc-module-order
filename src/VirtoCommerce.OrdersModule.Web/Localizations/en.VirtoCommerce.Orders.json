@@ -498,6 +498,30 @@
     "Order.PaymentShipmentStatusChangedNotifications.Enable": {
       "title": "Use payments/shipments status changed notifications",
       "description": "Use for payments/shipments status change notifications"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Enable purchased product indexation",
+      "description": "Enables purchased product indexation process. This setting is global"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Event-based purchased product indexation",
+      "description": "Any changes to the order entity will trigger a background task to add purchase data to the product index"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Enable purchased product store filter",
+      "description": "Display the purchased product filter for the store"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximum number of child documents per order",
+      "description": "Defines the maximum number of child documents (payments, shipments, captures, refunds, etc.) that can be created or stored per order. This ensures system performance, storage optimization, and data consistency. An exception will be thrown on save if this limit is exceeded"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Enable dashboard statistics",
+      "description": "Turn on or off the order statistics dashboard widgets on the main dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard statistics range (months)",
+      "description": "Defines the number of months to include in the dashboard statistics calculations. Default is 12 months"
     }
   },
   "module": {

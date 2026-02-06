@@ -260,5 +260,158 @@
       "add-selected": "Ausgewählte hinzufügen",
       "add-item": "Artikel hinzufügen"
     }
+  },
+  "permissions": {
+    "order:read": "Bestellbezogene Daten anzeigen",
+    "order:create": "Bestellbezogene Daten erstellen",
+    "order:update": "Bestellbezogene Daten aktualisieren",
+    "order:delete": "Bestellbezogene Daten löschen",
+    "order:access": "Auf bestellbezogene Daten zugreifen",
+    "order:read_prices": "Bestellpreise anzeigen"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Kundenbestellstatus",
+      "description": "Liste der verfügbaren Status für Kundenbestellungen"
+    },
+    "Order.InitialStatus": {
+      "title": "Anfangsstatus der Kundenbestellung",
+      "description": "Der Anfangsstatus einer neuen Kundenbestellung"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Anfangsstatus für Bestellungen mit beendeter Zahlung",
+      "description": "Dieser Status wird für alle Bestellungen verwendet, bei denen die Zahlung nicht verarbeitet wurde"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Status der Bestellpositionen",
+      "description": "Die Liste der verfügbaren Status für Bestellpositionen"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Anfangsstatus der Bestellposition",
+      "description": "Der Anfangsstatus einer Bestellposition in einer neuen Kundenbestellung"
+    },
+    "Shipment.Status": {
+      "description": "Versandstatus",
+      "title": "Versandstatus"
+    },
+    "PaymentIn.Status": {
+      "description": "Status eingehender Zahlungen",
+      "title": "Zahlungsstatus"
+    },
+    "Refund.Status": {
+      "title": "Rückerstattungsstatus",
+      "description": "Rückerstattungsstatus"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Kundenbestellnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Bestellnummernvorlage"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Versandnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Versandnummernvorlage für Bestellungen"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Zahlungsnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Zahlungsnummernvorlage für Bestellungen"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Wird verwendet, um eine neue Rückerstattungsnummer zu generieren, mit Parametern:\n\n0: Datum und Uhrzeit in UTC\n1: Zähler\n\nDas Format unterstützt Zähleroptionen direkt innerhalb der Vorlage mit dem Format:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardwerte:\n* Täglich für reset_counter_type. Wählen Sie aus Keine, Täglich, Wöchentlich, Monatlich und Jährlich für Zähler-Reset-Typen.\n* 1 für start_counter_from.\n* 1 für counter_increment.\n\nBeispiel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nErgebnis: CO240101-00001.",
+      "title": "Rückerstattungsnummernvorlage für Bestellungen"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Sendet eine Benachrichtigung, wenn sich der Bestellstatus ändert",
+      "title": "Benachrichtigungen für Bestellungen aktivieren"
+    },
+    "Order.AdjustInventory": {
+      "description": "Passt den Bestand an, wenn sich der Bestellstatus ändert",
+      "title": "Bestand für Bestellungen anpassen"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Bestelländerungen protokollieren",
+      "description": "Protokolliert Bestelländerungen im Plattform-Betriebsprotokoll"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Ereignisbasierte Indexierung für Bestellentitäten",
+      "description": "Jede Änderung an der Kundenentität löst eine Hintergrundaufgabe aus, um diese Änderungen auf den Suchindex anzuwenden"
+    },
+    "Order.Validation.Enable": {
+      "title": "Validierung beim Speichern von Bestellungen",
+      "description": "Aktiviert die Validierung beim Speichern einer Bestellung"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Datum und Uhrzeit der Bestellindexierung",
+      "description": "Datum und Uhrzeit der letzten Bestellindexierungsaufgabe"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Benachrichtigungen für bezahlte und versendete Bestellungen verwenden",
+      "description": "Benachrichtigungen für bezahlte und versendete Bestellungen verwenden"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Benachrichtigungen für Statusänderungen bei Zahlungen/Versand verwenden",
+      "description": "Für Statusänderungen bei Zahlungen/Versand Benachrichtigungen verwenden"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Aktivierung der Indizierung gekaufter Produkte",
+      "description": "Aktiviert den Prozess zur Indizierung gekaufter Produkte. Diese Einstellung ist global."
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Ereignisbasierte Indizierung gekaufter Produkte",
+      "description": "Alle Änderungen an der Bestellentität lösen eine Hintergrundaufgabe aus, um Kaufdaten zum Produktindex hinzuzufügen."
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Aktivierung des Store-Filters für gekaufte Produkte",
+      "description": "Zeigt den Filter für gekaufte Produkte im Store an."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximale Anzahl von Unterdokumenten pro Bestellung",
+      "description": "Definiert die maximale Anzahl von Unterdokumenten (Zahlungen, Sendungen, Captures, Rückerstattungen usw.), die pro Bestellung erstellt oder gespeichert werden können. Dies gewährleistet Systemleistung, Speicheroptimierung und Datenkonsistenz. Bei Überschreitung dieser Grenze wird beim Speichern eine Ausnahme ausgelöst"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Dashboard-Statistiken aktivieren",
+      "description": "Aktiviert oder deaktiviert die Bestellstatistik-Widgets auf dem Haupt-Dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard-Statistik Zeitraum (Monate)",
+      "description": "Definiert die Anzahl der Monate, die in die Dashboard-Statistikberechnungen einbezogen werden. Standard ist 12 Monate"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Kundenbestellungen mit allen zugehörigen Objekten exportieren/importieren (Bestellpositionen, Versand, Zahlungen usw.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Benachrichtigung über stornierte Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn eine Bestellung storniert wird"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Rechnung für Kundenbestellung",
+      "description": "Dies ist eine Vorlage für die Kundenbestellrechnung, die zur Generierung der PDF-Version verwendet wird"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Benachrichtigung über neuen Bestellstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn sich der Status einer Bestellung ändert"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Benachrichtigung über erstellte Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, nachdem er seine Daten über ein Formular in der Frontend-Anwendung übermittelt hat, z.B. über das Kontaktformular"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Benachrichtigung über Bestellungszahlung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn alle mit einer Bestellung verbundenen Zahlungen abgeschlossen sind"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Benachrichtigung über versendete Bestellung",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn alle bestellten Artikel versendet wurden"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Benachrichtigung über geänderte Zahlungsstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung mit allen geänderten Zahlungsstatus"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Benachrichtigung über geänderte Versandstatus",
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung mit allen geänderten Versandstatus"
+    }
   }
 }

@@ -495,6 +495,24 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         }
 
         /// <summary>
+        /// Get dashboard statistics settings
+        /// </summary>
+        [HttpGet]
+        [Route("~/api/order/dashboardStatistics/settings")]
+        [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
+        public async Task<ActionResult<object>> GetDashboardStatisticsSettingsAsync()
+        {
+            var enabled = await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.DashboardStatisticsEnabled);
+            var rangeMonths = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.DashboardStatisticsRangeMonths);
+
+            return Ok(new
+            {
+                Enabled = enabled,
+                RangeMonths = rangeMonths
+            });
+        }
+
+        /// <summary>
         ///  Get a some order statistic information for Commerce manager dashboard
         /// </summary>
         /// <param name="start">start interval date</param>
@@ -504,7 +522,18 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
-            start ??= DateTime.UtcNow.AddYears(-1);
+            var dashboardEnabled = await _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.DashboardStatisticsEnabled);
+            if (!dashboardEnabled)
+            {
+                return Ok(new DashboardStatisticsResult());
+            }
+
+            if (start == null)
+            {
+                var rangeMonths = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.DashboardStatisticsRangeMonths);
+                start = DateTime.UtcNow.AddMonths(-rangeMonths);
+            }
+
             end ??= DateTime.UtcNow;
 
             // Hack: to compensate for incorrect Local dates to UTC
