@@ -620,6 +620,18 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "購入済み商品ストアフィルターを有効にする",
       "description": "ストアで購入済み商品フィルターを表示します。"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "注文あたりの子ドキュメントの最大数",
+      "description": "注文ごとに作成または保存できる子ドキュメント（支払い、配送、キャプチャ、返金など）の最大数を定義します。これにより、システムパフォーマンス、ストレージの最適化、データの整合性が確保されます。この制限を超えた場合、保存時に例外がスローされます"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "ダッシュボード統計を有効にする",
+      "description": "メインダッシュボードの注文統計ウィジェットを有効または無効にします"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "ダッシュボード統計の範囲（月）",
+      "description": "ダッシュボード統計計算に含める月数を定義します。デフォルトは12ヶ月です"
     }
   },
   "module": {

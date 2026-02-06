@@ -39,6 +39,82 @@ Virto Commerce Order module supports the following functionalities:
     * Manage order delivery (status, delivery details);
     * Repeated order creation (order cloning) with possibility to specify the frequency of order re-creation.
 
+Number template format: `<template>@<reset_type>[:<start>:<increment>]`
+- Reset types: `None`, `Daily`, `Weekly`, `Monthly`, `Yearly`
+- Example: `CO{0:yyMMdd}-{1:D5}@Weekly:1:10` (weekly reset, start at 1, increment by 10)
+
+#### Validation Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Order.Validation.Enable` | `true` | Enable/disable order validation on save |
+| `Order.MaxOrderDocumentCount` | `20` | Maximum child documents per order |
+
+#### Feature Flags
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Order.SendOrderNotifications` | `true` | Enable order status change notifications |
+| `Order.AdjustInventory` | `false` | Adjust inventory on order status changes |
+| `Order.LogOrderChanges` | `true` | Log changes to platform operation log |
+| `Order.Search.EventBasedIndexation.Enable` | `false` | Auto-update search index on changes |
+| `Order.PurchasedProductIndexation.Enable` | `false` | Enable purchased product indexing |
+| `Order.OrderPaidAndOrderSentNotifications.Enable` | `false` | Use order paid/sent notifications |
+| `Order.PaymentShipmentStatusChangedNotifications.Enable` | `false` | Use payment/shipment status notifications |
+
+#### Dashboard Statistics Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Order.DashboardStatistics.Enable` | `true` | Enable or disable order statistics widgets on the main dashboard |
+| `Order.DashboardStatistics.RangeMonths` | `12` | Number of months to include in dashboard statistics calculations |
+
+## Architecture
+
+### Project Structure
+
+```
+vc-module-order/
+??? src/
+?   ??? VirtoCommerce.OrdersModule.Core/         # Domain models, interfaces
+?   ??? VirtoCommerce.OrdersModule.Data/         # Data access, services, validators
+?   ??? VirtoCommerce.OrdersModule.Data.SqlServer/   # SQL Server migrations
+?   ??? VirtoCommerce.OrdersModule.Data.PostgreSql/  # PostgreSQL migrations
+?   ??? VirtoCommerce.OrdersModule.Data.MySql/       # MySQL migrations
+?   ??? VirtoCommerce.OrdersModule.Web/          # Web API, controllers
+??? tests/
+?   ??? VirtoCommerce.OrdersModule.Tests/        # Unit and integration tests
+??? docs/                                        # Documentation
+??? samples/                                     # Sample implementations
+```
+
+### Key Components
+
+- **CustomerOrderService**: Core service for order CRUD operations
+- **CustomerOrderSearchService**: Advanced search and filtering
+- **CustomerOrderTotalsCalculator**: Order totals calculation
+- **CustomerOrderValidator**: FluentValidation-based validation
+- **OrderDocumentCountValidator**: Document count limit enforcement
+- **OrderRepository**: Data access layer with EF Core
+
+### Domain Model
+
+```
+CustomerOrder (IOperation)
+??? LineItem[]
+??? Address[]
+??? PaymentIn[] (IOperation)
+?   ??? Capture[]
+?   ??? Refund[]
+??? Shipment[] (IOperation)
+?   ??? ShipmentItem[]
+?   ??? ShipmentPackage[]
+?   ??? Address
+??? DynamicProperties[]
+```
+
+
+
 ## Documentation
 
 * [Order module user documentation](https://docs.virtocommerce.org/platform/user-guide/order-management/overview/)

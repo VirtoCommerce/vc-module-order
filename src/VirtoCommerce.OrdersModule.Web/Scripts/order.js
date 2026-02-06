@@ -745,11 +745,8 @@ angular.module(moduleName, [
 
                     if (authContext.isAuthenticated &&
                         authService.checkPermission('order:dashboardstatistics:view')) {
-                        var now = new Date();
-                        var startDate = new Date();
-                        startDate.setFullYear(now.getFullYear() - 1);
 
-                        customerOrders.getDashboardStatistics({ start: startDate, end: now }, function (data) {
+                            customerOrders.getDashboardStatistics({}, function (data) {
                             // prepare statistics
                             var statisticsToChartRows = function (statsList, allCurrencies) {
                                 var groupedQuarters = _.groupBy(statsList, function (stats) {
