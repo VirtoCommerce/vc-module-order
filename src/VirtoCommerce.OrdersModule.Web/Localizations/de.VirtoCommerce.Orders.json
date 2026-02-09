@@ -624,6 +624,14 @@
     "Order.MaxOrderDocumentCount": {
       "title": "Maximale Anzahl von Unterdokumenten pro Bestellung",
       "description": "Definiert die maximale Anzahl von Unterdokumenten (Zahlungen, Sendungen, Captures, Rückerstattungen usw.), die pro Bestellung erstellt oder gespeichert werden können. Dies gewährleistet Systemleistung, Speicheroptimierung und Datenkonsistenz. Bei Überschreitung dieser Grenze wird beim Speichern eine Ausnahme ausgelöst"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Dashboard-Statistiken aktivieren",
+      "description": "Aktiviert oder deaktiviert die Bestellstatistik-Widgets auf dem Haupt-Dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard-Statistik Zeitraum (Monate)",
+      "description": "Definiert die Anzahl der Monate, die in die Dashboard-Statistikberechnungen einbezogen werden. Standard ist 12 Monate"
     }
   },
   "module": {
