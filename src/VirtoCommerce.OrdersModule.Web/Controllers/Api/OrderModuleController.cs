@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,7 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
+using KeyValuePair = VirtoCommerce.OrdersModule.Core.Model.KeyValuePair;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -590,19 +592,19 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [HttpPost]
         [Route("~/api/paymentcallback-form")]
         [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
-        public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentForm([FromForm] IFormCollection form)
+        [Consumes("multipart/form-data")]
+        public Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentForm()
         {
             var callbackParameters = new PaymentCallbackParameters()
             {
-                Parameters = form.Select(kvp => new KeyValuePair()
-                    {
-                        Key = kvp.Key,
-                        Value = kvp.Value.FirstOrDefault() ?? string.Empty,
-                    })
-                    .ToArray(),
+                Parameters = Request.Form.Select(kvp => new KeyValuePair()
+                {
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                }).ToArray(),
             };
 
-            return await PostProcessPayment(callbackParameters);
+            return PostProcessPayment(callbackParameters);
         }
 
         private async Task<string> GetRequestBody()
