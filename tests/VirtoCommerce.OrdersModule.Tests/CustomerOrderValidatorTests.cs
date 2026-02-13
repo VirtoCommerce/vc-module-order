@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using FluentValidation.Results;
@@ -64,7 +62,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateInvalidOrder(); // Order that would fail validation
 
             // Act
-            var result = await validator.ValidateAsync(order);
+            var result = await validator.ValidateAsync(order, TestContext.Current.CancellationToken);
 
             // Assert
             Assert.True(result.IsValid, "Validation should be skipped when disabled");
@@ -86,7 +84,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateInvalidOrder(); // Order that would fail validation
 
             // Act
-            var result = await validator.ValidateAsync(order);
+            var result = await validator.ValidateAsync(order, TestContext.Current.CancellationToken);
 
             // Assert
             Assert.False(result.IsValid, "Validation should run when enabled");
@@ -152,7 +150,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateValidOrder();
 
             // Act
-            var result = await validator.ValidateAsync(order);
+            var result = await validator.ValidateAsync(order, TestContext.Current.CancellationToken);
 
             // Assert
             Assert.True(result.IsValid, "Valid order should pass validation");
