@@ -23,7 +23,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         public OrderDocumentCountValidatorTests()
         {
             _settingsManagerMock = new Mock<ISettingsManager>();
-            
+
             // Setup default settings value - mock the underlying GetObjectSettingAsync method
             _settingsManagerMock
                 .Setup(x => x.GetObjectSettingAsync(
@@ -47,7 +47,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateOrder();
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -60,15 +60,15 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateOrder();
             order.InPayments = CreatePayments(5);
             order.Shipments = CreateShipments(5);
-            
+
             // Add captures and refunds
             order.InPayments.First().Captures = CreateCaptures(3);
             order.InPayments.First().Refunds = CreateRefunds(2);
-            
+
             // Total: 5 payments + 5 shipments + 3 captures + 2 refunds = 15 (within limit of 20)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -83,11 +83,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.Shipments = CreateShipments(5);
             order.InPayments.First().Captures = CreateCaptures(3);
             order.InPayments.First().Refunds = CreateRefunds(2);
-            
+
             // Total: 10 + 5 + 3 + 2 = 20 (exactly at limit)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -104,11 +104,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateOrder();
             order.InPayments = CreatePayments(15);
             order.Shipments = CreateShipments(10);
-            
+
             // Total: 15 + 10 = 25 (exceeds limit of 20)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
@@ -125,11 +125,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.InPayments = CreatePayments(10);
             order.Shipments = CreateShipments(5);
             order.InPayments.First().Captures = CreateCaptures(8);
-            
+
             // Total: 10 + 5 + 8 = 23 (exceeds limit of 20)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
@@ -148,11 +148,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.InPayments = CreatePayments(8);
             order.Shipments = CreateShipments(6);
             order.InPayments.First().Refunds = CreateRefunds(7);
-            
+
             // Total: 8 + 6 + 7 = 21 (exceeds limit of 20)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
@@ -170,15 +170,15 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateOrder();
             order.InPayments = CreatePayments(8);
             order.Shipments = CreateShipments(7);
-            
+
             // Distribute captures and refunds across payments
             order.InPayments.ElementAt(0).Captures = CreateCaptures(3);
             order.InPayments.ElementAt(1).Refunds = CreateRefunds(4);
-            
+
             // Total: 8 + 7 + 3 + 4 = 22 (exceeds limit of 20)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
@@ -203,20 +203,20 @@ namespace VirtoCommerce.OrdersModule.Tests
             payment.Captures = CreateCaptures(15);
             payment.Refunds = CreateRefunds(10);
             order.InPayments = new List<PaymentIn> { payment };
-            
+
             // Payment sub-documents: 1 payment + 15 captures + 10 refunds = 26 total (exceeds limit of 20)
             // Note: Both order-level AND payment-level validation will fail
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             // The validator reports both order-level and payment-level errors
             Assert.True(result.Errors.Count >= 1, "Expected validation errors");
-            
+
             // Check for order-level error
             Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("27") && e.ErrorMessage.Contains("CustomerOrder"));
-            
+
             // Check for payment-level error (if reported separately)
             var paymentError = result.Errors.FirstOrDefault(e => e.ErrorMessage.Contains(payment.Number));
             if (paymentError != null)
@@ -233,33 +233,33 @@ namespace VirtoCommerce.OrdersModule.Tests
             // Arrange
             var order = CreateOrder();
             var payments = CreatePayments(3).ToList();
-            
+
             // First payment - within limit
             payments[0].Captures = CreateCaptures(5);
             payments[0].Refunds = CreateRefunds(5);
-            
+
             // Second payment - exceeds limit
             payments[1].Captures = CreateCaptures(12);
             payments[1].Refunds = CreateRefunds(10);
-            
+
             // Third payment - within limit
             payments[2].Captures = CreateCaptures(3);
-            
+
             order.InPayments = payments;
-            
+
             // Total: 3 payments + 10 + 22 + 3 = 38 (exceeds order limit)
             // Payment[1]: 22 sub-docs (exceeds payment limit)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             // The validator reports both order-level and payment-level errors
             Assert.True(result.Errors.Count >= 1, "Expected validation errors");
-            
+
             // Check for order-level error
             Assert.Contains(result.Errors, e => e.ErrorMessage.Contains("39") && e.ErrorMessage.Contains("CustomerOrder"));
-            
+
             // Check for payment-level error (if reported separately)
             var paymentError = result.Errors.FirstOrDefault(e => e.ErrorMessage.Contains(payments[1].Number));
             if (paymentError != null)
@@ -283,7 +283,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.Shipments = null;
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -300,7 +300,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.InPayments = new List<PaymentIn> { payment };
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -319,15 +319,15 @@ namespace VirtoCommerce.OrdersModule.Tests
                 .ReturnsAsync(new ObjectSettingEntry { Value = customLimit });
 
             var validator = new OrderDocumentCountValidator(_settingsManagerMock.Object);
-            
+
             var order = CreateOrder();
             order.InPayments = CreatePayments(4);
             order.Shipments = CreateShipments(2);
-            
+
             // Total: 4 + 2 = 6 (exceeds custom limit of 5)
 
             // Act
-            var result = await validator.TestValidateAsync(order);
+            var result = await validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
@@ -337,7 +337,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Contains("PaymentIn=4", errorMessage);
             Assert.Contains("Shipment=2", errorMessage);
         }
-       
+
 
         [Fact]
         public async Task Validate_VeryLargeMaxLimit_ShouldPass()
@@ -352,15 +352,15 @@ namespace VirtoCommerce.OrdersModule.Tests
                 .ReturnsAsync(new ObjectSettingEntry { Value = largeLimit });
 
             var validator = new OrderDocumentCountValidator(_settingsManagerMock.Object);
-            
+
             var order = CreateOrder();
             order.InPayments = CreatePayments(100);
             order.Shipments = CreateShipments(100);
-            
+
             // Total: 200 (within large limit)
 
             // Act
-            var result = await validator.TestValidateAsync(order);
+            var result = await validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -378,11 +378,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             order.InPayments = CreatePayments(1);
             order.Shipments = CreateShipments(2);
             order.InPayments.First().Captures = CreateCaptures(1);
-            
+
             // Total: 1 + 2 + 1 = 4 (well within limit)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -400,11 +400,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             payments[1].Refunds = CreateRefunds(1);
             order.InPayments = payments;
             order.Shipments = CreateShipments(3);
-            
+
             // Total: 2 + 3 + 5 + 3 = 13 (within limit)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldNotHaveAnyValidationErrors();
@@ -417,11 +417,11 @@ namespace VirtoCommerce.OrdersModule.Tests
             var order = CreateOrder();
             order.InPayments = CreatePayments(25); // Many failed payment attempts
             order.Shipments = CreateShipments(1);
-            
+
             // Total: 25 + 1 = 26 (exceeds limit - potential fraud/abuse)
 
             // Act
-            var result = await _validator.TestValidateAsync(order);
+            var result = await _validator.TestValidateAsync(order, null, TestContext.Current.CancellationToken);
 
             // Assert
             result.ShouldHaveValidationErrorFor(nameof(CustomerOrder));
