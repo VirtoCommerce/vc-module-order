@@ -17,7 +17,7 @@
     <PackageReference Include="AutoCompare.Core" Version="1.0.0" />
     
     <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.1000.0" />
-    <PackageReference Include="VirtoCommerce.CatalogModule.Core" Version="3.1000.0" />
+    <PackageReference Include="VirtoCommerce.CatalogModule.Data" Version="3.1001.0-alpha.2468-variation-configuration-type" />
     <PackageReference Include="VirtoCommerce.InventoryModule.Core" Version="3.1000.0" />
     <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1002.0" />
     <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.1002.0" />

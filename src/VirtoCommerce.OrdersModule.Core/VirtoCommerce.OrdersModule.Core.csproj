@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     
-    <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.1000.0" />
+    <PackageReference Include="VirtoCommerce.CartModule.Core" Version="3.1001.0-alpha.776-variation-configuration-type" />
     <PackageReference Include="VirtoCommerce.CoreModule.Core" Version="3.1000.0" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.1000.0" />
     <PackageReference Include="VirtoCommerce.NotificationsModule.Core" Version="3.1000.0" />
