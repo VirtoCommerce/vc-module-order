@@ -625,9 +625,13 @@
       "title": "Maksymalna liczba dokumentów podrzędnych na zamówienie",
       "description": "Określa maksymalną liczbę dokumentów podrzędnych (płatności, przesyłki, przechwycenia, zwroty itp.), które można utworzyć lub przechowywać dla jednego zamówienia. Zapewnia to wydajność systemu, optymalizację przechowywania i spójność danych. Jeśli ten limit zostanie przekroczony, podczas zapisywania zostanie zgłoszony wyjątek"
     },
-    "Order.ProductSnapshot.Enable": {
-      "title": "Save product snapshots in orders",
-      "description": "Stores serialized product data in order line items to preserve historical information"
+    "Order.DashboardStatistics.Enable": {
+      "title": "Włącz statystyki pulpitu",
+      "description": "Włącza lub wyłącza widżety statystyk zamówień na głównym pulpicie"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Zakres statystyk pulpitu (miesiące)",
+      "description": "Określa liczbę miesięcy do uwzględnienia w obliczeniach statystyk pulpitu. Domyślnie 12 miesięcy"
     }
   },
   "module": {

@@ -29,6 +29,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 public const string CapturePayment = "order:capture_payment";
                 public const string RefundPayment = "order:refund";
                 public const string ViewDashboardStatistics = "order:dashboardstatistics:view";
+                public const string PaymentExecuteCallback = "order:payment:execute_callback";
 
                 public static string[] AllPermissions { get; } = {
                     Read,
@@ -41,6 +42,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     CapturePayment,
                     RefundPayment,
                     ViewDashboardStatistics,
+                    PaymentExecuteCallback,
                 };
             }
         }
@@ -292,6 +294,22 @@ namespace VirtoCommerce.OrdersModule.Core
                     DefaultValue = 20,
                 };
 
+                public static SettingDescriptor DashboardStatisticsEnabled { get; } = new SettingDescriptor
+                {
+                    Name = "Order.DashboardStatistics.Enable",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = true,
+                };
+
+                public static SettingDescriptor DashboardStatisticsRangeMonths { get; } = new SettingDescriptor
+                {
+                    Name = "Order.DashboardStatistics.RangeMonths",
+                    GroupName = "Orders|General",
+                    ValueType = SettingValueType.PositiveInteger,
+                    DefaultValue = 12,
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -319,6 +337,8 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return PurchasedProductStoreFilter;
                         yield return ProductSnapshotEnabled;
                         yield return MaxOrderDocumentCount;
+                        yield return DashboardStatisticsEnabled;
+                        yield return DashboardStatisticsRangeMonths;
                     }
                 }
             }

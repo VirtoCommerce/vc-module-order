@@ -626,9 +626,13 @@
       "title": "Nombre maximum de documents enfants par commande",
       "description": "Définit le nombre maximum de documents enfants (paiements, expéditions, captures, remboursements, etc.) qui peuvent être créés ou stockés par commande. Cela garantit les performances du système, l'optimisation du stockage et la cohérence des données. Une exception sera levée lors de la sauvegarde si cette limite est dépassée"
     },
-    "Order.ProductSnapshot.Enable": {
-      "title": "Save product snapshots in orders",
-      "description": "Stores serialized product data in order line items to preserve historical information"
+    "Order.DashboardStatistics.Enable": {
+      "title": "Activer les statistiques du tableau de bord",
+      "description": "Active ou désactive les widgets de statistiques de commandes sur le tableau de bord principal"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Période des statistiques du tableau de bord (mois)",
+      "description": "Définit le nombre de mois à inclure dans les calculs des statistiques du tableau de bord. La valeur par défaut est de 12 mois"
     }
   },
   "module": {

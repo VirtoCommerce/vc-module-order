@@ -161,6 +161,13 @@ Number template format: `<template>@<reset_type>[:<start>:<increment>]`
 | `Order.OrderPaidAndOrderSentNotifications.Enable` | `false` | Use order paid/sent notifications |
 | `Order.PaymentShipmentStatusChangedNotifications.Enable` | `false` | Use payment/shipment status notifications |
 
+#### Dashboard Statistics Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `Order.DashboardStatistics.Enable` | `true` | Enable or disable order statistics widgets on the main dashboard |
+| `Order.DashboardStatistics.RangeMonths` | `12` | Number of months to include in dashboard statistics calculations |
+
 ## Architecture
 
 ### Project Structure

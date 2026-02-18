@@ -625,9 +625,13 @@
       "title": "每个订单的最大子文档数量",
       "description": "定义每个订单可以创建或存储的子文档（付款、发货、捕获、退款等）的最大数量。这确保了系统性能、存储优化和数据一致性。如果超过此限制，保存时将抛出异常"
     },
-    "Order.ProductSnapshot.Enable": {
-      "title": "Save product snapshots in orders",
-      "description": "Stores serialized product data in order line items to preserve historical information"
+    "Order.DashboardStatistics.Enable": {
+      "title": "启用仪表板统计",
+      "description": "在主仪表板上启用或禁用订单统计小部件"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "仪表板统计范围（月）",
+      "description": "定义仪表板统计计算中包含的月数。默认为12个月"
     }
   },
   "module": {

@@ -628,6 +628,14 @@
     "Order.MaxOrderDocumentCount": {
       "title": "Maximum number of child documents per order",
       "description": "Defines the maximum number of child documents (payments, shipments, captures, refunds, etc.) that can be created or stored per order. This ensures system performance, storage optimization, and data consistency. An exception will be thrown on save if this limit is exceeded"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Enable dashboard statistics",
+      "description": "Turn on or off the order statistics dashboard widgets on the main dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard statistics range (months)",
+      "description": "Defines the number of months to include in the dashboard statistics calculations. Default is 12 months"
     }
   },
   "module": {

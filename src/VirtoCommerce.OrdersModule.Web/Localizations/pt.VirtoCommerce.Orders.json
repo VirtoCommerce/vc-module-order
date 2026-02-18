@@ -625,9 +625,13 @@
       "title": "Número máximo de documentos secundários por pedido",
       "description": "Define o número máximo de documentos secundários (pagamentos, remessas, capturas, reembolsos, etc.) que podem ser criados ou armazenados por pedido. Isso garante o desempenho do sistema, otimização de armazenamento e consistência de dados. Uma exceção será lançada ao salvar se este limite for excedido"
     },
-    "Order.ProductSnapshot.Enable": {
-      "title": "Save product snapshots in orders",
-      "description": "Stores serialized product data in order line items to preserve historical information"
+    "Order.DashboardStatistics.Enable": {
+      "title": "Ativar estatísticas do painel",
+      "description": "Ativa ou desativa os widgets de estatísticas de pedidos no painel principal"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Período de estatísticas do painel (meses)",
+      "description": "Define o número de meses a incluir nos cálculos de estatísticas do painel. O padrão é 12 meses"
     }
   },
   "module": {

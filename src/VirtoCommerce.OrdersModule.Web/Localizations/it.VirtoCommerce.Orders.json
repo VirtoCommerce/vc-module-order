@@ -625,9 +625,13 @@
       "title": "Numero massimo di documenti secondari per ordine",
       "description": "Definisce il numero massimo di documenti secondari (pagamenti, spedizioni, acquisizioni, rimborsi, ecc.) che possono essere creati o memorizzati per ordine. Ciò garantisce le prestazioni del sistema, l'ottimizzazione dello storage e la coerenza dei dati. Verrà generata un'eccezione durante il salvataggio se questo limite viene superato"
     },
-    "Order.ProductSnapshot.Enable": {
-      "title": "Save product snapshots in orders",
-      "description": "Stores serialized product data in order line items to preserve historical information"
+    "Order.DashboardStatistics.Enable": {
+      "title": "Abilita statistiche dashboard",
+      "description": "Attiva o disattiva i widget delle statistiche ordini sulla dashboard principale"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Intervallo statistiche dashboard (mesi)",
+      "description": "Definisce il numero di mesi da includere nei calcoli delle statistiche della dashboard. Il valore predefinito è 12 mesi"
     }
   },
   "module": {

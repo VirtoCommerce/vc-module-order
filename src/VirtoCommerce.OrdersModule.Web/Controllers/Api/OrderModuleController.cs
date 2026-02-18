@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DinkToPdf;
 using DinkToPdf.Contracts;
@@ -43,6 +45,7 @@ using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using CustomerOrderSearchResult = VirtoCommerce.OrdersModule.Core.Model.Search.CustomerOrderSearchResult;
+using KeyValuePair = VirtoCommerce.OrdersModule.Core.Model.KeyValuePair;
 
 namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
@@ -198,12 +201,13 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// </summary>
         /// <param name="orderId">customer order id</param>
         /// <param name="paymentId">payment id</param>
+        /// <param name="cancellationToken">cancellationToken</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId)
+        public Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPaymentsWithoutBankCardInfo([FromRoute] string orderId, [FromRoute] string paymentId, CancellationToken cancellationToken)
         {
-            return ProcessOrderPayments(orderId, paymentId, null);
+            return ProcessOrderPayments(orderId, paymentId, null, cancellationToken);
         }
 
         /// <summary>
@@ -213,10 +217,11 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="orderId">customer order id</param>
         /// <param name="paymentId">payment id</param>
         /// <param name="bankCardInfo">banking card information</param>
+        /// <param name="cancellationToken">cancellationToken</param>
         [HttpPost]
         [Route("{orderId}/processPayment/{paymentId}")]
         [Consumes("application/json", "application/json-patch+json")] // It's a trick that allows ASP.NET infrastructure to select this action with body and ProcessOrderPaymentsWithoutBankCardInfo if no body
-        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo)
+        public async Task<ActionResult<ProcessPaymentRequestResult>> ProcessOrderPayments([FromRoute] string orderId, [FromRoute] string paymentId, [FromBody] BankCardInfo bankCardInfo, CancellationToken cancellationToken)
         {
             var customerOrder = await customerOrderService.GetByIdAsync(orderId, CustomerOrderResponseGroup.Full.ToString());
 
@@ -267,7 +272,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 Store = store,
                 BankCardInfo = bankCardInfo
             };
-            var result = inPayment.PaymentMethod.ProcessPayment(request);
+            var result = await inPayment.PaymentMethod.ProcessPaymentAsync(request, cancellationToken);
             if (result.OuterId != null)
             {
                 inPayment.OuterId = result.OuterId;
@@ -488,6 +493,24 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         }
 
         /// <summary>
+        /// Get dashboard statistics settings
+        /// </summary>
+        [HttpGet]
+        [Route("~/api/order/dashboardStatistics/settings")]
+        [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
+        public async Task<ActionResult<object>> GetDashboardStatisticsSettingsAsync()
+        {
+            var enabled = await settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.DashboardStatisticsEnabled);
+            var rangeMonths = await settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.DashboardStatisticsRangeMonths);
+
+            return Ok(new
+            {
+                Enabled = enabled,
+                RangeMonths = rangeMonths
+            });
+        }
+
+        /// <summary>
         ///  Get a some order statistic information for Commerce manager dashboard
         /// </summary>
         /// <param name="start">start interval date</param>
@@ -497,7 +520,18 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Authorize(ModuleConstants.Security.Permissions.ViewDashboardStatistics)]
         public async Task<ActionResult<DashboardStatisticsResult>> GetDashboardStatisticsAsync([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
-            start ??= DateTime.UtcNow.AddYears(-1);
+            var dashboardEnabled = await settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.DashboardStatisticsEnabled);
+            if (!dashboardEnabled)
+            {
+                return Ok(new DashboardStatisticsResult());
+            }
+
+            if (start == null)
+            {
+                var rangeMonths = await settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.DashboardStatisticsRangeMonths);
+                start = DateTime.UtcNow.AddMonths(-rangeMonths);
+            }
+
             end ??= DateTime.UtcNow;
 
             // Hack: to compensate for incorrect Local dates to UTC
@@ -521,6 +555,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// <param name="callback">payment callback parameters</param>
         [HttpPost]
         [Route("~/api/paymentcallback")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPayment([FromBody] PaymentCallbackParameters callback)
         {
             var parameters = paymentRequestConverter.GetPaymentParameters(callback);
@@ -538,6 +573,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         /// </summary>
         [HttpPost]
         [Route("~/api/paymentcallback-raw")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
         public async Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentRaw()
         {
             var parameters = paymentRequestConverter.GetPaymentParameters(await GetRequestBody(), Request.QueryString.Value);
@@ -548,6 +584,27 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             return succeeded
                 ? Ok(response)
                 : BadRequest(response);
+        }
+
+        /// <summary>
+        /// Payment callback operation used by external payment services to inform post process payment in our system
+        /// </summary>
+        [HttpPost]
+        [Route("~/api/paymentcallback-form")]
+        [Authorize(ModuleConstants.Security.Permissions.PaymentExecuteCallback)]
+        [Consumes("multipart/form-data")]
+        public Task<ActionResult<PostProcessPaymentRequestResult>> PostProcessPaymentForm()
+        {
+            var callbackParameters = new PaymentCallbackParameters()
+            {
+                Parameters = Request.Form.Select(kvp => new KeyValuePair()
+                {
+                    Key = kvp.Key,
+                    Value = kvp.Value,
+                }).ToArray(),
+            };
+
+            return PostProcessPayment(callbackParameters);
         }
 
         private async Task<string> GetRequestBody()
