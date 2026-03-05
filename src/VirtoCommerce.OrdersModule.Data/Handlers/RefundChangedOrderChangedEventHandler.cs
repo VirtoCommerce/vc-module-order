@@ -36,7 +36,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 .SelectMany(GetJobArgumentsForChangedEntry)
                 .ToArray();
 
-            if (jobArguments.Any())
+            if (jobArguments.Length > 0)
             {
                 BackgroundJob.Enqueue(() => ProcessRefundChangesAsync(jobArguments));
             }
@@ -116,7 +116,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 }
             }
 
-            if (changedOrders.Any())
+            if (changedOrders.Count > 0)
             {
                 await _orderService.SaveChangesAsync(changedOrders.ToArray());
             }
