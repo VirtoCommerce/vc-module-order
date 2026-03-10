@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
-using VirtoCommerce.CatalogModule.Data.Search.Indexing;
+using VirtoCommerce.CatalogModule.Core.Serialization;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -631,7 +631,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                     continue;
                 }
 
-                var snapshot = IndexDocumentHelper.SerializeObject(product);
+                var snapshot = ProductJsonSerializer.Serialize(product);
 
                 foreach (var (lineItem, configurationItem) in items)
                 {
