@@ -47,6 +47,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual int ProductSnapshotBatchSize => 50;
 
+        protected virtual string ProductSnapshotResponseGroup { get; } =
+            (ItemResponseGroup.ItemInfo | ItemResponseGroup.ItemAssets | ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews).ToString();
+
         #region ICustomerOrderConverter Members
 
         public virtual async Task<CustomerOrder> PlaceCustomerOrderFromCartAsync(ShoppingCart cart)
@@ -572,9 +575,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             foreach (var batchIds in productToItemsMap.Keys.Paginate(ProductSnapshotBatchSize))
             {
-#pragma warning disable CS0618 // Variations can be used here
-                var products = await _itemService.GetNoCloneAsync(batchIds, (ItemResponseGroup.Full & ~ItemResponseGroup.Variations).ToString());
-#pragma warning restore CS0618
+                var products = await _itemService.GetNoCloneAsync(batchIds, ProductSnapshotResponseGroup);
                 AssignProductSnapshots(products, productToItemsMap);
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.Platform.Core.Common;
@@ -6,7 +7,7 @@ using VirtoCommerce.Platform.Core.Swagger;
 namespace VirtoCommerce.OrdersModule.Core.Model;
 
 [SwaggerSchemaId("OrderConfigurationItem")]
-public class ConfigurationItem : AuditableEntity
+public class ConfigurationItem : AuditableEntity, ICloneable
 {
     public string LineItemId { get; set; }
 
