@@ -96,6 +96,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<OrderExportImport>();
             serviceCollection.AddTransient<AdjustInventoryOrderChangedEventHandler>();
             serviceCollection.AddTransient<CancelPaymentOrderChangedEventHandler>();
+            serviceCollection.AddTransient<RefundChangedOrderChangedEventHandler>();
             serviceCollection.AddTransient<LogChangesOrderChangedEventHandler>();
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
             serviceCollection.AddTransient<IPaymentFlowService, PaymentFlowService>();
@@ -191,6 +192,7 @@ namespace VirtoCommerce.OrdersModule.Web
 
             appBuilder.RegisterEventHandler<OrderChangedEvent, AdjustInventoryOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, CancelPaymentOrderChangedEventHandler>();
+            appBuilder.RegisterEventHandler<OrderChangedEvent, RefundChangedOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, LogChangesOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, SendNotificationsOrderChangedEventHandler>();
             appBuilder.RegisterEventHandler<OrderChangedEvent, IndexCustomerOrderChangedEventHandler>();

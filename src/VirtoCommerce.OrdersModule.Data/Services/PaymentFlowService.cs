@@ -105,6 +105,18 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
             catch (Exception ex)
             {
+                // Save refund as Rejected so the document reflects the failure
+                var rejectedResult = new RefundPaymentRequestResult { IsSuccess = false, ErrorMessage = ex.Message };
+                try
+                {
+                    await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
+                        await SaveResultToRefundDocument(request, rejectedResult));
+                }
+                catch
+                {
+                    // Best-effort: don't mask the original error
+                }
+
                 result.Succeeded = false;
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = ex.Message;
@@ -373,6 +385,18 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             }
             catch (Exception ex)
             {
+                // Save capture as Rejected so the document reflects the failure
+                var rejectedResult = new CapturePaymentRequestResult { IsSuccess = false, ErrorMessage = ex.Message };
+                try
+                {
+                    await dbConcurrencyRetryPolicy.ExecuteAsync(async () =>
+                        await SaveResultToCaptureDocument(request, rejectedResult));
+                }
+                catch
+                {
+                    // Best-effort: don't mask the original error
+                }
+
                 result.Succeeded = false;
                 result.ErrorCode = PaymentFlowErrorCodes.PaymentFailed;
                 result.ErrorMessage = ex.Message;
