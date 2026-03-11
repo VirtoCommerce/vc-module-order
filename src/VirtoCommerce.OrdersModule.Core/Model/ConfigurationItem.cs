@@ -41,7 +41,7 @@ public class ConfigurationItem : AuditableEntity, ICloneable
 
     public IList<ConfigurationItemFile> Files { get; set; }
 
-    public object Clone()
+    public virtual object Clone()
     {
         var result = (ConfigurationItem)MemberwiseClone();
 
