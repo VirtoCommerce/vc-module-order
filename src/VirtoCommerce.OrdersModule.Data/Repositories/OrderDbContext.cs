@@ -240,7 +240,6 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                         .HasForeignKey(x => x.PaymentInId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TaxDetailEntity>().Property(x => x.Rate).HasPrecision(18, 2);
-            modelBuilder.Entity<TaxDetailEntity>().Property(x => x.Rate).HasPrecision(18, 2);
 
             modelBuilder.Entity<TaxDetailEntity>().ToTable("OrderTaxDetail");
             #endregion
@@ -352,7 +351,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
             #endregion ConfigurationItemImage
 
             // Allows configuration for an entity type for different database types.
-            // Applies configuration from all <see cref="IEntityTypeConfiguration{TEntity}" in VirtoCommerce.OrdersModule.Data.XXX project. /> 
+            // Applies configuration from all <see cref="IEntityTypeConfiguration{TEntity}" in VirtoCommerce.OrdersModule.Data.XXX project. />
             switch (Database.ProviderName)
             {
                 case "Pomelo.EntityFrameworkCore.MySql":

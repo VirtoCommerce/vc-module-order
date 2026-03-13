@@ -59,7 +59,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public decimal DiscountTotalWithTax { get; set; }
 
-        //Any extra Fee 
+        //Any extra Fee
         public virtual decimal Fee { get; set; }
 
         public virtual decimal FeeWithTax { get; set; }
@@ -108,6 +108,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string VendorId { get; set; }
 
         public bool IsConfigured { get; set; }
+
+        public string ProductSnapshot { get; set; }
 
         #region IHaveDimension Members
 
@@ -191,22 +193,27 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
             if (DynamicProperties != null)
             {
-                result.DynamicProperties = new List<DynamicObjectProperty>(DynamicProperties.Select(x => x.Clone() as DynamicObjectProperty));
+                result.DynamicProperties = DynamicProperties.Select(x => x.CloneTyped()).ToList();
             }
 
             if (Discounts != null)
             {
-                result.Discounts = new List<Discount>(Discounts.Select(x => x.Clone() as Discount));
+                result.Discounts = Discounts.Select(x => x.CloneTyped()).ToList();
             }
 
             if (TaxDetails != null)
             {
-                result.TaxDetails = new List<TaxDetail>(TaxDetails.Select(x => x.Clone() as TaxDetail));
+                result.TaxDetails = TaxDetails.Select(x => x.CloneTyped()).ToList();
             }
 
             if (FeeDetails != null)
             {
-                result.FeeDetails = new List<FeeDetail>(FeeDetails.Select(x => x.Clone() as FeeDetail));
+                result.FeeDetails = FeeDetails.Select(x => x.CloneTyped()).ToList();
+            }
+
+            if (ConfigurationItems != null)
+            {
+                result.ConfigurationItems = ConfigurationItems.Select(x => x.CloneTyped()).ToList();
             }
 
             return result;

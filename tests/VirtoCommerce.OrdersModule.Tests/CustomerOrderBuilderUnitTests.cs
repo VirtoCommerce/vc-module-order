@@ -4,11 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
+using VirtoCommerce.CartModule.Core.Model;
+using VirtoCommerce.CatalogModule.Core.Services;
+using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.PaymentModule.Core.Services;
 using VirtoCommerce.Platform.Core.Settings;
 using Xunit;
+using Address = VirtoCommerce.CartModule.Core.Model.Address;
+using LineItem = VirtoCommerce.CartModule.Core.Model.LineItem;
 
 namespace VirtoCommerce.OrdersModule.Tests
 {
@@ -18,11 +23,11 @@ namespace VirtoCommerce.OrdersModule.Tests
         public async Task PlaceCustomerOrderFromCartAsync_Cart_ComparingWithOrder()
         {
             //Arrange
-            var cartItem1 = new VirtoCommerce.CartModule.Core.Model.LineItem { Id = Guid.NewGuid().ToString(), ListPrice = 10.99m, SalePrice = 9.66m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Quantity = 2 };
-            var cart = new VirtoCommerce.CartModule.Core.Model.ShoppingCart
+            var cartItem1 = new LineItem { Id = Guid.NewGuid().ToString(), ListPrice = 10.99m, SalePrice = 9.66m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Quantity = 2 };
+            var cart = new ShoppingCart
             {
-                Addresses = new List<CartModule.Core.Model.Address>(),
-                Items = new List<VirtoCommerce.CartModule.Core.Model.LineItem> { cartItem1 }
+                Addresses = new List<Address>(),
+                Items = new List<LineItem> { cartItem1 }
             };
             var builder = GetCustomerOrderBuilder();
 
@@ -33,7 +38,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             cart.Should()
                 .BeEquivalentTo(result
                     , options => options
-                                 .ComparingByMembers<VirtoCommerce.OrdersModule.Core.Model.CustomerOrder>()
+                                 .ComparingByMembers<CustomerOrder>()
                                  //.RespectingDeclaredTypes()
                                  .ExcludingMissingMembers()
                                  .Excluding(x => x.Id)
@@ -46,7 +51,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             cartItem1.Should()
                 .BeEquivalentTo(orderItem
                     , options => options
-                                 .ComparingByMembers<VirtoCommerce.OrdersModule.Core.Model.LineItem>()
+                                 .ComparingByMembers<Core.Model.LineItem>()
                                  .ExcludingMissingMembers()
                                  .Excluding(x => x.Id)
                                  .Excluding(x => x.ObjectType)
@@ -59,7 +64,7 @@ namespace VirtoCommerce.OrdersModule.Tests
         public async Task PlaceCustomerOrderFromCartAsync_CartLineItem_ComparingWithOrderLineItem()
         {
             //Arrange
-            var cartItem1 = new VirtoCommerce.CartModule.Core.Model.LineItem
+            var cartItem1 = new LineItem
             {
                 Id = Guid.NewGuid().ToString(),
                 ListPrice = 10.99m,
@@ -71,10 +76,10 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Quantity = 2
             };
 
-            var cart = new VirtoCommerce.CartModule.Core.Model.ShoppingCart
+            var cart = new ShoppingCart
             {
-                Addresses = new List<CartModule.Core.Model.Address>(),
-                Items = new List<VirtoCommerce.CartModule.Core.Model.LineItem> { cartItem1 },
+                Addresses = new List<Address>(),
+                Items = new List<LineItem> { cartItem1 },
             };
             var builder = GetCustomerOrderBuilder();
 
@@ -85,7 +90,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             cartItem1.Should()
                 .BeEquivalentTo(orderItem
                     , options => options
-                                 .ComparingByMembers<VirtoCommerce.OrdersModule.Core.Model.LineItem>()
+                                 .ComparingByMembers<Core.Model.LineItem>()
                                  .ExcludingMissingMembers()
                                  .Excluding(x => x.Id)
                                  .Excluding(x => x.ObjectType)
@@ -99,7 +104,11 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         private static CustomerOrderBuilder GetCustomerOrderBuilder()
         {
-            return new CustomerOrderBuilder(new Mock<ICustomerOrderService>().Object, new Mock<ISettingsManager>().Object, new Mock<IPaymentMethodsSearchService>().Object);
+            return new CustomerOrderBuilder(
+                new Mock<ICustomerOrderService>().Object,
+                new Mock<ISettingsManager>().Object,
+                new Mock<IPaymentMethodsSearchService>().Object,
+                new Mock<IItemService>().Object);
         }
     }
 }
