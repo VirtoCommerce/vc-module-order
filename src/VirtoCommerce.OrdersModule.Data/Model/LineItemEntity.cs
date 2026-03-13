@@ -110,6 +110,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public bool IsConfigured { get; set; }
 
+        public string ProductSnapshot { get; set; }
+
         #region NavigationProperties
 
         public string CustomerOrderId { get; set; }
@@ -185,6 +187,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
             lineItem.VendorId = VendorId;
             lineItem.IsConfigured = IsConfigured;
+            lineItem.ProductSnapshot = ProductSnapshot;
 
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
@@ -260,6 +263,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             VendorId = lineItem.VendorId;
 
             IsConfigured = lineItem.IsConfigured;
+            ProductSnapshot = lineItem.ProductSnapshot;
 
             if (lineItem.Discounts != null)
             {
@@ -325,6 +329,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.TaxTotal = TaxTotal;
             target.Fee = Fee;
             target.FeeWithTax = FeeWithTax;
+
+            target.ProductSnapshot = ProductSnapshot;
 
             if (!Discounts.IsNullCollection())
             {
