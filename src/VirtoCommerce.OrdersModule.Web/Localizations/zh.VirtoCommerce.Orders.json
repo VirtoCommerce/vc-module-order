@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "删除确认",
-        "message": "您确定要删除所选的客户订单吗？"
+        "message": "您确定要删除所选的客户订单吗？",
+        "order": "{{count}} 个订单"
       },
       "operation-save": {
         "title": "保存更改",

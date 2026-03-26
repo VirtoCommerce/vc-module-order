@@ -131,7 +131,7 @@ angular.module('virtoCommerce.orderModule')
         var dialog = {
             id: "confirmDeleteItem",
             title: "orders.dialogs.orders-delete.title",
-            message: "orders.dialogs.orders-delete.message",
+            data: [{ key: 'orders.dialogs.orders-delete.order', count: list.length }],
             callback: function (remove) {
                 if (remove) {
                     $scope.isLoading = true;
@@ -144,11 +144,11 @@ angular.module('virtoCommerce.orderModule')
                     function (error) {
                         bladeNavigationService.setError('Error ' + error.status, blade);
                     });
-                 
+
                 }
             }
         };
-        dialogService.showConfirmationDialog(dialog);
+        dialogService.showDeleteConfirmationDialog(dialog);
     };
 
     function closeChildrenBlades() {

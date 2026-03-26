@@ -180,6 +180,7 @@ angular.module('virtoCommerce.orderModule')
                     id: "confirmDeleteItem",
                     title: "orders.dialogs.operation-delete.title",
                     message: "orders.dialogs.operation-delete.message",
+                    name: blade.currentEntity.operationType,
                     callback: function (remove) {
                         if (remove) {
                             if (blade.id === 'operationDetail') {
@@ -220,7 +221,7 @@ angular.module('virtoCommerce.orderModule')
                         }
                     }
                 };
-                dialogService.showConfirmationDialog(dialog);
+                dialogService.showDeleteConfirmationDialog(dialog);
             },
             canExecuteMethod: function () {
                 return true;

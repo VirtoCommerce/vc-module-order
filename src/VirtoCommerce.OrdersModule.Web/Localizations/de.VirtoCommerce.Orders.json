@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Löschbestätigung",
-        "message": "Sind Sie sicher, dass Sie die ausgewählten Kundenbestellungen löschen möchten?"
+        "message": "Sind Sie sicher, dass Sie die ausgewählten Kundenbestellungen löschen möchten?",
+        "order": "{{count}} Bestellung(en)"
       },
       "operation-save": {
         "title": "Änderungen speichern",

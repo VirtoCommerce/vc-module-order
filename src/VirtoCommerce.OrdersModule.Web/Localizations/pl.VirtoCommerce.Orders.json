@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Potwierdzenie usunięcia",
-        "message": "Czy na pewno chcesz usunąć wybrane zamówienia klientów?"
+        "message": "Czy na pewno chcesz usunąć wybrane zamówienia klientów?",
+        "order": "{{count}} zamówienie(ń)"
       },
       "operation-save": {
         "title": "Zapisz zmiany",
