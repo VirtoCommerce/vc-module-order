@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Confirmação de exclusão",
-        "message": "Tem certeza de que deseja excluir as ordens de clientes selecionadas?"
+        "message": "Tem certeza de que deseja excluir as ordens de clientes selecionadas?",
+        "order": "{{count}} pedido(s)"
       },
       "operation-save": {
         "title": "Salvar alterações",

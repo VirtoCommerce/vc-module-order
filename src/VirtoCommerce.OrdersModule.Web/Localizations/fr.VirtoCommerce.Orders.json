@@ -436,7 +436,8 @@
       },
       "orders-delete": {
         "title": "Confirmation de suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer les commandes clients sélectionnées ?"
+        "message": "Êtes-vous sûr de vouloir supprimer les commandes clients sélectionnées ?",
+        "order": "{{count}} commande(s)"
       },
       "operation-save": {
         "title": "Enregistrer les modifications",
