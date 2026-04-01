@@ -131,7 +131,7 @@ angular.module('virtoCommerce.orderModule')
         var dialog = {
             id: "confirmDeleteItem",
             title: "orders.dialogs.orders-delete.title",
-            data: [{ key: 'orders.dialogs.orders-delete.order', count: list.length }],
+            items: [{ key: 'orders.dialogs.orders-delete.order', count: list.length }],
             callback: function (remove) {
                 if (remove) {
                     $scope.isLoading = true;

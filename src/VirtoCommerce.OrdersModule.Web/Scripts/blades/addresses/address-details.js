@@ -171,7 +171,7 @@ angular.module('virtoCommerce.orderModule')
                         id: 'confirmDelete',
                         title: 'orders.dialogs.address-delete.title',
                         message: 'orders.dialogs.address-delete.message',
-                        name: blade.currentEntity.name,
+                        messageValues: { name: blade.currentEntity.name },
                         callback: function (remove) {
                             if (remove) {
                                 if (blade.deleteFn) {

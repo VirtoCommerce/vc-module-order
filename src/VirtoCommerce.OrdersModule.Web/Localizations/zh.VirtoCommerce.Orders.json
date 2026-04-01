@@ -459,7 +459,7 @@
       },
       "address-delete": {
         "title": "确认删除",
-        "message": "您确定要删除此地址吗？"
+        "message": "您确定要删除地址 '{{name}}' 吗？"
       },
       "address-save": {
         "title": "保存更改",

@@ -460,7 +460,7 @@
       },
       "address-delete": {
         "title": "Confirmer la suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer cette adresse ?"
+        "message": "Êtes-vous sûr de vouloir supprimer l'adresse '{{name}}' ?"
       },
       "address-save": {
         "title": "Enregistrer les modifications",

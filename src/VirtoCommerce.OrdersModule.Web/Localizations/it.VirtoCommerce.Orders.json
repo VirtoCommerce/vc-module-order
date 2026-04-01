@@ -459,7 +459,7 @@
       },
       "address-delete": {
         "title": "Conferma eliminazione",
-        "message": "Sei sicuro di voler eliminare questo indirizzo?"
+        "message": "Sei sicuro di voler eliminare l'indirizzo '{{name}}'?"
       },
       "address-save": {
         "title": "Salva modifiche",

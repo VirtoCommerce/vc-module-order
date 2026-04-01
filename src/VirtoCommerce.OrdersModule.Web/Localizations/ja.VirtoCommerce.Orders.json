@@ -459,7 +459,7 @@
       },
       "address-delete": {
         "title": "削除の確認",
-        "message": "この住所を削除してもよろしいですか？"
+        "message": "住所 '{{name}}' を削除してもよろしいですか？"
       },
       "address-save": {
         "title": "変更を保存",
