@@ -444,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Löschbestätigung",
-        "message": "Sind Sie sicher, dass Sie die aktuelle Operation löschen möchten?"
+        "message": "Sind Sie sicher, dass Sie die Operation '{{name}}' löschen möchten?"
       },
       "operation-cancel": {
         "title": "Operation abbrechen",

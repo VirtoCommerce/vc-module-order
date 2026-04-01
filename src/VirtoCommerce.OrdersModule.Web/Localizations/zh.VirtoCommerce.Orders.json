@@ -444,7 +444,7 @@
       },
       "operation-delete": {
         "title": "删除确认",
-        "message": "您确定要删除当前操作吗？"
+        "message": "您确定要删除操作 '{{name}}' 吗？"
       },
       "operation-cancel": {
         "title": "取消操作",

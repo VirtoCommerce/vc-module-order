@@ -444,7 +444,7 @@
       },
       "operation-delete": {
         "title": "削除の確認",
-        "message": "現在の操作を削除してもよろしいですか？"
+        "message": "操作 '{{name}}' を削除してもよろしいですか？"
       },
       "operation-cancel": {
         "title": "操作をキャンセル",

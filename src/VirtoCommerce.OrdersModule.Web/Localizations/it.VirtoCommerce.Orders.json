@@ -444,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Conferma eliminazione",
-        "message": "Sei sicuro di voler eliminare l'operazione corrente?"
+        "message": "Sei sicuro di voler eliminare l'operazione '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Annulla operazione",

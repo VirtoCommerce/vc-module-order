@@ -444,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete the current operation?"
+        "message": "Are you sure you want to delete the operation '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Cancel operation",

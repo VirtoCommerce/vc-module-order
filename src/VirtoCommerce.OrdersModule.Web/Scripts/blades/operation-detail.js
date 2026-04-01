@@ -180,7 +180,7 @@ angular.module('virtoCommerce.orderModule')
                     id: "confirmDeleteItem",
                     title: "orders.dialogs.operation-delete.title",
                     message: "orders.dialogs.operation-delete.message",
-                    name: blade.currentEntity.operationType,
+                    messageValues: { name: blade.currentEntity.operationType },
                     callback: function (remove) {
                         if (remove) {
                             if (blade.id === 'operationDetail') {
