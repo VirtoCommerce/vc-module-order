@@ -436,7 +436,7 @@
       "orders-delete": {
         "title": "Conferma eliminazione",
         "message": "Sei sicuro di voler eliminare gli ordini cliente selezionati?",
-        "order": "{{count}} ordine(i)"
+        "order": "{{count}} ordini"
       },
       "operation-save": {
         "title": "Salva modifiche",
