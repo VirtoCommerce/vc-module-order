@@ -37,8 +37,6 @@ public class ConfigurationItem : AuditableEntity, ICloneable
 
     public string CustomText { get; set; }
 
-    public string ProductSnapshot { get; set; }
-
     public IList<ConfigurationItemFile> Files { get; set; }
 
     public virtual object Clone()

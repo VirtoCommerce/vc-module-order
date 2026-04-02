@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
-using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
-using VirtoCommerce.CatalogModule.Core.Serialization;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -45,18 +43,11 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             _itemService = itemService;
         }
 
-        protected virtual int ProductSnapshotBatchSize => 50;
-
-        protected virtual string ProductSnapshotResponseGroup { get; } =
-            (ItemResponseGroup.ItemInfo | ItemResponseGroup.ItemAssets | ItemResponseGroup.ItemProperties | ItemResponseGroup.ItemEditorialReviews).ToString();
-
         #region ICustomerOrderConverter Members
 
         public virtual async Task<CustomerOrder> PlaceCustomerOrderFromCartAsync(ShoppingCart cart)
         {
             var customerOrder = ConvertCartToOrder(cart);
-
-            await SaveProductSnapshotsAsync(customerOrder);
 
             await _customerOrderService.SaveChangesAsync([customerOrder]);
 
@@ -557,95 +548,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void PostConvertCartToOrder(ShoppingCart cart, CustomerOrder order, Dictionary<string, LineItem> cartLineItemsMap)
         {
-        }
-
-        protected virtual async Task SaveProductSnapshotsAsync(CustomerOrder order)
-        {
-            if (order.Items.IsNullOrEmpty() || !await _settingsManager.GetValueAsync<bool>(OrderSettings.ProductSnapshotEnabled))
-            {
-                return;
-            }
-
-            // Build map: ProductId → list of items to assign snapshots
-            var productToItemsMap = GetProductToItemsMap(order.Items);
-            if (productToItemsMap.Count == 0)
-            {
-                return;
-            }
-
-            foreach (var batchIds in productToItemsMap.Keys.Paginate(ProductSnapshotBatchSize))
-            {
-                var products = await _itemService.GetNoCloneAsync(batchIds, ProductSnapshotResponseGroup);
-                AssignProductSnapshots(products, productToItemsMap);
-            }
-        }
-
-        protected virtual IDictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>> GetProductToItemsMap(ICollection<LineItem> items)
-        {
-            var map = new Dictionary<string, List<(LineItem, ConfigurationItem)>>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (var lineItem in items)
-            {
-                AddToMap(lineItem.ProductId, lineItem);
-
-                if (lineItem.ConfigurationItems.IsNullOrEmpty())
-                {
-                    continue;
-                }
-
-                foreach (var configurationItem in lineItem.ConfigurationItems)
-                {
-                    AddToMap(configurationItem.ProductId, lineItem, configurationItem);
-                }
-            }
-
-            return map;
-
-            void AddToMap(string productId, LineItem lineItem, ConfigurationItem configurationItem = null)
-            {
-                if (string.IsNullOrEmpty(productId))
-                {
-                    return;
-                }
-
-                if (!map.TryGetValue(productId, out var itemList))
-                {
-                    itemList = [];
-                    map[productId] = itemList;
-                }
-
-                itemList.Add((lineItem, configurationItem));
-            }
-        }
-
-        protected virtual void AssignProductSnapshots(IList<CatalogProduct> products, IDictionary<string, List<(LineItem LineItem, ConfigurationItem ConfigurationItem)>> productToItemsMap)
-        {
-            if (products.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            foreach (var product in products.Where(x => x != null))
-            {
-                if (!productToItemsMap.TryGetValue(product.Id, out var items))
-                {
-                    continue;
-                }
-
-                var snapshot = ProductJsonSerializer.Serialize(product);
-
-                foreach (var (lineItem, configurationItem) in items)
-                {
-                    if (configurationItem != null)
-                    {
-                        configurationItem.ProductSnapshot = snapshot;
-                    }
-                    else
-                    {
-                        lineItem.ProductSnapshot = snapshot;
-                    }
-                }
-            }
         }
     }
 }
