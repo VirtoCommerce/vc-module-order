@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module>
   <id>VirtoCommerce.Orders</id>
-  <version>3.1003.0</version>
+  <version>3.1004.0</version>
   <version-tag />
 
   <platformVersion>3.1013.0</platformVersion>
