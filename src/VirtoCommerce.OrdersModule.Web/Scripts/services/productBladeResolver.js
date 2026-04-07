@@ -27,7 +27,8 @@ angular.module('virtoCommerce.orderModule')
                         return $q.when(false);
                     }
 
-                    var current = handlers[index++];
+                    var current = handlers[index];
+                    index++;
 
                     return $q.when(current.fn(context)).then(function (handled) {
                         if (handled) {

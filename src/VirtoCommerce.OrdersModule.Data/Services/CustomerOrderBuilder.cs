@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CartModule.Core.Model;
-using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
 using VirtoCommerce.OrdersModule.Core.Model;
@@ -29,18 +28,15 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         private readonly ICustomerOrderService _customerOrderService;
         private readonly ISettingsManager _settingsManager;
         private readonly IPaymentMethodsSearchService _paymentMethodSearchService;
-        private readonly IItemService _itemService;
 
         public CustomerOrderBuilder(
             ICustomerOrderService customerOrderService,
             ISettingsManager settingsManager,
-            IPaymentMethodsSearchService paymentMethodSearchService,
-            IItemService itemService)
+            IPaymentMethodsSearchService paymentMethodSearchService)
         {
             _customerOrderService = customerOrderService;
             _settingsManager = settingsManager;
             _paymentMethodSearchService = paymentMethodSearchService;
-            _itemService = itemService;
         }
 
         #region ICustomerOrderConverter Members
