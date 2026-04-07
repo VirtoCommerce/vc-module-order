@@ -209,6 +209,7 @@ namespace VirtoCommerce.OrdersModule.Web
             {
                 var databaseProvider = Configuration.GetValue("DatabaseProvider", "SqlServer");
                 var dbContext = serviceScope.ServiceProvider.GetRequiredService<OrderDbContext>();
+
                 if (databaseProvider == "SqlServer")
                 {
                     dbContext.Database.MigrateIfNotApplied(MigrationName.GetUpdateV2MigrationName(ModuleInfo.Id));

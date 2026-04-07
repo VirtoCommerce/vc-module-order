@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "削除の確認",
-        "message": "選択した顧客注文を削除してもよろしいですか？"
+        "message": "選択した顧客注文を削除してもよろしいですか？",
+        "order": "{{count}} 件の注文"
       },
       "operation-save": {
         "title": "変更を保存",
@@ -443,7 +444,7 @@
       },
       "operation-delete": {
         "title": "削除の確認",
-        "message": "現在の操作を削除してもよろしいですか？"
+        "message": "操作 '{{name}}' を削除してもよろしいですか？"
       },
       "operation-cancel": {
         "title": "操作をキャンセル",
@@ -458,7 +459,7 @@
       },
       "address-delete": {
         "title": "削除の確認",
-        "message": "この住所を削除してもよろしいですか？"
+        "message": "住所 '{{name}}' を削除してもよろしいですか？"
       },
       "address-save": {
         "title": "変更を保存",
