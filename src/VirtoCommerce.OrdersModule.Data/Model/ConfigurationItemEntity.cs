@@ -79,6 +79,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         configurationItem.CategoryId = CategoryId;
         configurationItem.Type = Type;
         configurationItem.CustomText = CustomText;
+        configurationItem.CustomerOrderId = LineItem?.CustomerOrderId;
 
         configurationItem.Files = Files.Select(x => x.ToModel(AbstractTypeFactory<ConfigurationItemFile>.TryCreateInstance())).ToList();
 
