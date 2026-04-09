@@ -14,6 +14,11 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         IHasDynamicProperties, ITaxable, IHasDiscounts, ICloneable, IHasFeesDetalization
     {
         /// <summary>
+        /// Not mapped for updates: updates to this property are ignored by CRUD services.
+        /// </summary>
+        public string CustomerOrderId { get; internal set; }
+
+        /// <summary>
         /// Price id
         /// </summary>
         public string PriceId { get; set; }
@@ -108,8 +113,6 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public string VendorId { get; set; }
 
         public bool IsConfigured { get; set; }
-
-        public string CustomerOrderId { get; set; }
 
         #region IHaveDimension Members
 

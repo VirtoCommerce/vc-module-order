@@ -185,7 +185,6 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
             lineItem.VendorId = VendorId;
             lineItem.IsConfigured = IsConfigured;
-            lineItem.CustomerOrderId = CustomerOrderId;
 
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
@@ -200,6 +199,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
                 property.Values = x.Select(v => v.ToModel(AbstractTypeFactory<DynamicPropertyObjectValue>.TryCreateInstance())).ToArray();
                 return property;
             }).ToArray();
+
+            lineItem.CustomerOrderId = CustomerOrderId;
 
             return lineItem;
         }
