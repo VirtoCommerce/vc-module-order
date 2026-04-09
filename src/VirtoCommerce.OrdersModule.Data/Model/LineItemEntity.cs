@@ -185,6 +185,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
             lineItem.VendorId = VendorId;
             lineItem.IsConfigured = IsConfigured;
+            lineItem.CustomerOrderId = CustomerOrderId;
 
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
