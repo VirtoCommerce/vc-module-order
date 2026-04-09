@@ -1,80 +1,143 @@
 angular.module('virtoCommerce.orderModule')
-    .controller('virtoCommerce.orderModule.customerOrderChangeLogController', ['$scope', 'virtoCommerce.orderModule.order_res_customerOrders', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeUtils', '$timeout', function ($scope, customerOrders, uiGridHelper, bladeUtils, $timeout) {
-        var blade = $scope.blade;
+    .controller('virtoCommerce.orderModule.customerOrderChangeLogController', [
+        '$scope',
+        'virtoCommerce.orderModule.order_res_customerOrders',
+        'platformWebApp.uiGridHelper',
+        'platformWebApp.bladeUtils',
+        function ($scope, customerOrders, uiGridHelper, bladeUtils) {
+            $scope.uiGridConstants = uiGridHelper.uiGridConstants;
+            var blade = $scope.blade;
 
-        //pagination settings
-        $scope.pageSettings = {};
-        $scope.pageSettings.currentPage = 1;
-        $scope.pageSettings.itemsPerPageCount = 20;
-        $scope.pageSettings.totalItems = 0;
+            // --- Filter state ---
 
-        blade.refresh = function () {
-            blade.isLoading = true;
+            var filter = $scope.filter = {
+                keyword: '',
+                operationType: '',
+                datePreset: '',
+                startDate: null,
+                endDate: null,
 
-            if ($scope.pageSettings.currentPage !== 1) {
-                $scope.pageSettings.currentPage = 1;
+                hasActiveFilters: function () {
+                    return filter.operationType || filter.datePreset;
+                },
+
+                clearFilters: function () {
+                    filter.operationType = '';
+                    filter.datePreset = '';
+                    filter.startDate = null;
+                    filter.endDate = null;
+                    filter.criteriaChanged();
+                },
+
+                criteriaChanged: function () {
+                    computeDateRange();
+                    if ($scope.pageSettings.currentPage > 1) {
+                        $scope.pageSettings.currentPage = 1;
+                    } else {
+                        blade.refresh();
+                    }
+                }
+            };
+
+            function computeDateRange() {
+                if (filter.datePreset === 'custom') {
+                    return;
+                }
+                var now = new Date();
+                var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                filter.startDate = null;
+                filter.endDate = null;
+
+                switch (filter.datePreset) {
+                    case 'today':
+                        filter.startDate = startOfToday;
+                        break;
+                    case 'yesterday':
+                        filter.startDate = new Date(startOfToday.getTime() - 86400000);
+                        filter.endDate = startOfToday;
+                        break;
+                    case 'last7':
+                        filter.startDate = new Date(startOfToday.getTime() - 7 * 86400000);
+                        break;
+                    case 'last30':
+                        filter.startDate = new Date(startOfToday.getTime() - 30 * 86400000);
+                        break;
+                    default:
+                        break;
+                }
             }
 
-            customerOrders.searchOrderChanges(getSearchCriteria(), (data) => {
-                blade.isLoading = false;
-                $scope.pageSettings.totalItems = data.totalCount;
-                blade.currentEntities = data.results;
-                $scope.hasMore = data.results.length === $scope.pageSettings.itemsPerPageCount;
-
-                if ($scope.gridApi) {
-                    $scope.gridApi.infiniteScroll.resetScroll(true, true);
-                    $scope.gridApi.infiniteScroll.dataLoaded();
+            blade.searchText = '';
+            $scope.$watch('blade.searchText', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    filter.keyword = newVal;
+                    filter.criteriaChanged();
                 }
             });
-        };
 
-        function showMore() {
-            if ($scope.hasMore) {
-                ++$scope.pageSettings.currentPage;
-                $scope.gridApi.infiniteScroll.saveScrollPercentage();
+            // --- Filter options ---
+
+            blade.operationTypes = [
+                { label: 'platform.blades.operation-list.filter.all', value: '' },
+                { label: 'platform.blades.operation-list.filter.type-added', value: 'Added' },
+                { label: 'platform.blades.operation-list.filter.type-modified', value: 'Modified' },
+                { label: 'platform.blades.operation-list.filter.type-deleted', value: 'Deleted' }
+            ];
+
+            blade.datePresets = [
+                { label: 'platform.blades.operation-list.filter.date-any', value: '' },
+                { label: 'platform.blades.operation-list.filter.date-today', value: 'today' },
+                { label: 'platform.blades.operation-list.filter.date-yesterday', value: 'yesterday' },
+                { label: 'platform.blades.operation-list.filter.date-last7', value: 'last7' },
+                { label: 'platform.blades.operation-list.filter.date-last30', value: 'last30' },
+                { label: 'platform.blades.operation-list.filter.date-custom', value: 'custom' }
+            ];
+
+            // --- Blade operations ---
+
+            blade.refresh = function () {
                 blade.isLoading = true;
 
-                customerOrders.searchOrderChanges(getSearchCriteria(), (data) => {
+                var searchCriteria = {
+                    orderId: blade.orderId,
+                    keyword: filter.keyword || undefined,
+                    sort: uiGridHelper.getSortExpression($scope),
+                    skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
+                    take: $scope.pageSettings.itemsPerPageCount
+                };
+
+                if (filter.operationType) {
+                    searchCriteria.operationTypes = [filter.operationType];
+                }
+                if (filter.startDate) {
+                    searchCriteria.startDate = filter.startDate;
+                }
+                if (filter.endDate) {
+                    searchCriteria.endDate = filter.endDate;
+                }
+
+                customerOrders.searchOrderChanges(searchCriteria, function (data) {
                     blade.isLoading = false;
                     $scope.pageSettings.totalItems = data.totalCount;
-                    blade.currentEntities = blade.currentEntities.concat(data.results);
-                    $scope.hasMore = data.results.length === $scope.pageSettings.itemsPerPageCount;
-                    $scope.gridApi.infiniteScroll.dataLoaded();
+                    blade.currentEntities = data.results;
                 });
-            }
-        }
+            };
 
-        function getSearchCriteria() {
-            return {
-                orderId: blade.orderId,
-                sort: uiGridHelper.getSortExpression($scope),
-                skip: ($scope.pageSettings.currentPage - 1) * $scope.pageSettings.itemsPerPageCount,
-                take: $scope.pageSettings.itemsPerPageCount
+            blade.toolbarCommands = [
+                {
+                    name: "platform.commands.refresh", icon: 'fa fa-refresh',
+                    executeMethod: blade.refresh,
+                    canExecuteMethod: function () { return true; }
+                }
+            ];
+
+            // --- ui-grid ---
+
+            $scope.setGridOptions = function (gridOptions) {
+                uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
+                    uiGridHelper.bindRefreshOnSortChanged($scope);
+                });
+                bladeUtils.initializePagination($scope);
             };
         }
-
-        var filter = blade.filter = $scope.filter = {};
-        filter.criteriaChanged = function () {
-            if ($scope.pageSettings.currentPage > 1) {
-                $scope.pageSettings.currentPage = 1;
-            } else {
-                blade.refresh();
-            }
-        };
-
-        // ui-grid
-        $scope.setGridOptions = function (gridOptions) {
-            bladeUtils.initializePagination($scope, true);
-
-            uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
-                //update gridApi for current grid
-                $scope.gridApi = gridApi;
-                uiGridHelper.bindRefreshOnSortChanged($scope);
-                $scope.gridApi.infiniteScroll.on.needLoadMoreData($scope, showMore);
-
-            });
-
-            $timeout(function () { blade.refresh(); });
-        };
-
-}]);
+    ]);
