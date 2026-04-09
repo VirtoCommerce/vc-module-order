@@ -8,7 +8,6 @@ angular.module('virtoCommerce.orderModule')
                 controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationController',
                 template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-configuration.tpl.html',
                 currentEntity: blade.currentEntity,
-                order: blade.order,
             };
             bladeNavigationService.showBlade(newBlade, blade);
         };

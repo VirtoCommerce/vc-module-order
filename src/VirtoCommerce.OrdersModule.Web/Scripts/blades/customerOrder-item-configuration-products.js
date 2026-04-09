@@ -32,11 +32,9 @@ angular.module('virtoCommerce.orderModule')
             $scope.selectNode = function (item) {
                 $scope.selectedNodeId = item.id;
 
-
                 return productBladeResolver.open({
                     blade: blade,
-                    item: blade.currentEntity,
-                    orderId: blade.order.id
+                    item: item,
                 });
             }
 
