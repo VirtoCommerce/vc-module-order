@@ -1,4 +1,4 @@
-<ul class="list __prices">
+<ul class="list __prices order-totals" ng-click="openItemsBlade()">
     <li class="list-item">{{'orders.widgets.customerOrder-totals.sub-total' | translate}} <span class="list-price">{{blade.customerOrder.subTotal | currency:blade.customerOrder.currency}}</span></li>
     <li class="list-item">{{'orders.widgets.customerOrder-totals.shipping-sub-total' | translate}} <span class="list-price">{{blade.customerOrder.shippingSubTotal | currency:blade.customerOrder.currency}}</span></li>
     <li class="list-item">{{'orders.widgets.customerOrder-totals.payment-sub-total' | translate}} <span class="list-price">{{blade.customerOrder.paymentSubTotal | currency:blade.customerOrder.currency}}</span></li>

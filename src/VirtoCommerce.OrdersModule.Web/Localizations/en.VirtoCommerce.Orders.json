@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Select assignee",
           "status": "Select...",
-          "store": "Select..."
+          "store": "Select...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Qty",
           "available": "Avail",
           "await": "Await",
-          "price": "Unit price (excl. tax)",
+          "price": "Price per item",
           "tax": "Tax",
           "priceWithTax": "Unit price (incl. tax)",
-          "discount": "Discount (excl. tax)",
+          "discount": "Discount",
           "discountWithTax": "Discount (incl. tax)",
-          "total": "Total line items",
+          "total": "Total",
           "dynamic-properties": "Dynamic properties",
           "sub-total": "Subtotal",
-          "discount-total": "Total discount",
-          "tax-total": "Total tax",
-          "fee-total": "Total fee"
+          "discount-total": "Discount",
+          "tax-total": "Tax",
+          "fee-total": "Fee"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Product name"
+          "product": "Product name",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -433,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete the selected customer orders?"
+        "message": "Are you sure you want to delete the selected customer orders?",
+        "order": "{{count}} order(s)"
       },
       "operation-save": {
         "title": "Save changes",
@@ -441,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Delete confirmation",
-        "message": "Are you sure you want to delete the current operation?"
+        "message": "Are you sure you want to delete the operation '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Cancel operation",
@@ -456,7 +459,7 @@
       },
       "address-delete": {
         "title": "Confirm delete",
-        "message": "Are you sure you want to delete this address?"
+        "message": "Are you sure you want to delete address '{{name}}'?"
       },
       "address-save": {
         "title": "Save changes",
@@ -618,6 +621,22 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Enable purchased product store filter",
       "description": "Display the purchased product filter for the store"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Save product snapshots in orders",
+      "description": "Stores serialized product data in order line items to preserve historical information"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximum number of child documents per order",
+      "description": "Defines the maximum number of child documents (payments, shipments, captures, refunds, etc.) that can be created or stored per order. This ensures system performance, storage optimization, and data consistency. An exception will be thrown on save if this limit is exceeded"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Enable dashboard statistics",
+      "description": "Turn on or off the order statistics dashboard widgets on the main dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard statistics range (months)",
+      "description": "Defines the number of months to include in the dashboard statistics calculations. Default is 12 months"
     }
   },
   "module": {

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +15,7 @@ using Microsoft.Extensions.Primitives;
 using Moq;
 using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Model.Search;
 using VirtoCommerce.OrdersModule.Core.Services;
@@ -28,6 +32,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.GenericCrud;
+using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.ShippingModule.Core.Model.Search;
 using VirtoCommerce.ShippingModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -56,6 +61,8 @@ namespace VirtoCommerce.OrdersModule.Tests
         private readonly Mock<ILogger<PlatformMemoryCache>> _logMock;
         private readonly Mock<ILogger<InProcessBus>> _logEventMock;
         private readonly Mock<IBlobUrlResolver> _blobUrlResolver;
+        private readonly Mock<ISettingsManager> _settingsManagerMock;
+        private readonly Mock<IValidator<CustomerOrder>> _customerOrderValidatorMock;
 
         public CustomerOrderServiceImplIntegrationTests()
         {
@@ -75,6 +82,22 @@ namespace VirtoCommerce.OrdersModule.Tests
             _logMock = new Mock<ILogger<PlatformMemoryCache>>();
             _logEventMock = new Mock<ILogger<InProcessBus>>();
             _blobUrlResolver = new Mock<IBlobUrlResolver>();
+            _settingsManagerMock = new Mock<ISettingsManager>();
+            _customerOrderValidatorMock = new Mock<IValidator<CustomerOrder>>();
+            
+            // Setup settings manager - validation disabled by default for integration tests
+            _settingsManagerMock
+                .Setup(x => x.GetObjectSettingAsync(
+                    ModuleConstants.Settings.General.CustomerOrderValidation.Name,
+                    null,
+                    null))
+                .ReturnsAsync(new ObjectSettingEntry { Value = false });
+            
+            // Setup validator to return success by default
+            _customerOrderValidatorMock
+                .Setup(x => x.ValidateAsync(It.IsAny<CustomerOrder>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ValidationResult());
+            
             var cachingOptions = new OptionsWrapper<CachingOptions>(new CachingOptions { CacheEnabled = true });
             var memoryCache = new MemoryCache(new MemoryCacheOptions()
             {
@@ -101,6 +124,8 @@ namespace VirtoCommerce.OrdersModule.Tests
             container.AddSingleton(x => _changeLogServiceMock.Object);
             container.AddSingleton(x => _logEventMock.Object);
             container.AddSingleton(x => _blobUrlResolver.Object);
+            container.AddSingleton(x => _settingsManagerMock.Object);
+            container.AddSingleton(x => _customerOrderValidatorMock.Object);
             container.AddOptions<CrudOptions>();
 
             var serviceProvider = container.BuildServiceProvider();

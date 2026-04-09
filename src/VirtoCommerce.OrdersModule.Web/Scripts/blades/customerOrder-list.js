@@ -8,28 +8,29 @@ angular.module('virtoCommerce.orderModule')
 
     $scope.getGridOptions = () => {
         return {
-        useExternalSorting: true,
-        data: 'objects',
-        rowTemplate: 'order-list.row.html',
-        columnDefs: [
-                   { name: 'actions', displayName: '', enableColumnResizing: false, enableSorting: false, width: 30, cellTemplate: 'list-actions.cell.html', pinnedLeft: true, displayAlways: true },
-                   { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
-                   { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
-                   { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
-                   { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellTemplate: 'price.cell.html', width: '**' },
-                   { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
-                   { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
-                   { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'settingTranslate:"Order.Status"', width: '*' },
-                   { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', sort: { direction: uiGridConstants.DESC } }
-       ]}
-    }
+            useExternalSorting: true,
+            rowTemplate: 'order-list.row.html',
+            columnDefs: [
+                { name: 'actions', displayName: '', enableColumnResizing: false, enableSorting: false, width: 30, cellTemplate: 'list-actions.cell.html', pinnedLeft: true, displayAlways: true },
+                { name: 'number', displayName: 'orders.blades.customerOrder-list.labels.number', width: '***', displayAlways: true },
+                { name: 'customerName', displayName: 'orders.blades.customerOrder-list.labels.customer', width: '***' },
+                { name: 'storeId', displayName: 'orders.blades.customerOrder-list.labels.store', width: '**' },
+                { name: 'total', displayName: 'orders.blades.customerOrder-list.labels.total', cellTemplate: 'price.cell.html', width: '**' },
+                { name: 'currency', displayName: 'orders.blades.customerOrder-list.labels.currency', width: '*' },
+                { name: 'isApproved', displayName: 'orders.blades.customerOrder-list.labels.confirmed', width: '*', cellClass: '__blue' },
+                { name: 'status', displayName: 'orders.blades.customerOrder-list.labels.status', cellFilter: 'settingTranslate:"Order.Status"', width: '*' },
+                { name: 'createdDate', displayName: 'orders.blades.customerOrder-list.labels.created', width: '**', sort: { direction: uiGridConstants.DESC } },
+            ],
+        };
+    };
 
-    $rootScope.$on('loginStatusChanged', (securityScopes) => {
-        $translate.refresh().then(() => {
-            let gridOptions = $scope.getGridOptions();
-            $scope.setGridOptions("customerOrder-list-grid", gridOptions);
-        });
+    // If auth data arrives after the blade is created (common on deep-link), refresh grid to re-render masked/unmasked prices.
+    var unbindLoginStatusChanged = $rootScope.$on('loginStatusChanged', function () {
+        if ($scope.gridApi && $scope.gridApi.core) {
+            $scope.gridApi.core.refresh();
+        }
     });
+    $scope.$on('$destroy', unbindLoginStatusChanged);
 
     blade.refresh = function () {
         var sortCriteria = uiGridHelper.getSortExpression($scope);
@@ -52,13 +53,13 @@ angular.module('virtoCommerce.orderModule')
                     blade.isLoading = false;
 
                     $scope.pageSettings.totalItems = data.totalCount;
-                    $scope.objects = data.results;
+                    blade.currentEntities = data.results;
                 });
             }
         }
         else if (blade.preloadedOrders) {
             $scope.pageSettings.totalItems = blade.preloadedOrders.length;
-            $scope.objects = blade.preloadedOrders;
+            blade.currentEntities = blade.preloadedOrders;
 
             blade.isLoading = false;
         } else {
@@ -82,7 +83,7 @@ angular.module('virtoCommerce.orderModule')
                 blade.isLoading = false;
 
                 $scope.pageSettings.totalItems = data.totalCount;
-                $scope.objects = data.results;
+                blade.currentEntities = data.results;
             });
         }
     };
@@ -128,7 +129,7 @@ angular.module('virtoCommerce.orderModule')
         var dialog = {
             id: "confirmDeleteItem",
             title: "orders.dialogs.orders-delete.title",
-            message: "orders.dialogs.orders-delete.message",
+            items: [{ key: 'orders.dialogs.orders-delete.order', count: list.length }],
             callback: function (remove) {
                 if (remove) {
                     $scope.isLoading = true;
@@ -141,11 +142,11 @@ angular.module('virtoCommerce.orderModule')
                     function (error) {
                         bladeNavigationService.setError('Error ' + error.status, blade);
                     });
-                 
+
                 }
             }
         };
-        dialogService.showConfirmationDialog(dialog);
+        dialogService.showDeleteConfirmationDialog(dialog);
     };
 
     function closeChildrenBlades() {
@@ -254,22 +255,20 @@ angular.module('virtoCommerce.orderModule')
             return { name: name, cellTemplate: 'price.cell.html', visible: false };
         }));
 
-        $scope.gridOptions = gridOptions;
         gridOptionExtension.tryExtendGridOptions(gridId, gridOptions);
 
+        if (blade.preloadedOrders) {
+            gridOptions.enableSorting = true;
+            gridOptions.useExternalSorting = false;
+        }
+
         uiGridHelper.initialize($scope, gridOptions, function (gridApi) {
-            if (blade.preloadedOrders) {
-                $scope.gridOptions.enableSorting = true;
-                $scope.gridOptions.useExternalSorting = false;              
-            }
-            else {
+            if (!blade.preloadedOrders) {
                 uiGridHelper.bindRefreshOnSortChanged($scope);
             }
         });
 
         bladeUtils.initializePagination($scope);
-
-        return gridOptions;
     };
 
     customerOrders.indexedSearchEnabled(function (data) {

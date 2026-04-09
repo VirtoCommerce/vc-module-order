@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using AutoCompare;
 using Hangfire;
@@ -25,7 +24,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         private readonly IMemberService _memberService;
         private readonly IChangeLogService _changeLogService;
         private readonly ISettingsManager _settingsManager;
-        private static readonly ConcurrentDictionary<string, List<string>> _auditablePropertiesListByTypeDict = new();
+        private static readonly ConcurrentDictionary<Type, List<string>> _auditablePropertiesListByTypeDict = new();
 
         public LogChangesOrderChangedEventHandler(IChangeLogService changeLogService, IMemberService memberService, ISettingsManager settingsManager)
         {
@@ -40,23 +39,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (logOrderChangesEnabled && message.ChangedEntries.Any())
             {
-                var operationLogs = new List<OperationLog>();
-
-                foreach (var changedEntry in message.ChangedEntries)
-                {
-                    if (changedEntry.EntryState == EntryState.Modified)
-                    {
-                        var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
-                        var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
-
-                        modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
-                                                             (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
-                    }
-                    else if (changedEntry.EntryState == EntryState.Added || changedEntry.EntryState == EntryState.Deleted)
-                    {
-                        operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(changedEntry.NewEntry, changedEntry.OldEntry, changedEntry.EntryState)));
-                    }
-                }
+                var operationLogs = GetOperationLogs(message.ChangedEntries);
 
                 if (!operationLogs.IsNullOrEmpty())
                 {
@@ -65,93 +48,124 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
         }
 
-        // (!) Do not make this method async, it causes improper user recorded into the log! It happens because the user stored in the current thread. If the thread switched, the user info will lost.
-        public void TryToLogChangesBackgroundJob(OperationLog[] operationLogs)
+        protected virtual IList<OperationLog> GetOperationLogs(IEnumerable<GenericChangedEntry<CustomerOrder>> changedEntries)
         {
-            _changeLogService.SaveChangesAsync(operationLogs).GetAwaiter().GetResult();
+            var operationLogs = new List<OperationLog>();
+
+            foreach (var changedEntry in changedEntries)
+            {
+                switch (changedEntry.EntryState)
+                {
+                    case EntryState.Modified:
+                        {
+                            var originalOperations = changedEntry.OldEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+                            var modifiedOperations = changedEntry.NewEntry.GetFlatObjectsListWithInterface<IOperation>().Distinct().ToList();
+
+                            modifiedOperations.CompareTo(originalOperations, EqualityComparer<IOperation>.Default,
+                                (state, modified, original) => operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(modified, original, state))));
+                            break;
+                        }
+                    case EntryState.Added or EntryState.Deleted:
+                        operationLogs.AddRange(GetChangedEntryOperationLogs(new GenericChangedEntry<IOperation>(changedEntry.NewEntry, changedEntry.OldEntry, changedEntry.EntryState)));
+                        break;
+                }
+            }
+
+            return operationLogs;
+        }
+
+        public Task TryToLogChangesBackgroundJob(OperationLog[] operationLogs)
+        {
+            return _changeLogService.SaveChangesAsync(operationLogs);
         }
 
         protected virtual IEnumerable<OperationLog> GetChangedEntryOperationLogs(GenericChangedEntry<IOperation> changedEntry)
         {
             var result = new List<OperationLog>();
 
-            if (changedEntry.EntryState == EntryState.Modified)
+            switch (changedEntry.EntryState)
             {
-                var logs = new List<string>();
-
-                var diff = GetOperationDifferences(changedEntry, logs);
-
-                var auditableProperties = GetAuditableProperties(changedEntry);
-
-                if (auditableProperties.Count != 0)
-                {
-                    var observedDifferences = diff.Join(auditableProperties, x => x.Name.ToLowerInvariant(), x => x.ToLowerInvariant(), (x, y) => x).ToArray();
-                    foreach (var difference in observedDifferences.Distinct(new DifferenceComparer()))
+                case EntryState.Modified:
                     {
-                        logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to '{difference.NewValue}'");
-                    }
-                }
+                        var logs = new List<string>();
+                        var diff = GetOperationDifferences(changedEntry, logs);
+                        var auditableProperties = GetAuditableProperties(changedEntry);
 
-                result.AddRange(logs.Select(x => GetLogRecord(changedEntry.NewEntry, x)));
-            }
-            else if (changedEntry.EntryState == EntryState.Deleted)
-            {
-                var record = GetLogRecord(changedEntry.NewEntry,
-                    $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
-                    EntryState.Deleted);
-                result.Add(record);
-            }
-            else if (changedEntry.EntryState == EntryState.Added)
-            {
-                var record = GetLogRecord(changedEntry.NewEntry,
-                    $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
-                    EntryState.Added);
-                result.Add(record);
+                        if (auditableProperties.Count > 0)
+                        {
+                            var observedDifferences = diff
+                                .Where(x => auditableProperties.ContainsIgnoreCase(x.Name))
+                                .Distinct(new DifferenceComparer());
+
+                            foreach (var difference in observedDifferences)
+                            {
+                                logs.Add($"The {changedEntry.OldEntry.OperationType} {changedEntry.NewEntry.Number} property '{difference.Name}' changed from '{difference.OldValue}' to '{difference.NewValue}'");
+                            }
+                        }
+
+                        foreach (var log in logs)
+                        {
+                            result.Add(GetLogRecord(changedEntry.NewEntry, log));
+                        }
+
+                        break;
+                    }
+                case EntryState.Deleted:
+                    {
+                        var record = GetLogRecord(changedEntry.NewEntry,
+                            $"The {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} deleted",
+                            EntryState.Deleted);
+                        result.Add(record);
+                        break;
+                    }
+                case EntryState.Added:
+                    {
+                        var record = GetLogRecord(changedEntry.NewEntry,
+                            $"The new {changedEntry.NewEntry.OperationType} {changedEntry.NewEntry.Number} added",
+                            EntryState.Added);
+                        result.Add(record);
+                        break;
+                    }
             }
 
             return result;
         }
 
-        protected List<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
+        protected static List<string> GetAuditableProperties(GenericChangedEntry<IOperation> changedEntry)
         {
             var type = changedEntry.OldEntry.GetType();
-            if (!_auditablePropertiesListByTypeDict.TryGetValue(type.Name, out var auditableProperties))
-            {
-                auditableProperties = type.GetProperties().Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
-                                                          .Select(x => x.Name)
-                                                          .ToList();
-                _auditablePropertiesListByTypeDict[type.Name] = auditableProperties;
-            }
 
-            return auditableProperties;
+            return _auditablePropertiesListByTypeDict.GetOrAdd(type, t =>
+                t.GetProperties()
+                    .Where(prop => Attribute.IsDefined(prop, typeof(AuditableAttribute)))
+                    .Select(x => x.Name)
+                    .ToList());
         }
 
         protected virtual IList<Difference> GetOperationDifferences(GenericChangedEntry<IOperation> changedEntry, List<string> logs)
         {
             var diff = Comparer.Compare(changedEntry.OldEntry, changedEntry.NewEntry);
 
-            if (changedEntry.OldEntry is Shipment shipment)
+            switch (changedEntry.OldEntry)
             {
-                logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
-                diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
-            }
-            else if (changedEntry.OldEntry is PaymentIn payment)
-            {
-                logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
-                diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
-            }
-            else if (changedEntry.OldEntry is CustomerOrder order)
-            {
-                logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
-                diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
-            }
-            else if (changedEntry.OldEntry is Capture capture)
-            {
-                diff.AddRange(Comparer.Compare(capture, changedEntry.NewEntry as Capture));
-            }
-            else if (changedEntry.OldEntry is Refund refund)
-            {
-                diff.AddRange(Comparer.Compare(refund, changedEntry.NewEntry as Refund));
+                case Shipment shipment:
+                    logs.AddRange(GetShipmentChanges(shipment, changedEntry.NewEntry as Shipment));
+                    diff.AddRange(Comparer.Compare(shipment, changedEntry.NewEntry as Shipment));
+                    break;
+                case PaymentIn payment:
+                    logs.AddRange(GetPaymentChanges(payment, changedEntry.NewEntry as PaymentIn));
+                    diff.AddRange(Comparer.Compare(payment, changedEntry.NewEntry as PaymentIn));
+                    break;
+                case CustomerOrder order:
+                    logs.AddRange(GetCustomerOrderChanges(order, changedEntry.NewEntry as CustomerOrder));
+                    diff.AddRange(Comparer.Compare(order, changedEntry.NewEntry as CustomerOrder));
+                    break;
+                case Capture capture:
+                    diff.AddRange(Comparer.Compare(capture, changedEntry.NewEntry as Capture));
+                    break;
+                case Refund refund:
+                    diff.AddRange(Comparer.Compare(refund, changedEntry.NewEntry as Refund));
+                    break;
             }
 
             return diff;
@@ -160,63 +174,61 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         protected virtual IEnumerable<string> GetCustomerOrderChanges(CustomerOrder originalOrder, CustomerOrder modifiedOrder)
         {
             var result = new List<string>();
+
             if (originalOrder.EmployeeId != modifiedOrder.EmployeeId)
             {
                 var employeeName = "none";
                 if (!string.IsNullOrEmpty(modifiedOrder.EmployeeId))
                 {
                     var employee = _memberService.GetByIdAsync(modifiedOrder.EmployeeId).GetAwaiter().GetResult() as Employee;
-                    employeeName = employee != null ? employee.FullName : employeeName;
+                    employeeName = employee?.FullName ?? employeeName;
                 }
                 result.Add($"Order employee was changed to '{employeeName}'");
             }
+
             result.AddRange(GetAddressChanges(originalOrder, originalOrder.Addresses, modifiedOrder.Addresses));
-            return result.ToArray();
+
+            return result;
         }
 
         protected virtual IEnumerable<string> GetShipmentChanges(Shipment originalShipment, Shipment modifiedShipment)
         {
-            var retVal = new List<string>();
-            retVal.AddRange(GetAddressChanges(originalShipment, new[] { originalShipment.DeliveryAddress }, new[] { modifiedShipment.DeliveryAddress }));
-            return retVal.ToArray();
+            return GetAddressChanges(originalShipment, [originalShipment.DeliveryAddress], [modifiedShipment.DeliveryAddress]);
         }
 
         protected virtual IEnumerable<string> GetPaymentChanges(PaymentIn payment, PaymentIn modifiedPayment)
         {
-            var result = new List<string>();
-            result.AddRange(GetAddressChanges(payment, new[] { payment.BillingAddress }, new[] { modifiedPayment.BillingAddress }));
-            return result;
+            return GetAddressChanges(payment, [payment.BillingAddress], [modifiedPayment.BillingAddress]);
         }
 
         protected virtual IEnumerable<string> GetAddressChanges(IOperation operation, IEnumerable<Address> originalAddress, IEnumerable<Address> modifiedAddress)
         {
             var result = new List<string>();
-            modifiedAddress.Where(x => x != null).ToList().CompareTo(originalAddress.Where(x => x != null).ToList(), EqualityComparer<Address>.Default,
-                                      (state, source, target) =>
-                                      {
-                                          if (state == EntryState.Added)
-                                          {
-                                              result.Add($"The address '{StringifyAddress(target)}' for {operation.OperationType} {operation.Number} added");
-                                          }
-                                          else if (state == EntryState.Deleted)
-                                          {
-                                              result.Add($"The address '{StringifyAddress(target)}' for {operation.OperationType} {operation.Number} deleted");
-                                          }
-                                      });
+
+            var modifiedAddressList = modifiedAddress?.Where(x => x != null).ToList() ?? [];
+            var originalAddressList = originalAddress?.Where(x => x != null).ToList() ?? [];
+
+            modifiedAddressList.CompareTo(originalAddressList, EqualityComparer<Address>.Default, (state, _, target) =>
+            {
+                switch (state)
+                {
+                    case EntryState.Added:
+                        result.Add($"The address '{StringifyAddress(target)}' for {operation.OperationType} {operation.Number} added");
+                        break;
+                    case EntryState.Deleted:
+                        result.Add($"The address '{StringifyAddress(target)}' for {operation.OperationType} {operation.Number} deleted");
+                        break;
+                }
+            });
+
             return result;
         }
 
         protected virtual string StringifyAddress(Address address)
         {
-            var result = "";
-            if (address != null)
-            {
-                return string.Join(", ", typeof(Address).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                                   .OrderBy(p => p.Name)
-                                   .Select(p => p.GetValue(address))
-                                   .Where(x => x != null));
-            }
-            return result;
+            return address is null
+                ? string.Empty
+                : string.Join(", ", address.GetAllProperties().Select(p => p.GetValue(address)).Where(x => x != null));
         }
 
         protected virtual OperationLog GetLogRecord(IOperation operation, string template, EntryState operationType = EntryState.Modified)
@@ -232,17 +244,28 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
         }
     }
 
-    internal class DifferenceComparer : EqualityComparer<Difference>
+    internal sealed class DifferenceComparer : EqualityComparer<Difference>
     {
         public override bool Equals(Difference x, Difference y)
         {
-            return GetHashCode(x) == GetHashCode(y);
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+
+            return string.Equals(x.Name, y.Name, StringComparison.Ordinal) &&
+                   Equals(x.OldValue, y.OldValue) &&
+                   Equals(x.NewValue, y.NewValue);
         }
 
         public override int GetHashCode(Difference obj)
         {
-            var result = string.Join(":", obj.Name, obj.NewValue, obj.OldValue);
-            return result.GetHashCode();
+            return HashCode.Combine(obj.Name, obj.OldValue, obj.NewValue);
         }
     }
 }

@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Seleccionar asignado",
           "status": "Seleccionar...",
-          "store": "Seleccionar..."
+          "store": "Seleccionar...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Cant.",
           "available": "Disp.",
           "await": "Espera",
-          "price": "Precio unitario (sin impuestos)",
+          "price": "Precio por artículo",
           "tax": "Impuesto",
           "priceWithTax": "Precio unitario (con impuestos)",
-          "discount": "Descuento (sin impuestos)",
+          "discount": "Descuento",
           "discountWithTax": "Descuento (con impuestos)",
-          "total": "Total de líneas",
+          "total": "Total",
           "dynamic-properties": "Propiedades dinámicas",
           "sub-total": "Subtotal",
-          "discount-total": "Descuento total",
-          "tax-total": "Impuesto total",
-          "fee-total": "Tarifa total"
+          "discount-total": "Descuento",
+          "tax-total": "Impuesto",
+          "fee-total": "Tarifa"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nombre del producto"
+          "product": "Nombre del producto",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -433,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Confirmación de eliminación",
-        "message": "¿Estás seguro de que deseas eliminar las órdenes de cliente seleccionadas?"
+        "message": "¿Estás seguro de que deseas eliminar las órdenes de cliente seleccionadas?",
+        "order": "{{count}} pedido(s)"
       },
       "operation-save": {
         "title": "Guardar cambios",
@@ -441,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Confirmación de eliminación",
-        "message": "¿Estás seguro de que deseas eliminar la operación actual?"
+        "message": "¿Estás seguro de que deseas eliminar la operación '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Cancelar operación",
@@ -456,7 +459,7 @@
       },
       "address-delete": {
         "title": "Confirmar eliminación",
-        "message": "¿Está seguro de que desea eliminar esta dirección?"
+        "message": "¿Está seguro de que desea eliminar la dirección '{{name}}'?"
       },
       "address-save": {
         "title": "Guardar cambios",
@@ -618,6 +621,18 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Habilitar el filtro de productos comprados en la tienda",
       "description": "Muestra el filtro de productos comprados en la tienda."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Número máximo de documentos secundarios por pedido",
+      "description": "Define el número máximo de documentos secundarios (pagos, envíos, capturas, reembolsos, etc.) que se pueden crear o almacenar por pedido. Esto garantiza el rendimiento del sistema, la optimización del almacenamiento y la consistencia de los datos. Se generará una excepción al guardar si se excede este límite"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Habilitar estadísticas del panel",
+      "description": "Activa o desactiva los widgets de estadísticas de pedidos en el panel principal"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Período de estadísticas del panel (meses)",
+      "description": "Define el número de meses a incluir en los cálculos de estadísticas del panel. El valor predeterminado es 12 meses"
     }
   },
   "module": {

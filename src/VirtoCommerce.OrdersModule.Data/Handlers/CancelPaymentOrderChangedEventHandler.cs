@@ -46,7 +46,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsIgnoreCase(jobArgument.PaymentId));
                     if (paymentToCancel != null && !paymentToCancel.IsCancelled)
                     {
+#pragma warning disable VC0012
                         CancelPayment(paymentToCancel, order);
+#pragma warning restore VC0012
 
                         if (!changedOrders.Contains(order))
                         {
@@ -85,15 +87,27 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return toCancelPayments.Select(x => PaymentToCancelJobArgument.FromChangedEntry(changedEntry, x)).ToArray();
         }
 
+        [Obsolete("Use CancelPaymentAsync method instead", DiagnosticId = "VC0012", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions")]
         protected virtual void CancelPayment(PaymentIn paymentToCancel, CustomerOrder order)
+        {
+            CancelPaymentAsync(paymentToCancel, order).GetAwaiter().GetResult();
+        }
+
+        protected virtual async Task CancelPaymentAsync(PaymentIn paymentToCancel, CustomerOrder order)
         {
             if (paymentToCancel.PaymentStatus == PaymentStatus.Authorized)
             {
-                paymentToCancel.PaymentMethod?.VoidProcessPayment(new VoidPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                if (paymentToCancel.PaymentMethod != null)
+                {
+                    await paymentToCancel.PaymentMethod.VoidProcessPaymentAsync(new VoidPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                }
             }
             else if (paymentToCancel.PaymentStatus == PaymentStatus.Paid)
             {
-                paymentToCancel.PaymentMethod?.RefundProcessPayment(new RefundPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                if (paymentToCancel.PaymentMethod != null)
+                {
+                    await paymentToCancel.PaymentMethod.RefundProcessPaymentAsync(new RefundPaymentRequest { PaymentId = paymentToCancel.Id, OrderId = order.Id, Payment = paymentToCancel, Order = order });
+                }
             }
             else
             {

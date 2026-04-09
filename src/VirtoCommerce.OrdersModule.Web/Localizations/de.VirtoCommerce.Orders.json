@@ -21,7 +21,8 @@
         "placeholders": {
           "employee": "Zuständigen auswählen",
           "status": "Auswählen...",
-          "store": "Auswählen..."
+          "store": "Auswählen...",
+          "sku": "SKU"
         }
       },
       "customerOrder-items": {
@@ -31,22 +32,23 @@
           "quantity": "Menge",
           "available": "Verfügbar",
           "await": "Ausstehend",
-          "price": "Stückpreis (ohne MwSt.)",
+          "price": "Preis pro Artikel",
           "tax": "Steuer",
           "priceWithTax": "Stückpreis (inkl. MwSt.)",
-          "discount": "Rabatt (ohne MwSt.)",
+          "discount": "Rabatt",
           "discountWithTax": "Rabatt (inkl. MwSt.)",
-          "total": "Gesamtbetrag Positionen",
+          "total": "Gesamt",
           "dynamic-properties": "Dynamische Eigenschaften",
           "sub-total": "Zwischensumme",
-          "discount-total": "Gesamtrabatt",
-          "tax-total": "Gesamtsteuer",
-          "fee-total": "Gesamtgebühr"
+          "discount-total": "Rabatt",
+          "tax-total": "Steuer",
+          "fee-total": "Gebühr"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Produktname"
+          "product": "Produktname",
+          "sku": "SKU"
         }
       },
       "customerOrder-list": {
@@ -433,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Löschbestätigung",
-        "message": "Sind Sie sicher, dass Sie die ausgewählten Kundenbestellungen löschen möchten?"
+        "message": "Sind Sie sicher, dass Sie die ausgewählten Kundenbestellungen löschen möchten?",
+        "order": "{{count}} Bestellung(en)"
       },
       "operation-save": {
         "title": "Änderungen speichern",
@@ -441,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Löschbestätigung",
-        "message": "Sind Sie sicher, dass Sie die aktuelle Operation löschen möchten?"
+        "message": "Sind Sie sicher, dass Sie die Operation '{{name}}' löschen möchten?"
       },
       "operation-cancel": {
         "title": "Operation abbrechen",
@@ -456,7 +459,7 @@
       },
       "address-delete": {
         "title": "Löschen bestätigen",
-        "message": "Sind Sie sicher, dass Sie diese Adresse löschen möchten?"
+        "message": "Sind Sie sicher, dass Sie die Adresse '{{name}}' löschen möchten?"
       },
       "address-save": {
         "title": "Änderungen speichern",
@@ -618,6 +621,18 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Aktivierung des Store-Filters für gekaufte Produkte",
       "description": "Zeigt den Filter für gekaufte Produkte im Store an."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maximale Anzahl von Unterdokumenten pro Bestellung",
+      "description": "Definiert die maximale Anzahl von Unterdokumenten (Zahlungen, Sendungen, Captures, Rückerstattungen usw.), die pro Bestellung erstellt oder gespeichert werden können. Dies gewährleistet Systemleistung, Speicheroptimierung und Datenkonsistenz. Bei Überschreitung dieser Grenze wird beim Speichern eine Ausnahme ausgelöst"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Dashboard-Statistiken aktivieren",
+      "description": "Aktiviert oder deaktiviert die Bestellstatistik-Widgets auf dem Haupt-Dashboard"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Dashboard-Statistik Zeitraum (Monate)",
+      "description": "Definiert die Anzahl der Monate, die in die Dashboard-Statistikberechnungen einbezogen werden. Standard ist 12 Monate"
     }
   },
   "module": {

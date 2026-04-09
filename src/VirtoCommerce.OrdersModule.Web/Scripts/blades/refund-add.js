@@ -7,8 +7,19 @@ angular.module('virtoCommerce.orderModule')
     function ($scope, bladeNavigationService, customerOrders, refundReasonsService) {
         var blade = $scope.blade;
 
-        var operationsCount = blade.payment.childrenOperations ? (blade.payment.childrenOperations.length + 1) : 1;
-        var newTransactionId = `${blade.payment.number}-${operationsCount.toString().padStart(3, '0')}`;
+        var paymentPrefix = blade.payment.number + '-';
+        var maxSuffix = 0;
+        if (blade.payment.childrenOperations) {
+            blade.payment.childrenOperations.forEach(function (op) {
+                if (op.transactionId && op.transactionId.indexOf(paymentPrefix) === 0) {
+                    var suffixNum = parseInt(op.transactionId.substring(paymentPrefix.length), 10);
+                    if (!isNaN(suffixNum) && suffixNum > maxSuffix) {
+                        maxSuffix = suffixNum;
+                    }
+                }
+            });
+        }
+        var newTransactionId = `${blade.payment.number}-${(maxSuffix + 1).toString().padStart(3, '0')}`;
 
         blade.title = 'orders.blades.refund-add.title';
         blade.subtitle = newTransactionId;

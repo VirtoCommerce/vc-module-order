@@ -22,7 +22,8 @@
         "placeholders": {
           "employee": "Sélectionner un responsable",
           "status": "Sélectionner...",
-          "store": "Sélectionner..."
+          "store": "Sélectionner...",
+          "sku": "UGS"
         }
       },
       "customerOrder-items": {
@@ -32,22 +33,23 @@
           "quantity": "Qté",
           "available": "Dispo",
           "await": "En attente",
-          "price": "Prix unitaire (hors taxe)",
+          "price": "Prix par article",
           "tax": "Taxe",
           "priceWithTax": "Prix unitaire (taxe incluse)",
-          "discount": "Remise (hors taxe)",
+          "discount": "Remise",
           "discountWithTax": "Remise (taxe incluse)",
-          "total": "Total des articles",
+          "total": "Total",
           "dynamic-properties": "Propriétés dynamiques",
           "sub-total": "Sous-total",
-          "discount-total": "Remise totale",
-          "tax-total": "Total des taxes",
-          "fee-total": "Total des frais"
+          "discount-total": "Remise",
+          "tax-total": "Taxe",
+          "fee-total": "Frais"
         }
       },
       "customerOrder-item-detail": {
         "labels": {
-          "product": "Nom du produit"
+          "product": "Nom du produit",
+          "sku": "UGS"
         }
       },
       "customerOrder-list": {
@@ -434,7 +436,8 @@
       },
       "orders-delete": {
         "title": "Confirmation de suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer les commandes clients sélectionnées ?"
+        "message": "Êtes-vous sûr de vouloir supprimer les commandes clients sélectionnées ?",
+        "order": "{{count}} commande(s)"
       },
       "operation-save": {
         "title": "Enregistrer les modifications",
@@ -442,7 +445,7 @@
       },
       "operation-delete": {
         "title": "Confirmation de suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer l'opération en cours ?"
+        "message": "Êtes-vous sûr de vouloir supprimer l'opération '{{name}}' ?"
       },
       "operation-cancel": {
         "title": "Annuler l'opération",
@@ -457,7 +460,7 @@
       },
       "address-delete": {
         "title": "Confirmer la suppression",
-        "message": "Êtes-vous sûr de vouloir supprimer cette adresse ?"
+        "message": "Êtes-vous sûr de vouloir supprimer l'adresse '{{name}}' ?"
       },
       "address-save": {
         "title": "Enregistrer les modifications",
@@ -619,6 +622,18 @@
     "Order.PurchasedProductStoreFilter.Enable": {
       "title": "Activer le filtre de produits achetés en magasin",
       "description": "Affiche le filtre de produits achetés pour le magasin."
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Nombre maximum de documents enfants par commande",
+      "description": "Définit le nombre maximum de documents enfants (paiements, expéditions, captures, remboursements, etc.) qui peuvent être créés ou stockés par commande. Cela garantit les performances du système, l'optimisation du stockage et la cohérence des données. Une exception sera levée lors de la sauvegarde si cette limite est dépassée"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Activer les statistiques du tableau de bord",
+      "description": "Active ou désactive les widgets de statistiques de commandes sur le tableau de bord principal"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Période des statistiques du tableau de bord (mois)",
+      "description": "Définit le nombre de mois à inclure dans les calculs des statistiques du tableau de bord. La valeur par défaut est de 12 mois"
     }
   },
   "module": {

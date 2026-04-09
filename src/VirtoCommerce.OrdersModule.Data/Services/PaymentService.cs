@@ -54,7 +54,9 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             using var repository = _repositoryFactory();
             var paymentEntities = await repository.GetPaymentsByIdsAsync(ids);
+#pragma warning disable VC0014 // Type or member is obsolete
             var payments = paymentEntities.Select(ToModel).ToArray();
+#pragma warning restore VC0014 // Type or member is obsolete
 
             await DoBulkActionsWithOrderAggregate(payments, (order, payment) =>
             {
