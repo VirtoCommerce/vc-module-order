@@ -76,7 +76,8 @@ angular.module('virtoCommerce.orderModule')
             blade.openItemDetail = function () {
                 return productBladeResolver.open({
                     blade: blade,
-                    item: blade.currentEntity
+                    item: blade.currentEntity,
+                    orderId: blade.order.id
                 });
             };
 

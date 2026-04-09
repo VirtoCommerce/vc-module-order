@@ -12,6 +12,7 @@ angular.module('virtoCommerce.orderModule')
                     controller: 'virtoCommerce.orderModule.customerOrderItemConfigurationProductsController',
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/blades/customerOrder-item-configuration-products.tpl.html',
                     currentEntity: blade.currentEntity,
+                    order: blade.order,
                 };
                 bladeNavigationService.showBlade(newBlade, $scope.blade.parentBlade);
             }
