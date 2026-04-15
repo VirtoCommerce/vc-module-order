@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Potwierdzenie usunięcia",
-        "message": "Czy na pewno chcesz usunąć wybrane zamówienia klientów?"
+        "message": "Czy na pewno chcesz usunąć wybrane zamówienia klientów?",
+        "order": "{{count}} zamówienie(ń)"
       },
       "operation-save": {
         "title": "Zapisz zmiany",
@@ -443,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Potwierdzenie usunięcia",
-        "message": "Czy na pewno chcesz usunąć bieżącą operację?"
+        "message": "Czy na pewno chcesz usunąć operację '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Anuluj operację",
@@ -458,7 +459,7 @@
       },
       "address-delete": {
         "title": "Potwierdź usunięcie",
-        "message": "Czy na pewno chcesz usunąć ten adres?"
+        "message": "Czy na pewno chcesz usunąć adres '{{name}}'?"
       },
       "address-save": {
         "title": "Zapisz zmiany",

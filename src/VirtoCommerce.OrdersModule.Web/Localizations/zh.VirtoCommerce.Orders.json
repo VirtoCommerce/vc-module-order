@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "删除确认",
-        "message": "您确定要删除所选的客户订单吗？"
+        "message": "您确定要删除所选的客户订单吗？",
+        "order": "{{count}} 个订单"
       },
       "operation-save": {
         "title": "保存更改",
@@ -443,7 +444,7 @@
       },
       "operation-delete": {
         "title": "删除确认",
-        "message": "您确定要删除当前操作吗？"
+        "message": "您确定要删除操作 '{{name}}' 吗？"
       },
       "operation-cancel": {
         "title": "取消操作",
@@ -458,7 +459,7 @@
       },
       "address-delete": {
         "title": "确认删除",
-        "message": "您确定要删除此地址吗？"
+        "message": "您确定要删除地址 '{{name}}' 吗？"
       },
       "address-save": {
         "title": "保存更改",
