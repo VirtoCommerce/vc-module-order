@@ -435,7 +435,8 @@
       },
       "orders-delete": {
         "title": "Confirmação de exclusão",
-        "message": "Tem certeza de que deseja excluir as ordens de clientes selecionadas?"
+        "message": "Tem certeza de que deseja excluir as ordens de clientes selecionadas?",
+        "order": "{{count}} pedido(s)"
       },
       "operation-save": {
         "title": "Salvar alterações",
@@ -443,7 +444,7 @@
       },
       "operation-delete": {
         "title": "Confirmação de exclusão",
-        "message": "Tem certeza de que deseja excluir a operação atual?"
+        "message": "Tem certeza de que deseja excluir a operação '{{name}}'?"
       },
       "operation-cancel": {
         "title": "Cancelar operação",
@@ -458,7 +459,7 @@
       },
       "address-delete": {
         "title": "Confirmar exclusão",
-        "message": "Tem certeza de que deseja excluir este endereço?"
+        "message": "Tem certeza de que deseja excluir o endereço '{{name}}'?"
       },
       "address-save": {
         "title": "Salvar alterações",
