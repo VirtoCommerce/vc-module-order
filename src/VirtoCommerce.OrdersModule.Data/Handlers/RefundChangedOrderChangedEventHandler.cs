@@ -99,6 +99,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     if (result.IsSuccess)
                     {
                         refund.Status = result.NewRefundStatus.ToString();
+                        if (!string.IsNullOrEmpty(result.OuterId))
+                        {
+                            refund.OuterId = result.OuterId;
+                        }
                         refund.RejectReasonMessage = null;
                     }
                     else
