@@ -171,13 +171,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual bool HasRefundFieldChanges(Refund oldRefund, Refund newRefund)
         {
-            // Status is intentionally NOT tracked here: the handler itself writes refund.Status from the
-            // provider response, and tracking it would re-trigger the handler from its own SaveChangesAsync,
-            // causing duplicate provider calls. Manual status edits on submitted refunds are blocked at the UI.
+            // Status and OuterId are intentionally NOT tracked here: both are written by the provider response
+            // (via PaymentFlowService.SaveResultToRefundDocument or this handler), so tracking them would
+            // re-trigger the handler from its own SaveChangesAsync and cause duplicate provider calls.
+            // Manual status edits on submitted refunds are blocked at the UI.
             return oldRefund.Amount != newRefund.Amount
                 || oldRefund.ReasonCode != newRefund.ReasonCode
                 || oldRefund.ReasonMessage != newRefund.ReasonMessage
-                || oldRefund.OuterId != newRefund.OuterId
                 || oldRefund.IsCancelled != newRefund.IsCancelled;
         }
     }
