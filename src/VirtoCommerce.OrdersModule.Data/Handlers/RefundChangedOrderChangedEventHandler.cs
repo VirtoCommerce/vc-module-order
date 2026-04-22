@@ -103,11 +103,10 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     }
                     else
                     {
-                        // A failed modification must not reject the underlying refund: preserve the prior status
-                        // unless the provider explicitly reports a new one.
-                        refund.Status = result.NewRefundStatus != default
-                            ? result.NewRefundStatus.ToString()
-                            : previousStatus;
+                        // A failed modification must not invalidate the underlying refund state.
+                        // NewRefundStatus is non-nullable and defaults to Pending, so we cannot distinguish
+                        // "provider didn't set it" from "provider explicitly reports Pending" -- preserve prior state.
+                        refund.Status = previousStatus;
                         refund.RejectReasonMessage = result.ErrorMessage;
                     }
 
@@ -172,11 +171,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual bool HasRefundFieldChanges(Refund oldRefund, Refund newRefund)
         {
+            // Status is intentionally NOT tracked here: the handler itself writes refund.Status from the
+            // provider response, and tracking it would re-trigger the handler from its own SaveChangesAsync,
+            // causing duplicate provider calls. Manual status edits on submitted refunds are blocked at the UI.
             return oldRefund.Amount != newRefund.Amount
                 || oldRefund.ReasonCode != newRefund.ReasonCode
                 || oldRefund.ReasonMessage != newRefund.ReasonMessage
                 || oldRefund.OuterId != newRefund.OuterId
-                || oldRefund.Status != newRefund.Status
                 || oldRefund.IsCancelled != newRefund.IsCancelled;
         }
     }
