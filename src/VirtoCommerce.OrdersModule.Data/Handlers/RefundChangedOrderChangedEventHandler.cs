@@ -92,16 +92,22 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     { "IsUpdate", "true" },
                 };
 
+                var previousStatus = refund.Status;
                 try
                 {
                     var result = await payment.PaymentMethod.RefundProcessPaymentAsync(refundRequest);
                     if (result.IsSuccess)
                     {
                         refund.Status = result.NewRefundStatus.ToString();
+                        refund.RejectReasonMessage = null;
                     }
                     else
                     {
-                        refund.Status = nameof(RefundStatus.Rejected);
+                        // A failed modification must not reject the underlying refund: preserve the prior status
+                        // unless the provider explicitly reports a new one.
+                        refund.Status = result.NewRefundStatus != default
+                            ? result.NewRefundStatus.ToString()
+                            : previousStatus;
                         refund.RejectReasonMessage = result.ErrorMessage;
                     }
 
@@ -169,7 +175,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             return oldRefund.Amount != newRefund.Amount
                 || oldRefund.ReasonCode != newRefund.ReasonCode
                 || oldRefund.ReasonMessage != newRefund.ReasonMessage
-                || oldRefund.OuterId != newRefund.OuterId;
+                || oldRefund.OuterId != newRefund.OuterId
+                || oldRefund.Status != newRefund.Status
+                || oldRefund.IsCancelled != newRefund.IsCancelled;
         }
     }
 
