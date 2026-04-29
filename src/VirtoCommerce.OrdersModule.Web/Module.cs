@@ -29,7 +29,6 @@ using VirtoCommerce.OrdersModule.Data.Repositories;
 using VirtoCommerce.OrdersModule.Data.Search.Indexed;
 using VirtoCommerce.OrdersModule.Data.Services;
 using VirtoCommerce.OrdersModule.Data.SqlServer;
-using VirtoCommerce.OrdersModule.Web.Authorization;
 using VirtoCommerce.OrdersModule.Web.Extensions;
 using VirtoCommerce.OrdersModule.Web.JsonConverters;
 using VirtoCommerce.Platform.Core.Common;
@@ -85,6 +84,7 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<Func<IOrderRepository>>(provider => () => provider.CreateScope().ServiceProvider.GetRequiredService<IOrderRepository>());
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
+            serviceCollection.AddTransient<ICustomerOrderDataProtectionService, CustomerOrderDataProtectionService>();
             serviceCollection.AddTransient<IMemberOrdersService, CustomerOrderService>();
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
             serviceCollection.AddTransient<IPaymentService, PaymentService>();
@@ -241,18 +241,16 @@ namespace VirtoCommerce.OrdersModule.Web
         {
         }
 
-        public Task ExportAsync(Stream outStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback,
-            ICancellationToken cancellationToken)
+        public async Task ExportAsync(Stream outStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
         {
-            return _appBuilder.ApplicationServices.GetRequiredService<OrderExportImport>().DoExportAsync(outStream,
-                progressCallback, cancellationToken);
+            using var serviceScope = _appBuilder.ApplicationServices.CreateScope();
+            await serviceScope.ServiceProvider.GetRequiredService<OrderExportImport>().DoExportAsync(outStream, progressCallback, cancellationToken);
         }
 
-        public Task ImportAsync(Stream inputStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback,
-            ICancellationToken cancellationToken)
+        public async Task ImportAsync(Stream inputStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
         {
-            return _appBuilder.ApplicationServices.GetRequiredService<OrderExportImport>().DoImportAsync(inputStream,
-                progressCallback, cancellationToken);
+            using var serviceScope = _appBuilder.ApplicationServices.CreateScope();
+            await serviceScope.ServiceProvider.GetRequiredService<OrderExportImport>().DoImportAsync(inputStream, progressCallback, cancellationToken);
         }
     }
 }

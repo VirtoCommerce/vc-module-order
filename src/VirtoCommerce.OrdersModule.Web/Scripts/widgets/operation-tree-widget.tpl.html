@@ -17,7 +17,7 @@
                 <i class="tree-ico fa fa-calendar"></i>
                 {{node.operation.createdDate | amParse | date}}
             </div>
-            <div class="tree-el __price" va-permission="order:read_prices">
+            <div class="tree-el __price" ng-if="node.operation.withPrices && (node.operation.sum || node.operation.amount)">
                 <i class="tree-ico fa fa-money"></i>
                 {{node.operation.sum || node.operation.amount | currency:node.operation.currency}}
             </div>
@@ -46,7 +46,7 @@
                 <i class="tree-ico fa fa-truck"></i>
                 {{node.operation.deliveryDate ? (node.operation.deliveryDate | amParse | date) : '-' }}
             </div>
-            <div class="tree-el __price" va-permission="order:read_prices" ng-if="node.operation.sum || node.operation.amount">
+            <div class="tree-el __price" ng-if="node.operation.withPrices && (node.operation.sum || node.operation.amount)">
                 <i class="tree-ico fa fa-money"></i>
                 {{node.operation.sum || node.operation.amount | currency:node.operation.currency}}
             </div>
