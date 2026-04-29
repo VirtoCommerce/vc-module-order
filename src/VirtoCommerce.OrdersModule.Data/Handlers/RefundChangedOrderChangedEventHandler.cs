@@ -92,16 +92,25 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     { "IsUpdate", "true" },
                 };
 
+                var previousStatus = refund.Status;
                 try
                 {
                     var result = await payment.PaymentMethod.RefundProcessPaymentAsync(refundRequest);
                     if (result.IsSuccess)
                     {
                         refund.Status = result.NewRefundStatus.ToString();
+                        if (!string.IsNullOrEmpty(result.OuterId))
+                        {
+                            refund.OuterId = result.OuterId;
+                        }
+                        refund.RejectReasonMessage = null;
                     }
                     else
                     {
-                        refund.Status = nameof(RefundStatus.Rejected);
+                        // A failed modification must not invalidate the underlying refund state.
+                        // NewRefundStatus is non-nullable and defaults to Pending, so we cannot distinguish
+                        // "provider didn't set it" from "provider explicitly reports Pending" -- preserve prior state.
+                        refund.Status = previousStatus;
                         refund.RejectReasonMessage = result.ErrorMessage;
                     }
 
@@ -166,10 +175,14 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
         protected virtual bool HasRefundFieldChanges(Refund oldRefund, Refund newRefund)
         {
+            // Status and OuterId are intentionally NOT tracked here: both are written by the provider response
+            // (via PaymentFlowService.SaveResultToRefundDocument or this handler), so tracking them would
+            // re-trigger the handler from its own SaveChangesAsync and cause duplicate provider calls.
+            // Manual status edits on submitted refunds are blocked at the UI.
             return oldRefund.Amount != newRefund.Amount
                 || oldRefund.ReasonCode != newRefund.ReasonCode
                 || oldRefund.ReasonMessage != newRefund.ReasonMessage
-                || oldRefund.OuterId != newRefund.OuterId;
+                || oldRefund.IsCancelled != newRefund.IsCancelled;
         }
     }
 
