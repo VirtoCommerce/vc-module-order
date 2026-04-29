@@ -19,7 +19,7 @@
                                                          placeholder="'orders.blades.refund-details.placeholders.status' | translate"
                                                          setting="'Refund.Status'"
                                                          ng-model="blade.currentEntity.status"
-                                                         disabled="blade.isLocked"></va-setting-value-select>
+                                                         disabled="blade.isLocked || blade.currentEntity.outerId || blade.currentEntity.status === 'Processed'"></va-setting-value-select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">{{ 'orders.blades.refund-details.labels.amount' | translate }}</label>

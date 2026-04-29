@@ -271,6 +271,11 @@ angular.module('virtoCommerce.orderModule')
                                 || blade.currentEntity.cancelledState === 'Completed'
                                 || blade.currentEntity.cancelledState === 'Requested');
                             break;
+                        case 'Refund':
+                            result = !blade.currentEntity.isCancelled
+                                && blade.currentEntity.status !== 'Processed'
+                                && !blade.currentEntity.outerId;
+                            break;
                         default:
                             result = !blade.currentEntity.isCancelled;
                             break;

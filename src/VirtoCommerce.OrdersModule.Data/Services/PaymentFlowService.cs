@@ -242,6 +242,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (refundResult.IsSuccess)
             {
                 refund.Status = refundResult.NewRefundStatus.ToString();
+                if (!string.IsNullOrEmpty(refundResult.OuterId))
+                {
+                    refund.OuterId = refundResult.OuterId;
+                }
                 result.RefundStatus = refund.Status;
                 result.Succeeded = true;
             }
@@ -343,6 +347,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (captureResult.IsSuccess)
             {
                 capture.Status = nameof(CaptureStatus.Processed);
+                if (!string.IsNullOrEmpty(captureResult.OuterId))
+                {
+                    capture.OuterId = captureResult.OuterId;
+                }
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                 result.PaymentStatus = paymentInfo.Payment.Status;
                 result.Succeeded = true;
