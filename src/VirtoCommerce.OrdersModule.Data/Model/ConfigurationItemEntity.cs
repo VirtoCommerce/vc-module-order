@@ -52,8 +52,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
     [StringLength(255)]
     public string CustomText { get; set; }
 
-    public string ProductSnapshot { get; set; }
-
     #region Navigation Properties
     public virtual ObservableCollection<ConfigurationItemFileEntity> Files { get; set; } = new NullCollection<ConfigurationItemFileEntity>();
     #endregion
@@ -81,9 +79,10 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         configurationItem.CategoryId = CategoryId;
         configurationItem.Type = Type;
         configurationItem.CustomText = CustomText;
-        configurationItem.ProductSnapshot = ProductSnapshot;
 
         configurationItem.Files = Files.Select(x => x.ToModel(AbstractTypeFactory<ConfigurationItemFile>.TryCreateInstance())).ToList();
+
+        configurationItem.CustomerOrderId = LineItem?.CustomerOrderId;
 
         return configurationItem;
     }
@@ -112,7 +111,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         CategoryId = configurationItem.CategoryId;
         Type = configurationItem.Type;
         CustomText = configurationItem.CustomText;
-        ProductSnapshot = configurationItem.ProductSnapshot;
 
         if (configurationItem.Files != null)
         {
@@ -138,7 +136,6 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         target.CategoryId = CategoryId;
         target.Type = Type;
         target.CustomText = CustomText;
-        target.ProductSnapshot = ProductSnapshot;
 
         if (!Files.IsNullCollection())
         {

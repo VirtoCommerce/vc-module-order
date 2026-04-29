@@ -11,6 +11,11 @@ public class ConfigurationItem : AuditableEntity, ICloneable
 {
     public string LineItemId { get; set; }
 
+    /// <summary>
+    /// Not mapped for updates: updates to this property are ignored by CRUD services.
+    /// </summary>
+    public string CustomerOrderId { get; internal set; }
+
     public string ProductId { get; set; }
 
     public string SectionId { get; set; }
@@ -36,8 +41,6 @@ public class ConfigurationItem : AuditableEntity, ICloneable
     public string Type { get; set; }
 
     public string CustomText { get; set; }
-
-    public string ProductSnapshot { get; set; }
 
     public IList<ConfigurationItemFile> Files { get; set; }
 
