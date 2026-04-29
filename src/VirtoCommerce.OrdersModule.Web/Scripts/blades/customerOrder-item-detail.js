@@ -1,7 +1,7 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderItemDetailController', [
-        '$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.authService',
-        function ($scope, bladeNavigationService, authService) {
+        '$scope', 'platformWebApp.bladeNavigationService', 'platformWebApp.authService', 'virtoCommerce.orderModule.productBladeResolver',
+        function ($scope, bladeNavigationService, authService, productBladeResolver) {
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
             blade.isVisiblePrices = authService.checkPermission('order:read_prices');
@@ -74,15 +74,10 @@ angular.module('virtoCommerce.orderModule')
             blade.setForm = function (form) { blade.formScope = form; }
 
             blade.openItemDetail = function () {
-                var newBlade = {
-                    id: "listItemDetail",
-                    controller: 'virtoCommerce.catalogModule.itemDetailController',
-                    template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
-                    title: blade.currentEntity.name,
-                    itemId: blade.currentEntity.productId,
-                    productType: blade.currentEntity.productType
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
+                return productBladeResolver.open({
+                    blade: blade,
+                    item: blade.currentEntity,
+                });
             };
 
             $scope.$watch("blade.order", function (order) {
