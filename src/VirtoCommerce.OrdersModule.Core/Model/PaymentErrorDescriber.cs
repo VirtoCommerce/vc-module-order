@@ -43,5 +43,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         {
             return $"Internal payment method error";
         }
+
+        public static string AmountRequired()
+        {
+            return "Amount is required and must be greater than zero";
+        }
     }
 }
