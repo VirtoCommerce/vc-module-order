@@ -75,7 +75,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 .AsSplitQuery()
                 .ToArrayAsync();
 
-            if (!result.Any())
+            if (result.Length == 0)
             {
                 return Array.Empty<CustomerOrderEntity>();
             }
@@ -117,7 +117,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 .AsSplitQuery()
                 .ToArrayAsync();
 
-            return result.Any() ? result : Array.Empty<PaymentInEntity>();
+            return result.Length != 0 ? result : Array.Empty<PaymentInEntity>();
         }
 
         public virtual async Task<IList<ShipmentEntity>> GetShipmentsByIdsAsync(IList<string> ids)
