@@ -139,7 +139,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 .AsSplitQuery()
                 .ToArrayAsync();
 
-            return result.Any() ? result : Array.Empty<ShipmentEntity>();
+            return result.Length != 0 ? result : Array.Empty<ShipmentEntity>();
         }
 
         protected virtual async Task LoadInPayments(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
