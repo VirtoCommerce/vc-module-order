@@ -309,6 +309,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var retVal = AbstractTypeFactory<ConfigurationItem>.TryCreateInstance();
 
             retVal.SectionId = configurationItem.SectionId;
+            retVal.SectionName = configurationItem.SectionName;
             retVal.Type = configurationItem.Type;
             retVal.CatalogId = configurationItem.CatalogId;
             retVal.CategoryId = configurationItem.CategoryId;
