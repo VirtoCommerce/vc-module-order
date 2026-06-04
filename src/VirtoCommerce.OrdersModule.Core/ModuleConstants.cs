@@ -278,14 +278,6 @@ namespace VirtoCommerce.OrdersModule.Core
                     IsPublic = true,
                 };
 
-                public static SettingDescriptor ProductSnapshotEnabled { get; } = new SettingDescriptor
-                {
-                    Name = "Order.ProductSnapshot.Enable",
-                    GroupName = "Orders|Products",
-                    ValueType = SettingValueType.Boolean,
-                    DefaultValue = false,
-                };
-
                 public static SettingDescriptor MaxOrderDocumentCount { get; } = new SettingDescriptor
                 {
                     Name = "Order.MaxOrderDocumentCount",
@@ -335,7 +327,6 @@ namespace VirtoCommerce.OrdersModule.Core
                         yield return PurchasedProductIndexation;
                         yield return EventBasedPurchasedProductIndexation;
                         yield return PurchasedProductStoreFilter;
-                        yield return ProductSnapshotEnabled;
                         yield return MaxOrderDocumentCount;
                         yield return DashboardStatisticsEnabled;
                         yield return DashboardStatisticsRangeMonths;

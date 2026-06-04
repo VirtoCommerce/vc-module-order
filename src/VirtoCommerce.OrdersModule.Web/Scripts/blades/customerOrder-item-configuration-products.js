@@ -1,7 +1,7 @@
 angular.module('virtoCommerce.orderModule')
     .controller('virtoCommerce.orderModule.customerOrderItemConfigurationProductsController', [
-        '$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService',
-        function ($scope, uiGridHelper, bladeNavigationService) {
+        '$scope', 'platformWebApp.uiGridHelper', 'platformWebApp.bladeNavigationService', 'virtoCommerce.orderModule.productBladeResolver',
+        function ($scope, uiGridHelper, bladeNavigationService, productBladeResolver) {
             var blade = $scope.blade;
             blade.title = 'orders.blades.customerOrder-item-configuration.menu.products.title';
             blade.headIcon = 'fas fa-box';
@@ -32,14 +32,10 @@ angular.module('virtoCommerce.orderModule')
             $scope.selectNode = function (item) {
                 $scope.selectedNodeId = item.id;
 
-                var newBlade = {
-                    id: "listItemDetail",
-                    controller: 'virtoCommerce.catalogModule.itemDetailController',
-                    template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
-                    title: item.name,
-                    itemId: item.productId
-                };
-                bladeNavigationService.showBlade(newBlade, blade);
+                return productBladeResolver.open({
+                    blade: blade,
+                    item: item,
+                });
             }
 
             function initialize() {

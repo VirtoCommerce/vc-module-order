@@ -35,6 +35,7 @@ using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Data;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Caching;
+using VirtoCommerce.Platform.Core.Domain;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Json;
@@ -699,6 +700,12 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 ObjectIds = allHasChangesObjects.Select(x => x.Id).Distinct().ToArray(),
                 ObjectTypes = allHasChangesObjects.Select(x => x.GetType().Name).Distinct().ToArray(),
+                Keyword = historySearchCriteria.Keyword,
+                OperationTypes = historySearchCriteria.OperationTypes?
+                    .Select(x => Enum.Parse<EntryState>(x, true))
+                    .ToArray(),
+                StartDate = historySearchCriteria.StartDate,
+                EndDate = historySearchCriteria.EndDate,
                 Skip = historySearchCriteria.Skip,
                 Take = historySearchCriteria.Take,
                 Sort = historySearchCriteria.Sort

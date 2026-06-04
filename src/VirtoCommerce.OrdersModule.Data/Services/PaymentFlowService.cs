@@ -133,6 +133,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<RefundOrderPaymentResult>.TryCreateInstance();
 
+            if (request.Amount is null or <= 0)
+            {
+                result.Succeeded = false;
+                result.ErrorCode = PaymentFlowErrorCodes.InvalidRequestError;
+                result.ErrorMessage = PaymentErrorDescriber.AmountRequired();
+                return result;
+            }
+
             var paymentInfo = await GetPaymentInfoAsync(request, RefundAllowedPaymentStatuses);
 
             // validate payment
@@ -171,7 +179,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void UpdateRefund(Refund refund, PaymentIn payment, Store store, RefundOrderPaymentRequest request)
         {
-            refund.Amount = request.Amount ?? payment.Sum;
+            refund.Amount = request.Amount.Value;
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
             refund.ReasonMessage = request.ReasonMessage;
             refund.Comment = request.ReasonMessage;
@@ -191,7 +199,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.RefundNewNumberTemplate);
             refund.Number = uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
-            refund.Amount = request.Amount ?? payment.Sum;
+            refund.Amount = request.Amount.Value;
             refund.ReasonCode = EnumUtility.SafeParse(request.ReasonCode, RefundReasonCode.Other);
             refund.ReasonMessage = request.ReasonMessage;
             refund.Comment = request.ReasonMessage;
@@ -220,7 +228,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             FillPaymentRequestBase(paymentInfo, result);
 
-            result.AmountToRefund = request.Amount ?? paymentInfo.Payment.Sum;
+            result.AmountToRefund = request.Amount.Value;
             result.Reason = request.ReasonCode;
             result.Notes = request.ReasonMessage;
             result.OuterId = request.OuterId;
@@ -242,6 +250,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (refundResult.IsSuccess)
             {
                 refund.Status = refundResult.NewRefundStatus.ToString();
+                if (!string.IsNullOrEmpty(refundResult.OuterId))
+                {
+                    refund.OuterId = refundResult.OuterId;
+                }
                 result.RefundStatus = refund.Status;
                 result.Succeeded = true;
             }
@@ -296,6 +308,14 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             var result = AbstractTypeFactory<CaptureOrderPaymentResult>.TryCreateInstance();
 
+            if (request.Amount is null or <= 0)
+            {
+                result.Succeeded = false;
+                result.ErrorCode = PaymentFlowErrorCodes.InvalidRequestError;
+                result.ErrorMessage = PaymentErrorDescriber.AmountRequired();
+                return result;
+            }
+
             // Paid status is also available for capture operation, since in case of multiple captures per single payment we don't know when it will be the last capture
             var paymentInfo = await GetPaymentInfoAsync(request, CaptureAllowedPaymentStatuses);
 
@@ -343,6 +363,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             if (captureResult.IsSuccess)
             {
                 capture.Status = nameof(CaptureStatus.Processed);
+                if (!string.IsNullOrEmpty(captureResult.OuterId))
+                {
+                    capture.OuterId = captureResult.OuterId;
+                }
                 paymentInfo.Payment.Status = captureResult.NewPaymentStatus.ToString();
                 result.PaymentStatus = paymentInfo.Payment.Status;
                 result.Succeeded = true;
@@ -415,7 +439,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             FillPaymentRequestBase(paymentInfo, result);
 
-            result.CaptureAmount = request.Amount ?? paymentInfo.Payment.Sum;
+            result.CaptureAmount = request.Amount.Value;
             result.OuterId = request.OuterId;
 
             result.Parameters ??= [];
@@ -434,7 +458,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             var numberTemplate = store.Settings.GetValue<string>(Core.ModuleConstants.Settings.General.CaptureNewNumberTemplate);
             capture.Number = uniqueNumberGenerator.GenerateNumber(store.Id, numberTemplate);
 
-            capture.Amount = request.Amount ?? payment.Sum;
+            capture.Amount = request.Amount.Value;
             capture.Comment = request.CaptureDetails;
             capture.OuterId = request.OuterId;
             capture.TransactionId = request.TransactionId;
@@ -450,7 +474,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual void UpdateCapture(Capture capture, PaymentIn payment, Store store, CaptureOrderPaymentRequest request)
         {
-            capture.Amount = request.Amount ?? payment.Sum;
+            capture.Amount = request.Amount.Value;
             capture.Comment = request.CaptureDetails;
             capture.OuterId = request.OuterId;
             capture.TransactionId = request.TransactionId;

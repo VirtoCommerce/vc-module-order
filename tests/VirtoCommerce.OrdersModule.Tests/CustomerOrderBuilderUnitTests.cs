@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using VirtoCommerce.CartModule.Core.Model;
-using VirtoCommerce.CatalogModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Services;
@@ -107,8 +106,7 @@ namespace VirtoCommerce.OrdersModule.Tests
             return new CustomerOrderBuilder(
                 new Mock<ICustomerOrderService>().Object,
                 new Mock<ISettingsManager>().Object,
-                new Mock<IPaymentMethodsSearchService>().Object,
-                new Mock<IItemService>().Object);
+                new Mock<IPaymentMethodsSearchService>().Object);
         }
     }
 }

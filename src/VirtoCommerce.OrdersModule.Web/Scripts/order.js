@@ -100,6 +100,7 @@ angular.module(moduleName, [
             'virtoCommerce.orderModule.knownOperations',
             'platformWebApp.authService',
             'platformWebApp.metaFormsService',
+            'virtoCommerce.orderModule.productBladeResolver',
             function ( // nosonar
                 $rootScope,
                 dynamicTemplateService,
@@ -113,7 +114,8 @@ angular.module(moduleName, [
                 stores,
                 knownOperations,
                 authService,
-                metaFormsService) {
+                metaFormsService,
+                productBladeResolver) {
                 //Register module in main menu
                 var menuItem = {
                     path: 'browse/orders',
@@ -863,4 +865,22 @@ angular.module(moduleName, [
                     isVisible: function (blade) { return blade.currentEntity.configurationItems?.length && authService.checkPermission('catalog:configurations:read'); }
                 };
                 widgetService.registerWidget(customerOrderItemConfigurationWidget, 'customerOrderItemDetailWidgets');
+
+                // register default Order Product blade
+                productBladeResolver.registerHandler(function (context) {
+                    var blade = context.blade;
+                    var item = context.item;
+
+                    var newBlade = {
+                        id: 'listItemDetail',
+                        controller: 'virtoCommerce.catalogModule.itemDetailController',
+                        template: 'Modules/$(VirtoCommerce.Catalog)/Scripts/blades/item-detail.tpl.html',
+                        title: item.name,
+                        itemId: item.productId,
+                        productType: item.productType
+                    };
+
+                    bladeNavigationService.showBlade(newBlade, blade);
+                    return true;
+                }, 1000); // low priority, acts as fallback
             }]);
