@@ -5,6 +5,18 @@ namespace VirtoCommerce.OrdersModule2.Web
 {
     public class ModuleConstants
     {
+        public static class Permissions
+        {
+            public const string ReadPricesDirect = "order_samples:read_prices_direct";
+            public const string ReadPricesIndirect = "order_samples:read_prices_indirect";
+
+            public static string[] AllPermissions { get; } =
+            [
+                ReadPricesDirect,
+                ReadPricesIndirect,
+            ];
+        }
+
         public static class Settings
         {
             public static class General

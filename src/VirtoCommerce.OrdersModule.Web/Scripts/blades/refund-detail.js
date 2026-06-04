@@ -8,7 +8,7 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.orderModule.refundReasonsService',
         function ($scope, bladeNavigationService, authService, paymentMethods, members, refundReasonsService) {
             var blade = $scope.blade;
-            blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.isVisiblePrices = blade.currentEntity.withPrices;
 
             blade.title = 'orders.blades.refund-details.title';
             blade.titleValues = { number: blade.currentEntity.number };

@@ -6,7 +6,7 @@ angular.module('virtoCommerce.orderModule')
             var blade = $scope.blade;
             blade.currentEntityId = blade.customerOrder.id;
 
-            blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.isVisiblePrices = blade.customerOrder.withPrices;
 
             angular.extend(blade, {
                 title: 'orders.blades.customerOrder-detail.title',

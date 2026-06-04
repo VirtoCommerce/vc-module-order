@@ -88,52 +88,63 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<Refund> Refunds { get; set; }
         public ICollection<Capture> Captures { get; set; }
 
-        public virtual void ReduceDetails(string responseGroup)
+        public override void ReduceDetails(string responseGroup)
         {
-            //Reduce details according to response group
+            base.ReduceDetails(responseGroup);
+
+            // Reduce details according to the response group
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
                 BillingAddress = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
                 Discounts = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
             {
                 Refunds = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
             {
                 Captures = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-                Price = 0m;
-                PriceWithTax = 0m;
                 DiscountAmount = 0m;
                 DiscountAmountWithTax = 0m;
+                Price = 0m;
+                PriceWithTax = 0m;
+                TaxPercentRate = 0m;
+                TaxTotal = 0m;
                 Total = 0m;
                 TotalWithTax = 0m;
-                TaxTotal = 0m;
-                TaxPercentRate = 0m;
-                Sum = 0m;
             }
-
         }
 
-        public virtual void RestoreDetails(PaymentIn payment)
+        public override void RestoreDetails(OrderOperation operation)
         {
-            Price = payment.Price;
-            PriceWithTax = payment.PriceWithTax;
+            base.RestoreDetails(operation);
+
+            if (operation is not PaymentIn payment)
+            {
+                return;
+            }
+
             DiscountAmount = payment.DiscountAmount;
             DiscountAmountWithTax = payment.DiscountAmountWithTax;
+            Price = payment.Price;
+            PriceWithTax = payment.PriceWithTax;
+            TaxPercentRate = payment.TaxPercentRate;
+            TaxTotal = payment.TaxTotal;
             Total = payment.Total;
             TotalWithTax = payment.TotalWithTax;
-            TaxTotal = payment.TaxTotal;
-            TaxPercentRate = payment.TaxPercentRate;
-            Sum = payment.Sum;
         }
 
 

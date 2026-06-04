@@ -5,7 +5,7 @@ angular.module('virtoCommerce.orderModule')
         function ($scope, $translate, bladeNavigationService, authService) {
             var blade = $scope.blade;
             blade.updatePermission = 'order:update';
-            blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+            blade.isVisiblePrices = blade.currentEntity.withPrices;
 
             $translate('orders.blades.customerOrder-detail.title', { customer: blade.currentEntity.customerName }).then(function (result) {
                 blade.title = 'orders.widgets.customerOrder-items.blade-title';
