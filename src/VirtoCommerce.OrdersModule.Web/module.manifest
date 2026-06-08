@@ -28,7 +28,7 @@
     <owner>Virto Commerce</owner>
   </owners>
   <projectUrl>https://github.com/VirtoCommerce/vc-module-order</projectUrl>
-  <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.png</iconUrl>
+  <iconUrl>Modules/$(VirtoCommerce.Orders)/Content/logo.svg</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <copyright>Copyright © 2011-2026 Virto Commerce. All rights reserved</copyright>
   <tags>order system</tags>
