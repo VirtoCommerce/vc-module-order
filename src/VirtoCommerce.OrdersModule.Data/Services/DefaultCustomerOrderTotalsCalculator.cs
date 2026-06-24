@@ -84,7 +84,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 orderCart.TaxTotal = 0m;
 
                 // Line items
-                var currencyItems = order.Items?.Where(x => x.Currency == currencyCode).ToList() ?? [];
+                var currencyItems = order.Items?.Where(x => x.Currency.EqualsIgnoreCase(currencyCode)).ToList() ?? [];
                 orderCart.SubTotal = currencyItems.Sum(x => x.ListTotal);
                 orderCart.SubTotalWithTax = currencyItems.Sum(x => x.ListTotalWithTax);
                 orderCart.SubTotalTaxTotal = currencyItems.Sum(x => x.TaxTotal);
@@ -97,7 +97,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 orderCart.TaxTotal += currencyItems.Sum(x => x.TaxTotal);
 
                 // Shipments
-                var currencyShipments = order.Shipments?.Where(x => x.Currency == currencyCode).ToList() ?? [];
+                var currencyShipments = order.Shipments?.Where(x => x.Currency.EqualsIgnoreCase(currencyCode)).ToList() ?? [];
                 orderCart.ShippingTotal = currencyShipments.Sum(x => x.Total);
                 orderCart.ShippingTotalWithTax = currencyShipments.Sum(x => x.TotalWithTax);
                 orderCart.ShippingSubTotal = currencyShipments.Sum(x => x.Price);
@@ -111,7 +111,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 orderCart.TaxTotal += currencyShipments.Sum(x => x.TaxTotal);
 
                 // Payments
-                var currencyPayments = order.InPayments?.Where(x => x.Currency == currencyCode).ToList() ?? [];
+                var currencyPayments = order.InPayments?.Where(x => x.Currency.EqualsIgnoreCase(currencyCode)).ToList() ?? [];
                 orderCart.PaymentTotal = currencyPayments.Sum(x => x.Total);
                 orderCart.PaymentTotalWithTax = currencyPayments.Sum(x => x.TotalWithTax);
                 orderCart.PaymentSubTotal = currencyPayments.Sum(x => x.Price);
@@ -179,7 +179,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
         protected virtual Currency GetCurrency(IList<Currency> currencies, string currencyCode)
         {
-            return currencies.First(c => c.Code == currencyCode);
+            return currencies.First(c => c.Code.EqualsIgnoreCase(currencyCode));
         }
 
         protected virtual async Task<Currency> GetCurrency(string orderCurrencyName)
