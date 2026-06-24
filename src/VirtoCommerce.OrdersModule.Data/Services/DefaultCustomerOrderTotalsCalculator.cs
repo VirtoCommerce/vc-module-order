@@ -57,7 +57,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
                 }
             }
 
-            var ordersByCurrency = new Dictionary<string, CustomerOrder>
+            var ordersByCurrency = new Dictionary<string, CustomerOrder>(StringComparer.OrdinalIgnoreCase)
             {
                 { order.Currency, order }
             };
