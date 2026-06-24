@@ -47,14 +47,16 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Price = listPrice,
                 DiscountAmount = discountAmount,
                 Quantity = quantity,
+                Currency = "USD",
             };
 
             var order = new CustomerOrder
             {
                 Items = [lineItem],
+                Currency = "USD",
             };
 
-            var currency = new Currency(new Language("en-US"), code: null)
+            var currency = new Currency(new Language("en-US"), code: "USD")
             {
                 MidpointRounding = midpointRounding.ToString(),
                 RoundingPolicy = new DefaultMoneyRoundingPolicy()
@@ -85,23 +87,24 @@ namespace VirtoCommerce.OrdersModule.Tests
         [Fact]
         public void CalculateTotals_ClearAllItems_TotalsMustBeZero()
         {
-            var item1 = new LineItem { Price = 10.99m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Fee = 0.33m, Quantity = 2 };
-            var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5 };
-            var item3 = new LineItem { Price = 88.45m, DiscountAmount = 10.78m, TaxPercentRate = 0.12m, Fee = 0.08m, Quantity = 12 };
-            var payment = new PaymentIn { Price = 44.52m, DiscountAmount = 10, TaxPercentRate = 0.12m };
-            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m };
+            var item1 = new LineItem { Price = 10.99m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Fee = 0.33m, Quantity = 2, Currency = "USD" };
+            var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5, Currency = "USD" };
+            var item3 = new LineItem { Price = 88.45m, DiscountAmount = 10.78m, TaxPercentRate = 0.12m, Fee = 0.08m, Quantity = 12, Currency = "USD" };
+            var payment = new PaymentIn { Price = 44.52m, DiscountAmount = 10, TaxPercentRate = 0.12m, Currency = "USD" };
+            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m, Currency = "USD" };
 
             var order = new CustomerOrder
             {
                 TaxPercentRate = 0.12m,
                 Items = new List<LineItem> { item1, item2, item3 },
                 InPayments = new List<PaymentIn> { payment },
-                Shipments = new List<Shipment> { shipment }
+                Shipments = new List<Shipment> { shipment },
+                Currency = "USD",
             };
 
             var currency = new Currency
             {
-                Code = order.Currency,
+                Code = "USD",
                 RoundingPolicy = new DefaultMoneyRoundingPolicy()
             };
 
@@ -122,11 +125,11 @@ namespace VirtoCommerce.OrdersModule.Tests
         [Fact]
         public void CalculateTotals_ShouldBe_RightTotals()
         {
-            var item1 = new LineItem { Price = 10.99m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Fee = 0.33m, Quantity = 2 };
-            var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5 };
-            var item3 = new LineItem { Price = 88.45m, DiscountAmount = 10.78m, TaxPercentRate = 0.12m, Fee = 0.08m, Quantity = 12 };
-            var payment = new PaymentIn { Price = 44.52m, DiscountAmount = 10, TaxPercentRate = 0.12m };
-            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m, Fee = 20m };
+            var item1 = new LineItem { Price = 10.99m, DiscountAmount = 1.33m, TaxPercentRate = 0.12m, Fee = 0.33m, Quantity = 2, Currency = "USD" };
+            var item2 = new LineItem { Price = 55.22m, DiscountAmount = 5.89m, TaxPercentRate = 0.12m, Fee = 0.12m, Quantity = 5, Currency = "USD" };
+            var item3 = new LineItem { Price = 88.45m, DiscountAmount = 10.78m, TaxPercentRate = 0.12m, Fee = 0.08m, Quantity = 12, Currency = "USD" };
+            var payment = new PaymentIn { Price = 44.52m, DiscountAmount = 10, TaxPercentRate = 0.12m, Currency = "USD" };
+            var shipment = new Shipment { Price = 22.0m, DiscountAmount = 5m, TaxPercentRate = 0.12m, Fee = 20m, Currency = "USD" };
 
             var order = new CustomerOrder
             {
@@ -134,11 +137,13 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Fee = 13.11m,
                 Items = new List<LineItem> { item1, item2, item3 },
                 InPayments = new List<PaymentIn> { payment },
-                Shipments = new List<Shipment> { shipment }
+                Shipments = new List<Shipment> { shipment },
+                Currency = "USD",
             };
 
             var currency = new Currency
             {
+                Code = "USD",
                 RoundingPolicy = new DefaultMoneyRoundingPolicy()
             };
 

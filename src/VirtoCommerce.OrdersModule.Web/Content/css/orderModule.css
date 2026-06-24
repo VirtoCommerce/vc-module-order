@@ -29,6 +29,17 @@
     margin: 0 0 0 10px;
 }
 
+/* Wider blade for customer order items  */
+.blade .blade-content.__xxlarge-wider {
+  min-width: 980px;
+  width: 980px;
+}
+
+.blade .blade-content.__xxlarge-wider .inner-block {
+  min-width: 100%;
+  width: 100%;
+}
+
 /* Customer order items (line items blade) */
 .vc-order .customer-order-items .order-items-summary {
     border-radius: 4px;

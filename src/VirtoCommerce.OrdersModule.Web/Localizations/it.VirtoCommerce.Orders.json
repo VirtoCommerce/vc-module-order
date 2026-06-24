@@ -42,7 +42,8 @@
           "sub-total": "Subtotale",
           "discount-total": "Sconto",
           "tax-total": "Tasse",
-          "fee-total": "Commissioni"
+          "fee-total": "Commissioni",
+          "currency": "Valuta"
         }
       },
       "customerOrder-item-detail": {

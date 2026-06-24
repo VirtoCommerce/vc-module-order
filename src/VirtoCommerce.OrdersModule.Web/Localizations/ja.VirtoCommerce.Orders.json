@@ -42,7 +42,8 @@
           "sub-total": "小計",
           "discount-total": "割引",
           "tax-total": "税",
-          "fee-total": "手数料"
+          "fee-total": "手数料",
+          "currency": "通貨"
         }
       },
       "customerOrder-item-detail": {
