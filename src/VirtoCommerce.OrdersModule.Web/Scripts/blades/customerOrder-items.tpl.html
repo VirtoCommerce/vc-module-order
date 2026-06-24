@@ -23,6 +23,24 @@
               </div>
             </div>
 
+            <!-- Summary for non-primary currencies -->
+            <div class="order-items-summary"
+                 ng-repeat="orderTotal in blade.currentEntity.orderTotals"
+                 ng-if="orderTotal.currencyCode !== blade.currentEntity.currency">
+              <div class="order-items-summary__item">
+                <span class="order-items-summary__value">{{ orderTotal.subTotal | currency:orderTotal.currencyCode | showPrice:blade.isVisiblePrices}}</span>
+              </div>
+              <div class="order-items-summary__item">
+                <span class="order-items-summary__value">{{ orderTotal.discountTotal | currency:orderTotal.currencyCode | showPrice:blade.isVisiblePrices}}</span>
+              </div>
+              <div class="order-items-summary__item">
+                <span class="order-items-summary__value">{{ orderTotal.taxTotal | currency:orderTotal.currencyCode | showPrice:blade.isVisiblePrices}}</span>
+              </div>
+              <div class="order-items-summary__item __total">
+                <span class="order-items-summary__value">{{ orderTotal.total | currency:orderTotal.currencyCode | showPrice:blade.isVisiblePrices}}</span>
+              </div>
+            </div>
+
             <div class="table-wrapper">
                 <table class="table __line-items">
                     <thead>
