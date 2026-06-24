@@ -182,7 +182,6 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             return currencies.First(c => c.Code == currencyCode);
         }
 
-        [Obsolete("No longer used. Use GetAllCurrencies() and GetCurrency(IList<Currency>, string) instead.", false, DiagnosticId = "VC0015", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions/")]
         protected virtual async Task<Currency> GetCurrency(string orderCurrencyName)
         {
             var currencies = await _currencyService.GetAllCurrenciesAsync();
