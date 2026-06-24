@@ -42,7 +42,8 @@
           "sub-total": "Suma częściowa",
           "discount-total": "Rabat",
           "tax-total": "Podatek",
-          "fee-total": "Opłata"
+          "fee-total": "Opłata",
+          "currency": "Waluta"
         }
       },
       "customerOrder-item-detail": {
