@@ -42,7 +42,8 @@
           "sub-total": "Zwischensumme",
           "discount-total": "Rabatt",
           "tax-total": "Steuer",
-          "fee-total": "Gebühr"
+          "fee-total": "Gebühr",
+          "currency": "Währung"
         }
       },
       "customerOrder-item-detail": {
