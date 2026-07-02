@@ -242,7 +242,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             ArgumentNullException.ThrowIfNull(lineItem);
 
-            var retVal = AbstractTypeFactory<LineItem>.TryCreateInstance();
+            var retVal = CreateOrderModel(lineItem);
 
             retVal.CatalogId = lineItem.CatalogId;
             retVal.CategoryId = lineItem.CategoryId;
@@ -306,9 +306,10 @@ namespace VirtoCommerce.OrdersModule.Data.Services
         {
             ArgumentNullException.ThrowIfNull(configurationItem);
 
-            var retVal = AbstractTypeFactory<ConfigurationItem>.TryCreateInstance();
+            var retVal = CreateOrderModel(configurationItem);
 
             retVal.SectionId = configurationItem.SectionId;
+            retVal.SectionName = configurationItem.SectionName;
             retVal.Type = configurationItem.Type;
             retVal.CatalogId = configurationItem.CatalogId;
             retVal.CategoryId = configurationItem.CategoryId;
@@ -328,6 +329,22 @@ namespace VirtoCommerce.OrdersModule.Data.Services
 
             return retVal;
         }
+
+        /// <summary>
+        /// Constructs the order <see cref="LineItem"/> instance for a cart line item before field population.
+        /// Override to dispatch a polymorphic subtype based on the source cart item.
+        /// The default implementation returns the registered <see cref="AbstractTypeFactory{LineItem}"/> instance.
+        /// </summary>
+        protected virtual LineItem CreateOrderModel(CartModule.Core.Model.LineItem lineItem)
+            => AbstractTypeFactory<LineItem>.TryCreateInstance();
+
+        /// <summary>
+        /// Constructs the order <see cref="ConfigurationItem"/> instance for a cart configuration item before field population.
+        /// Override to dispatch a polymorphic subtype based on the source cart item.
+        /// The default implementation returns the registered <see cref="AbstractTypeFactory{ConfigurationItem}"/> instance.
+        /// </summary>
+        protected virtual ConfigurationItem CreateOrderModel(CartModule.Core.Model.ConfigurationItem configurationItem)
+            => AbstractTypeFactory<ConfigurationItem>.TryCreateInstance();
 
         protected virtual Discount ToOrderModel(Discount discount)
         {
