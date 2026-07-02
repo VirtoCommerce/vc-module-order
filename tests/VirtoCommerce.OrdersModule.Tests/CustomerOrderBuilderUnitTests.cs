@@ -140,21 +140,31 @@ namespace VirtoCommerce.OrdersModule.Tests
         }
 
         [Fact]
-        public async Task PlaceCustomerOrderFromCartAsync_OverriddenLineItemSeam_PopulationRunsOnSubtype()
+        public async Task PlaceCustomerOrderFromCartAsync_LineItemSeam_DispatchesSubtypeByProductType()
         {
-            //Arrange
-            var cartItem = new LineItem
+            //Arrange - two cart line items differing by the discriminator property
+            var physicalCartItem = new LineItem
             {
                 Id = Guid.NewGuid().ToString(),
-                ProductId = "product-1",
-                Sku = "SKU-1",
+                ProductType = SubtypeDispatchingCustomerOrderBuilder.PhysicalProductType,
+                ProductId = "product-physical",
+                Sku = "SKU-PHYS",
                 ListPrice = 10.99m,
                 Quantity = 2,
+            };
+            var digitalCartItem = new LineItem
+            {
+                Id = Guid.NewGuid().ToString(),
+                ProductType = SubtypeDispatchingCustomerOrderBuilder.DigitalProductType,
+                ProductId = "product-digital",
+                Sku = "SKU-DIG",
+                ListPrice = 4.50m,
+                Quantity = 1,
             };
             var cart = new ShoppingCart
             {
                 Addresses = new List<Address>(),
-                Items = new List<LineItem> { cartItem },
+                Items = new List<LineItem> { physicalCartItem, digitalCartItem },
             };
             var builder = new SubtypeDispatchingCustomerOrderBuilder(
                 new Mock<ICustomerOrderService>().Object,
@@ -162,25 +172,42 @@ namespace VirtoCommerce.OrdersModule.Tests
                 new Mock<IPaymentMethodsSearchService>().Object);
 
             //Act
-            var orderItem = (await builder.PlaceCustomerOrderFromCartAsync(cart)).Items.FirstOrDefault();
+            var orderItems = (await builder.PlaceCustomerOrderFromCartAsync(cart)).Items;
 
-            //Assert
-            orderItem.Should().BeOfType<TestOrderLineItem>();
-            orderItem.ProductId.Should().Be("product-1");
-            orderItem.Sku.Should().Be("SKU-1");
-            orderItem.Price.Should().Be(10.99m);
+            //Assert - each discriminator value produced a distinct order line item subtype, populated on that subtype
+            var physicalOrderItem = orderItems.Single(x => x.ProductId == "product-physical");
+            var digitalOrderItem = orderItems.Single(x => x.ProductId == "product-digital");
+
+            physicalOrderItem.Should().BeOfType<PhysicalOrderLineItem>();
+            physicalOrderItem.Sku.Should().Be("SKU-PHYS");
+            physicalOrderItem.Price.Should().Be(10.99m);
+
+            digitalOrderItem.Should().BeOfType<DigitalOrderLineItem>();
+            digitalOrderItem.Sku.Should().Be("SKU-DIG");
+            digitalOrderItem.Price.Should().Be(4.50m);
         }
 
         [Fact]
-        public async Task PlaceCustomerOrderFromCartAsync_OverriddenConfigurationItemSeam_PopulationRunsOnSubtype()
+        public async Task PlaceCustomerOrderFromCartAsync_ConfigurationItemSeam_DispatchesSubtypeBySectionName()
         {
-            //Arrange
-            var cartConfigurationItem = new CartModule.Core.Model.ConfigurationItem
+            //Arrange - one line item carrying two configuration items differing by section name
+            var sectionACartItem = new CartModule.Core.Model.ConfigurationItem
             {
                 Id = Guid.NewGuid().ToString(),
-                ProductId = "config-product-1",
-                Sku = "CFG-SKU-1",
+                SectionName = SubtypeDispatchingCustomerOrderBuilder.SectionAName,
+                ProductId = "config-a",
+                Sku = "CFG-A",
                 ListPrice = 5.50m,
+                Quantity = 1,
+                SelectedForCheckout = true,
+            };
+            var sectionBCartItem = new CartModule.Core.Model.ConfigurationItem
+            {
+                Id = Guid.NewGuid().ToString(),
+                SectionName = SubtypeDispatchingCustomerOrderBuilder.SectionBName,
+                ProductId = "config-b",
+                Sku = "CFG-B",
+                ListPrice = 6.00m,
                 Quantity = 1,
                 SelectedForCheckout = true,
             };
@@ -189,7 +216,7 @@ namespace VirtoCommerce.OrdersModule.Tests
                 Id = Guid.NewGuid().ToString(),
                 ProductId = "product-1",
                 Quantity = 1,
-                ConfigurationItems = new List<CartModule.Core.Model.ConfigurationItem> { cartConfigurationItem },
+                ConfigurationItems = new List<CartModule.Core.Model.ConfigurationItem> { sectionACartItem, sectionBCartItem },
             };
             var cart = new ShoppingCart
             {
@@ -203,13 +230,20 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             //Act
             var orderItem = (await builder.PlaceCustomerOrderFromCartAsync(cart)).Items.FirstOrDefault();
-            var orderConfigurationItem = orderItem?.ConfigurationItems.FirstOrDefault();
+            var orderConfigurationItems = orderItem?.ConfigurationItems;
 
-            //Assert
-            orderConfigurationItem.Should().BeOfType<TestOrderConfigurationItem>();
-            orderConfigurationItem.ProductId.Should().Be("config-product-1");
-            orderConfigurationItem.Sku.Should().Be("CFG-SKU-1");
-            orderConfigurationItem.Price.Should().Be(5.50m);
+            //Assert - each section name produced a distinct order configuration item subtype, populated on that subtype
+            var sectionAOrderItem = orderConfigurationItems.Single(x => x.ProductId == "config-a");
+            var sectionBOrderItem = orderConfigurationItems.Single(x => x.ProductId == "config-b");
+
+            sectionAOrderItem.Should().BeOfType<SectionAOrderConfigurationItem>();
+            sectionAOrderItem.SectionName.Should().Be(SubtypeDispatchingCustomerOrderBuilder.SectionAName);
+            sectionAOrderItem.Sku.Should().Be("CFG-A");
+            sectionAOrderItem.Price.Should().Be(5.50m);
+
+            sectionBOrderItem.Should().BeOfType<SectionBOrderConfigurationItem>();
+            sectionBOrderItem.SectionName.Should().Be(SubtypeDispatchingCustomerOrderBuilder.SectionBName);
+            sectionBOrderItem.Sku.Should().Be("CFG-B");
         }
 
         private static CustomerOrderBuilder GetCustomerOrderBuilder()
@@ -237,6 +271,11 @@ namespace VirtoCommerce.OrdersModule.Tests
 
         private sealed class SubtypeDispatchingCustomerOrderBuilder : CustomerOrderBuilder
         {
+            public const string PhysicalProductType = "physical";
+            public const string DigitalProductType = "digital";
+            public const string SectionAName = "section-a";
+            public const string SectionBName = "section-b";
+
             public SubtypeDispatchingCustomerOrderBuilder(
                 ICustomerOrderService customerOrderService,
                 ISettingsManager settingsManager,
@@ -245,16 +284,36 @@ namespace VirtoCommerce.OrdersModule.Tests
             {
             }
 
-            protected override OrderLineItem CreateOrderModel(CartModule.Core.Model.LineItem lineItem) => new TestOrderLineItem();
+            protected override OrderLineItem CreateOrderModel(CartModule.Core.Model.LineItem lineItem) =>
+                lineItem.ProductType switch
+                {
+                    PhysicalProductType => new PhysicalOrderLineItem(),
+                    DigitalProductType => new DigitalOrderLineItem(),
+                    _ => base.CreateOrderModel(lineItem),
+                };
 
-            protected override OrderConfigurationItem CreateOrderModel(CartModule.Core.Model.ConfigurationItem configurationItem) => new TestOrderConfigurationItem();
+            protected override OrderConfigurationItem CreateOrderModel(CartModule.Core.Model.ConfigurationItem configurationItem) =>
+                configurationItem.SectionName switch
+                {
+                    SectionAName => new SectionAOrderConfigurationItem(),
+                    SectionBName => new SectionBOrderConfigurationItem(),
+                    _ => base.CreateOrderModel(configurationItem),
+                };
         }
 
-        private sealed class TestOrderLineItem : OrderLineItem
+        private sealed class PhysicalOrderLineItem : OrderLineItem
         {
         }
 
-        private sealed class TestOrderConfigurationItem : OrderConfigurationItem
+        private sealed class DigitalOrderLineItem : OrderLineItem
+        {
+        }
+
+        private sealed class SectionAOrderConfigurationItem : OrderConfigurationItem
+        {
+        }
+
+        private sealed class SectionBOrderConfigurationItem : OrderConfigurationItem
         {
         }
     }
