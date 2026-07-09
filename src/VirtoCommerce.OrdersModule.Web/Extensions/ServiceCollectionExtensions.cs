@@ -11,12 +11,12 @@ namespace VirtoCommerce.OrdersModule.Web.Extensions
         public static void AddValidators(this IServiceCollection serviceCollection)
         {
             // Register operation-level validators
-            serviceCollection.AddTransient<IValidator<IOperation>, OrderDocumentCountValidator>();
+            serviceCollection.AddSingleton<IValidator<IOperation>, OrderDocumentCountValidator>();
             
             // Register entity-specific validators
-            serviceCollection.AddTransient<IValidator<CustomerOrder>, CustomerOrderValidator>();
-            serviceCollection.AddTransient<IValidator<PaymentIn>, PaymentInValidator>();
-            serviceCollection.AddTransient<IValidator<OrderPaymentInfo>, PaymentRequestValidator>();
+            serviceCollection.AddSingleton<IValidator<CustomerOrder>, CustomerOrderValidator>();
+            serviceCollection.AddSingleton<IValidator<PaymentIn>, PaymentInValidator>();
+            serviceCollection.AddSingleton<IValidator<OrderPaymentInfo>, PaymentRequestValidator>();
         }
     }
 }
