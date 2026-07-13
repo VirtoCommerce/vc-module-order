@@ -10,20 +10,21 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "SectionName",
-                table: "OrderConfigurationItem",
-                type: "nvarchar(256)",
-                maxLength: 256,
-                nullable: true);
+            migrationBuilder.Sql(
+                """
+                IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('OrderConfigurationItem') AND name = 'SectionName')
+                    ALTER TABLE [OrderConfigurationItem] ADD [SectionName] nvarchar(256) NULL
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SectionName",
-                table: "OrderConfigurationItem");
+            migrationBuilder.Sql(
+                """
+                IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('OrderConfigurationItem') AND name = 'SectionName')
+                    ALTER TABLE [OrderConfigurationItem] DROP COLUMN [SectionName]
+                """);
         }
     }
 }
