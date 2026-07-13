@@ -10,21 +10,33 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "SectionName",
-                table: "OrderConfigurationItem",
-                type: "varchar(256)",
-                maxLength: 256,
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+            migrationBuilder.Sql(
+                """
+                SET @columnExists = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'OrderConfigurationItem' AND COLUMN_NAME = 'SectionName' AND TABLE_SCHEMA = DATABASE());
+                SET @sql = IF(@columnExists = 0,
+                    'ALTER TABLE `OrderConfigurationItem` ADD COLUMN `SectionName` varchar(256) CHARACTER SET utf8mb4 NULL',
+                    'SELECT 1');
+                PREPARE stmt FROM @sql;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SectionName",
-                table: "OrderConfigurationItem");
+            migrationBuilder.Sql(
+                """
+                SET @columnExists = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_NAME = 'OrderConfigurationItem' AND COLUMN_NAME = 'SectionName' AND TABLE_SCHEMA = DATABASE());
+                SET @sql = IF(@columnExists > 0,
+                    'ALTER TABLE `OrderConfigurationItem` DROP COLUMN `SectionName`',
+                    'SELECT 1');
+                PREPARE stmt FROM @sql;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
+                """);
         }
     }
 }

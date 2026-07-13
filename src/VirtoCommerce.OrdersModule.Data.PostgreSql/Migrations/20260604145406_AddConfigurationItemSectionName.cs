@@ -10,20 +10,19 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "SectionName",
-                table: "OrderConfigurationItem",
-                type: "character varying(256)",
-                maxLength: 256,
-                nullable: true);
+            migrationBuilder.Sql(
+                """
+                ALTER TABLE "OrderConfigurationItem" ADD COLUMN IF NOT EXISTS "SectionName" character varying(256) NULL;
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SectionName",
-                table: "OrderConfigurationItem");
+            migrationBuilder.Sql(
+                """
+                ALTER TABLE "OrderConfigurationItem" DROP COLUMN IF EXISTS "SectionName";
+                """);
         }
     }
 }
