@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.Extensions.Logging;
 using VirtoCommerce.CatalogModule.Core.Model;
 using VirtoCommerce.CatalogModule.Core.Services;
@@ -11,8 +10,10 @@ using VirtoCommerce.InventoryModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Services;
 
@@ -69,8 +70,13 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 //Do not process prototypes
                 if (!customerOrder.IsPrototype)
                 {
+                    var payload = AbstractTypeFactory<AdjustInventoryJobPayload>.TryCreateInstance();
+                    payload.ChangedEntry = changedEntry;
+
                     //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
-                    BackgroundJob.Enqueue(() => ProcessInventoryChanges(changedEntry));
+                    //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
+                    //from the root provider and holds it for the process lifetime, so it must not capture a Scoped dependency.
+                    await BackgroundJob.Enqueue<AdjustInventoryJobHandler>(payload);
                 }
             }
         }
