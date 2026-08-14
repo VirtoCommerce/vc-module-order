@@ -16,7 +16,7 @@ namespace VirtoCommerce.OrdersModule.Data.Jobs
     {
         public virtual Task Execute(AdjustInventoryJobPayload payload, IJobExecutionContext context, CancellationToken cancellationToken = default)
         {
-            return eventHandler.ProcessInventoryChanges(payload.ChangedEntry);
+            return eventHandler.ProcessInventoryChanges(payload.ToChangedEntry());
         }
     }
 }

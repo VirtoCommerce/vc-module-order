@@ -70,8 +70,9 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 //Do not process prototypes
                 if (!customerOrder.IsPrototype)
                 {
-                    var payload = AbstractTypeFactory<AdjustInventoryJobPayload>.TryCreateInstance();
-                    payload.ChangedEntry = changedEntry;
+                    //Only the fields ProcessInventoryChanges reads are carried over: the payload is serialized without
+                    //type information, so the order graph itself cannot be read back on the worker.
+                    var payload = AdjustInventoryJobPayload.FromChangedEntry(changedEntry);
 
                     //Background task is used here to  prevent concurrent update conflicts that can be occur during applying of adjustments for same inventory object
                     //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
