@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
@@ -14,9 +13,11 @@ using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Notifications;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -59,7 +60,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                 var jobArguments = message.ChangedEntries.SelectMany(GetJobArgumentsForChangedEntry).ToArray();
                 if (jobArguments.Any())
                 {
-                    BackgroundJob.Enqueue(() => TryToSendOrderNotificationsAsync(jobArguments));
+                    var payload = AbstractTypeFactory<SendOrderNotificationsJobPayload>.TryCreateInstance();
+                    payload.JobArguments = jobArguments;
+
+                    //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
+                    //from the root provider and holds it for the process lifetime, so it must not capture a Scoped dependency.
+                    await BackgroundJob.Enqueue<SendOrderNotificationsJobHandler>(payload);
                 }
             }
         }
