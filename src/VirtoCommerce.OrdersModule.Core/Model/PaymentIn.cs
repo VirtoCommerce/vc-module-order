@@ -126,6 +126,16 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 Total = 0m;
                 TotalWithTax = 0m;
             }
+
+            foreach (var capture in Captures ?? Array.Empty<Capture>())
+            {
+                capture.ReduceDetails(responseGroup);
+            }
+
+            foreach (var refund in Refunds ?? Array.Empty<Refund>())
+            {
+                refund.ReduceDetails(responseGroup);
+            }
         }
 
         public override void RestoreDetails(OrderOperation operation)
@@ -145,6 +155,18 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             TaxTotal = payment.TaxTotal;
             Total = payment.Total;
             TotalWithTax = payment.TotalWithTax;
+
+            foreach (var capture in payment.Captures ?? Array.Empty<Capture>())
+            {
+                var targetCapture = Captures?.FirstOrDefault(x => x.Id == capture.Id);
+                targetCapture?.RestoreDetails(capture);
+            }
+
+            foreach (var refund in payment.Refunds ?? Array.Empty<Refund>())
+            {
+                var targetRefund = Refunds?.FirstOrDefault(x => x.Id == refund.Id);
+                targetRefund?.RestoreDetails(refund);
+            }
         }
 
 

@@ -30,7 +30,7 @@ public sealed class SampleCustomerOrderDataProtectionService(
     {
         var canReadPrices = await base.CanReadPrices(user, order);
 
-        if (!canReadPrices)
+        if (!canReadPrices && user != null)
         {
             var store = await storeService.GetByIdAsync(order.StoreId);
             canReadPrices = store != null && CanReadPricesForStore(user, store);

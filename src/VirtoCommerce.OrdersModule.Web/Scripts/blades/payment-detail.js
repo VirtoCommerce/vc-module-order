@@ -9,7 +9,9 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.orderModule.knownOperations',
         function ($scope, bladeNavigationService, customerOrders, authService, paymentMethods, members, knownOperations) {
             var blade = $scope.blade;
-            blade.isVisiblePrices = blade.currentEntity.withPrices;
+            // Taken from the order: a new operation has no currentEntity yet, and the new-operation
+            // prototype is not reduced, so its own withPrices flag cannot be trusted.
+            blade.isVisiblePrices = blade.customerOrder.withPrices;
             blade.paymentMethods = [];
 
             blade.captureStatuses = ['Authorized', 'Paid'];

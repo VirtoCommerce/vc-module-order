@@ -397,7 +397,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/shipments/new")]
         public async Task<ActionResult<Shipment>> GetNewShipment(string id)
         {
-            var order = await customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            // Read through the data protection service so the prototype inherits the caller's price visibility
+            var order = await customerOrderDataProtectionService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order == null)
             {
                 return NotFound();
@@ -413,6 +414,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             retVal.Id = Guid.NewGuid().ToString();
             retVal.Currency = order.Currency;
             retVal.Status = "New";
+            retVal.WithPrices = order.WithPrices;
 
             var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderShipmentNewNumberTemplate);
             retVal.Number = numberGenerator.GenerateNumber(store.Id, numberTemplate);
@@ -429,7 +431,8 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
         [Route("{id}/payments/new")]
         public async Task<ActionResult<PaymentIn>> GetNewPayment(string id)
         {
-            var order = await customerOrderService.GetNoCloneAsync(id, CustomerOrderResponseGroup.Full.ToString());
+            // Read through the data protection service so the prototype inherits the caller's price visibility
+            var order = await customerOrderDataProtectionService.GetByIdAsync(id, CustomerOrderResponseGroup.Full.ToString());
             if (order == null)
             {
                 return NotFound();
@@ -446,6 +449,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             retVal.Currency = order.Currency;
             retVal.CustomerId = order.CustomerId;
             retVal.Status = retVal.PaymentStatus.ToString();
+            retVal.WithPrices = order.WithPrices;
 
             var numberTemplate = store.Settings.GetValue<string>(ModuleConstants.Settings.General.OrderPaymentInNewNumberTemplate);
             retVal.Number = numberGenerator.GenerateNumber(store.Id, numberTemplate);
