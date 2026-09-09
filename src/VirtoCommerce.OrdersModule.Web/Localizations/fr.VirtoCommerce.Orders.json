@@ -43,7 +43,8 @@
           "sub-total": "Sous-total",
           "discount-total": "Remise",
           "tax-total": "Taxe",
-          "fee-total": "Frais"
+          "fee-total": "Frais",
+          "currency": "Devise"
         }
       },
       "customerOrder-item-detail": {

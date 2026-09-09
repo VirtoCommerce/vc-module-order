@@ -42,7 +42,8 @@
           "sub-total": "小计",
           "discount-total": "折扣",
           "tax-total": "税",
-          "fee-total": "费用"
+          "fee-total": "费用",
+          "currency": "货币"
         }
       },
       "customerOrder-item-detail": {

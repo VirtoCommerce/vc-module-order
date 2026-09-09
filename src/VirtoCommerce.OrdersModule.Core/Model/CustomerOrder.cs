@@ -234,6 +234,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public bool IsAnonymous { get; set; }
 
+        public IList<OrderTotal> OrderTotals { get; set; }
+
         #region ITaxable Members
 
         /// <summary>
@@ -290,6 +292,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             {
                 Discounts = null;
             }
+            if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithOrderTotals))
+            {
+                OrderTotals = null;
+            }
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
@@ -302,6 +308,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 FeeWithTax = 0m;
                 HandlingTotal = 0m;
                 HandlingTotalWithTax = 0m;
+                OrderTotals = null;
                 PaymentDiscountTotal = 0m;
                 PaymentDiscountTotalWithTax = 0m;
                 PaymentSubTotal = 0m;
@@ -360,6 +367,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             FeeWithTax = order.FeeWithTax;
             HandlingTotal = order.HandlingTotal;
             HandlingTotalWithTax = order.HandlingTotalWithTax;
+            OrderTotals = order.OrderTotals;
             PaymentDiscountTotal = order.PaymentDiscountTotal;
             PaymentDiscountTotalWithTax = order.PaymentDiscountTotalWithTax;
             PaymentSubTotal = order.PaymentSubTotal;
@@ -415,6 +423,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.Shipments = Shipments?.Select(x => x.Clone()).OfType<Shipment>().ToList();
             result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
             result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
+            result.OrderTotals = OrderTotals?.Select(x => x.Clone()).OfType<OrderTotal>().ToList();
 
             result.FillChildOperations();
 

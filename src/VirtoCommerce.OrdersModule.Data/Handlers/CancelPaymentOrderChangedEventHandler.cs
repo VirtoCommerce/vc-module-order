@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Jobs;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -28,7 +29,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (jobArguments.Any())
             {
-                BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
+                var payload = AbstractTypeFactory<CancelPaymentJobPayload>.TryCreateInstance();
+                payload.JobArguments = jobArguments;
+
+                //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
+                //from the root provider and holds it for the process lifetime, so it must not capture a Scoped dependency.
+                return BackgroundJob.Enqueue<CancelPaymentJobHandler>(payload);
             }
             return Task.CompletedTask;
         }

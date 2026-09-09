@@ -42,7 +42,8 @@
           "sub-total": "Подытог",
           "discount-total": "Скидка",
           "tax-total": "Налог",
-          "fee-total": "Комиссия"
+          "fee-total": "Комиссия",
+          "currency": "Валюта"
         }
       },
       "customerOrder-item-detail": {

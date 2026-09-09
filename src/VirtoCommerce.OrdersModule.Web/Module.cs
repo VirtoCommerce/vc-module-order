@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ using VirtoCommerce.OrdersModule.Core.Services;
 using VirtoCommerce.OrdersModule.Data.Authorization;
 using VirtoCommerce.OrdersModule.Data.ExportImport;
 using VirtoCommerce.OrdersModule.Data.Handlers;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.OrdersModule.Data.MySql;
 using VirtoCommerce.OrdersModule.Data.PostgreSql;
 using VirtoCommerce.OrdersModule.Data.Repositories;
@@ -35,6 +37,7 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Events;
 using VirtoCommerce.Platform.Core.ExportImport;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -101,6 +104,15 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<IndexCustomerOrderChangedEventHandler>();
             serviceCollection.AddTransient<IPaymentFlowService, PaymentFlowService>();
             serviceCollection.AddTransient<SendNotificationsOrderChangedEventHandler>();
+
+            // None of these is triggerable by name: each acts on a caller-supplied payload with real side effects -
+            // stock reservations, payment voids and refunds, customer emails, and audit-log rows whose Id would take
+            // ChangeLogService.SaveChangesAsync's Patch branch and overwrite an existing entry.
+            serviceCollection.AddBackgroundJob<AdjustInventoryJobHandler, AdjustInventoryJobPayload>(triggerable: false);
+            serviceCollection.AddBackgroundJob<CancelPaymentJobHandler, CancelPaymentJobPayload>(triggerable: false);
+            serviceCollection.AddBackgroundJob<RefundChangedJobHandler, RefundChangedJobPayload>(triggerable: false);
+            serviceCollection.AddBackgroundJob<LogOrderChangesJobHandler, LogOrderChangesJobPayload>(triggerable: false);
+            serviceCollection.AddBackgroundJob<SendOrderNotificationsJobHandler, SendOrderNotificationsJobPayload>(triggerable: false);
             serviceCollection.AddTransient<PolymorphicOperationJsonConverter>();
             serviceCollection.AddTransient<IAuthorizationHandler, OrderAuthorizationHandler>();
             serviceCollection.AddTransient<IPaymentRequestConverter, PaymentRequestDefaultConverter>();
@@ -241,13 +253,13 @@ namespace VirtoCommerce.OrdersModule.Web
         {
         }
 
-        public async Task ExportAsync(Stream outStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public async Task ExportAsync(Stream outStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             using var serviceScope = _appBuilder.ApplicationServices.CreateScope();
             await serviceScope.ServiceProvider.GetRequiredService<OrderExportImport>().DoExportAsync(outStream, progressCallback, cancellationToken);
         }
 
-        public async Task ImportAsync(Stream inputStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public async Task ImportAsync(Stream inputStream, ExportImportOptions options, Action<ExportImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             using var serviceScope = _appBuilder.ApplicationServices.CreateScope();
             await serviceScope.ServiceProvider.GetRequiredService<OrderExportImport>().DoImportAsync(inputStream, progressCallback, cancellationToken);

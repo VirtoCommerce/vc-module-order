@@ -42,7 +42,8 @@
           "sub-total": "Subtotal",
           "discount-total": "Descuento",
           "tax-total": "Impuesto",
-          "fee-total": "Tarifa"
+          "fee-total": "Tarifa",
+          "currency": "Moneda"
         }
       },
       "customerOrder-item-detail": {

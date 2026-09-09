@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VirtoCommerce.CoreModule.Core.Common;
@@ -35,6 +36,7 @@ namespace VirtoCommerce.OrdersModule2.Web
                 options.UseSqlServer(configuration.GetConnectionString(ModuleInfo.Id)
                                   ?? configuration.GetConnectionString("VirtoCommerce.Orders")
                                   ?? configuration.GetConnectionString("VirtoCommerce"));
+                options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
             });
 
             serviceCollection.AddTransient<IOrderRepository, OrderRepository2>();
