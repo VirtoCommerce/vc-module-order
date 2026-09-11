@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -16,6 +17,12 @@ namespace VirtoCommerce.OrdersModule.Data.Authorization;
 public class OrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOptions)
     : PermissionAuthorizationHandlerBase<OrderAuthorizationRequirement>
 {
+    /// <summary>
+    /// Placeholder store id used to express "no store may match". Store ids are assigned by the
+    /// store module and never take this form, so filtering on it yields an empty result.
+    /// </summary>
+    public const string UnmatchableStoreId = "!denied";
+
     private readonly MvcNewtonsoftJsonOptions _jsonOptions = jsonOptions.Value;
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrderAuthorizationRequirement requirement)
@@ -78,7 +85,16 @@ public class OrderAuthorizationHandler(IOptions<MvcNewtonsoftJsonOptions> jsonOp
         {
             criteria.StoreIds = criteria.StoreIds.IsNullOrEmpty()
                 ? context.AllowedStoreIds
-                : context.AllowedStoreIds.Intersect(criteria.StoreIds ?? []).ToArray();
+                : context.AllowedStoreIds.Intersect(criteria.StoreIds, StringComparer.OrdinalIgnoreCase).ToArray();
+
+            if (criteria.StoreIds.IsNullOrEmpty())
+            {
+                // Every requested store is outside the permission scope. Both the database and the
+                // indexed search read an empty StoreIds as "no store filter", which would widen the
+                // search to every store, so filter on a value no store can have instead: the caller
+                // gets an empty result rather than a larger one.
+                criteria.StoreIds = [UnmatchableStoreId];
+            }
         }
 
         if (context.HasResponsibleScope)
