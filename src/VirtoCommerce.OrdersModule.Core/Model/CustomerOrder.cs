@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.SearchModule.Core.Model;
@@ -260,27 +261,33 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #endregion
 
-        public virtual void ReduceDetails(string responseGroup)
+        public override void ReduceDetails(string responseGroup)
         {
-            //Reduce details according to response group
+            base.ReduceDetails(responseGroup);
+
+            // Reduce details according to the response group
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
             {
                 Items = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
             {
                 Shipments = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
             {
                 InPayments = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
                 Addresses = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
                 Discounts = null;
@@ -292,63 +299,107 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-                TaxPercentRate = 0m;
-                ShippingTotalWithTax = 0m;
-                PaymentTotalWithTax = 0m;
                 DiscountAmount = 0m;
-                Total = 0m;
-                SubTotal = 0m;
-                SubTotalWithTax = 0m;
-                ShippingTotal = 0m;
-                PaymentTotal = 0m;
                 DiscountTotal = 0m;
                 DiscountTotalWithTax = 0m;
-                TaxTotal = 0m;
-                Sum = 0m;
                 Fee = 0m;
-                FeeTotalWithTax = 0m;
                 FeeTotal = 0m;
+                FeeTotalWithTax = 0m;
                 FeeWithTax = 0m;
                 HandlingTotal = 0m;
                 HandlingTotalWithTax = 0m;
                 OrderTotals = null;
+                PaymentDiscountTotal = 0m;
+                PaymentDiscountTotalWithTax = 0m;
+                PaymentSubTotal = 0m;
+                PaymentSubTotalWithTax = 0m;
+                PaymentTaxTotal = 0m;
+                PaymentTotal = 0m;
+                PaymentTotalWithTax = 0m;
+                ShippingDiscountTotal = 0m;
+                ShippingDiscountTotalWithTax = 0m;
+                ShippingSubTotal = 0m;
+                ShippingSubTotalWithTax = 0m;
+                ShippingTaxTotal = 0m;
+                ShippingTotal = 0m;
+                ShippingTotalWithTax = 0m;
+                SubTotal = 0m;
+                SubTotalDiscount = 0m;
+                SubTotalDiscountWithTax = 0m;
+                SubTotalTaxTotal = 0m;
+                SubTotalWithTax = 0m;
+                TaxPercentRate = 0m;
+                TaxTotal = 0m;
+                Total = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
 
             foreach (var shipment in Shipments ?? Array.Empty<Shipment>())
             {
                 shipment.ReduceDetails(responseGroup);
             }
+
             foreach (var inPayment in InPayments ?? Array.Empty<PaymentIn>())
             {
                 inPayment.ReduceDetails(responseGroup);
             }
+
             foreach (var item in Items ?? Array.Empty<LineItem>())
             {
                 item.ReduceDetails(responseGroup);
             }
         }
 
-        public virtual void RestoreDetails(CustomerOrder order)
+        public override void RestoreDetails(OrderOperation operation)
         {
-            TaxPercentRate = order.TaxPercentRate;
-            ShippingTotalWithTax = order.ShippingTotalWithTax;
-            PaymentTotalWithTax = order.PaymentTotalWithTax;
+            base.RestoreDetails(operation);
+
+            if (operation is not CustomerOrder order)
+            {
+                return;
+            }
+
             DiscountAmount = order.DiscountAmount;
-            Total = order.Total;
-            SubTotal = order.SubTotal;
-            SubTotalWithTax = order.SubTotalWithTax;
-            ShippingTotal = order.ShippingTotal;
-            PaymentTotal = order.PaymentTotal;
             DiscountTotal = order.DiscountTotal;
             DiscountTotalWithTax = order.DiscountTotalWithTax;
-            TaxTotal = order.TaxTotal;
-            Sum = order.Sum;
             Fee = order.Fee;
-            FeeTotalWithTax = order.FeeTotalWithTax;
             FeeTotal = order.FeeTotal;
+            FeeTotalWithTax = order.FeeTotalWithTax;
             FeeWithTax = order.FeeWithTax;
             HandlingTotal = order.HandlingTotal;
             HandlingTotalWithTax = order.HandlingTotalWithTax;
+            OrderTotals = order.OrderTotals;
+            PaymentDiscountTotal = order.PaymentDiscountTotal;
+            PaymentDiscountTotalWithTax = order.PaymentDiscountTotalWithTax;
+            PaymentSubTotal = order.PaymentSubTotal;
+            PaymentSubTotalWithTax = order.PaymentSubTotalWithTax;
+            PaymentTaxTotal = order.PaymentTaxTotal;
+            PaymentTotal = order.PaymentTotal;
+            PaymentTotalWithTax = order.PaymentTotalWithTax;
+            ShippingDiscountTotal = order.ShippingDiscountTotal;
+            ShippingDiscountTotalWithTax = order.ShippingDiscountTotalWithTax;
+            ShippingSubTotal = order.ShippingSubTotal;
+            ShippingSubTotalWithTax = order.ShippingSubTotalWithTax;
+            ShippingTaxTotal = order.ShippingTaxTotal;
+            ShippingTotal = order.ShippingTotal;
+            ShippingTotalWithTax = order.ShippingTotalWithTax;
+            SubTotal = order.SubTotal;
+            SubTotalDiscount = order.SubTotalDiscount;
+            SubTotalDiscountWithTax = order.SubTotalDiscountWithTax;
+            SubTotalTaxTotal = order.SubTotalTaxTotal;
+            SubTotalWithTax = order.SubTotalWithTax;
+            TaxPercentRate = order.TaxPercentRate;
+            TaxTotal = order.TaxTotal;
+            Total = order.Total;
+
+            // Value objects without identity: take the stored breakdown wholesale rather than
+            // trying to match entries the caller never saw the amounts of.
+            Discounts = order.Discounts;
+            FeeDetails = order.FeeDetails;
+            TaxDetails = order.TaxDetails;
 
             foreach (var shipment in order.Shipments ?? Array.Empty<Shipment>())
             {
@@ -383,6 +434,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.Discounts = Discounts?.Select(x => x.Clone()).OfType<Discount>().ToList();
             result.FeeDetails = FeeDetails?.Select(x => x.Clone()).OfType<FeeDetail>().ToList();
             result.OrderTotals = OrderTotals?.Select(x => x.Clone()).OfType<OrderTotal>().ToList();
+
+            result.FillChildOperations();
 
             return result;
         }

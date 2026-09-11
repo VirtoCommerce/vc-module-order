@@ -19,8 +19,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
     [Route("api/order/payments")]
     [Authorize]
     public class OrderModulePaymentsController(
-        IPaymentSearchService paymentSearchService,
-        IPaymentService paymentService,
+        IPaymentDataProtectionService paymentService,
         IAuthorizationService authorizationService,
         ICustomerOrderService customerOrderService,
         IValidator<PaymentIn> paymentInValidator,
@@ -42,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Forbid();
             }
 
-            var result = await paymentSearchService.SearchAsync(criteria);
+            var result = await paymentService.SearchAsync(criteria);
 
             return Ok(result);
         }
@@ -67,7 +66,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Forbid();
             }
 
-            var result = await paymentSearchService.SearchAsync(searchCriteria);
+            var result = await paymentService.SearchAsync(searchCriteria);
 
             return Ok(result.Results.FirstOrDefault());
         }
@@ -92,7 +91,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Forbid();
             }
 
-            var searchResult = await paymentSearchService.SearchAsync(searchCriteria);
+            var searchResult = await paymentService.SearchAsync(searchCriteria);
 
             return Ok(searchResult.Results.FirstOrDefault());
         }
@@ -162,7 +161,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
             {
                 return Forbid();
             }
-            var result = await paymentSearchService.SearchAsync(searchCriteria);
+            var result = await paymentService.SearchAsync(searchCriteria);
             await paymentService.DeleteAsync(result.Results.Select(x => x.Id).ToArray());
             return Ok();
         }

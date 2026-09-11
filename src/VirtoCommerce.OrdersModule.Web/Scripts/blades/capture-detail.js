@@ -7,7 +7,7 @@ angular.module('virtoCommerce.orderModule')
         'virtoCommerce.customerModule.members',
         function ($scope, bladeNavigationService, authService, paymentMethods, members) {
         var blade = $scope.blade;
-        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+        blade.isVisiblePrices = blade.currentEntity.withPrices;
 
         blade.title = 'orders.blades.capture-details.title';
         blade.titleValues = { number: blade.currentEntity.number };

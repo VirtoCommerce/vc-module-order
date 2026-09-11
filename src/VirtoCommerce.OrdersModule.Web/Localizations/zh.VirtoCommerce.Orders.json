@@ -528,7 +528,8 @@
     "order:update": "更新订单相关数据",
     "order:delete": "删除订单相关数据",
     "order:access": "访问订单相关数据",
-    "order:read_prices": "查看订单价格"
+    "order:read_prices": "查看订单价格",
+    "order:invoice:download": "下载发票 PDF"
   },
   "settings": {
     "Order.Status": {

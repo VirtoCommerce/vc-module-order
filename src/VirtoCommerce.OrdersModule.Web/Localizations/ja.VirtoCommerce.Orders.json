@@ -528,7 +528,8 @@
     "order:update": "注文関連データの更新",
     "order:delete": "注文関連データの削除",
     "order:access": "注文関連データへのアクセス",
-    "order:read_prices": "注文価格の表示"
+    "order:read_prices": "注文価格の表示",
+    "order:invoice:download": "請求書PDFのダウンロード"
   },
   "settings": {
     "Order.Status": {
