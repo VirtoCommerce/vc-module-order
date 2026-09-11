@@ -104,7 +104,8 @@ public abstract class OrderOperationDataProtectionService<TOperation, TCriteria,
         var allowedOrderIds = await GetOrderIdsWithReadablePrices(operations);
 
         var restricted = operations
-            .Where(x => x != null && !x.Id.IsNullOrEmpty() && !allowedOrderIds.Contains(GetOrderId(x)))
+            .Where(x => x != null && !x.Id.IsNullOrEmpty() &&
+                        (!x.WithPrices || !allowedOrderIds.Contains(GetOrderId(x))))
             .ToList();
 
         if (restricted.Count == 0)

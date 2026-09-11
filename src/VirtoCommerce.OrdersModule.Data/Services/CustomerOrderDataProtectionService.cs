@@ -131,7 +131,7 @@ public class CustomerOrderDataProtectionService(
 
     protected virtual async Task RestoreDetailsForUser(ClaimsPrincipal user, CustomerOrder order)
     {
-        if (!await CanReadPrices(user, order))
+        if (!order.WithPrices || !await CanReadPrices(user, order))
         {
             await RestorePrices(order);
         }
