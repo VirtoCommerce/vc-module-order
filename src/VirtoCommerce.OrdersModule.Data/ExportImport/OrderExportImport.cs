@@ -1,4 +1,4 @@
-using System;
+using System;
 using System.Threading;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,15 +13,13 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
 {
     public sealed class OrderExportImport
     {
-        private readonly ICustomerOrderSearchService _customerOrderSearchService;
-        private readonly ICustomerOrderService _customerOrderService;
+        private readonly ICustomerOrderDataProtectionService _customerOrderDataProtectionService;
         private readonly JsonSerializer _jsonSerializer;
         private const int _batchSize = 50;
 
-        public OrderExportImport(ICustomerOrderSearchService customerOrderSearchService, ICustomerOrderService customerOrderService, JsonSerializer jsonSerializer)
+        public OrderExportImport(ICustomerOrderDataProtectionService customerOrderDataProtectionService, JsonSerializer jsonSerializer)
         {
-            _customerOrderSearchService = customerOrderSearchService;
-            _customerOrderService = customerOrderService;
+            _customerOrderDataProtectionService = customerOrderDataProtectionService;
             _jsonSerializer = jsonSerializer;
         }
 
@@ -47,7 +45,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                     searchCriteria.Take = take;
                     searchCriteria.Skip = skip;
                     searchCriteria.WithPrototypes = true;
-                    var searchResult = await _customerOrderSearchService.SearchAsync(searchCriteria);
+                    var searchResult = await _customerOrderDataProtectionService.SearchAsync(searchCriteria);
                     return (GenericSearchResult<CustomerOrder>)searchResult;
                 }, (processedCount, totalCount) =>
                 {
@@ -73,7 +71,7 @@ namespace VirtoCommerce.OrdersModule.Data.ExportImport
                 {
                     if (reader.TokenType == JsonToken.PropertyName && reader.Value.ToString() == "CustomerOrders")
                     {
-                        await reader.DeserializeArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, _customerOrderService.SaveChangesAsync, processedCount =>
+                        await reader.DeserializeArrayWithPagingAsync<CustomerOrder>(_jsonSerializer, _batchSize, _customerOrderDataProtectionService.SaveChangesAsync, processedCount =>
                         {
                             progressInfo.Description = $"{processedCount} orders have been imported";
                             progressCallback(progressInfo);

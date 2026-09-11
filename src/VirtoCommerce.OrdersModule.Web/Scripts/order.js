@@ -407,8 +407,8 @@ angular.module(moduleName, [
                     template: 'Modules/$(VirtoCommerce.Orders)/Scripts/widgets/customerOrder-address-widget.tpl.html'
                 };
                 widgetService.registerWidget(customerOrderAddressWidget, 'customerOrderDetailWidgets');
-                function checkPermissionToReadPrices() {
-                    return authService.checkPermission('order:read_prices');
+                function checkPermissionToReadPrices(blade) {
+                    return blade.customerOrder.withPrices;
                 }
 
                 function checkPermissionToViewDashboard() {
@@ -736,7 +736,7 @@ angular.module(moduleName, [
                                     documentType: 'CustomerOrder',
                                     controller: 'virtoCommerce.searchModule.indexWidgetController',
                                     template: 'Modules/$(VirtoCommerce.Search)/Scripts/widgets/index-widget.tpl.html',
-                                    isVisible: function (blade) { return !blade.isNew; }
+                                    isVisible: function (blade) { return !blade.isNew && authService.checkPermission('search:index:read'); }
                                 };
                                 widgetService.registerWidget(customerOrderIndexWidget, 'customerOrderDetailWidgets');
                             }

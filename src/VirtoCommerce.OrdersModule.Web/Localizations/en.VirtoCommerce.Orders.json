@@ -528,7 +528,8 @@
     "order:update": "Update order related data",
     "order:delete": "Delete order related data",
     "order:access": "Access order related data",
-    "order:read_prices": "View order prices"
+    "order:read_prices": "View order prices",
+    "order:invoice:download": "Download invoice PDF"
   },
   "settings": {
     "Order.Status": {

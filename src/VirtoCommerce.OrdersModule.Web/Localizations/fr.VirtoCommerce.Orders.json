@@ -529,7 +529,8 @@
     "order:update": "Mettre à jour les données liées aux commandes",
     "order:delete": "Supprimer les données liées aux commandes",
     "order:access": "Accéder aux données liées aux commandes",
-    "order:read_prices": "Voir les prix des commandes"
+    "order:read_prices": "Voir les prix des commandes",
+    "order:invoice:download": "Télécharger la facture PDF"
   },
   "settings": {
     "Order.Status": {

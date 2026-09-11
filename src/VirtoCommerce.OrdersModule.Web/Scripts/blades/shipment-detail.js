@@ -11,7 +11,9 @@ angular.module('virtoCommerce.orderModule')
         function ($scope, bladeNavigationService, customerOrders, fulfillments,
             authService, shippingMethods, members, knownOperations) {
         var blade = $scope.blade;
-        blade.isVisiblePrices = authService.checkPermission('order:read_prices');
+        // Taken from the order: a new operation has no currentEntity yet, and the new-operation
+        // prototype is not reduced, so its own withPrices flag cannot be trusted.
+        blade.isVisiblePrices = blade.customerOrder.withPrices;
         blade.shippingMethods = [];
 
         if (blade.isNew) {

@@ -12,6 +12,31 @@ namespace VirtoCommerce.OrdersModule.Tests
     public class CustomerOrderTests
     {
         [Fact]
+        public void CloneTest()
+        {
+            // Arrange
+            var shipment = new Shipment();
+
+            var order = new CustomerOrder
+            {
+                Shipments = [shipment],
+                ChildrenOperations = [shipment],
+            };
+
+            // Act
+            var clonedOrder = order.CloneTyped();
+
+            // Assert
+            Assert.NotSame(clonedOrder.Shipments, order.Shipments);
+            Assert.NotSame(clonedOrder.Shipments.First(), order.Shipments.First());
+
+            Assert.NotSame(clonedOrder.ChildrenOperations, order.ChildrenOperations);
+            Assert.NotSame(clonedOrder.ChildrenOperations.First(), order.ChildrenOperations.First());
+
+            Assert.Same(clonedOrder.Shipments.First(), clonedOrder.ChildrenOperations.First());
+        }
+
+        [Fact]
         public void FromModel_MultipleShipments_ShipmentItemsLinkedCorrectly()
         {
             // Arrange

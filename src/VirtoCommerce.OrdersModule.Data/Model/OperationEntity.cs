@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
-using VirtoCommerce.OrdersModule.Data.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Domain;
 
@@ -70,7 +70,8 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             operation.CancelReason = CancelReason;
             operation.IsApproved = IsApproved;
             operation.Sum = Sum;
-            operation.FillAllChildOperations();
+
+            operation.FillChildOperations();
 
             return operation;
         }
