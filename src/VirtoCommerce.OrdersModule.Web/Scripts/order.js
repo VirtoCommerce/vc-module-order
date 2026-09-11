@@ -736,7 +736,7 @@ angular.module(moduleName, [
                                     documentType: 'CustomerOrder',
                                     controller: 'virtoCommerce.searchModule.indexWidgetController',
                                     template: 'Modules/$(VirtoCommerce.Search)/Scripts/widgets/index-widget.tpl.html',
-                                    isVisible: function (blade) { return !blade.isNew; }
+                                    isVisible: function (blade) { return !blade.isNew && authService.checkPermission('search:index:read'); }
                                 };
                                 widgetService.registerWidget(customerOrderIndexWidget, 'customerOrderDetailWidgets');
                             }
