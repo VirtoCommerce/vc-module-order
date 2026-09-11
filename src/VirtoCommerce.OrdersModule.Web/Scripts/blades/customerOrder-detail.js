@@ -23,7 +23,8 @@ angular.module('virtoCommerce.orderModule')
                 },
                 canExecuteMethod: function () {
                     return true;
-                }
+                },
+                permission: 'order:invoice:download'
             });
 
             function showCustomerDetailBlade(member) {

@@ -528,7 +528,8 @@
     "order:update": "Aggiorna dati relativi all'ordine",
     "order:delete": "Elimina dati relativi all'ordine",
     "order:access": "Accedi ai dati relativi all'ordine",
-    "order:read_prices": "Visualizza prezzi dell'ordine"
+    "order:read_prices": "Visualizza prezzi dell'ordine",
+    "order:invoice:download": "Scarica la fattura in PDF"
   },
   "settings": {
     "Order.Status": {

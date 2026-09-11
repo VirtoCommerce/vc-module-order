@@ -613,6 +613,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 
         [HttpGet]
         [Route("invoice/{orderNumber}")]
+        [Authorize(ModuleConstants.Security.Permissions.DownloadInvoice)]
         [SwaggerFileResponse]
         public async Task<ActionResult> GetInvoicePdf(string orderNumber)
         {

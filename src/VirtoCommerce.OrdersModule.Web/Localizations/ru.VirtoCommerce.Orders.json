@@ -528,7 +528,8 @@
     "order:update": "Обновление данных, связанных с заказом",
     "order:delete": "Удаление данных, связанных с заказом",
     "order:access": "Доступ к данным, связанным с заказом",
-    "order:read_prices": "Просмотр цен заказа"
+    "order:read_prices": "Просмотр цен заказа",
+    "order:invoice:download": "Скачивание счёта в PDF"
   },
   "settings": {
     "Order.Status": {
