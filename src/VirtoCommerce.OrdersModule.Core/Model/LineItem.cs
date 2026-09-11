@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Swagger;
@@ -186,6 +187,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 PriceWithTax = 0m;
                 TaxPercentRate = 0m;
                 TaxTotal = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
         }
 
@@ -207,6 +212,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             PriceWithTax = item.PriceWithTax;
             TaxPercentRate = item.TaxPercentRate;
             TaxTotal = item.TaxTotal;
+
+            Discounts = item.Discounts;
+            FeeDetails = item.FeeDetails;
+            TaxDetails = item.TaxDetails;
         }
 
         #region ICloneable members

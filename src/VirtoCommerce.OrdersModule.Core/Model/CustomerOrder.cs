@@ -331,6 +331,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 TaxPercentRate = 0m;
                 TaxTotal = 0m;
                 Total = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
 
             foreach (var shipment in Shipments ?? Array.Empty<Shipment>())
@@ -390,6 +394,12 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             TaxPercentRate = order.TaxPercentRate;
             TaxTotal = order.TaxTotal;
             Total = order.Total;
+
+            // Value objects without identity: take the stored breakdown wholesale rather than
+            // trying to match entries the caller never saw the amounts of.
+            Discounts = order.Discounts;
+            FeeDetails = order.FeeDetails;
+            TaxDetails = order.TaxDetails;
 
             foreach (var shipment in order.Shipments ?? Array.Empty<Shipment>())
             {

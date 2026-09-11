@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
@@ -125,6 +126,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 TaxTotal = 0m;
                 Total = 0m;
                 TotalWithTax = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
 
             foreach (var capture in Captures ?? Array.Empty<Capture>())
@@ -155,6 +160,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             TaxTotal = payment.TaxTotal;
             Total = payment.Total;
             TotalWithTax = payment.TotalWithTax;
+
+            Discounts = payment.Discounts;
+            FeeDetails = payment.FeeDetails;
+            TaxDetails = payment.TaxDetails;
 
             foreach (var capture in payment.Captures ?? Array.Empty<Capture>())
             {
