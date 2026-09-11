@@ -88,6 +88,8 @@ namespace VirtoCommerce.OrdersModule.Web
             serviceCollection.AddTransient<ICustomerOrderSearchService, CustomerOrderSearchService>();
             serviceCollection.AddTransient<ICustomerOrderService, CustomerOrderService>();
             serviceCollection.AddTransient<ICustomerOrderDataProtectionService, CustomerOrderDataProtectionService>();
+            serviceCollection.AddTransient<IPaymentDataProtectionService, PaymentDataProtectionService>();
+            serviceCollection.AddTransient<IShipmentDataProtectionService, ShipmentDataProtectionService>();
             serviceCollection.AddTransient<IMemberOrdersService, CustomerOrderService>();
             serviceCollection.AddTransient<IPaymentSearchService, PaymentSearchService>();
             serviceCollection.AddTransient<IPaymentService, PaymentService>();

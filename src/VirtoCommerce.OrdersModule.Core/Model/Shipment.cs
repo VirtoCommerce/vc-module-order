@@ -143,6 +143,16 @@ namespace VirtoCommerce.OrdersModule.Core.Model
                 Total = 0m;
                 TotalWithTax = 0m;
             }
+
+            foreach (var item in AllItems())
+            {
+                item.LineItem?.ReduceDetails(responseGroup);
+            }
+
+            foreach (var payment in InPayments ?? Array.Empty<PaymentIn>())
+            {
+                payment.ReduceDetails(responseGroup);
+            }
         }
 
         public override void RestoreDetails(OrderOperation operation)
@@ -164,6 +174,33 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             TaxTotal = shipment.TaxTotal;
             Total = shipment.Total;
             TotalWithTax = shipment.TotalWithTax;
+
+            var sourceItems = shipment.AllItems().Where(x => x.LineItem != null).ToList();
+
+            foreach (var item in AllItems())
+            {
+                var sourceItem = sourceItems.FirstOrDefault(x => x.Id == item.Id);
+                if (sourceItem != null)
+                {
+                    item.LineItem?.RestoreDetails(sourceItem.LineItem);
+                }
+            }
+
+            foreach (var payment in shipment.InPayments ?? Array.Empty<PaymentIn>())
+            {
+                var targetPayment = InPayments?.FirstOrDefault(x => x.Id == payment.Id);
+                targetPayment?.RestoreDetails(payment);
+            }
+        }
+
+        /// <summary>
+        /// Shipment items, including those reachable only through packages.
+        /// </summary>
+        private IEnumerable<ShipmentItem> AllItems()
+        {
+            return (Items ?? Array.Empty<ShipmentItem>())
+                .Concat((Packages ?? Array.Empty<ShipmentPackage>())
+                    .SelectMany(x => x.Items ?? Array.Empty<ShipmentItem>()));
         }
 
         #region ICloneable members

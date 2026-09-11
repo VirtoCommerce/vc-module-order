@@ -83,6 +83,18 @@ public class CustomerOrderDataProtectionService(
         return crudService.DeleteAsync(ids, softDelete);
     }
 
+    /// <summary>
+    /// The single evaluation point for the price rule. The payment and shipment data protection services
+    /// call this for an operation's parent order, so overriding <see cref="CanReadPrices"/> in a derived
+    /// class covers orders, payments and shipments at once.
+    /// </summary>
+    public virtual async Task<bool> CanReadPricesAsync(CustomerOrder order)
+    {
+        var user = await GetCurrentUser();
+
+        return await CanReadPrices(user, order);
+    }
+
 
     protected virtual async Task ReduceDetailsForCurrentUser(IList<CustomerOrder> orders, bool cloned)
     {
