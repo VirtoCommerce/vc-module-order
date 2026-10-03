@@ -42,7 +42,8 @@
           "sub-total": "Subtotal",
           "discount-total": "Descuento",
           "tax-total": "Impuesto",
-          "fee-total": "Tarifa"
+          "fee-total": "Tarifa",
+          "currency": "Moneda"
         }
       },
       "customerOrder-item-detail": {
@@ -527,7 +528,8 @@
     "order:update": "Actualizar datos relacionados con órdenes",
     "order:delete": "Eliminar datos relacionados con órdenes",
     "order:access": "Acceder a datos relacionados con órdenes",
-    "order:read_prices": "Ver precios de órdenes"
+    "order:read_prices": "Ver precios de órdenes",
+    "order:invoice:download": "Descargar PDF de la factura"
   },
   "settings": {
     "Order.Status": {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -14,7 +14,7 @@ using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class CustomerOrderEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<CustomerOrderEntity, CustomerOrder>
+    public class CustomerOrderEntity : OperationEntity, IDataEntity<CustomerOrderEntity, CustomerOrder>
     {
         [Required]
         [StringLength(64)]

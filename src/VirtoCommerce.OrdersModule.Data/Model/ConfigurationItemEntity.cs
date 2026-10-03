@@ -22,6 +22,9 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
     [StringLength(128)]
     public string SectionId { get; set; }
 
+    [StringLength(256)]
+    public string SectionName { get; set; }
+
     [StringLength(1024)]
     public string Name { get; set; }
 
@@ -69,6 +72,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
         configurationItem.LineItemId = LineItemId;
         configurationItem.ProductId = ProductId;
         configurationItem.SectionId = SectionId;
+        configurationItem.SectionName = SectionName;
         configurationItem.Name = Name;
         configurationItem.Sku = Sku;
         configurationItem.Quantity = Quantity;
@@ -101,6 +105,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
 
         ProductId = configurationItem.ProductId;
         SectionId = configurationItem.SectionId;
+        SectionName = configurationItem.SectionName;
         Name = configurationItem.Name;
         Sku = configurationItem.Sku;
         Quantity = configurationItem.Quantity;
@@ -126,6 +131,7 @@ public class ConfigurationItemEntity : AuditableEntity, IDataEntity<Configuratio
 
         target.ProductId = ProductId;
         target.SectionId = SectionId;
+        target.SectionName = SectionName;
         target.Name = Name;
         target.Sku = Sku;
         target.Quantity = Quantity;

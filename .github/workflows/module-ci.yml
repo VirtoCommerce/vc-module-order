@@ -1,5 +1,5 @@
-# v3.800.35
-# https://virtocommerce.atlassian.net/browse/VCST-5063
+# v3.1000.1
+# https://virtocommerce.atlassian.net/browse/VCST-5414
 name: Module CI
 
 on:
@@ -28,19 +28,74 @@ on:
       - '**/cloudDeploy.json'
       - samples/**
 
+# Least-privilege default; jobs override below where they need more.
+permissions:
+  contents: read
+
 jobs:
-  ci:
-    if: ${{ github.actor != 'dependabot[bot]' &&
-        (github.event.pull_request.head.repo.full_name == github.repository ||
-        github.event.pull_request.head.repo.full_name == '') }}  # Check that PR not from forked repo and not from Dependabot
+  # Skips build/deploy for version-only bumps (every changed line is a <VersionPrefix>/<version>). Push-only.
+  detect-version-bump:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      version-only: ${{ steps.detect.outputs.version-only }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Detect version-bump-only push
+        id: detect
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          # New branch (no "before" ref) -> run CI.
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "version-only=false" >> "$GITHUB_OUTPUT"; echo "New branch push - running CI."; exit 0
+          fi
+
+          echo "Files changed:"; git diff --name-only "$BEFORE" "$AFTER"
+
+          # version-only when every changed +/- line is a "<VersionPrefix|version>X.Y.Z</...>" bump.
+          # || true: a content-less diff (rename/mode-only) makes grep match nothing (exit 1), which
+          # pipefail+set -e would turn into a step failure; fall through and let CI decide instead.
+          CHANGED=$(git diff --unified=0 "$BEFORE" "$AFTER" | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' \
+            | sed -E 's/^[+-][[:space:]]*//; s/[[:space:]]*$//' || true)
+          NON_VERSION=$(echo "$CHANGED" \
+            | grep -vxE '<VersionPrefix>[0-9]+\.[0-9]+\.[0-9]+</VersionPrefix>|<version>[0-9]+\.[0-9]+\.[0-9]+</version>' \
+            | grep -v '^$' || true)
+
+          if [ -n "$CHANGED" ] && [ -z "$NON_VERSION" ]; then
+            echo "version-only=true"  >> "$GITHUB_OUTPUT"; echo "::notice::Version-only push - skipping CI build."
+          else
+            echo "version-only=false" >> "$GITHUB_OUTPUT"; echo "Non-version changes detected - running CI."
+          fi
+
+  ci:
+    needs: detect-version-bump
+    # !cancelled() keeps CI running when detect-version-bump is skipped (PR) or fails (fail-open).
+    if: ${{ !cancelled()
+        && needs.detect-version-bump.outputs.version-only != 'true'
+        && github.actor != 'dependabot[bot]' &&
+        (github.event.pull_request.head.repo.full_name == github.repository ||
+        github.event.pull_request.head.repo.full_name == '') }}  # Skip version-only bumps; PR not from a fork or Dependabot
+    runs-on: ubuntu-24.04
+    # Default GITHUB_TOKEN creates the release + updates the PR; rest uses the REPO_TOKEN PAT.
+    # id-token: write lets NuGet/login mint a short-lived OIDC key (Trusted Publishing).
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
     env:
       CLOUD_INSTANCE_BASE_URL: ${{secrets.CLOUD_INSTANCE_BASE_URL}}
       CLIENT_ID: ${{secrets.CLIENT_ID}}
       CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
       SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      NUGET_KEY: ${{ secrets.NUGET_KEY }}
       BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
       VERSION_SUFFIX: ''
       BUILD_STATE: 'failed'
@@ -55,16 +110,17 @@ jobs:
       matrix: ${{ steps.deployment-matrix.outputs.matrix }}
       deployment-folder-exists: ${{ steps.check_deployment_folder.outputs.exists }}
       requiredModulesListUrl: ${{ steps.extract_required_modules_list_url_from_pr.outputs.url }}
+      moduleDependencies: ${{ steps.module_dependencies.outputs.ids }}
 
     steps:
 
       - name: Set up Node 24
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
             node-version: '24'
 
       - name: Set up Java 17
-        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -74,23 +130,53 @@ jobs:
         run: |
           echo "RELEASE_STATUS=true" >> $GITHUB_ENV
 
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install VirtoCommerce.GlobalTool
-        uses: VirtoCommerce/vc-github-actions/setup-vcbuild@master
+        uses: VirtoCommerce/.github/actions/setup-vcbuild@v3.1000.1
 
       - name: Install dotnet-sonarscanner
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Get Changelog
         id: changelog
-        uses: VirtoCommerce/vc-github-actions/changelog-generator@master
+        uses: VirtoCommerce/.github/actions/changelog-generator@v3.1000.1
 
       - name: Get Artifact Version
-        uses: VirtoCommerce/vc-github-actions/get-image-version@master
+        uses: VirtoCommerce/.github/actions/get-image-version@v3.1000.1
         id: artifact_ver
+
+      # Read here because this job already has the checkout: module.manifest is the only place
+      # naming the engine the module needs (the packages manifest comes from the PR body and is
+      # empty on a dispatch). Ids only — the test workflow owns the id -> engine mapping.
+      - name: Read module dependencies
+        id: module_dependencies
+        shell: pwsh
+        run: |
+          # samples ship their own manifests and are not what is being tested
+          $manifests = @(Get-ChildItem -Path . -Filter module.manifest -Recurse -File |
+                         Where-Object { $_.FullName -notmatch '[\\/](samples|tests)[\\/]' })
+
+          $declared = @(foreach ($manifest in $manifests) {
+            try { $xml = [xml](Get-Content -Raw $manifest.FullName) }
+            catch {
+              Write-Host "::warning title=Module dependencies::$($manifest.FullName) is not valid XML; its dependencies are ignored."
+              continue
+            }
+            # Optional dependencies are not installed: an engine named by one would be picked
+            # for testing and then not be there.
+            $xml.module.dependencies.dependency |
+              Where-Object { $_.id -and $_.optional -ne 'true' } | ForEach-Object { $_.id }
+          })
+          $ids = @($declared | Sort-Object -Unique)
+
+          Write-Host "Module dependencies: $(if ($ids) { $ids -join ', ' } else { 'none' })"
+          # ConvertTo-Json on an empty array yields nothing, and the consumer parses this
+          $json = if ($ids.Count -gt 0) { $ids | ConvertTo-Json -Compress -AsArray } else { '[]' }
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "ids=$json"
 
       - name: Check if .deployment folder exists
         id: check_deployment_folder
@@ -106,19 +192,22 @@ jobs:
       - name: Set VERSION_SUFFIX variable
         run: |
           if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
-            echo "VERSION_SUFFIX=${{ steps.artifact_ver.outputs.fullSuffix }}" >> $GITHUB_ENV
+            echo "VERSION_SUFFIX=${STEPS_ARTIFACT_VER_OUTPUTS_FULLSUFFIX}" >> $GITHUB_ENV
           else
-            echo "VERSION_SUFFIX=${{ steps.artifact_ver.outputs.suffix }}" >> $GITHUB_ENV
+            echo "VERSION_SUFFIX=${STEPS_ARTIFACT_VER_OUTPUTS_SUFFIX}" >> $GITHUB_ENV
           fi;
+        env:
+          STEPS_ARTIFACT_VER_OUTPUTS_FULLSUFFIX: ${{ steps.artifact_ver.outputs.fullSuffix }}
+          STEPS_ARTIFACT_VER_OUTPUTS_SUFFIX: ${{ steps.artifact_ver.outputs.suffix }}
 
       - name: Add version suffix
         if: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/main' }}
-        uses: VirtoCommerce/vc-github-actions/add-version-suffix@master
+        uses: VirtoCommerce/.github/actions/add-version-suffix@v3.1000.1
         with:
           versionSuffix: ${{ env.VERSION_SUFFIX }}
 
       - name: SonarCloud Begin
-        uses: VirtoCommerce/vc-github-actions/sonar-scanner-begin@master
+        uses: VirtoCommerce/.github/actions/sonar-scanner-begin@v3.1000.1
         with:
           repoOrg: ${{ github.repository_owner }}
           sonarOrg: ${{secrets.SONAR_ORG_KEY}}
@@ -130,24 +219,36 @@ jobs:
         run: vc-build Test -skip
 
       - name: SonarCloud End
-        uses: VirtoCommerce/vc-github-actions/sonar-scanner-end@master
+        uses: VirtoCommerce/.github/actions/sonar-scanner-end@v3.1000.1
 
       - name: Quality Gate
-        uses: VirtoCommerce/vc-github-actions/sonar-quality-gate@master
+        uses: VirtoCommerce/.github/actions/sonar-quality-gate@v3.1000.1
         with:
           login: ${{secrets.SONAR_TOKEN}}
 
       - name: Packaging
         run: vc-build Compress -skip Clean+Restore+Compile+Test
 
+      # Trusted Publishing: swap the GitHub OIDC token for a ~1h nuget.org key, minted right before push.
+      - name: NuGet login (OIDC -> temp API key)
+        if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          # nuget.org user that created the trust policy (shared service account). Hardcoded because
+          # private repos can't read org-level Actions variables in the current plan.
+          user: virto
+
       - name: Publish Nuget
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-        uses: VirtoCommerce/vc-github-actions/publish-nuget@master
+        uses: VirtoCommerce/.github/actions/publish-nuget@v3.1000.1
+        env:
+          NUGET_KEY: ${{ steps.nuget_login.outputs.NUGET_API_KEY }}
 
       - name: Publish to Blob
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/master') || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main') }}
         id: blobRelease
-        uses: VirtoCommerce/vc-github-actions/publish-blob-release@master
+        uses: VirtoCommerce/.github/actions/publish-blob-release@v3.1000.1
         with:
           blobSAS: ${{ secrets.BLOB_TOKEN }}
           blobUrl: ${{ vars.BLOB_URL }}
@@ -169,7 +270,7 @@ jobs:
 
       - name: Add Jira link
         if: ${{ github.event_name == 'pull_request' }}
-        uses: VirtoCommerce/vc-github-actions/publish-jira-link@master
+        uses: VirtoCommerce/.github/actions/publish-jira-link@v3.1000.1
         with:
           branchName: ${{ steps.sanitize_branch.outputs.branchName }}
           repoOrg: ${{ github.repository_owner }}
@@ -178,7 +279,7 @@ jobs:
 
       - name: Add link to PR
         if: ${{ github.event_name == 'pull_request' }}
-        uses: VirtoCommerce/vc-github-actions/publish-artifact-link@master
+        uses: VirtoCommerce/.github/actions/publish-artifact-link@v3.1000.1
         with:
           artifactUrl: ${{ steps.blobRelease.outputs.packageUrl }}
           repoOrg: ${{ github.repository_owner }}
@@ -190,20 +291,23 @@ jobs:
         with:
           changelog: ${{ steps.changelog.outputs.changelog }}
           organization: ${{ github.repository_owner }}
-        uses: VirtoCommerce/vc-github-actions/publish-github-release@master
+        uses: VirtoCommerce/.github/actions/publish-github-release@v3.1000.1
 
       - name: Set artifactUrl value
         id: artifactUrl
         run: |
-          if [ '${{ github.ref }}' = 'refs/heads/master' ] || [ '${{ github.ref }}' = 'refs/heads/main' ]; then
-            echo "download_url=${{ steps.githubRelease.outputs.downloadUrl }}" >> $GITHUB_OUTPUT
+          if [ "${GITHUB_REF}" = 'refs/heads/master' ] || [ "${GITHUB_REF}" = 'refs/heads/main' ]; then
+            echo "download_url=${STEPS_GITHUBRELEASE_OUTPUTS_DOWNLOADURL}" >> $GITHUB_OUTPUT
           else
-            echo "download_url=${{ steps.blobRelease.outputs.packageUrl }}" >> $GITHUB_OUTPUT
+            echo "download_url=${STEPS_BLOBRELEASE_OUTPUTS_PACKAGEURL}" >> $GITHUB_OUTPUT
           fi;
+        env:
+          STEPS_GITHUBRELEASE_OUTPUTS_DOWNLOADURL: ${{ steps.githubRelease.outputs.downloadUrl }}
+          STEPS_BLOBRELEASE_OUTPUTS_PACKAGEURL: ${{ steps.blobRelease.outputs.packageUrl }}
 
       - name: Create deployment matrix
         if: ${{ github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-        uses: VirtoCommerce/vc-github-actions/cloud-create-deploy-matrix@master
+        uses: VirtoCommerce/.github/actions/cloud-create-deploy-matrix@v3.1000.1
         id: deployment-matrix
         with:
           deployConfigPath: '.deployment/module/cloudDeploy.json'
@@ -217,16 +321,16 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
         run: |
           $text = $env:PR_BODY
-          $marker = 'Required modules list URL'
-
           $url = ''
-          if ($null -ne $text -and $text.Contains($marker)) {
-            $startIndex = $text.IndexOf($marker)
-            if ($startIndex -ge 0) {
-              $slice = $text.Substring($startIndex)
-              $match = [regex]::Match($slice, 'https?://[^ )\r\n]+')
-              if ($match.Success) {
-                $url = $match.Value
+          if ($null -ne $text) {
+            $pattern = 'Required modules list URL\s*:?\s*(https?://[^\s)>\]]+)'
+            $m = [regex]::Match($text, $pattern, 'IgnoreCase')
+            if ($m.Success) {
+              $candidate = $m.Groups[1].Value.TrimEnd('.', ',', ';')
+              if ($candidate -match '\.json($|\?)') {
+                $url = $candidate
+              } else {
+                Write-Host "Candidate URL '$candidate' is not a .json file; ignoring."
               }
             }
           }
@@ -241,18 +345,19 @@ jobs:
 
       - name: Setup Git Credentials
         if: ${{ (github.ref == 'refs/heads/dev' && github.event_name != 'workflow_dispatch') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-        uses: VirtoCommerce/vc-github-actions/setup-git-credentials-github@master
+        uses: VirtoCommerce/.github/actions/setup-git-credentials-github@v3.1000.1
         with:
           githubToken: ${{ secrets.REPO_TOKEN }}
 
+      # Not gated on swagger-validation: PRs into dev already validate it, and direct pushes are blocked by branch protection.
       - name: Publish Manifest
         if: ${{ (github.ref == 'refs/heads/dev' && github.event_name != 'workflow_dispatch') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
-        uses: VirtoCommerce/vc-github-actions/publish-manifest@master
+        uses: VirtoCommerce/.github/actions/publish-manifest@v3.1000.1
         with:
           packageUrl: ${{ steps.artifactUrl.outputs.download_url }}
 
       - name: Parse Jira Keys from All Commits
-        uses: VirtoCommerce/vc-github-actions/get-jira-keys@master
+        uses: VirtoCommerce/.github/actions/get-jira-keys@v3.1000.1
         if: always()
         id: jira_keys
         with:
@@ -283,34 +388,75 @@ jobs:
       - name: Confirm Jira Build Output
         if: success()
         run: |
-          echo "Jira Upload Build Info response: ${{ steps.push_build_info_to_jira.outputs.response }}"
+          echo "Jira Upload Build Info response: ${STEPS_PUSH_BUILD_INFO_TO_JIRA_OUTPUTS_RESPONSE}"
+        env:
+          STEPS_PUSH_BUILD_INFO_TO_JIRA_OUTPUTS_RESPONSE: ${{ steps.push_build_info_to_jira.outputs.response }}
 
   auto-tests:
-    if: ${{ ((github.ref == 'refs/heads/dev') && (github.event_name == 'push')) ||
-        (github.event_name == 'workflow_dispatch') || ((github.base_ref == 'dev') && (github.event_name == 'pull_request')) }}
+    # !cancelled() keeps this running when detect-version-bump is skipped (PR); ci.result == 'success' still gates on the build.
+    if: ${{ !cancelled() && needs.ci.result == 'success' && (
+        ((github.ref == 'refs/heads/dev') && (github.event_name == 'push')) ||
+        (github.event_name == 'workflow_dispatch') || ((github.base_ref == 'dev') && (github.event_name == 'pull_request'))) }}
     needs: ci
-    uses: VirtoCommerce/.github/.github/workflows/pytest-tests.yml@v3.800.35
+    uses: VirtoCommerce/.github/.github/workflows/pytest-tests.yml@v3.1000.1
     with:
       installModules: 'false'
       installCustomModule: 'true'
       customModuleId:  ${{ needs.ci.outputs.moduleId }}
       customModuleUrl:  ${{ needs.ci.outputs.artifactUrl }}
       requiredModulesListUrl: ${{ needs.ci.outputs.requiredModulesListUrl }}
+      moduleDependencies: ${{ needs.ci.outputs.moduleDependencies }}
       vctestingRepoBranch: 'dev'
       frontendZipUrl: 'latest'
-      testSuites: 'graphql,restapi,e2e'   
+      testSuites: 'graphql,restapi,e2e'
     secrets:
       appInsightsInstrumentationKey: ${{ secrets.E2E_APPINSIGHTSINSTRUMENTATIONKEY }}
       envPAT: ${{ secrets.REPO_TOKEN }}
       testSecretEnvFile: ${{ secrets.VC_TESTING_MODULE_ENV_FILE }}
       sendgridApiKey: ${{ secrets.SENDGRID_APIKEY_4E2E_AUTOTESTS }}
 
+  swagger-validation:
+    # !cancelled() keeps this running when detect-version-bump is skipped (PR); ci.result == 'success' still gates on the build.
+    if: ${{ !cancelled() && needs.ci.result == 'success' && (
+        github.ref == 'refs/heads/dev' ||
+        (github.event_name == 'pull_request' && github.base_ref == 'dev')) }}
+    needs: ci
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Install VirtoCommerce.GlobalTool
+        uses: VirtoCommerce/.github/actions/setup-vcbuild@v3.1000.1
+
+      - name: Swagger validation
+        uses: VirtoCommerce/.github/actions/docker-env@v3.1000.1
+        with:
+          appInsightsInstrumentationKey: ${{ secrets.E2E_APPINSIGHTSINSTRUMENTATIONKEY }}
+          githubUser: ${{ github.actor }}
+          githubToken: ${{ secrets.REPO_TOKEN }}
+          installSampleData: 'false'
+          installModules: 'false'
+          installCustomModule: 'true'
+          customModuleId: ${{ needs.ci.outputs.moduleId }}
+          customModuleUrl: ${{ needs.ci.outputs.artifactUrl }}
+          requiredModulesListUrl: ${{ needs.ci.outputs.requiredModulesListUrl }}
+          platformImage: ghcr.io/virtocommerce/platform
+
   deploy-cloud:
-    if: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
+    # always() + explicit checks: deploy when swagger-validation passed (dev) or was skipped (master/main); block on failure.
+    if: ${{ always()
+      && needs.ci.result == 'success'
+      && (needs.swagger-validation.result == 'success' || needs.swagger-validation.result == 'skipped')
+      && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
       && github.event_name == 'push'
       && needs.ci.outputs.deployment-folder-exists == 'true'}}
-    needs: ci
-    uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.800.35
+    needs: [ci, swagger-validation]
+    # deploy-cloud.yml writes deployment status via GITHUB_TOKEN; rest uses inherited PATs.
+    permissions:
+      contents: read
+      deployments: write
+    uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.1000.1
     with:
       releaseSource: module
       moduleId: ${{ needs.ci.outputs.moduleId }}
@@ -318,4 +464,4 @@ jobs:
       moduleBlob: ${{ needs.ci.outputs.blobId }}
       jiraKeys: ${{ needs.ci.outputs.jira-keys }}
       matrix: '{"include":${{ needs.ci.outputs.matrix }}}'
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit] deploy-cloud.yml@v3.1000.1 reads undeclared org secrets; explicit passing needs a new release + tag bump

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
@@ -88,52 +89,93 @@ namespace VirtoCommerce.OrdersModule.Core.Model
         public ICollection<Refund> Refunds { get; set; }
         public ICollection<Capture> Captures { get; set; }
 
-        public virtual void ReduceDetails(string responseGroup)
+        public override void ReduceDetails(string responseGroup)
         {
-            //Reduce details according to response group
+            base.ReduceDetails(responseGroup);
+
+            // Reduce details according to the response group
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
                 BillingAddress = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
                 Discounts = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
             {
                 Refunds = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
             {
                 Captures = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-                Price = 0m;
-                PriceWithTax = 0m;
                 DiscountAmount = 0m;
                 DiscountAmountWithTax = 0m;
+                Price = 0m;
+                PriceWithTax = 0m;
+                TaxPercentRate = 0m;
+                TaxTotal = 0m;
                 Total = 0m;
                 TotalWithTax = 0m;
-                TaxTotal = 0m;
-                TaxPercentRate = 0m;
-                Sum = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
 
+            foreach (var capture in Captures ?? Array.Empty<Capture>())
+            {
+                capture.ReduceDetails(responseGroup);
+            }
+
+            foreach (var refund in Refunds ?? Array.Empty<Refund>())
+            {
+                refund.ReduceDetails(responseGroup);
+            }
         }
 
-        public virtual void RestoreDetails(PaymentIn payment)
+        public override void RestoreDetails(OrderOperation operation)
         {
-            Price = payment.Price;
-            PriceWithTax = payment.PriceWithTax;
+            base.RestoreDetails(operation);
+
+            if (operation is not PaymentIn payment)
+            {
+                return;
+            }
+
             DiscountAmount = payment.DiscountAmount;
             DiscountAmountWithTax = payment.DiscountAmountWithTax;
+            Price = payment.Price;
+            PriceWithTax = payment.PriceWithTax;
+            TaxPercentRate = payment.TaxPercentRate;
+            TaxTotal = payment.TaxTotal;
             Total = payment.Total;
             TotalWithTax = payment.TotalWithTax;
-            TaxTotal = payment.TaxTotal;
-            TaxPercentRate = payment.TaxPercentRate;
-            Sum = payment.Sum;
+
+            Discounts = payment.Discounts;
+            FeeDetails = payment.FeeDetails;
+            TaxDetails = payment.TaxDetails;
+
+            foreach (var capture in payment.Captures ?? Array.Empty<Capture>())
+            {
+                var targetCapture = Captures?.FirstOrDefault(x => x.Id == capture.Id);
+                targetCapture?.RestoreDetails(capture);
+            }
+
+            foreach (var refund in payment.Refunds ?? Array.Empty<Refund>())
+            {
+                var targetRefund = Refunds?.FirstOrDefault(x => x.Id == refund.Id);
+                targetRefund?.RestoreDetails(refund);
+            }
         }
 
 

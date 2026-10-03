@@ -74,11 +74,31 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #endregion
 
+        public bool WithPrices { get; set; } = true;
+
+        public virtual void ReduceDetails(string responseGroup)
+        {
+            // Reduce details according to the response group
+            var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
+            if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
+            {
+                Sum = 0m;
+                WithPrices = false;
+            }
+        }
+
+        public virtual void RestoreDetails(OrderOperation operation)
+        {
+            Sum = operation.Sum;
+            WithPrices = true;
+        }
+
         #region ICloneable members
 
         public virtual object Clone()
         {
-            var result = MemberwiseClone() as OrderOperation;
+            var result = (OrderOperation)MemberwiseClone();
 
             result.DynamicProperties = DynamicProperties?.Select(x => x.Clone()).OfType<DynamicObjectProperty>().ToList();
             result.OperationsLog = OperationsLog?.Select(x => x.Clone()).OfType<OperationLog>().ToList();

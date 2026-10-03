@@ -25,6 +25,7 @@ namespace VirtoCommerce.OrdersModule.Core
                 public const string Access = "order:access";
                 public const string Delete = "order:delete";
                 public const string ReadPrices = "order:read_prices";
+                public const string DownloadInvoice = "order:invoice:download";
                 public const string UpdateShipments = "order:update_shipments";
                 public const string CapturePayment = "order:capture_payment";
                 public const string RefundPayment = "order:refund";
@@ -38,6 +39,7 @@ namespace VirtoCommerce.OrdersModule.Core
                     Access,
                     Delete,
                     ReadPrices,
+                    DownloadInvoice,
                     UpdateShipments,
                     CapturePayment,
                     RefundPayment,

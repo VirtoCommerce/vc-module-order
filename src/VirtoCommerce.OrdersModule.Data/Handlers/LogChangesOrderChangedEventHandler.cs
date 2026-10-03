@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoCompare;
-using Hangfire;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.OrdersModule.Core;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.Platform.Core.ChangeLog;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Settings;
 using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
@@ -43,7 +44,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
                 if (!operationLogs.IsNullOrEmpty())
                 {
-                    BackgroundJob.Enqueue(() => TryToLogChangesBackgroundJob(operationLogs.ToArray()));
+                    var payload = AbstractTypeFactory<LogOrderChangesJobPayload>.TryCreateInstance();
+                    payload.OperationLogs = operationLogs.ToArray();
+
+                    //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
+                    //from the root provider and holds it for the process lifetime, so it must not capture a Scoped dependency.
+                    await BackgroundJob.Enqueue<LogOrderChangesJobHandler>(payload);
                 }
             }
         }

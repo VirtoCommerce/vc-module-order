@@ -42,7 +42,8 @@
           "sub-total": "Zwischensumme",
           "discount-total": "Rabatt",
           "tax-total": "Steuer",
-          "fee-total": "Gebühr"
+          "fee-total": "Gebühr",
+          "currency": "Währung"
         }
       },
       "customerOrder-item-detail": {
@@ -527,7 +528,8 @@
     "order:update": "Bestellbezogene Daten aktualisieren",
     "order:delete": "Bestellbezogene Daten löschen",
     "order:access": "Auf bestellbezogene Daten zugreifen",
-    "order:read_prices": "Bestellpreise anzeigen"
+    "order:read_prices": "Bestellpreise anzeigen",
+    "order:invoice:download": "Rechnungs-PDF herunterladen"
   },
   "settings": {
     "Order.Status": {

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Orders">
+  <title>Orders</title>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="92%" y2="100%">
+      <stop offset="0%" stop-color="#9D86F5"/>
+      <stop offset="100%" stop-color="#6A45D9"/>
+    </linearGradient>
+    <filter id="lift" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="#2C1670" flood-opacity="0.30"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <g transform="translate(64,66)" filter="url(#lift)">
+    <!-- Clipboard -->
+    <rect x="-40" y="-44" width="80" height="88" rx="10" fill="#ffffff"/>
+    <!-- Clip -->
+    <rect x="-14" y="-52" width="28" height="14" rx="4" fill="#5A38C0"/>
+
+    <!-- Row 1: checked -->
+    <polyline points="-32,-20 -27,-14 -18,-26" fill="none" stroke="#2FA85A" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="-8" y1="-20" x2="26" y2="-20" stroke="#CBD8E6" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- Row 2 -->
+    <rect x="-33" y="-3" width="10" height="10" rx="2.5" fill="#5FC8F5"/>
+    <line x1="-16" y1="2" x2="26" y2="2" stroke="#CBD8E6" stroke-width="4.5" stroke-linecap="round"/>
+
+    <!-- Row 3 -->
+    <rect x="-33" y="19" width="10" height="10" rx="2.5" fill="#FFC24D"/>
+    <line x1="-16" y1="24" x2="14" y2="24" stroke="#CBD8E6" stroke-width="4.5" stroke-linecap="round"/>
+  </g>
+</svg>

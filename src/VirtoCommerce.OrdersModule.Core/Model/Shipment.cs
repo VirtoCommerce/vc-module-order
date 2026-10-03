@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Swagger;
 using VirtoCommerce.ShippingModule.Core.Model;
@@ -113,14 +114,18 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         #endregion
 
-        public virtual void ReduceDetails(string responseGroup)
+        public override void ReduceDetails(string responseGroup)
         {
-            //Reduce details according to response group
+            base.ReduceDetails(responseGroup);
+
+            // Reduce details according to the response group
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
             {
                 DeliveryAddress = null;
             }
+
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
             {
                 Discounts = null;
@@ -128,30 +133,83 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-                Price = 0m;
-                PriceWithTax = 0m;
                 DiscountAmount = 0m;
                 DiscountAmountWithTax = 0m;
+                Fee = 0m;
+                FeeWithTax = 0m;
+                Price = 0m;
+                PriceWithTax = 0m;
+                TaxPercentRate = 0m;
+                TaxTotal = 0m;
                 Total = 0m;
                 TotalWithTax = 0m;
-                TaxTotal = 0m;
-                TaxPercentRate = 0m;
-                Sum = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
 
+            foreach (var item in AllItems())
+            {
+                item.LineItem?.ReduceDetails(responseGroup);
+            }
+
+            foreach (var payment in InPayments ?? Array.Empty<PaymentIn>())
+            {
+                payment.ReduceDetails(responseGroup);
+            }
         }
 
-        public virtual void RestoreDetails(Shipment shipment)
+        public override void RestoreDetails(OrderOperation operation)
         {
-            Price = shipment.Price;
-            PriceWithTax = shipment.PriceWithTax;
+            base.RestoreDetails(operation);
+
+            if (operation is not Shipment shipment)
+            {
+                return;
+            }
+
             DiscountAmount = shipment.DiscountAmount;
             DiscountAmountWithTax = shipment.DiscountAmountWithTax;
+            Fee = shipment.Fee;
+            FeeWithTax = shipment.FeeWithTax;
+            Price = shipment.Price;
+            PriceWithTax = shipment.PriceWithTax;
+            TaxPercentRate = shipment.TaxPercentRate;
+            TaxTotal = shipment.TaxTotal;
             Total = shipment.Total;
             TotalWithTax = shipment.TotalWithTax;
-            TaxTotal = shipment.TaxTotal;
-            TaxPercentRate = shipment.TaxPercentRate;
-            Sum = shipment.Sum;
+
+            Discounts = shipment.Discounts;
+            FeeDetails = shipment.FeeDetails;
+            TaxDetails = shipment.TaxDetails;
+
+            var sourceItems = shipment.AllItems().Where(x => x.LineItem != null).ToList();
+
+            foreach (var item in AllItems())
+            {
+                var sourceItem = sourceItems.FirstOrDefault(x => x.Id == item.Id);
+                if (sourceItem != null)
+                {
+                    item.LineItem?.RestoreDetails(sourceItem.LineItem);
+                }
+            }
+
+            foreach (var payment in shipment.InPayments ?? Array.Empty<PaymentIn>())
+            {
+                var targetPayment = InPayments?.FirstOrDefault(x => x.Id == payment.Id);
+                targetPayment?.RestoreDetails(payment);
+            }
+        }
+
+        /// <summary>
+        /// Shipment items, including those reachable only through packages.
+        /// </summary>
+        private IEnumerable<ShipmentItem> AllItems()
+        {
+            return (Items ?? Array.Empty<ShipmentItem>())
+                .Concat((Packages ?? Array.Empty<ShipmentPackage>())
+                    .SelectMany(x => x.Items ?? Array.Empty<ShipmentItem>()));
         }
 
         #region ICloneable members

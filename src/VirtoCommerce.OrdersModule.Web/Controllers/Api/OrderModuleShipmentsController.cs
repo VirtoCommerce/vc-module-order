@@ -14,8 +14,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
 {
     [Route("api/order/shipments")]
     [Authorize]
-    public class OrderModuleShipmentsController(IShipmentService shipmentService,
-        IShipmentSearchService shipmentSearchService,
+    public class OrderModuleShipmentsController(IShipmentDataProtectionService shipmentService,
         IAuthorizationService authorizationService)
         : Controller
     {
@@ -42,7 +41,7 @@ namespace VirtoCommerce.OrdersModule.Web.Controllers.Api
                 return Forbid();
             }
 
-            var result = await shipmentSearchService.SearchAsync(criteria);
+            var result = await shipmentService.SearchAsync(criteria);
 
             return Ok(result);
         }

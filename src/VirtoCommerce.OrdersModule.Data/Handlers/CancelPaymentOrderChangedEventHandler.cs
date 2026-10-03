@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using VirtoCommerce.OrdersModule.Core.Events;
 using VirtoCommerce.OrdersModule.Core.Model;
 using VirtoCommerce.OrdersModule.Core.Services;
+using VirtoCommerce.OrdersModule.Data.Jobs;
 using VirtoCommerce.PaymentModule.Core.Model;
 using VirtoCommerce.PaymentModule.Model.Requests;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Events;
+using VirtoCommerce.Platform.Core.Jobs;
 
 namespace VirtoCommerce.OrdersModule.Data.Handlers
 {
@@ -28,7 +29,12 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
 
             if (jobArguments.Any())
             {
-                BackgroundJob.Enqueue(() => TryToCancelOrderPaymentsAsync(jobArguments));
+                var payload = AbstractTypeFactory<CancelPaymentJobPayload>.TryCreateInstance();
+                payload.JobArguments = jobArguments;
+
+                //The static facade, not an injected IBackgroundJob: RegisterEventHandler resolves this handler once
+                //from the root provider and holds it for the process lifetime, so it must not capture a Scoped dependency.
+                return BackgroundJob.Enqueue<CancelPaymentJobHandler>(payload);
             }
             return Task.CompletedTask;
         }
@@ -46,9 +52,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     var paymentToCancel = order.InPayments.FirstOrDefault(x => x.Id.EqualsIgnoreCase(jobArgument.PaymentId));
                     if (paymentToCancel != null && !paymentToCancel.IsCancelled)
                     {
-#pragma warning disable VC0012
-                        CancelPayment(paymentToCancel, order);
-#pragma warning restore VC0012
+                        await CancelPaymentAsync(paymentToCancel, order);
 
                         if (!changedOrders.Contains(order))
                         {
@@ -85,12 +89,6 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
             }
 
             return toCancelPayments.Select(x => PaymentToCancelJobArgument.FromChangedEntry(changedEntry, x)).ToArray();
-        }
-
-        [Obsolete("Use CancelPaymentAsync method instead", DiagnosticId = "VC0012", UrlFormat = "https://docs.virtocommerce.org/products/products-virto3-versions")]
-        protected virtual void CancelPayment(PaymentIn paymentToCancel, CustomerOrder order)
-        {
-            CancelPaymentAsync(paymentToCancel, order).GetAwaiter().GetResult();
         }
 
         protected virtual async Task CancelPaymentAsync(PaymentIn paymentToCancel, CustomerOrder order)

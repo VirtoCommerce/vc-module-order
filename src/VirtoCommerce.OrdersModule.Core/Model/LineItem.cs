@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CoreModule.Core.Tax;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Swagger;
@@ -160,6 +161,7 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public virtual void ReduceDetails(string responseGroup)
         {
+            // Reduce details according to the response group
             var orderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDiscounts))
@@ -169,23 +171,51 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
             if (!orderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
-                Price = 0m;
-                PriceWithTax = 0m;
                 DiscountAmount = 0m;
                 DiscountAmountWithTax = 0m;
-                TaxTotal = 0m;
+                DiscountTotal = 0m;
+                DiscountTotalWithTax = 0m;
+                ExtendedPrice = 0m;
+                ExtendedPriceWithTax = 0m;
+                Fee = 0m;
+                FeeWithTax = 0m;
+                ListTotal = 0m;
+                ListTotalWithTax = 0m;
+                PlacedPrice = 0m;
+                PlacedPriceWithTax = 0m;
+                Price = 0m;
+                PriceWithTax = 0m;
                 TaxPercentRate = 0m;
+                TaxTotal = 0m;
+
+                Discounts.RemovePrices();
+                FeeDetails.RemovePrices();
+                TaxDetails.RemovePrices();
             }
         }
 
         public virtual void RestoreDetails(LineItem item)
         {
-            Price = item.Price;
-            PriceWithTax = item.PriceWithTax;
             DiscountAmount = item.DiscountAmount;
             DiscountAmountWithTax = item.DiscountAmountWithTax;
-            TaxTotal = item.TaxTotal;
+            DiscountTotal = item.DiscountTotal;
+            DiscountTotalWithTax = item.DiscountTotalWithTax;
+            ExtendedPrice = item.ExtendedPrice;
+            ExtendedPriceWithTax = item.ExtendedPriceWithTax;
+            Fee = item.Fee;
+            FeeWithTax = item.FeeWithTax;
+            ListTotal = item.ListTotal;
+            ListTotalWithTax = item.ListTotalWithTax;
+            PlacedPrice = item.PlacedPrice;
+            PlacedPriceWithTax = item.PlacedPriceWithTax;
+            Price = item.Price;
+            PriceWithTax = item.PriceWithTax;
             TaxPercentRate = item.TaxPercentRate;
+            TaxTotal = item.TaxTotal;
+
+            Discounts = item.Discounts;
+            FeeDetails = item.FeeDetails;
+            TaxDetails = item.TaxDetails;
         }
 
         #region ICloneable members

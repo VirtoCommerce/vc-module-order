@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +15,7 @@ using Address = VirtoCommerce.OrdersModule.Core.Model.Address;
 
 namespace VirtoCommerce.OrdersModule.Data.Model
 {
-    public class ShipmentEntity : OperationEntity, ISupportPartialPriceUpdate, IDataEntity<ShipmentEntity, Shipment>
+    public class ShipmentEntity : OperationEntity, IDataEntity<ShipmentEntity, Shipment>
     {
         [StringLength(64)]
         public string OrganizationId { get; set; }
