@@ -58,7 +58,7 @@ namespace VirtoCommerce.OrdersModule.Data.Handlers
                     .GetDocumentBuilders(ModuleConstants.OrderIndexDocumentType, typeof(CustomerOrderChangesProvider))
                     .ToList();
 
-                _indexingJobService.EnqueueIndexAndDeleteDocuments(indexEntries, JobPriority.Normal, documentBuilders);
+                return _indexingJobService.EnqueueIndexAndDeleteDocumentsAsync(indexEntries, JobPriority.Normal, documentBuilders);
             }
 
             return Task.CompletedTask;
