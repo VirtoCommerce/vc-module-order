@@ -129,7 +129,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, useId, watch } from "vue";
 
 const props = defineProps<{
   values: number[];
@@ -145,7 +145,7 @@ const PAD_X = 22; // room for half a month label at either end
 const width = ref(640);
 const height = ref(280);
 const hover = ref<number | null>(null);
-const fillId = `trend-fill-${Math.random().toString(36).slice(2)}`;
+const fillId = `trend-fill-${useId()}`;
 
 // a function ref: object template refs don't bind in this Module Federation remote
 // (the element comes back undefined in onMounted)
@@ -168,8 +168,8 @@ onBeforeUnmount(() => observer?.disconnect());
 function niceMax(value: number) {
   if (value <= 0) return 1;
   const power = 10 ** Math.floor(Math.log10(value));
-  const step = [1, 2, 2.5, 5, 10].find((f) => f * power >= value)!;
-  return step * power;
+  const factor = [1, 2, 2.5, 5, 10].find((f) => f * power >= value)!;
+  return factor * power;
 }
 
 const bottom = computed(() => height.value - PAD_BOTTOM);

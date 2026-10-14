@@ -250,7 +250,10 @@ const globalFilters = computed(() => [
   },
 ]);
 
-const asArray = (v: unknown) => (Array.isArray(v) ? (v as string[]) : v ? [String(v)] : undefined);
+function asArray(v: unknown) {
+  if (Array.isArray(v)) return v as string[];
+  return v ? [String(v)] : undefined;
+}
 
 function onFilter(event: { filters: Record<string, unknown> }) {
   const f = event.filters;

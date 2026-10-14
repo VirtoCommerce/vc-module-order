@@ -66,11 +66,18 @@ export function applyCancel(entity: AnyOperation, reason?: string) {
 }
 
 export function collection(order: CustomerOrder, kind: OperationKind, paymentId?: string): AnyOperation[] {
-  if (kind === "payments") return (order.inPayments ??= []) as AnyOperation[];
-  if (kind === "shipments") return (order.shipments ??= []) as AnyOperation[];
+  if (kind === "payments") {
+    order.inPayments ??= [];
+    return order.inPayments as AnyOperation[];
+  }
+  if (kind === "shipments") {
+    order.shipments ??= [];
+    return order.shipments as AnyOperation[];
+  }
   const payment = (order.inPayments ?? []).find((p) => p.id === paymentId) as AnyOperation | undefined;
   if (!payment) return [];
-  return (payment[kind] ??= []) as AnyOperation[];
+  payment[kind] ??= [];
+  return payment[kind] as AnyOperation[];
 }
 
 // recalculate returns "0001-01-01" for operations that were never saved (customerOrder-detail clearCreatedDateIfEmpty)
@@ -86,12 +93,11 @@ export function clearEmptyDates(order: CustomerOrder) {
 /** Money formatter; amounts are masked when the user may not read prices (legacy showPrice filter). */
 export function useMoney() {
   const { n } = useI18n({ useScope: "global" });
-  return (value?: number | null, currency?: string, withPrices = true) =>
-    withPrices
-      ? currency
-        ? n(value ?? 0, { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : n(value ?? 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-      : "****";
+  return (value?: number | null, currency?: string, withPrices = true) => {
+    if (!withPrices) return "****";
+    if (currency) return n(value ?? 0, { style: "currency", currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return n(value ?? 0, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
 }
 
 /** Deep copy of (possibly reactive, possibly nested-proxy) entity data. */

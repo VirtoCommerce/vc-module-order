@@ -225,8 +225,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       const o = owner.value!;
       const value = clone(address.value);
       if (options.value?.field) o[options.value.field] = value;
-      else if (isNew.value) (o.addresses ??= []).push(value);
-      else o.addresses.splice(options.value!.index!, 1, value);
+      else if (isNew.value) {
+        o.addresses ??= [];
+        o.addresses.push(value);
+      } else o.addresses.splice(options.value!.index!, 1, value);
       form.setBaseline();
       await closeSelf();
     },
