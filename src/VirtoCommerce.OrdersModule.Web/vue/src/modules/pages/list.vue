@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('ORDERS.PAGES.LIST.TITLE')"
+    :title="$t('ORDERS.MENU.TITLE')"
     :toolbar-items="bladeToolbar"
     :loading="loading"
     width="50%"
