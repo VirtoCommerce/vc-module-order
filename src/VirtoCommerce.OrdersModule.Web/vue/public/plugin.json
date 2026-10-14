@@ -1,0 +1,18 @@
+{
+  // Orders admin UI for the Admin Shell host (Module Federation remote)
+  "remote": { "name": "orders_admin", "exposed": "./Module" },
+  "contributions": {
+    "menu": [
+      {
+        "id": "orders",
+        "sectionId": "orders",
+        "title": "Orders",
+        "icon": "lucide-file-text",
+        "route": "/orders",
+        "permission": "order:access",
+        "priority": 10,
+        "replaces": "legacy.orders"
+      }
+    ]
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Orders"
+    },
+    "YES": "Yes",
+    "NO": "No",
+    "WIDGETS": {
+      "PAYMENTS": "Payments",
+      "SHIPMENTS": "Shipments",
+      "CHANGES": "Changes",
+      "ADDRESSES": "Addresses",
+      "DISCOUNTS": "Discounts",
+      "PROPERTIES": "Properties",
+      "NOTIFICATIONS": "Notifications",
+      "CAPTURES": "Captures",
+      "REFUNDS": "Refunds",
+      "TRANSACTIONS": "Transactions",
+      "BILLING_ADDRESS": "Billing address",
+      "DELIVERY_ADDRESS": "Delivery address",
+      "SHIPMENT_ITEMS": "Items",
+      "CONFIGURATION": "Configuration",
+      "MEMBER_ORDERS": "Orders"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Customer orders",
+        "COLUMNS": {
+          "NUMBER": "Order number",
+          "CUSTOMER": "Customer",
+          "STORE": "Store",
+          "CREATED_DATE": "Created",
+          "STATUS": "Status",
+          "TOTAL": "Total",
+          "CURRENCY": "Currency",
+          "CONFIRMED": "Confirmed"
+        },
+        "AMOUNTS": {
+          "subTotal": "Subtotal",
+          "subTotalDiscount": "Items discount",
+          "subTotalTaxTotal": "Items tax",
+          "shippingTotal": "Shipping total",
+          "shippingDiscountTotal": "Shipping discount",
+          "paymentTotal": "Payment total",
+          "paymentDiscountTotal": "Payment discount",
+          "discountAmount": "Order discount",
+          "discountTotal": "Discount total",
+          "feeTotal": "Fee total",
+          "taxTotal": "Tax total",
+          "sum": "Sum"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "DELETE": "Delete"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Copy ID",
+          "COPY_NUMBER": "Copy number",
+          "FILTER_BY": "Filter by \"{value}\""
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Select filter",
+          "EDIT": "Edit filter",
+          "NEW": "+ New filter",
+          "TODAY": "Today",
+          "LAST_DAY": "Last day",
+          "LAST_WEEK": "Last week",
+          "LAST_MONTH": "Last month",
+          "LAST_YEAR": "Last year"
+        },
+        "EMPTY": "No orders found",
+        "FILTERS": {
+          "STATUS": "Status",
+          "STORE": "Store",
+          "CREATED": "Created",
+          "PROTOTYPES": "Prototypes",
+          "WITH_PROTOTYPES": "Include prototypes"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "New filter",
+        "NAME": "Filter name",
+        "UNNAMED": "Unnamed filter",
+        "ALL": "All",
+        "FROM": "From",
+        "TO": "To",
+        "APPLY": "Apply filter"
+      },
+      "DETAILS": {
+        "TITLE": "Order",
+        "FIELDS": {
+          "NUMBER": "Order number",
+          "STATUS": "Status",
+          "CUSTOMER": "Customer",
+          "ORGANIZATION": "Organization",
+          "STORE": "Store",
+          "EMPLOYEE": "Employee",
+          "EMPLOYEE_PLACEHOLDER": "Select employee",
+          "CREATED": "Created",
+          "DISCOUNT": "Discount",
+          "APPROVED": "Approved",
+          "COMMENT": "Comment"
+        },
+        "ITEMS": {
+          "TITLE": "Line items",
+          "IMAGE": "Image",
+          "NAME": "Name",
+          "SKU": "SKU",
+          "STATUS": "Status",
+          "QUANTITY": "Quantity",
+          "PRICE": "Price",
+          "DISCOUNT": "Discount",
+          "TAX": "Tax",
+          "TOTAL": "Total",
+          "SUBTOTAL": "Subtotal",
+          "DISCOUNT_TOTAL": "Discount",
+          "TAX_TOTAL": "Tax"
+        },
+        "TOTALS": {
+          "TITLE": "Totals",
+          "SUBTOTAL": "Subtotal",
+          "SHIPPING": "Shipping",
+          "PAYMENT": "Payment fee",
+          "TAX": "Tax",
+          "FEE": "Fee",
+          "DISCOUNT": "Discount",
+          "TOTAL": "Total"
+        },
+        "ADDRESSES": {
+          "TITLE": "Addresses",
+          "MANAGE": "Manage"
+        },
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "RESET": "Reset",
+          "NEW_DOCUMENT": "New document",
+          "CANCEL_DOCUMENT": "Cancel document",
+          "INVOICE": "Invoice",
+          "DELETE": "Delete"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "New document",
+        "TYPE": "Document type",
+        "SHIPMENT": "Shipment",
+        "SHIPMENT_DESCR": "Ship part or all of the order's items",
+        "PAYMENT": "Incoming payment",
+        "PAYMENT_DESCR": "Register a payment for the order"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Product",
+        "PRICE_WITH_TAX": "Price with tax",
+        "DISCOUNT_WITH_TAX": "Discount with tax"
+      },
+      "OPERATION": {
+        "CREATED": "Created",
+        "STATUS": "Status",
+        "PRICE": "Price",
+        "PRICE_WITH_TAX": "Price with tax",
+        "VENDOR": "Vendor",
+        "APPROVED": "Approved",
+        "CANCELLED_STATE": "Cancellation: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Add",
+        "EMPTY": "Nothing here yet",
+        "COLUMNS": {
+          "NUMBER": "Number",
+          "GATEWAY": "Payment gateway",
+          "METHOD": "Shipment method",
+          "TRANSACTION": "Transaction ID",
+          "STATUS": "Status",
+          "CREATED": "Created",
+          "AMOUNT": "Amount"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Payment {number}",
+        "NEW_TITLE": "New payment",
+        "NUMBER": "Payment number",
+        "GATEWAY": "Payment method",
+        "AMOUNT": "Amount",
+        "PURPOSE": "Payment purpose",
+        "CAPTURE": "Capture payment",
+        "REFUND": "Refund payment"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Capture payment",
+        "NEW_REFUND": "Refund payment",
+        "CAPTURE_TITLE": "Capture {number}",
+        "REFUND_TITLE": "Refund {number}",
+        "AMOUNT": "Amount",
+        "CAPTURE_DETAILS": "Statement descriptor",
+        "MESSAGE": "Reason message",
+        "REASON": "Reason",
+        "OUTER_ID": "Outer ID",
+        "CLOSE_TRANSACTION": "Close transaction",
+        "CLOSE_TRANSACTION_HINT": "Restricts further captures against this payment"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Type",
+        "RESPONSE_CODE": "Response code"
+      },
+      "SHIPMENT": {
+        "TITLE": "Shipment {number}",
+        "NEW_TITLE": "New shipment",
+        "NUMBER": "Shipment number",
+        "METHOD": "Shipment method",
+        "METHOD_OPTION": "Shipment method option",
+        "FULFILLMENT_CENTER": "Fulfillment center",
+        "TRACKING_NUMBER": "Tracking number",
+        "TRACKING_URL": "Tracking URL",
+        "DELIVERY_DATE": "Delivery date"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Add items",
+        "REMOVE": "Remove",
+        "SELECT_TITLE": "Select order items",
+        "AVAILABLE": "Ordered"
+      },
+      "ADDRESSES": {
+        "TITLE": "Address",
+        "NEW_TITLE": "New address",
+        "EMPTY": "No addresses",
+        "ADDRESS": "Address",
+        "PERSON": "Name",
+        "TYPE": "Address type",
+        "DESCRIPTION": "Description",
+        "FIRST_NAME": "First name",
+        "MIDDLE_NAME": "Middle name",
+        "LAST_NAME": "Last name",
+        "COUNTRY": "Country",
+        "REGION": "Region",
+        "CITY": "City",
+        "POSTAL_CODE": "Zip code",
+        "LINE1": "Address line 1",
+        "LINE2": "Address line 2",
+        "EMAIL": "Email",
+        "PHONE": "Phone"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "No discounts applied",
+        "NAME": "Promotion",
+        "COUPON": "Coupon",
+        "AMOUNT": "Discount",
+        "CURRENCY": "Currency"
+      },
+      "PROPERTIES": {
+        "EMPTY": "No properties are defined for this type",
+        "LANGUAGE": "Language"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Products",
+        "TEXTS": "Texts",
+        "TEXT": "Text",
+        "FILES": "Files",
+        "CONTENT_TYPE": "Type",
+        "SIZE": "Size"
+      },
+      "CHANGES": {
+        "EMPTY": "No changes",
+        "COLUMNS": {
+          "TYPE": "Operation",
+          "DATE": "Date",
+          "USER": "User",
+          "DETAIL": "Change"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Cancel document",
+      "MESSAGE": "The document will be marked as cancelled.",
+      "REASON": "Reason",
+      "REASON_PLACEHOLDER": "Why is it cancelled? (optional)",
+      "CONFIRM": "Confirm",
+      "BACK": "Back"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Duplicate",
+      "FRAUDULENT": "Fraudulent",
+      "REQUESTEDBYCUSTOMER": "Requested by customer",
+      "OTHER": "Other"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "You have unsaved changes. Are you sure you want to close?",
+      "DELETE_CONFIRMATION": "Delete {count} order(s)? This cannot be undone.",
+      "DELETE_ORDER_CONFIRMATION": "Delete order {number}? This cannot be undone.",
+      "DELETE_OPERATION_CONFIRMATION": "Remove this {name} from the order? It is deleted when you save the order.",
+      "DELETE_ADDRESS_CONFIRMATION": "Remove this address?",
+      "CONCURRENCY_CONFLICT": "The order was changed by someone else. It has been reloaded; apply your changes again.",
+      "MEMBER_UNAVAILABLE": "The customer screen isn't available in this admin yet.",
+      "MEMBER_NOT_FOUND": "No contact is linked to this customer account.",
+      "PRODUCT_UNAVAILABLE": "The product screen isn't available in this admin yet.",
+      "NOTIFICATIONS_UNAVAILABLE": "The notifications journal isn't available in this admin yet.",
+      "PAYMENT_ACTION_FAILED": "The payment provider rejected the request.",
+      "COPIED": "Copied {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Total Sales",
+      "SALES_TRENDS": "Sales Trends",
+      "RECENT_ORDERS": "Recent Orders",
+      "REVENUE": "Revenue",
+      "ORDERS": "Orders",
+      "AVG_ORDER_VALUE": "Average order value",
+      "PERIOD": "Period",
+      "PERIODS": {
+        "YEAR": "Year",
+        "QUARTER": "Quarter",
+        "MONTH": "Month"
+      },
+      "VIEW_ALL": "View all",
+      "NO_ORDERS": "No orders yet",
+      "TO_PROCESS": "Orders to process",
+      "WAITING": "Orders waiting to be processed",
+      "NOTHING_TO_PROCESS": "Every order is completed or cancelled",
+      "OUTSTANDING_PAYMENTS": "Outstanding Payments",
+      "PAYMENT": "Payment",
+      "AMOUNT": "Amount",
+      "NO_OUTSTANDING_PAYMENTS": "No payments are waiting",
+      "FULFILLMENT": "Fulfillment",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "COMPLETED_HINT": "Orders completed, of {count} in the last 90 days",
+      "CANCELLED_HINT": "Orders cancelled, of {count} in the last 90 days"
+    }
+  }
+}
