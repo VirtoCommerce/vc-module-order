@@ -3,6 +3,7 @@
 // over the orders list, as the list opens it; "Show all" opens the list filtered by the query.
 import { ref, type App } from "vue";
 import type { CustomerOrder } from "../api_client/virtocommerce.orders";
+import { indexedSearchEnabled } from "./api";
 
 /** The part of the shell's global search registry this module uses */
 interface GlobalSearch {
@@ -33,6 +34,15 @@ export function registerOrderSearch(app: App) {
   if (!search) return;
 
   const openList = () => search.openBlade({ route: "/orders", workspace: "OrdersList" });
+  // the list searches a keyword in the search index when it is on (pages/list.vue), so "Show all N" finds those N too
+  let indexed: Promise<boolean> | undefined;
+  const searchesIndex = () => {
+    indexed ??= indexedSearchEnabled().catch(() => {
+      indexed = undefined;
+      return false;
+    });
+    return indexed;
+  };
   const openOrder = (id: string) =>
     search.openBlade({ route: "/orders", workspace: "OrdersList", blades: [{ name: "OrdersDetails", param: id }] });
 
@@ -50,7 +60,8 @@ export function registerOrderSearch(app: App) {
     match: /^CO\d{3,}/i,
     search: async (query: string, context: { take: number; signal: AbortSignal }) => {
       // WithPrices: the Default response group leaves the totals out
-      const response = await fetch("/api/order/customerOrders/search", {
+      const endpoint = (await searchesIndex()) ? "indexed/search" : "search";
+      const response = await fetch(`/api/order/customerOrders/${endpoint}`, {
         method: "POST",
         signal: context.signal,
         headers: { Accept: "application/json", "Content-Type": "application/json" },
