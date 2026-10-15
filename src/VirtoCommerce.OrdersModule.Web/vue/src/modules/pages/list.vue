@@ -155,6 +155,7 @@ import { useMoney } from "../utils/operations";
 import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToolbar";
 import { useStores } from "../composables/useStores";
 import { indexedSearchEnabled } from "../api";
+import { requestedKeyword } from "../search";
 import type { CustomerOrder, CustomerOrderSearchCriteria } from "../../api_client/virtocommerce.orders";
 
 export interface OrdersListToolbarContext {
@@ -211,6 +212,16 @@ const selection = ref<CustomerOrder[]>([]);
 const activeItemId = ref<string>();
 
 const { searchValue } = useTableSearch({ stateKey: "ORDERS" });
+// global search's "Show all": the list shows the keyword it was asked for, opened just now or already open
+watch(
+  requestedKeyword,
+  (keyword) => {
+    if (keyword === undefined) return;
+    searchValue.value = keyword;
+    requestedKeyword.value = undefined;
+  },
+  { immediate: true },
+);
 const pagination = useDataTablePagination({
   stateKey: "ORDERS",
   pageSize: PAGE_SIZE,

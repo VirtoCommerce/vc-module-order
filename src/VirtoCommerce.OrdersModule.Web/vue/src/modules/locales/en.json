@@ -325,6 +325,9 @@
       "CANCELLED": "Cancelled",
       "COMPLETED_HINT": "Orders completed, of {count} in the last 90 days",
       "CANCELLED_HINT": "Orders cancelled, of {count} in the last 90 days"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Orders"
     }
   }
 }
