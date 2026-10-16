@@ -4,6 +4,7 @@ import { defineAppModule, registerExternalWidget } from "@vc-shell/framework";
 import { markRaw, type App } from "vue";
 import MemberOrdersWidget from "./widgets/MemberOrdersWidget.vue";
 import { registerOrderSearch } from "./search";
+import { registerOrdersCounter } from "./menuCounter";
 // registers the dashboard widgets (must run before the host builds the dashboard)
 import "./dashboard";
 
@@ -25,5 +26,7 @@ export default {
     appModule.install(app);
     // orders in the Admin Shell's global search
     registerOrderSearch(app);
+    // new orders on the menu item
+    registerOrdersCounter(app);
   },
 };

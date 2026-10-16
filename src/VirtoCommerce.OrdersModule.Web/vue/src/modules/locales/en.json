@@ -1,7 +1,8 @@
 {
   "ORDERS": {
     "MENU": {
-      "TITLE": "Orders"
+      "TITLE": "Orders",
+      "COUNTER": "{count} new orders"
     },
     "YES": "Yes",
     "NO": "No",
