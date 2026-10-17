@@ -5,6 +5,7 @@ import { markRaw, type App } from "vue";
 import MemberOrdersWidget from "./widgets/MemberOrdersWidget.vue";
 import { registerOrderSearch } from "./search";
 import { registerOrdersCounter } from "./menuCounter";
+import { placeSearchIndexWidget } from "./searchIndexWidget";
 // registers the dashboard widgets (must run before the host builds the dashboard)
 import "./dashboard";
 
@@ -28,5 +29,7 @@ export default {
     registerOrderSearch(app);
     // new orders on the menu item
     registerOrdersCounter(app);
+    // Search's Index widget on the order blade
+    placeSearchIndexWidget(app);
   },
 };
