@@ -14,7 +14,6 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
 {
     public class OrderRepository : DbContextRepositoryBase<OrderDbContext>, IOrderRepository
     {
-#pragma warning disable S109
         public OrderRepository(OrderDbContext dbContext, IUnitOfWork unitOfWork = null)
             : base(dbContext, unitOfWork)
         {
@@ -50,139 +49,44 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 return Array.Empty<CustomerOrderEntity>();
             }
 
-            var result = await CustomerOrders.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+            var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
 
-            if (!result.Any())
+            // Load CustomerOrder + the child collections that hang directly off it in a single
+            // round-trip. EF Core wires up navigations on InPayments/Items/Shipments that are
+            // loaded below by foreign-key fix-up.
+            var rootQuery = CustomerOrders
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .AsQueryable();
+
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
+            {
+                rootQuery = rootQuery.Include(x => x.Addresses);
+            }
+
+            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                rootQuery = rootQuery.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            var result = await rootQuery
+                .Where(x => ids.Contains(x.Id))
+                .AsSplitQuery()
+                .ToArrayAsync();
+
+            if (result.Length == 0)
             {
                 return Array.Empty<CustomerOrderEntity>();
             }
 
             ids = result.Select(x => x.Id).ToArray();
 
-            await Discounts.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
-            await TaxDetails.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
-            await FeeDetails.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
-
-            var customerOrderResponseGroup = EnumUtility.SafeParseFlags(responseGroup, CustomerOrderResponseGroup.Full);
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-            {
-                await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
-            }
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithAddresses))
-            {
-                await Addresses.Where(x => ids.Contains(x.CustomerOrderId)).LoadAsync();
-            }
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
-            {
-                var payments = await InPayments.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
-
-                if (payments.Any())
-                {
-                    var paymentIds = payments.Select(x => x.Id).ToArray();
-
-                    await Discounts.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-                    await TaxDetails.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-                    await FeeDetails.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-                    await Addresses.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-                    await Transactions.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-
-                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-                    {
-                        await OrderDynamicPropertyObjectValues.Where(x => paymentIds.Contains(x.PaymentInId)).LoadAsync();
-                    }
-                }
-            }
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
-            {
-                var lineItems = await LineItems
-                    .Where(x => ids.Contains(x.CustomerOrderId))
-                    .ToArrayAsync();
-
-                if (lineItems.Length > 0)
-                {
-                    var lineItemIds = lineItems.Select(x => x.Id).ToArray();
-
-                    await Discounts.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
-                    await TaxDetails.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
-                    await FeeDetails.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
-
-                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-                    {
-                        await OrderDynamicPropertyObjectValues.Where(x => lineItemIds.Contains(x.LineItemId)).LoadAsync();
-                    }
-
-                    var configurationItemIds = lineItems.Where(x => x.IsConfigured).Select(x => x.Id).ToArray();
-                    if (configurationItemIds.Length > 0)
-                    {
-                        await ConfigurationItems
-                            .Where(x => configurationItemIds.Contains(x.LineItemId))
-                            .Include(x => x.Files)
-                            .AsSplitQuery()
-                            .LoadAsync();
-                    }
-                }
-            }
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
-            {
-                var shipments = await Shipments.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
-
-                if (shipments.Any())
-                {
-                    var shipmentIds = shipments.Select(x => x.Id).ToArray();
-
-                    await Discounts.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    await TaxDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    await FeeDetails.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    await Addresses.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    await ShipmentItems.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    await ShipmentPackagesPackages.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-
-                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-                    {
-                        await OrderDynamicPropertyObjectValues.Where(x => shipmentIds.Contains(x.ShipmentId)).LoadAsync();
-                    }
-                }
-            }
-
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
-            {
-                var refunds = await Refunds.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
-
-                if (refunds.Any())
-                {
-                    var refundIds = refunds.Select(x => x.Id).ToArray();
-
-                    await RefundItems.Where(x => refundIds.Contains(x.RefundId)).LoadAsync();
-
-                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-                    {
-                        await OrderDynamicPropertyObjectValues.Where(x => refundIds.Contains(x.RefundId)).LoadAsync();
-                    }
-                }
-            }
-
-            if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
-            {
-                var captures = await Captures.Where(x => ids.Contains(x.CustomerOrderId)).ToArrayAsync();
-
-                if (captures.Any())
-                {
-                    var captureIds = captures.Select(x => x.Id).ToArray();
-
-                    await CaptureItems.Where(x => captureIds.Contains(x.CaptureId)).LoadAsync();
-
-                    if (customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
-                    {
-                        await OrderDynamicPropertyObjectValues.Where(x => captureIds.Contains(x.CaptureId)).LoadAsync();
-                    }
-                }
-            }
+            await LoadInPayments(ids, customerOrderResponseGroup);
+            await LoadLineItems(ids, customerOrderResponseGroup);
+            await LoadShipments(ids, customerOrderResponseGroup);
+            await LoadRefunds(ids, customerOrderResponseGroup);
+            await LoadCaptures(ids, customerOrderResponseGroup);
 
             if (!customerOrderResponseGroup.HasFlag(CustomerOrderResponseGroup.WithPrices))
             {
@@ -202,23 +106,18 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 return Array.Empty<PaymentInEntity>();
             }
 
-            var result = await InPayments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+            var result = await InPayments
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .Include(x => x.Addresses)
+                .Include(x => x.Transactions)
+                .Include(x => x.DynamicPropertyObjectValues)
+                .Where(x => ids.Contains(x.Id))
+                .AsSplitQuery()
+                .ToArrayAsync();
 
-            if (!result.Any())
-            {
-                return Array.Empty<PaymentInEntity>();
-            }
-
-            ids = result.Select(x => x.Id).ToArray();
-
-            await Discounts.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-            await TaxDetails.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-            await FeeDetails.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-            await Addresses.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-            await Transactions.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-            await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.PaymentInId)).LoadAsync();
-
-            return result;
+            return result.Length != 0 ? result : Array.Empty<PaymentInEntity>();
         }
 
         public virtual async Task<IList<ShipmentEntity>> GetShipmentsByIdsAsync(IList<string> ids)
@@ -228,24 +127,153 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 return Array.Empty<ShipmentEntity>();
             }
 
-            var result = await Shipments.Where(x => ids.Contains(x.Id)).ToArrayAsync();
+            var result = await Shipments
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .Include(x => x.Addresses)
+                .Include(x => x.Items)
+                .Include(x => x.Packages)
+                .Include(x => x.DynamicPropertyObjectValues)
+                .Where(x => ids.Contains(x.Id))
+                .AsSplitQuery()
+                .ToArrayAsync();
 
-            if (!result.Any())
+            return result.Length != 0 ? result : Array.Empty<ShipmentEntity>();
+        }
+
+        protected virtual async Task LoadInPayments(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
+        {
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithInPayments))
             {
-                return Array.Empty<ShipmentEntity>();
+                return;
             }
 
-            ids = result.Select(x => x.Id).ToArray();
+            var query = InPayments
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .Include(x => x.Addresses)
+                .Include(x => x.Transactions)
+                .AsQueryable();
 
-            await Discounts.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await TaxDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await FeeDetails.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await Addresses.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await ShipmentItems.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await ShipmentPackagesPackages.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
-            await OrderDynamicPropertyObjectValues.Where(x => ids.Contains(x.ShipmentId)).LoadAsync();
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
 
-            return result;
+            await query
+                .Where(x => orderIds.Contains(x.CustomerOrderId))
+                .AsSplitQuery()
+                .LoadAsync();
+        }
+
+        protected virtual async Task LoadLineItems(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
+        {
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithItems))
+            {
+                return;
+            }
+
+            var query = LineItems
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .AsQueryable();
+
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            var lineItems = await query
+                .Where(x => orderIds.Contains(x.CustomerOrderId))
+                .AsSplitQuery()
+                .ToArrayAsync();
+
+            // ConfigurationItem.Files is two levels deeper than LineItem; keeping it as a
+            // dedicated query avoids growing the LineItem join tree (and the cartesian
+            // explosion under AsSingleQuery semantics).
+            var configurationItemIds = lineItems.Where(x => x.IsConfigured).Select(x => x.Id).ToArray();
+            if (configurationItemIds.Length > 0)
+            {
+                await ConfigurationItems
+                    .Include(x => x.Files)
+                    .Where(x => configurationItemIds.Contains(x.LineItemId))
+                    .AsSplitQuery()
+                    .LoadAsync();
+            }
+        }
+
+        protected virtual async Task LoadShipments(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
+        {
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithShipments))
+            {
+                return;
+            }
+
+            var query = Shipments
+                .Include(x => x.Discounts)
+                .Include(x => x.TaxDetails)
+                .Include(x => x.FeeDetails)
+                .Include(x => x.Addresses)
+                .Include(x => x.Items)
+                .Include(x => x.Packages)
+                .AsQueryable();
+
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            await query
+                .Where(x => orderIds.Contains(x.CustomerOrderId))
+                .AsSplitQuery()
+                .LoadAsync();
+        }
+
+        protected virtual async Task LoadRefunds(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
+        {
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithRefunds))
+            {
+                return;
+            }
+
+            var query = Refunds
+                .Include(x => x.Items)
+                .AsQueryable();
+
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            await query
+                .Where(x => orderIds.Contains(x.CustomerOrderId))
+                .AsSplitQuery()
+                .LoadAsync();
+        }
+
+        protected virtual async Task LoadCaptures(IList<string> orderIds, CustomerOrderResponseGroup responseGroup)
+        {
+            if (!responseGroup.HasFlag(CustomerOrderResponseGroup.WithCaptures))
+            {
+                return;
+            }
+
+            var query = Captures
+                .Include(x => x.Items)
+                .AsQueryable();
+
+            if (responseGroup.HasFlag(CustomerOrderResponseGroup.WithDynamicProperties))
+            {
+                query = query.Include(x => x.DynamicPropertyObjectValues);
+            }
+
+            await query
+                .Where(x => orderIds.Contains(x.CustomerOrderId))
+                .AsSplitQuery()
+                .LoadAsync();
         }
 
         public void PatchRowVersion(CustomerOrderEntity entity, byte[] rowVersion)
@@ -264,7 +292,6 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 Remove(order);
             }
         }
-#pragma warning restore S109
 
         protected override void Dispose(bool disposing)
         {
