@@ -1,0 +1,121 @@
+{
+  "permissions": {
+    "order:read": "عرض البيانات المتعلقة بالطلبات",
+    "order:create": "إنشاء البيانات المتعلقة بالطلبات",
+    "order:update": "تحديث البيانات المتعلقة بالطلبات",
+    "order:delete": "حذف البيانات المتعلقة بالطلبات",
+    "order:access": "الوصول إلى البيانات المتعلقة بالطلبات",
+    "order:read_prices": "عرض أسعار الطلبات",
+    "order:invoice:download": "تنزيل الفاتورة بتنسيق PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "حالات طلبات العملاء",
+      "description": "قائمة الحالات المتاحة لطلبات العملاء"
+    },
+    "Order.InitialStatus": {
+      "title": "الحالة الأولية لطلب العميل",
+      "description": "الحالة الأولية لطلب العميل الجديد"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "الحالة الأولية للطلبات التي لم يكتمل دفعها",
+      "description": "تُستخدم هذه الحالة لكل الطلبات التي لم تتم معالجة الدفع فيها"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "حالات بنود الطلب",
+      "description": "قائمة الحالات المتاحة لبنود الطلب"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "الحالة الأولية لبند الطلب",
+      "description": "الحالة الأولية لبند في طلب عميل جديد"
+    },
+    "Shipment.Status": {
+      "description": "حالات الشحنات",
+      "title": "حالات الشحنات"
+    },
+    "PaymentIn.Status": {
+      "description": "حالات المدفوعات الواردة",
+      "title": "حالات المدفوعات"
+    },
+    "Refund.Status": {
+      "title": "حالات الاسترداد",
+      "description": "حالات عمليات الاسترداد"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم طلب عميل جديد، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم الطلب"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم شحنة جديدة، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم شحنة الطلب"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم دفعة جديدة، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم دفعة الطلب"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم استرداد جديد، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم استرداد الطلب"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "يرسل إشعارًا عند تغيّر حالة الطلب",
+      "title": "تفعيل الإشعارات للطلبات"
+    },
+    "Order.AdjustInventory": {
+      "description": "يعدّل المخزون عند تغيّر حالة الطلب",
+      "title": "تعديل المخزون للطلبات"
+    },
+    "Order.LogOrderChanges": {
+      "title": "تسجيل تغييرات الطلبات",
+      "description": "يسجّل تغييرات الطلبات في سجل عمليات المنصة"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "الفهرسة المستندة إلى الأحداث لكيانات الطلبات",
+      "description": "أي تغييرات على كيان الطلب ستشغّل مهمة في الخلفية لتطبيق هذه التغييرات على فهرس البحث"
+    },
+    "Order.Validation.Enable": {
+      "title": "التحقق عند حفظ الطلب",
+      "description": "يفعّل التحقق من صحة الطلب عند حفظه"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "تاريخ ووقت فهرسة الطلبات",
+      "description": "تاريخ ووقت آخر مهمة لفهرسة الطلبات"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "استخدام إشعارَي «تم دفع الطلب» و«تم إرسال الطلب»",
+      "description": "استخدام إشعارَي «تم دفع الطلب» و«تم إرسال الطلب»"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "استخدام إشعارات تغيّر حالة المدفوعات/الشحنات",
+      "description": "يُستخدم لإشعارات تغيّر حالة المدفوعات/الشحنات"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "تفعيل فهرسة المنتجات المشتراة",
+      "description": "يفعّل عملية فهرسة المنتجات المشتراة. هذا الإعداد عام"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "الفهرسة المستندة إلى الأحداث للمنتجات المشتراة",
+      "description": "أي تغييرات على كيان الطلب ستشغّل مهمة في الخلفية لإضافة بيانات الشراء إلى فهرس المنتجات"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "تفعيل عامل تصفية المنتجات المشتراة في المتجر",
+      "description": "عرض عامل تصفية المنتجات المشتراة للمتجر"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "حفظ لقطات المنتجات في الطلبات",
+      "description": "يخزّن بيانات المنتج المتسلسلة في بنود الطلب للحفاظ على المعلومات التاريخية"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "الحد الأقصى لعدد المستندات الفرعية لكل طلب",
+      "description": "يحدد الحد الأقصى لعدد المستندات الفرعية (المدفوعات والشحنات وعمليات التحصيل وعمليات الاسترداد وغيرها) التي يمكن إنشاؤها أو تخزينها لكل طلب. يضمن ذلك أداء النظام وتحسين التخزين واتساق البيانات. سيُطرح استثناء عند الحفظ إذا تم تجاوز هذا الحد"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "تفعيل إحصاءات لوحة المعلومات",
+      "description": "تشغيل أدوات إحصاءات الطلبات في لوحة المعلومات الرئيسية أو إيقافها"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "نطاق إحصاءات لوحة المعلومات (بالأشهر)",
+      "description": "يحدد عدد الأشهر المضمّنة في حسابات إحصاءات لوحة المعلومات. القيمة الافتراضية 12 شهرًا"
+    }
+  }
+}
