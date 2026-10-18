@@ -60,7 +60,7 @@ import { DashboardWidgetCard } from "@vc-shell/framework";
 import { VcIcon } from "@vc-shell/framework/ui";
 import { computed, ref, watch } from "vue";
 import type { DashboardStatisticsResult } from "../../api_client/virtocommerce.orders";
-import { amountIn, daysBefore, endOfToday, formatMoney, getStatistics, mainCurrency } from "./statistics";
+import { amountIn, daysBefore, endOfToday, formatMoney, getStatistics, ltr, mainCurrency } from "./statistics";
 
 const PERIODS = { year: 365, quarter: 90, month: 30 } as const;
 type Period = keyof typeof PERIODS;
@@ -89,7 +89,7 @@ watch(
 );
 
 const formatCount = (value: number, signed = false) =>
-  new Intl.NumberFormat(undefined, { signDisplay: signed ? "exceptZero" : "auto" }).format(value);
+  ltr(new Intl.NumberFormat(undefined, { signDisplay: signed ? "exceptZero" : "auto" }).format(value));
 
 const metrics = computed(() => {
   const currency = mainCurrency([current.value, previous.value]);

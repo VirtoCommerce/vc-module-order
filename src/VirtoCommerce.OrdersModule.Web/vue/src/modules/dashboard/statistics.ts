@@ -83,15 +83,21 @@ export function mainCurrency(results: DashboardStatisticsResult[]): string {
   return [...totals].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "USD";
 }
 
+/**
+ * A number read left to right in a right-to-left UI too: "+$30,428" has no letters, so it would take the page's
+ * direction and show its sign at the wrong end (Unicode isolates, invisible in LTR).
+ */
+export const ltr = (text: string) => `⁦${text}⁩`;
+
 /** Whole units from 1,000 up (KPIs, charts) unless `exact` (tables, where a column must line up). */
 export function formatMoney(amount: number, currency: string, signed = false, exact = false): string {
-  return new Intl.NumberFormat(undefined, {
+  return ltr(new Intl.NumberFormat(undefined, {
     style: "currency",
     currency,
     minimumFractionDigits: exact ? 2 : undefined,
     maximumFractionDigits: exact || Math.abs(amount) < 1000 ? 2 : 0,
     signDisplay: signed ? "exceptZero" : "auto",
-  }).format(amount);
+  }).format(amount));
 }
 
 /** The date part of a timestamp, in the user's locale (table cells). */
