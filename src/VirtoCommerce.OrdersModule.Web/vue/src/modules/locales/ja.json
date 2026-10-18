@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "注文",
+      "COUNTER": "新規注文 {count} 件"
+    },
+    "YES": "はい",
+    "NO": "いいえ",
+    "WIDGETS": {
+      "PAYMENTS": "支払い",
+      "SHIPMENTS": "配送",
+      "CHANGES": "変更",
+      "ADDRESSES": "住所",
+      "DISCOUNTS": "割引",
+      "PROPERTIES": "プロパティ",
+      "NOTIFICATIONS": "通知",
+      "CAPTURES": "支払い確定",
+      "REFUNDS": "返金",
+      "TRANSACTIONS": "取引",
+      "BILLING_ADDRESS": "請求先住所",
+      "DELIVERY_ADDRESS": "配送先住所",
+      "SHIPMENT_ITEMS": "品目",
+      "CONFIGURATION": "構成",
+      "MEMBER_ORDERS": "注文"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "顧客注文",
+        "COLUMNS": {
+          "NUMBER": "注文番号",
+          "CUSTOMER": "顧客",
+          "STORE": "店舗",
+          "CREATED_DATE": "作成日",
+          "STATUS": "ステータス",
+          "TOTAL": "合計",
+          "CURRENCY": "通貨",
+          "CONFIRMED": "確認済み"
+        },
+        "AMOUNTS": {
+          "subTotal": "小計",
+          "subTotalDiscount": "品目の割引",
+          "subTotalTaxTotal": "品目の税",
+          "shippingTotal": "配送料合計",
+          "shippingDiscountTotal": "配送料の割引",
+          "paymentTotal": "支払い合計",
+          "paymentDiscountTotal": "支払いの割引",
+          "discountAmount": "注文の割引",
+          "discountTotal": "割引合計",
+          "feeTotal": "手数料合計",
+          "taxTotal": "税合計",
+          "sum": "総額"
+        },
+        "TOOLBAR": {
+          "REFRESH": "更新",
+          "DELETE": "削除"
+        },
+        "ACTIONS": {
+          "COPY_ID": "IDをコピー",
+          "COPY_NUMBER": "番号をコピー",
+          "FILTER_BY": "「{value}」で絞り込む"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "フィルターを選択",
+          "EDIT": "フィルターを編集",
+          "NEW": "+ 新しいフィルター",
+          "TODAY": "今日",
+          "LAST_DAY": "過去 1 日",
+          "LAST_WEEK": "先週",
+          "LAST_MONTH": "先月",
+          "LAST_YEAR": "昨年"
+        },
+        "EMPTY": "注文が見つかりません",
+        "FILTERS": {
+          "STATUS": "ステータス",
+          "STORE": "店舗",
+          "CREATED": "作成日",
+          "PROTOTYPES": "プロトタイプ",
+          "WITH_PROTOTYPES": "プロトタイプを含める"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "新しいフィルター",
+        "NAME": "フィルター名",
+        "UNNAMED": "名前のないフィルター",
+        "ALL": "すべて",
+        "FROM": "開始",
+        "TO": "終了",
+        "APPLY": "フィルターを適用"
+      },
+      "DETAILS": {
+        "TITLE": "注文",
+        "FIELDS": {
+          "NUMBER": "注文番号",
+          "STATUS": "ステータス",
+          "CUSTOMER": "顧客",
+          "ORGANIZATION": "組織",
+          "STORE": "店舗",
+          "EMPLOYEE": "従業員",
+          "EMPLOYEE_PLACEHOLDER": "従業員を選択",
+          "CREATED": "作成日",
+          "DISCOUNT": "割引",
+          "APPROVED": "承認済み",
+          "COMMENT": "コメント"
+        },
+        "ITEMS": {
+          "TITLE": "品目",
+          "IMAGE": "画像",
+          "NAME": "名前",
+          "SKU": "SKU",
+          "STATUS": "ステータス",
+          "QUANTITY": "数量",
+          "PRICE": "価格",
+          "DISCOUNT": "割引",
+          "TAX": "税",
+          "TOTAL": "合計",
+          "SUBTOTAL": "小計",
+          "DISCOUNT_TOTAL": "割引",
+          "TAX_TOTAL": "税"
+        },
+        "TOTALS": {
+          "TITLE": "合計",
+          "SUBTOTAL": "小計",
+          "SHIPPING": "配送料",
+          "PAYMENT": "支払い手数料",
+          "TAX": "税",
+          "FEE": "手数料",
+          "DISCOUNT": "割引",
+          "TOTAL": "合計"
+        },
+        "ADDRESSES": {
+          "TITLE": "住所",
+          "MANAGE": "管理"
+        },
+        "TOOLBAR": {
+          "SAVE": "保存",
+          "RESET": "リセット",
+          "NEW_DOCUMENT": "新規ドキュメント",
+          "CANCEL_DOCUMENT": "ドキュメントをキャンセル",
+          "INVOICE": "請求書",
+          "DELETE": "削除"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "新規ドキュメント",
+        "TYPE": "ドキュメントの種類",
+        "SHIPMENT": "配送",
+        "SHIPMENT_DESCR": "注文の品目の一部またはすべてを配送します",
+        "PAYMENT": "入金",
+        "PAYMENT_DESCR": "注文の支払いを登録します"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "製品",
+        "PRICE_WITH_TAX": "税込価格",
+        "DISCOUNT_WITH_TAX": "税込割引"
+      },
+      "OPERATION": {
+        "CREATED": "作成日",
+        "STATUS": "ステータス",
+        "PRICE": "価格",
+        "PRICE_WITH_TAX": "税込価格",
+        "VENDOR": "ベンダー",
+        "APPROVED": "承認済み",
+        "CANCELLED_STATE": "キャンセル: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "追加",
+        "EMPTY": "まだ何もありません",
+        "COLUMNS": {
+          "NUMBER": "番号",
+          "GATEWAY": "決済ゲートウェイ",
+          "METHOD": "配送方法",
+          "TRANSACTION": "取引ID",
+          "STATUS": "ステータス",
+          "CREATED": "作成日",
+          "AMOUNT": "金額"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "支払い {number}",
+        "NEW_TITLE": "新規支払い",
+        "NUMBER": "支払い番号",
+        "GATEWAY": "支払い方法",
+        "AMOUNT": "金額",
+        "PURPOSE": "支払い目的",
+        "CAPTURE": "支払いを確定",
+        "REFUND": "返金"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "支払いを確定",
+        "NEW_REFUND": "返金",
+        "CAPTURE_TITLE": "支払い確定 {number}",
+        "REFUND_TITLE": "返金 {number}",
+        "AMOUNT": "金額",
+        "CAPTURE_DETAILS": "明細書の表記",
+        "MESSAGE": "理由メッセージ",
+        "REASON": "理由",
+        "OUTER_ID": "外部ID",
+        "CLOSE_TRANSACTION": "取引を閉じる",
+        "CLOSE_TRANSACTION_HINT": "この支払いに対する以降の確定を制限します"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "種類",
+        "RESPONSE_CODE": "応答コード"
+      },
+      "SHIPMENT": {
+        "TITLE": "配送 {number}",
+        "NEW_TITLE": "新規配送",
+        "NUMBER": "配送番号",
+        "METHOD": "配送方法",
+        "METHOD_OPTION": "配送方法のオプション",
+        "FULFILLMENT_CENTER": "フルフィルメントセンター",
+        "TRACKING_NUMBER": "追跡番号",
+        "TRACKING_URL": "追跡URL",
+        "DELIVERY_DATE": "配達日"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "品目を追加",
+        "REMOVE": "削除",
+        "SELECT_TITLE": "注文の品目を選択",
+        "AVAILABLE": "注文数"
+      },
+      "ADDRESSES": {
+        "TITLE": "住所",
+        "NEW_TITLE": "新しい住所",
+        "EMPTY": "住所がありません",
+        "ADDRESS": "住所",
+        "PERSON": "氏名",
+        "TYPE": "住所の種類",
+        "DESCRIPTION": "説明",
+        "FIRST_NAME": "名",
+        "MIDDLE_NAME": "ミドルネーム",
+        "LAST_NAME": "姓",
+        "COUNTRY": "国",
+        "REGION": "地域",
+        "CITY": "市区町村",
+        "POSTAL_CODE": "郵便番号",
+        "LINE1": "住所1行目",
+        "LINE2": "住所2行目",
+        "EMAIL": "メール",
+        "PHONE": "電話"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "適用された割引はありません",
+        "NAME": "プロモーション",
+        "COUPON": "クーポン",
+        "AMOUNT": "割引",
+        "CURRENCY": "通貨"
+      },
+      "PROPERTIES": {
+        "EMPTY": "この種類にはプロパティが定義されていません",
+        "LANGUAGE": "言語"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "製品",
+        "TEXTS": "テキスト",
+        "TEXT": "テキスト",
+        "FILES": "ファイル",
+        "CONTENT_TYPE": "種類",
+        "SIZE": "サイズ"
+      },
+      "CHANGES": {
+        "EMPTY": "変更はありません",
+        "COLUMNS": {
+          "TYPE": "操作",
+          "DATE": "日付",
+          "USER": "ユーザー",
+          "DETAIL": "変更内容"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "ドキュメントをキャンセル",
+      "MESSAGE": "ドキュメントはキャンセル済みとしてマークされます。",
+      "REASON": "理由",
+      "REASON_PLACEHOLDER": "キャンセルの理由 (任意)",
+      "CONFIRM": "確認",
+      "BACK": "戻る"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "重複",
+      "FRAUDULENT": "不正",
+      "REQUESTEDBYCUSTOMER": "顧客要求",
+      "OTHER": "その他"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "保存されていない変更があります。閉じてもよろしいですか？",
+      "DELETE_CONFIRMATION": "{count} 件の注文を削除しますか？この操作は元に戻せません。",
+      "DELETE_ORDER_CONFIRMATION": "注文 {number} を削除しますか？この操作は元に戻せません。",
+      "DELETE_OPERATION_CONFIRMATION": "この {name} を注文から削除しますか？注文を保存すると削除されます。",
+      "DELETE_ADDRESS_CONFIRMATION": "この住所を削除しますか？",
+      "CONCURRENCY_CONFLICT": "注文が他のユーザーによって変更されました。再読み込みしたので、変更をもう一度適用してください。",
+      "MEMBER_UNAVAILABLE": "顧客画面はこの管理画面ではまだ利用できません。",
+      "MEMBER_NOT_FOUND": "この顧客アカウントにリンクされた連絡先はありません。",
+      "PRODUCT_UNAVAILABLE": "製品画面はこの管理画面ではまだ利用できません。",
+      "NOTIFICATIONS_UNAVAILABLE": "通知履歴はこの管理画面ではまだ利用できません。",
+      "PAYMENT_ACTION_FAILED": "決済プロバイダーがリクエストを拒否しました。",
+      "COPIED": "{text} をコピーしました"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "総売上",
+      "SALES_TRENDS": "売上の推移",
+      "RECENT_ORDERS": "最近の注文",
+      "REVENUE": "売上高",
+      "ORDERS": "注文",
+      "AVG_ORDER_VALUE": "平均注文金額",
+      "PERIOD": "期間",
+      "PERIODS": {
+        "YEAR": "年",
+        "QUARTER": "四半期",
+        "MONTH": "月"
+      },
+      "VIEW_ALL": "すべて表示",
+      "NO_ORDERS": "まだ注文はありません",
+      "TO_PROCESS": "処理対象の注文",
+      "WAITING": "処理待ちの注文",
+      "NOTHING_TO_PROCESS": "すべての注文が完了またはキャンセルされています",
+      "OUTSTANDING_PAYMENTS": "未処理の支払い",
+      "PAYMENT": "支払い",
+      "AMOUNT": "金額",
+      "NO_OUTSTANDING_PAYMENTS": "待機中の支払いはありません",
+      "FULFILLMENT": "フルフィルメント",
+      "COMPLETED": "完了",
+      "CANCELLED": "キャンセル",
+      "COMPLETED_HINT": "過去 90 日間の {count} 件のうち完了した注文",
+      "CANCELLED_HINT": "過去 90 日間の {count} 件のうちキャンセルされた注文"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "注文"
+    }
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Bestellungen",
+      "COUNTER": "{count} neue Bestellungen"
+    },
+    "YES": "Ja",
+    "NO": "Nein",
+    "WIDGETS": {
+      "PAYMENTS": "Zahlungen",
+      "SHIPMENTS": "Versand",
+      "CHANGES": "Änderungen",
+      "ADDRESSES": "Adressen",
+      "DISCOUNTS": "Rabatte",
+      "PROPERTIES": "Eigenschaften",
+      "NOTIFICATIONS": "Benachrichtigungen",
+      "CAPTURES": "Erfassungen",
+      "REFUNDS": "Rückerstattungen",
+      "TRANSACTIONS": "Transaktionen",
+      "BILLING_ADDRESS": "Rechnungsadresse",
+      "DELIVERY_ADDRESS": "Lieferadresse",
+      "SHIPMENT_ITEMS": "Artikel",
+      "CONFIGURATION": "Konfiguration",
+      "MEMBER_ORDERS": "Bestellungen"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kundenbestellungen",
+        "COLUMNS": {
+          "NUMBER": "Bestellnummer",
+          "CUSTOMER": "Kunde",
+          "STORE": "Shop",
+          "CREATED_DATE": "Erstellt",
+          "STATUS": "Status",
+          "TOTAL": "Gesamt",
+          "CURRENCY": "Währung",
+          "CONFIRMED": "Bestätigt"
+        },
+        "AMOUNTS": {
+          "subTotal": "Zwischensumme",
+          "subTotalDiscount": "Artikelrabatt",
+          "subTotalTaxTotal": "Artikelsteuer",
+          "shippingTotal": "Versandkosten gesamt",
+          "shippingDiscountTotal": "Versandrabatt",
+          "paymentTotal": "Zahlungsgebühren gesamt",
+          "paymentDiscountTotal": "Zahlungsrabatt",
+          "discountAmount": "Bestellrabatt",
+          "discountTotal": "Rabatt gesamt",
+          "feeTotal": "Gebühren gesamt",
+          "taxTotal": "Steuern gesamt",
+          "sum": "Summe"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Aktualisieren",
+          "DELETE": "Löschen"
+        },
+        "ACTIONS": {
+          "COPY_ID": "ID kopieren",
+          "COPY_NUMBER": "Nummer kopieren",
+          "FILTER_BY": "Nach „{value}“ filtern"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Filter auswählen",
+          "EDIT": "Filter bearbeiten",
+          "NEW": "+ Neuer Filter",
+          "TODAY": "Heute",
+          "LAST_DAY": "Letzter Tag",
+          "LAST_WEEK": "Letzte Woche",
+          "LAST_MONTH": "Letzter Monat",
+          "LAST_YEAR": "Letztes Jahr"
+        },
+        "EMPTY": "Keine Bestellungen gefunden",
+        "FILTERS": {
+          "STATUS": "Status",
+          "STORE": "Shop",
+          "CREATED": "Erstellt",
+          "PROTOTYPES": "Prototypen",
+          "WITH_PROTOTYPES": "Prototypen einbeziehen"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Neuer Filter",
+        "NAME": "Filtername",
+        "UNNAMED": "Unbenannter Filter",
+        "ALL": "Alle",
+        "FROM": "Von",
+        "TO": "Bis",
+        "APPLY": "Filter anwenden"
+      },
+      "DETAILS": {
+        "TITLE": "Bestellung",
+        "FIELDS": {
+          "NUMBER": "Bestellnummer",
+          "STATUS": "Status",
+          "CUSTOMER": "Kunde",
+          "ORGANIZATION": "Organisation",
+          "STORE": "Shop",
+          "EMPLOYEE": "Mitarbeiter",
+          "EMPLOYEE_PLACEHOLDER": "Mitarbeiter auswählen",
+          "CREATED": "Erstellt",
+          "DISCOUNT": "Rabatt",
+          "APPROVED": "Genehmigt",
+          "COMMENT": "Kommentar"
+        },
+        "ITEMS": {
+          "TITLE": "Positionen",
+          "IMAGE": "Bild",
+          "NAME": "Name",
+          "SKU": "SKU",
+          "STATUS": "Status",
+          "QUANTITY": "Menge",
+          "PRICE": "Preis",
+          "DISCOUNT": "Rabatt",
+          "TAX": "Steuer",
+          "TOTAL": "Gesamt",
+          "SUBTOTAL": "Zwischensumme",
+          "DISCOUNT_TOTAL": "Rabatt",
+          "TAX_TOTAL": "Steuer"
+        },
+        "TOTALS": {
+          "TITLE": "Summen",
+          "SUBTOTAL": "Zwischensumme",
+          "SHIPPING": "Versand",
+          "PAYMENT": "Zahlungsgebühr",
+          "TAX": "Steuer",
+          "FEE": "Gebühr",
+          "DISCOUNT": "Rabatt",
+          "TOTAL": "Gesamt"
+        },
+        "ADDRESSES": {
+          "TITLE": "Adressen",
+          "MANAGE": "Verwalten"
+        },
+        "TOOLBAR": {
+          "SAVE": "Speichern",
+          "RESET": "Zurücksetzen",
+          "NEW_DOCUMENT": "Neues Dokument",
+          "CANCEL_DOCUMENT": "Dokument stornieren",
+          "INVOICE": "Rechnung",
+          "DELETE": "Löschen"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Neues Dokument",
+        "TYPE": "Dokumenttyp",
+        "SHIPMENT": "Versand",
+        "SHIPMENT_DESCR": "Einen Teil oder alle Artikel der Bestellung versenden",
+        "PAYMENT": "Zahlungseingang",
+        "PAYMENT_DESCR": "Eine Zahlung für die Bestellung erfassen"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Produkt",
+        "PRICE_WITH_TAX": "Preis inkl. Steuer",
+        "DISCOUNT_WITH_TAX": "Rabatt inkl. Steuer"
+      },
+      "OPERATION": {
+        "CREATED": "Erstellt",
+        "STATUS": "Status",
+        "PRICE": "Preis",
+        "PRICE_WITH_TAX": "Preis inkl. Steuer",
+        "VENDOR": "Anbieter",
+        "APPROVED": "Genehmigt",
+        "CANCELLED_STATE": "Stornierung: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Hinzufügen",
+        "EMPTY": "Noch keine Einträge",
+        "COLUMNS": {
+          "NUMBER": "Nummer",
+          "GATEWAY": "Zahlungs-Gateway",
+          "METHOD": "Versandmethode",
+          "TRANSACTION": "Transaktions-ID",
+          "STATUS": "Status",
+          "CREATED": "Erstellt",
+          "AMOUNT": "Betrag"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Zahlung {number}",
+        "NEW_TITLE": "Neue Zahlung",
+        "NUMBER": "Zahlungsnummer",
+        "GATEWAY": "Zahlungsmethode",
+        "AMOUNT": "Betrag",
+        "PURPOSE": "Zahlungszweck",
+        "CAPTURE": "Zahlung erfassen",
+        "REFUND": "Zahlung erstatten"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Zahlung erfassen",
+        "NEW_REFUND": "Zahlung erstatten",
+        "CAPTURE_TITLE": "Erfassung {number}",
+        "REFUND_TITLE": "Rückerstattung {number}",
+        "AMOUNT": "Betrag",
+        "CAPTURE_DETAILS": "Verwendungszweck auf dem Kontoauszug",
+        "MESSAGE": "Begründung",
+        "REASON": "Grund",
+        "OUTER_ID": "Externe ID",
+        "CLOSE_TRANSACTION": "Transaktion schließen",
+        "CLOSE_TRANSACTION_HINT": "Verhindert weitere Erfassungen für diese Zahlung"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Typ",
+        "RESPONSE_CODE": "Antwortcode"
+      },
+      "SHIPMENT": {
+        "TITLE": "Versand {number}",
+        "NEW_TITLE": "Neuer Versand",
+        "NUMBER": "Versandnummer",
+        "METHOD": "Versandmethode",
+        "METHOD_OPTION": "Option der Versandmethode",
+        "FULFILLMENT_CENTER": "Fulfillment-Center",
+        "TRACKING_NUMBER": "Sendungsverfolgungsnummer",
+        "TRACKING_URL": "Sendungsverfolgungs-URL",
+        "DELIVERY_DATE": "Lieferdatum"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Artikel hinzufügen",
+        "REMOVE": "Entfernen",
+        "SELECT_TITLE": "Bestellartikel auswählen",
+        "AVAILABLE": "Bestellt"
+      },
+      "ADDRESSES": {
+        "TITLE": "Adresse",
+        "NEW_TITLE": "Neue Adresse",
+        "EMPTY": "Keine Adressen",
+        "ADDRESS": "Adresse",
+        "PERSON": "Name",
+        "TYPE": "Adresstyp",
+        "DESCRIPTION": "Beschreibung",
+        "FIRST_NAME": "Vorname",
+        "MIDDLE_NAME": "Zweiter Vorname",
+        "LAST_NAME": "Nachname",
+        "COUNTRY": "Land",
+        "REGION": "Region",
+        "CITY": "Stadt",
+        "POSTAL_CODE": "Postleitzahl",
+        "LINE1": "Adresszeile 1",
+        "LINE2": "Adresszeile 2",
+        "EMAIL": "E-Mail",
+        "PHONE": "Telefon"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Keine Rabatte angewendet",
+        "NAME": "Aktion",
+        "COUPON": "Gutschein",
+        "AMOUNT": "Rabatt",
+        "CURRENCY": "Währung"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Für diesen Typ sind keine Eigenschaften definiert",
+        "LANGUAGE": "Sprache"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Produkte",
+        "TEXTS": "Texte",
+        "TEXT": "Text",
+        "FILES": "Dateien",
+        "CONTENT_TYPE": "Typ",
+        "SIZE": "Größe"
+      },
+      "CHANGES": {
+        "EMPTY": "Keine Änderungen",
+        "COLUMNS": {
+          "TYPE": "Vorgang",
+          "DATE": "Datum",
+          "USER": "Benutzer",
+          "DETAIL": "Änderung"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Dokument stornieren",
+      "MESSAGE": "Das Dokument wird als storniert markiert.",
+      "REASON": "Grund",
+      "REASON_PLACEHOLDER": "Warum wird es storniert? (optional)",
+      "CONFIRM": "Bestätigen",
+      "BACK": "Zurück"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Duplikat",
+      "FRAUDULENT": "Betrügerisch",
+      "REQUESTEDBYCUSTOMER": "Vom Kunden angefordert",
+      "OTHER": "Sonstiges"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Es gibt nicht gespeicherte Änderungen. Möchten Sie wirklich schließen?",
+      "DELETE_CONFIRMATION": "{count} Bestellung(en) löschen? Dies kann nicht rückgängig gemacht werden.",
+      "DELETE_ORDER_CONFIRMATION": "Bestellung {number} löschen? Dies kann nicht rückgängig gemacht werden.",
+      "DELETE_OPERATION_CONFIRMATION": "{name} aus der Bestellung entfernen? Das Element wird beim Speichern der Bestellung gelöscht.",
+      "DELETE_ADDRESS_CONFIRMATION": "Diese Adresse entfernen?",
+      "CONCURRENCY_CONFLICT": "Die Bestellung wurde von einer anderen Person geändert. Sie wurde neu geladen; bitte nehmen Sie Ihre Änderungen erneut vor.",
+      "MEMBER_UNAVAILABLE": "Die Kundenansicht ist in dieser Verwaltung noch nicht verfügbar.",
+      "MEMBER_NOT_FOUND": "Mit diesem Kundenkonto ist kein Kontakt verknüpft.",
+      "PRODUCT_UNAVAILABLE": "Die Produktansicht ist in dieser Verwaltung noch nicht verfügbar.",
+      "NOTIFICATIONS_UNAVAILABLE": "Das Benachrichtigungsprotokoll ist in dieser Verwaltung noch nicht verfügbar.",
+      "PAYMENT_ACTION_FAILED": "Der Zahlungsanbieter hat die Anfrage abgelehnt.",
+      "COPIED": "{text} kopiert"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Gesamtumsatz",
+      "SALES_TRENDS": "Umsatztrends",
+      "RECENT_ORDERS": "Neueste Bestellungen",
+      "REVENUE": "Umsatz",
+      "ORDERS": "Bestellungen",
+      "AVG_ORDER_VALUE": "Durchschnittlicher Bestellwert",
+      "PERIOD": "Zeitraum",
+      "PERIODS": {
+        "YEAR": "Jahr",
+        "QUARTER": "Quartal",
+        "MONTH": "Monat"
+      },
+      "VIEW_ALL": "Alle anzeigen",
+      "NO_ORDERS": "Noch keine Bestellungen",
+      "TO_PROCESS": "Zu bearbeitende Bestellungen",
+      "WAITING": "Bestellungen, die auf Bearbeitung warten",
+      "NOTHING_TO_PROCESS": "Alle Bestellungen sind abgeschlossen oder storniert",
+      "OUTSTANDING_PAYMENTS": "Ausstehende Zahlungen",
+      "PAYMENT": "Zahlung",
+      "AMOUNT": "Betrag",
+      "NO_OUTSTANDING_PAYMENTS": "Keine ausstehenden Zahlungen",
+      "FULFILLMENT": "Auftragsabwicklung",
+      "COMPLETED": "Abgeschlossen",
+      "CANCELLED": "Storniert",
+      "COMPLETED_HINT": "Abgeschlossene Bestellungen von {count} in den letzten 90 Tagen",
+      "CANCELLED_HINT": "Stornierte Bestellungen von {count} in den letzten 90 Tagen"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Bestellungen"
+    }
+  }
+}

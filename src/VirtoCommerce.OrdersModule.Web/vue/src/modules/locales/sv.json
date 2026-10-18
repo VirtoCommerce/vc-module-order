@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Beställningar",
+      "COUNTER": "{count} nya beställningar"
+    },
+    "YES": "Ja",
+    "NO": "Nej",
+    "WIDGETS": {
+      "PAYMENTS": "Betalningar",
+      "SHIPMENTS": "Leveranser",
+      "CHANGES": "Ändringar",
+      "ADDRESSES": "Adresser",
+      "DISCOUNTS": "Rabatter",
+      "PROPERTIES": "Egenskaper",
+      "NOTIFICATIONS": "Aviseringar",
+      "CAPTURES": "Dragningar",
+      "REFUNDS": "Återbetalningar",
+      "TRANSACTIONS": "Transaktioner",
+      "BILLING_ADDRESS": "Faktureringsadress",
+      "DELIVERY_ADDRESS": "Leveransadress",
+      "SHIPMENT_ITEMS": "Artiklar",
+      "CONFIGURATION": "Konfiguration",
+      "MEMBER_ORDERS": "Beställningar"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kundbeställningar",
+        "COLUMNS": {
+          "NUMBER": "Beställningsnummer",
+          "CUSTOMER": "Kund",
+          "STORE": "Butik",
+          "CREATED_DATE": "Skapad",
+          "STATUS": "Status",
+          "TOTAL": "Totalt",
+          "CURRENCY": "Valuta",
+          "CONFIRMED": "Bekräftad"
+        },
+        "AMOUNTS": {
+          "subTotal": "Delsumma",
+          "subTotalDiscount": "Artikelrabatt",
+          "subTotalTaxTotal": "Artikelskatt",
+          "shippingTotal": "Frakt totalt",
+          "shippingDiscountTotal": "Fraktrabatt",
+          "paymentTotal": "Betalning totalt",
+          "paymentDiscountTotal": "Betalningsrabatt",
+          "discountAmount": "Beställningsrabatt",
+          "discountTotal": "Rabatt totalt",
+          "feeTotal": "Avgifter totalt",
+          "taxTotal": "Skatt totalt",
+          "sum": "Summa"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Uppdatera",
+          "DELETE": "Ta bort"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Kopiera ID",
+          "COPY_NUMBER": "Kopiera nummer",
+          "FILTER_BY": "Filtrera på ”{value}”"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Välj filter",
+          "EDIT": "Redigera filter",
+          "NEW": "+ Nytt filter",
+          "TODAY": "Idag",
+          "LAST_DAY": "Senaste dygnet",
+          "LAST_WEEK": "Senaste veckan",
+          "LAST_MONTH": "Senaste månaden",
+          "LAST_YEAR": "Senaste året"
+        },
+        "EMPTY": "Inga beställningar hittades",
+        "FILTERS": {
+          "STATUS": "Status",
+          "STORE": "Butik",
+          "CREATED": "Skapad",
+          "PROTOTYPES": "Prototyper",
+          "WITH_PROTOTYPES": "Inkludera prototyper"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Nytt filter",
+        "NAME": "Filternamn",
+        "UNNAMED": "Namnlöst filter",
+        "ALL": "Alla",
+        "FROM": "Från",
+        "TO": "Till",
+        "APPLY": "Tillämpa filter"
+      },
+      "DETAILS": {
+        "TITLE": "Beställning",
+        "FIELDS": {
+          "NUMBER": "Beställningsnummer",
+          "STATUS": "Status",
+          "CUSTOMER": "Kund",
+          "ORGANIZATION": "Organisation",
+          "STORE": "Butik",
+          "EMPLOYEE": "Anställd",
+          "EMPLOYEE_PLACEHOLDER": "Välj anställd",
+          "CREATED": "Skapad",
+          "DISCOUNT": "Rabatt",
+          "APPROVED": "Godkänd",
+          "COMMENT": "Kommentar"
+        },
+        "ITEMS": {
+          "TITLE": "Orderrader",
+          "IMAGE": "Bild",
+          "NAME": "Namn",
+          "SKU": "SKU",
+          "STATUS": "Status",
+          "QUANTITY": "Kvantitet",
+          "PRICE": "Pris",
+          "DISCOUNT": "Rabatt",
+          "TAX": "Skatt",
+          "TOTAL": "Totalt",
+          "SUBTOTAL": "Delsumma",
+          "DISCOUNT_TOTAL": "Rabatt",
+          "TAX_TOTAL": "Skatt"
+        },
+        "TOTALS": {
+          "TITLE": "Summor",
+          "SUBTOTAL": "Delsumma",
+          "SHIPPING": "Frakt",
+          "PAYMENT": "Betalningsavgift",
+          "TAX": "Skatt",
+          "FEE": "Avgift",
+          "DISCOUNT": "Rabatt",
+          "TOTAL": "Totalt"
+        },
+        "ADDRESSES": {
+          "TITLE": "Adresser",
+          "MANAGE": "Hantera"
+        },
+        "TOOLBAR": {
+          "SAVE": "Spara",
+          "RESET": "Återställ",
+          "NEW_DOCUMENT": "Nytt dokument",
+          "CANCEL_DOCUMENT": "Annullera dokument",
+          "INVOICE": "Faktura",
+          "DELETE": "Ta bort"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Nytt dokument",
+        "TYPE": "Dokumenttyp",
+        "SHIPMENT": "Leverans",
+        "SHIPMENT_DESCR": "Skicka en del av eller alla beställningens artiklar",
+        "PAYMENT": "Inkommande betalning",
+        "PAYMENT_DESCR": "Registrera en betalning för beställningen"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Produkt",
+        "PRICE_WITH_TAX": "Pris inkl. skatt",
+        "DISCOUNT_WITH_TAX": "Rabatt inkl. skatt"
+      },
+      "OPERATION": {
+        "CREATED": "Skapad",
+        "STATUS": "Status",
+        "PRICE": "Pris",
+        "PRICE_WITH_TAX": "Pris inkl. skatt",
+        "VENDOR": "Leverantör",
+        "APPROVED": "Godkänd",
+        "CANCELLED_STATE": "Annullering: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Lägg till",
+        "EMPTY": "Inget här ännu",
+        "COLUMNS": {
+          "NUMBER": "Nummer",
+          "GATEWAY": "Betalningsgateway",
+          "METHOD": "Leveranssätt",
+          "TRANSACTION": "Transaktions-ID",
+          "STATUS": "Status",
+          "CREATED": "Skapad",
+          "AMOUNT": "Belopp"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Betalning {number}",
+        "NEW_TITLE": "Ny betalning",
+        "NUMBER": "Betalningsnummer",
+        "GATEWAY": "Betalningssätt",
+        "AMOUNT": "Belopp",
+        "PURPOSE": "Betalningens syfte",
+        "CAPTURE": "Dra betalning",
+        "REFUND": "Återbetala betalning"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Dra betalning",
+        "NEW_REFUND": "Återbetala betalning",
+        "CAPTURE_TITLE": "Dragning {number}",
+        "REFUND_TITLE": "Återbetalning {number}",
+        "AMOUNT": "Belopp",
+        "CAPTURE_DETAILS": "Text på kontoutdrag",
+        "MESSAGE": "Orsaksmeddelande",
+        "REASON": "Orsak",
+        "OUTER_ID": "Yttre ID",
+        "CLOSE_TRANSACTION": "Stäng transaktion",
+        "CLOSE_TRANSACTION_HINT": "Förhindrar ytterligare dragningar mot den här betalningen"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Typ",
+        "RESPONSE_CODE": "Svarskod"
+      },
+      "SHIPMENT": {
+        "TITLE": "Leverans {number}",
+        "NEW_TITLE": "Ny leverans",
+        "NUMBER": "Leveransnummer",
+        "METHOD": "Leveranssätt",
+        "METHOD_OPTION": "Alternativ för leveranssätt",
+        "FULFILLMENT_CENTER": "Distributionscenter",
+        "TRACKING_NUMBER": "Spårningsnummer",
+        "TRACKING_URL": "Spårnings-URL",
+        "DELIVERY_DATE": "Leveransdatum"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Lägg till artiklar",
+        "REMOVE": "Ta bort",
+        "SELECT_TITLE": "Välj beställningsartiklar",
+        "AVAILABLE": "Beställt"
+      },
+      "ADDRESSES": {
+        "TITLE": "Adress",
+        "NEW_TITLE": "Ny adress",
+        "EMPTY": "Inga adresser",
+        "ADDRESS": "Adress",
+        "PERSON": "Namn",
+        "TYPE": "Adresstyp",
+        "DESCRIPTION": "Beskrivning",
+        "FIRST_NAME": "Förnamn",
+        "MIDDLE_NAME": "Mellannamn",
+        "LAST_NAME": "Efternamn",
+        "COUNTRY": "Land",
+        "REGION": "Region",
+        "CITY": "Ort",
+        "POSTAL_CODE": "Postnummer",
+        "LINE1": "Adressrad 1",
+        "LINE2": "Adressrad 2",
+        "EMAIL": "E-post",
+        "PHONE": "Telefon"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Inga rabatter tillämpade",
+        "NAME": "Kampanj",
+        "COUPON": "Kupong",
+        "AMOUNT": "Rabatt",
+        "CURRENCY": "Valuta"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Inga egenskaper är definierade för den här typen",
+        "LANGUAGE": "Språk"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Produkter",
+        "TEXTS": "Texter",
+        "TEXT": "Text",
+        "FILES": "Filer",
+        "CONTENT_TYPE": "Typ",
+        "SIZE": "Storlek"
+      },
+      "CHANGES": {
+        "EMPTY": "Inga ändringar",
+        "COLUMNS": {
+          "TYPE": "Åtgärd",
+          "DATE": "Datum",
+          "USER": "Användare",
+          "DETAIL": "Ändring"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Annullera dokument",
+      "MESSAGE": "Dokumentet markeras som annullerat.",
+      "REASON": "Orsak",
+      "REASON_PLACEHOLDER": "Varför annulleras det? (valfritt)",
+      "CONFIRM": "Bekräfta",
+      "BACK": "Tillbaka"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Dubblett",
+      "FRAUDULENT": "Bedrägligt",
+      "REQUESTEDBYCUSTOMER": "Begärt av kunden",
+      "OTHER": "Annat"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Det finns osparade ändringar. Vill du verkligen stänga?",
+      "DELETE_CONFIRMATION": "Ta bort {count} beställning(ar)? Detta kan inte ångras.",
+      "DELETE_ORDER_CONFIRMATION": "Ta bort beställning {number}? Detta kan inte ångras.",
+      "DELETE_OPERATION_CONFIRMATION": "Ta bort detta objekt ({name}) från beställningen? Det tas bort när beställningen sparas.",
+      "DELETE_ADDRESS_CONFIRMATION": "Ta bort den här adressen?",
+      "CONCURRENCY_CONFLICT": "Beställningen har ändrats av någon annan. Den har lästs in igen; gör om dina ändringar.",
+      "MEMBER_UNAVAILABLE": "Kundvyn är ännu inte tillgänglig i den här administrationen.",
+      "MEMBER_NOT_FOUND": "Ingen kontakt är kopplad till det här kundkontot.",
+      "PRODUCT_UNAVAILABLE": "Produktvyn är ännu inte tillgänglig i den här administrationen.",
+      "NOTIFICATIONS_UNAVAILABLE": "Aviseringsloggen är ännu inte tillgänglig i den här administrationen.",
+      "PAYMENT_ACTION_FAILED": "Betalningsleverantören avvisade begäran.",
+      "COPIED": "Kopierade {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Total försäljning",
+      "SALES_TRENDS": "Försäljningstrender",
+      "RECENT_ORDERS": "Senaste beställningar",
+      "REVENUE": "Intäkter",
+      "ORDERS": "Beställningar",
+      "AVG_ORDER_VALUE": "Genomsnittligt ordervärde",
+      "PERIOD": "Period",
+      "PERIODS": {
+        "YEAR": "År",
+        "QUARTER": "Kvartal",
+        "MONTH": "Månad"
+      },
+      "VIEW_ALL": "Visa alla",
+      "NO_ORDERS": "Inga beställningar ännu",
+      "TO_PROCESS": "Beställningar att hantera",
+      "WAITING": "Beställningar som väntar på hantering",
+      "NOTHING_TO_PROCESS": "Alla beställningar är slutförda eller annullerade",
+      "OUTSTANDING_PAYMENTS": "Utestående betalningar",
+      "PAYMENT": "Betalning",
+      "AMOUNT": "Belopp",
+      "NO_OUTSTANDING_PAYMENTS": "Inga betalningar väntar",
+      "FULFILLMENT": "Orderhantering",
+      "COMPLETED": "Slutförda",
+      "CANCELLED": "Annullerade",
+      "COMPLETED_HINT": "Slutförda beställningar av {count} de senaste 90 dagarna",
+      "CANCELLED_HINT": "Annullerade beställningar av {count} de senaste 90 dagarna"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Beställningar"
+    }
+  }
+}
