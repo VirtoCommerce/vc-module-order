@@ -1,0 +1,121 @@
+{
+  "permissions": {
+    "order:read": "צפייה בנתונים הקשורים להזמנות",
+    "order:create": "יצירת נתונים הקשורים להזמנות",
+    "order:update": "עדכון נתונים הקשורים להזמנות",
+    "order:delete": "מחיקת נתונים הקשורים להזמנות",
+    "order:access": "גישה לנתונים הקשורים להזמנות",
+    "order:read_prices": "צפייה במחירי הזמנות",
+    "order:invoice:download": "הורדת חשבונית PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "סטטוסי הזמנות לקוח",
+      "description": "רשימת הסטטוסים הזמינים להזמנות לקוח"
+    },
+    "Order.InitialStatus": {
+      "title": "סטטוס התחלתי של הזמנת לקוח",
+      "description": "הסטטוס ההתחלתי של הזמנת לקוח חדשה"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "סטטוס התחלתי להזמנות שהתשלום שלהן הופסק",
+      "description": "סטטוס זה משמש לכל ההזמנות שהתשלום שלהן לא טופל"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "סטטוסי פריטי שורה",
+      "description": "רשימת הסטטוסים הזמינים לפריטי שורה בהזמנה"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "סטטוס התחלתי של פריט שורה",
+      "description": "הסטטוס ההתחלתי של פריט שורה בהזמנת לקוח חדשה"
+    },
+    "Shipment.Status": {
+      "description": "סטטוסי משלוחים",
+      "title": "סטטוסי משלוחים"
+    },
+    "PaymentIn.Status": {
+      "description": "סטטוסי תשלומים נכנסים",
+      "title": "סטטוסי תשלומים"
+    },
+    "Refund.Status": {
+      "title": "סטטוסי החזרים כספיים",
+      "description": "סטטוסי החזרים כספיים"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש להזמנת לקוח, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר הזמנה"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש למשלוח, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר משלוח של הזמנה"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש לתשלום, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר תשלום של הזמנה"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש להחזר כספי, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר החזר כספי של הזמנה"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "שליחת התראה כאשר סטטוס ההזמנה משתנה",
+      "title": "הפעלת התראות להזמנות"
+    },
+    "Order.AdjustInventory": {
+      "description": "עדכון המלאי כאשר סטטוס ההזמנה משתנה",
+      "title": "התאמת המלאי להזמנות"
+    },
+    "Order.LogOrderChanges": {
+      "title": "רישום שינויים בהזמנות",
+      "description": "רישום השינויים בהזמנות ביומן הפעולות של הפלטפורמה"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "אינדוקס מבוסס אירועים עבור ישויות הזמנה",
+      "description": "כל שינוי בישות הלקוח יפעיל משימת רקע שתחיל את השינויים על אינדקס החיפוש"
+    },
+    "Order.Validation.Enable": {
+      "title": "אימות בעת שמירת הזמנה",
+      "description": "הפעלת אימות בעת שמירת הזמנה"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "תאריך ושעת אינדוקס הזמנות",
+      "description": "התאריך והשעה של משימת אינדוקס ההזמנות האחרונה"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "שימוש בהתראות 'הזמנה שולמה' ו'הזמנה נשלחה'",
+      "description": "שימוש בהתראות 'הזמנה שולמה' ו'הזמנה נשלחה'"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "שימוש בהתראות על שינוי סטטוס של תשלומים/משלוחים",
+      "description": "שימוש בהתראות על שינוי סטטוס של תשלומים/משלוחים"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "הפעלת אינדוקס של מוצרים שנרכשו",
+      "description": "הפעלת תהליך האינדוקס של מוצרים שנרכשו. הגדרה זו היא גלובלית"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "אינדוקס מבוסס אירועים של מוצרים שנרכשו",
+      "description": "כל שינוי בישות ההזמנה יפעיל משימת רקע שתוסיף נתוני רכישה לאינדקס המוצרים"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "הפעלת מסנן מוצרים שנרכשו בחנות",
+      "description": "הצגת המסנן של מוצרים שנרכשו עבור החנות"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "שמירת תמונות מצב של מוצרים בהזמנות",
+      "description": "שמירת נתוני המוצר לאחר סריאליזציה בפריטי השורה של ההזמנה, כדי לשמר מידע היסטורי"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "מספר מרבי של מסמכי משנה להזמנה",
+      "description": "מגדיר את המספר המרבי של מסמכי משנה (תשלומים, משלוחים, חיובים, החזרים כספיים וכו') שניתן ליצור או לשמור לכל הזמנה. הדבר מבטיח את ביצועי המערכת, אופטימיזציה של האחסון ועקביות הנתונים. חריגה מהמגבלה תגרום לחריגה (exception) בעת השמירה"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "הפעלת סטטיסטיקות בלוח הבקרה",
+      "description": "הפעלה או השבתה של וידג'טים של סטטיסטיקות הזמנות בלוח הבקרה הראשי"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "טווח הסטטיסטיקות בלוח הבקרה (חודשים)",
+      "description": "מגדיר את מספר החודשים שייכללו בחישובי הסטטיסטיקות בלוח הבקרה. ברירת המחדל היא 12 חודשים"
+    }
+  }
+}
