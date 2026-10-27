@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Ordens",
+      "COUNTER": "{count} novas ordens"
+    },
+    "YES": "Sim",
+    "NO": "Não",
+    "WIDGETS": {
+      "PAYMENTS": "Pagamentos",
+      "SHIPMENTS": "Envios",
+      "CHANGES": "Alterações",
+      "ADDRESSES": "Endereços",
+      "DISCOUNTS": "Descontos",
+      "PROPERTIES": "Propriedades",
+      "NOTIFICATIONS": "Notificações",
+      "CAPTURES": "Capturas",
+      "REFUNDS": "Reembolsos",
+      "TRANSACTIONS": "Transações",
+      "BILLING_ADDRESS": "Endereço de cobrança",
+      "DELIVERY_ADDRESS": "Endereço de entrega",
+      "SHIPMENT_ITEMS": "Itens",
+      "CONFIGURATION": "Configuração",
+      "MEMBER_ORDERS": "Ordens"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Ordens de clientes",
+        "COLUMNS": {
+          "NUMBER": "Número da ordem",
+          "CUSTOMER": "Cliente",
+          "STORE": "Loja",
+          "CREATED_DATE": "Criada",
+          "STATUS": "Estado",
+          "TOTAL": "Total",
+          "CURRENCY": "Moeda",
+          "CONFIRMED": "Confirmada"
+        },
+        "AMOUNTS": {
+          "subTotal": "Subtotal",
+          "subTotalDiscount": "Desconto dos itens",
+          "subTotalTaxTotal": "Imposto dos itens",
+          "shippingTotal": "Total de envio",
+          "shippingDiscountTotal": "Desconto de envio",
+          "paymentTotal": "Total de pagamento",
+          "paymentDiscountTotal": "Desconto de pagamento",
+          "discountAmount": "Desconto da ordem",
+          "discountTotal": "Total de descontos",
+          "feeTotal": "Total de taxas",
+          "taxTotal": "Total de impostos",
+          "sum": "Soma"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Atualizar",
+          "DELETE": "Excluir"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Copiar ID",
+          "COPY_NUMBER": "Copiar número",
+          "FILTER_BY": "Filtrar por \"{value}\""
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Selecionar filtro",
+          "EDIT": "Editar filtro",
+          "NEW": "+ Novo filtro",
+          "TODAY": "Hoje",
+          "LAST_DAY": "Último dia",
+          "LAST_WEEK": "Última semana",
+          "LAST_MONTH": "Último mês",
+          "LAST_YEAR": "Último ano"
+        },
+        "EMPTY": "Nenhuma ordem encontrada",
+        "FILTERS": {
+          "STATUS": "Estado",
+          "STORE": "Loja",
+          "CREATED": "Criada",
+          "PROTOTYPES": "Protótipos",
+          "WITH_PROTOTYPES": "Incluir protótipos"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Novo filtro",
+        "NAME": "Nome do filtro",
+        "UNNAMED": "Filtro sem nome",
+        "ALL": "Todos",
+        "FROM": "De",
+        "TO": "Até",
+        "APPLY": "Aplicar filtro"
+      },
+      "DETAILS": {
+        "TITLE": "Ordem",
+        "FIELDS": {
+          "NUMBER": "Número da ordem",
+          "STATUS": "Estado",
+          "CUSTOMER": "Cliente",
+          "ORGANIZATION": "Organização",
+          "STORE": "Loja",
+          "EMPLOYEE": "Funcionário",
+          "EMPLOYEE_PLACEHOLDER": "Selecionar funcionário",
+          "CREATED": "Criada",
+          "DISCOUNT": "Desconto",
+          "APPROVED": "Aprovada",
+          "COMMENT": "Comentário"
+        },
+        "ITEMS": {
+          "TITLE": "Itens de linha",
+          "IMAGE": "Imagem",
+          "NAME": "Nome",
+          "SKU": "SKU",
+          "STATUS": "Estado",
+          "QUANTITY": "Quantidade",
+          "PRICE": "Preço",
+          "DISCOUNT": "Desconto",
+          "TAX": "Imposto",
+          "TOTAL": "Total",
+          "SUBTOTAL": "Subtotal",
+          "DISCOUNT_TOTAL": "Desconto",
+          "TAX_TOTAL": "Imposto"
+        },
+        "TOTALS": {
+          "TITLE": "Totais",
+          "SUBTOTAL": "Subtotal",
+          "SHIPPING": "Envio",
+          "PAYMENT": "Taxa de pagamento",
+          "TAX": "Imposto",
+          "FEE": "Taxa",
+          "DISCOUNT": "Desconto",
+          "TOTAL": "Total"
+        },
+        "ADDRESSES": {
+          "TITLE": "Endereços",
+          "MANAGE": "Administrar"
+        },
+        "TOOLBAR": {
+          "SAVE": "Salvar",
+          "RESET": "Redefinir",
+          "NEW_DOCUMENT": "Novo documento",
+          "CANCEL_DOCUMENT": "Cancelar documento",
+          "INVOICE": "Fatura",
+          "DELETE": "Excluir"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Novo documento",
+        "TYPE": "Tipo de documento",
+        "SHIPMENT": "Envio",
+        "SHIPMENT_DESCR": "Enviar parte ou a totalidade dos itens da ordem",
+        "PAYMENT": "Pagamento recebido",
+        "PAYMENT_DESCR": "Registrar um pagamento para a ordem"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Produto",
+        "PRICE_WITH_TAX": "Preço com imposto",
+        "DISCOUNT_WITH_TAX": "Desconto com imposto"
+      },
+      "OPERATION": {
+        "CREATED": "Criado",
+        "STATUS": "Estado",
+        "PRICE": "Preço",
+        "PRICE_WITH_TAX": "Preço com imposto",
+        "VENDOR": "Fornecedor",
+        "APPROVED": "Aprovado",
+        "CANCELLED_STATE": "Cancelamento: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Adicionar",
+        "EMPTY": "Ainda não há nada aqui",
+        "COLUMNS": {
+          "NUMBER": "Número",
+          "GATEWAY": "Gateway de pagamento",
+          "METHOD": "Método de envio",
+          "TRANSACTION": "ID da transação",
+          "STATUS": "Estado",
+          "CREATED": "Criado",
+          "AMOUNT": "Valor"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Pagamento {number}",
+        "NEW_TITLE": "Novo pagamento",
+        "NUMBER": "Número do pagamento",
+        "GATEWAY": "Método de pagamento",
+        "AMOUNT": "Valor",
+        "PURPOSE": "Finalidade do pagamento",
+        "CAPTURE": "Capturar pagamento",
+        "REFUND": "Reembolsar pagamento"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Capturar pagamento",
+        "NEW_REFUND": "Reembolsar pagamento",
+        "CAPTURE_TITLE": "Captura {number}",
+        "REFUND_TITLE": "Reembolso {number}",
+        "AMOUNT": "Valor",
+        "CAPTURE_DETAILS": "Descrição no extrato",
+        "MESSAGE": "Mensagem do motivo",
+        "REASON": "Motivo",
+        "OUTER_ID": "ID externo",
+        "CLOSE_TRANSACTION": "Fechar transação",
+        "CLOSE_TRANSACTION_HINT": "Impede novas capturas sobre este pagamento"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Tipo",
+        "RESPONSE_CODE": "Código de resposta"
+      },
+      "SHIPMENT": {
+        "TITLE": "Envio {number}",
+        "NEW_TITLE": "Novo envio",
+        "NUMBER": "Número do envio",
+        "METHOD": "Método de envio",
+        "METHOD_OPTION": "Opção do método de envio",
+        "FULFILLMENT_CENTER": "Centro de distribuição",
+        "TRACKING_NUMBER": "Número de rastreamento",
+        "TRACKING_URL": "URL de rastreamento",
+        "DELIVERY_DATE": "Data de entrega"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Adicionar itens",
+        "REMOVE": "Remover",
+        "SELECT_TITLE": "Selecionar itens da ordem",
+        "AVAILABLE": "Na ordem"
+      },
+      "ADDRESSES": {
+        "TITLE": "Endereço",
+        "NEW_TITLE": "Novo endereço",
+        "EMPTY": "Nenhum endereço",
+        "ADDRESS": "Endereço",
+        "PERSON": "Nome",
+        "TYPE": "Tipo de endereço",
+        "DESCRIPTION": "Descrição",
+        "FIRST_NAME": "Nome",
+        "MIDDLE_NAME": "Nome do meio",
+        "LAST_NAME": "Sobrenome",
+        "COUNTRY": "País",
+        "REGION": "Região",
+        "CITY": "Cidade",
+        "POSTAL_CODE": "Código postal",
+        "LINE1": "Endereço linha 1",
+        "LINE2": "Endereço linha 2",
+        "EMAIL": "E-mail",
+        "PHONE": "Telefone"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Nenhum desconto aplicado",
+        "NAME": "Promoção",
+        "COUPON": "Cupom",
+        "AMOUNT": "Desconto",
+        "CURRENCY": "Moeda"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Não há propriedades definidas para este tipo",
+        "LANGUAGE": "Idioma"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Produtos",
+        "TEXTS": "Textos",
+        "TEXT": "Texto",
+        "FILES": "Arquivos",
+        "CONTENT_TYPE": "Tipo",
+        "SIZE": "Tamanho"
+      },
+      "CHANGES": {
+        "EMPTY": "Nenhuma alteração",
+        "COLUMNS": {
+          "TYPE": "Operação",
+          "DATE": "Data",
+          "USER": "Usuário",
+          "DETAIL": "Alteração"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Cancelar documento",
+      "MESSAGE": "O documento será marcado como cancelado.",
+      "REASON": "Motivo",
+      "REASON_PLACEHOLDER": "Por que é cancelado? (opcional)",
+      "CONFIRM": "Confirmar",
+      "BACK": "Voltar"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Duplicado",
+      "FRAUDULENT": "Fraudulento",
+      "REQUESTEDBYCUSTOMER": "Solicitado pelo cliente",
+      "OTHER": "Outro"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Existem alterações não salvas. Tem certeza de que deseja fechar?",
+      "DELETE_CONFIRMATION": "Excluir {count} ordem(ns)? Esta ação não pode ser desfeita.",
+      "DELETE_ORDER_CONFIRMATION": "Excluir a ordem {number}? Esta ação não pode ser desfeita.",
+      "DELETE_OPERATION_CONFIRMATION": "Remover este item ({name}) da ordem? Ele será excluído ao salvar a ordem.",
+      "DELETE_ADDRESS_CONFIRMATION": "Remover este endereço?",
+      "CONCURRENCY_CONFLICT": "A ordem foi alterada por outra pessoa. Ela foi recarregada; aplique as suas alterações novamente.",
+      "MEMBER_UNAVAILABLE": "A página do cliente ainda não está disponível nesta administração.",
+      "MEMBER_NOT_FOUND": "Nenhum contato está vinculado a esta conta de cliente.",
+      "PRODUCT_UNAVAILABLE": "A página do produto ainda não está disponível nesta administração.",
+      "NOTIFICATIONS_UNAVAILABLE": "O registro de notificações ainda não está disponível nesta administração.",
+      "PAYMENT_ACTION_FAILED": "O provedor de pagamento recusou a solicitação.",
+      "COPIED": "Copiado: {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Vendas totais",
+      "SALES_TRENDS": "Tendências de vendas",
+      "RECENT_ORDERS": "Ordens recentes",
+      "REVENUE": "Receita",
+      "ORDERS": "Ordens",
+      "AVG_ORDER_VALUE": "Valor médio da ordem",
+      "PERIOD": "Período",
+      "PERIODS": {
+        "YEAR": "Ano",
+        "QUARTER": "Trimestre",
+        "MONTH": "Mês"
+      },
+      "VIEW_ALL": "Ver tudo",
+      "NO_ORDERS": "Ainda não há ordens",
+      "TO_PROCESS": "Ordens a processar",
+      "WAITING": "Ordens aguardando processamento",
+      "NOTHING_TO_PROCESS": "Todas as ordens estão concluídas ou canceladas",
+      "OUTSTANDING_PAYMENTS": "Pagamentos pendentes",
+      "PAYMENT": "Pagamento",
+      "AMOUNT": "Valor",
+      "NO_OUTSTANDING_PAYMENTS": "Nenhum pagamento pendente",
+      "FULFILLMENT": "Atendimento",
+      "COMPLETED": "Concluídas",
+      "CANCELLED": "Canceladas",
+      "COMPLETED_HINT": "Ordens concluídas, de {count} nos últimos 90 dias",
+      "CANCELLED_HINT": "Ordens canceladas, de {count} nos últimos 90 dias"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Ordens"
+    }
+  }
+}

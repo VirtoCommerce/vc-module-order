@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Ordini",
+      "COUNTER": "{count} nuovi ordini"
+    },
+    "YES": "Sì",
+    "NO": "No",
+    "WIDGETS": {
+      "PAYMENTS": "Pagamenti",
+      "SHIPMENTS": "Spedizioni",
+      "CHANGES": "Modifiche",
+      "ADDRESSES": "Indirizzi",
+      "DISCOUNTS": "Sconti",
+      "PROPERTIES": "Proprietà",
+      "NOTIFICATIONS": "Notifiche",
+      "CAPTURES": "Catture",
+      "REFUNDS": "Rimborsi",
+      "TRANSACTIONS": "Transazioni",
+      "BILLING_ADDRESS": "Indirizzo di fatturazione",
+      "DELIVERY_ADDRESS": "Indirizzo di consegna",
+      "SHIPMENT_ITEMS": "Articoli",
+      "CONFIGURATION": "Configurazione",
+      "MEMBER_ORDERS": "Ordini"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Ordini clienti",
+        "COLUMNS": {
+          "NUMBER": "Numero ordine",
+          "CUSTOMER": "Cliente",
+          "STORE": "Negozio",
+          "CREATED_DATE": "Creato",
+          "STATUS": "Stato",
+          "TOTAL": "Totale",
+          "CURRENCY": "Valuta",
+          "CONFIRMED": "Confermato"
+        },
+        "AMOUNTS": {
+          "subTotal": "Subtotale",
+          "subTotalDiscount": "Sconto articoli",
+          "subTotalTaxTotal": "Tasse articoli",
+          "shippingTotal": "Totale spedizione",
+          "shippingDiscountTotal": "Sconto spedizione",
+          "paymentTotal": "Totale pagamento",
+          "paymentDiscountTotal": "Sconto pagamento",
+          "discountAmount": "Sconto ordine",
+          "discountTotal": "Totale sconti",
+          "feeTotal": "Totale commissioni",
+          "taxTotal": "Totale tasse",
+          "sum": "Somma"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Aggiorna",
+          "DELETE": "Elimina"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Copia ID",
+          "COPY_NUMBER": "Copia numero",
+          "FILTER_BY": "Filtra per \"{value}\""
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Seleziona filtro",
+          "EDIT": "Modifica filtro",
+          "NEW": "+ Nuovo filtro",
+          "TODAY": "Oggi",
+          "LAST_DAY": "Ultimo giorno",
+          "LAST_WEEK": "Ultima settimana",
+          "LAST_MONTH": "Ultimo mese",
+          "LAST_YEAR": "Ultimo anno"
+        },
+        "EMPTY": "Nessun ordine trovato",
+        "FILTERS": {
+          "STATUS": "Stato",
+          "STORE": "Negozio",
+          "CREATED": "Creato",
+          "PROTOTYPES": "Prototipi",
+          "WITH_PROTOTYPES": "Includi prototipi"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Nuovo filtro",
+        "NAME": "Nome filtro",
+        "UNNAMED": "Filtro senza nome",
+        "ALL": "Tutti",
+        "FROM": "Da",
+        "TO": "A",
+        "APPLY": "Applica filtro"
+      },
+      "DETAILS": {
+        "TITLE": "Ordine",
+        "FIELDS": {
+          "NUMBER": "Numero ordine",
+          "STATUS": "Stato",
+          "CUSTOMER": "Cliente",
+          "ORGANIZATION": "Organizzazione",
+          "STORE": "Negozio",
+          "EMPLOYEE": "Dipendente",
+          "EMPLOYEE_PLACEHOLDER": "Seleziona dipendente",
+          "CREATED": "Creato",
+          "DISCOUNT": "Sconto",
+          "APPROVED": "Approvato",
+          "COMMENT": "Commento"
+        },
+        "ITEMS": {
+          "TITLE": "Articoli",
+          "IMAGE": "Immagine",
+          "NAME": "Nome",
+          "SKU": "SKU",
+          "STATUS": "Stato",
+          "QUANTITY": "Quantità",
+          "PRICE": "Prezzo",
+          "DISCOUNT": "Sconto",
+          "TAX": "Tasse",
+          "TOTAL": "Totale",
+          "SUBTOTAL": "Subtotale",
+          "DISCOUNT_TOTAL": "Sconto",
+          "TAX_TOTAL": "Tasse"
+        },
+        "TOTALS": {
+          "TITLE": "Totali",
+          "SUBTOTAL": "Subtotale",
+          "SHIPPING": "Spedizione",
+          "PAYMENT": "Commissione di pagamento",
+          "TAX": "Tasse",
+          "FEE": "Commissioni",
+          "DISCOUNT": "Sconto",
+          "TOTAL": "Totale"
+        },
+        "ADDRESSES": {
+          "TITLE": "Indirizzi",
+          "MANAGE": "Gestisci"
+        },
+        "TOOLBAR": {
+          "SAVE": "Salva",
+          "RESET": "Ripristina",
+          "NEW_DOCUMENT": "Nuovo documento",
+          "CANCEL_DOCUMENT": "Annulla documento",
+          "INVOICE": "Fattura",
+          "DELETE": "Elimina"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Nuovo documento",
+        "TYPE": "Tipo di documento",
+        "SHIPMENT": "Spedizione",
+        "SHIPMENT_DESCR": "Spedisci una parte o tutti gli articoli dell'ordine",
+        "PAYMENT": "Pagamento in entrata",
+        "PAYMENT_DESCR": "Registra un pagamento per l'ordine"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Prodotto",
+        "PRICE_WITH_TAX": "Prezzo con tasse",
+        "DISCOUNT_WITH_TAX": "Sconto con tasse"
+      },
+      "OPERATION": {
+        "CREATED": "Creato",
+        "STATUS": "Stato",
+        "PRICE": "Prezzo",
+        "PRICE_WITH_TAX": "Prezzo con tasse",
+        "VENDOR": "Fornitore",
+        "APPROVED": "Approvato",
+        "CANCELLED_STATE": "Annullamento: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Aggiungi",
+        "EMPTY": "Ancora nessun elemento",
+        "COLUMNS": {
+          "NUMBER": "Numero",
+          "GATEWAY": "Gateway di pagamento",
+          "METHOD": "Metodo di spedizione",
+          "TRANSACTION": "ID transazione",
+          "STATUS": "Stato",
+          "CREATED": "Creato",
+          "AMOUNT": "Importo"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Pagamento {number}",
+        "NEW_TITLE": "Nuovo pagamento",
+        "NUMBER": "Numero pagamento",
+        "GATEWAY": "Metodo di pagamento",
+        "AMOUNT": "Importo",
+        "PURPOSE": "Scopo del pagamento",
+        "CAPTURE": "Cattura pagamento",
+        "REFUND": "Rimborsa pagamento"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Cattura pagamento",
+        "NEW_REFUND": "Rimborsa pagamento",
+        "CAPTURE_TITLE": "Cattura {number}",
+        "REFUND_TITLE": "Rimborso {number}",
+        "AMOUNT": "Importo",
+        "CAPTURE_DETAILS": "Descrizione nell'estratto conto",
+        "MESSAGE": "Messaggio del motivo",
+        "REASON": "Motivo",
+        "OUTER_ID": "ID esterno",
+        "CLOSE_TRANSACTION": "Chiudi transazione",
+        "CLOSE_TRANSACTION_HINT": "Impedisce ulteriori catture su questo pagamento"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Tipo",
+        "RESPONSE_CODE": "Codice di risposta"
+      },
+      "SHIPMENT": {
+        "TITLE": "Spedizione {number}",
+        "NEW_TITLE": "Nuova spedizione",
+        "NUMBER": "Numero spedizione",
+        "METHOD": "Metodo di spedizione",
+        "METHOD_OPTION": "Opzione del metodo di spedizione",
+        "FULFILLMENT_CENTER": "Centro di evasione",
+        "TRACKING_NUMBER": "Numero di tracciamento",
+        "TRACKING_URL": "URL di tracciamento",
+        "DELIVERY_DATE": "Data di consegna"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Aggiungi articoli",
+        "REMOVE": "Rimuovi",
+        "SELECT_TITLE": "Seleziona articoli dell'ordine",
+        "AVAILABLE": "Ordinato"
+      },
+      "ADDRESSES": {
+        "TITLE": "Indirizzo",
+        "NEW_TITLE": "Nuovo indirizzo",
+        "EMPTY": "Nessun indirizzo",
+        "ADDRESS": "Indirizzo",
+        "PERSON": "Nome",
+        "TYPE": "Tipo di indirizzo",
+        "DESCRIPTION": "Descrizione",
+        "FIRST_NAME": "Nome",
+        "MIDDLE_NAME": "Secondo nome",
+        "LAST_NAME": "Cognome",
+        "COUNTRY": "Paese",
+        "REGION": "Regione",
+        "CITY": "Città",
+        "POSTAL_CODE": "CAP",
+        "LINE1": "Indirizzo riga 1",
+        "LINE2": "Indirizzo riga 2",
+        "EMAIL": "Email",
+        "PHONE": "Telefono"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Nessuno sconto applicato",
+        "NAME": "Promozione",
+        "COUPON": "Coupon",
+        "AMOUNT": "Sconto",
+        "CURRENCY": "Valuta"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Nessuna proprietà definita per questo tipo",
+        "LANGUAGE": "Lingua"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Prodotti",
+        "TEXTS": "Testi",
+        "TEXT": "Testo",
+        "FILES": "File",
+        "CONTENT_TYPE": "Tipo",
+        "SIZE": "Dimensione"
+      },
+      "CHANGES": {
+        "EMPTY": "Nessuna modifica",
+        "COLUMNS": {
+          "TYPE": "Operazione",
+          "DATE": "Data",
+          "USER": "Utente",
+          "DETAIL": "Modifica"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Annulla documento",
+      "MESSAGE": "Il documento verrà contrassegnato come annullato.",
+      "REASON": "Motivo",
+      "REASON_PLACEHOLDER": "Perché viene annullato? (facoltativo)",
+      "CONFIRM": "Conferma",
+      "BACK": "Indietro"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Duplicato",
+      "FRAUDULENT": "Fraudolento",
+      "REQUESTEDBYCUSTOMER": "Richiesto dal cliente",
+      "OTHER": "Altro"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Ci sono modifiche non salvate. Chiudere comunque?",
+      "DELETE_CONFIRMATION": "Eliminare {count} ordini? L'operazione non può essere annullata.",
+      "DELETE_ORDER_CONFIRMATION": "Eliminare l'ordine {number}? L'operazione non può essere annullata.",
+      "DELETE_OPERATION_CONFIRMATION": "Rimuovere questo elemento ({name}) dall'ordine? Verrà eliminato al salvataggio dell'ordine.",
+      "DELETE_ADDRESS_CONFIRMATION": "Rimuovere questo indirizzo?",
+      "CONCURRENCY_CONFLICT": "L'ordine è stato modificato da un altro utente. È stato ricaricato; applicare di nuovo le modifiche.",
+      "MEMBER_UNAVAILABLE": "La schermata del cliente non è ancora disponibile in questo pannello di amministrazione.",
+      "MEMBER_NOT_FOUND": "Nessun contatto è collegato a questo account cliente.",
+      "PRODUCT_UNAVAILABLE": "La schermata del prodotto non è ancora disponibile in questo pannello di amministrazione.",
+      "NOTIFICATIONS_UNAVAILABLE": "Il registro delle notifiche non è ancora disponibile in questo pannello di amministrazione.",
+      "PAYMENT_ACTION_FAILED": "Il provider di pagamento ha rifiutato la richiesta.",
+      "COPIED": "Copiato: {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Vendite totali",
+      "SALES_TRENDS": "Andamento delle vendite",
+      "RECENT_ORDERS": "Ordini recenti",
+      "REVENUE": "Ricavi",
+      "ORDERS": "Ordini",
+      "AVG_ORDER_VALUE": "Valore medio ordine",
+      "PERIOD": "Periodo",
+      "PERIODS": {
+        "YEAR": "Anno",
+        "QUARTER": "Trimestre",
+        "MONTH": "Mese"
+      },
+      "VIEW_ALL": "Visualizza tutto",
+      "NO_ORDERS": "Ancora nessun ordine",
+      "TO_PROCESS": "Ordini da elaborare",
+      "WAITING": "Ordini in attesa di elaborazione",
+      "NOTHING_TO_PROCESS": "Tutti gli ordini sono completati o annullati",
+      "OUTSTANDING_PAYMENTS": "Pagamenti in sospeso",
+      "PAYMENT": "Pagamento",
+      "AMOUNT": "Importo",
+      "NO_OUTSTANDING_PAYMENTS": "Nessun pagamento in attesa",
+      "FULFILLMENT": "Evasione",
+      "COMPLETED": "Completati",
+      "CANCELLED": "Annullati",
+      "COMPLETED_HINT": "Ordini completati, su {count} negli ultimi 90 giorni",
+      "CANCELLED_HINT": "Ordini annullati, su {count} negli ultimi 90 giorni"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Ordini"
+    }
+  }
+}

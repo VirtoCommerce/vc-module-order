@@ -1,0 +1,683 @@
+{
+  "orders": {
+    "main-menu-title": "Tilaukset",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "Asiakkaan {{customer}} tilaus",
+        "subtitle": "Muokkaa tilauksen tietoja ja liittyviä asiakirjoja",
+        "labels": {
+          "approved": "Hyväksytty",
+          "employee": "Vastuuhenkilö",
+          "order-number": "Asiakastilauksen numero",
+          "status": "Tila",
+          "store": "Kauppa",
+          "from": "Luotu",
+          "channel": "Kanava",
+          "customer": "Asiakas",
+          "organization": "Organisaatio",
+          "invoice": "Lataa lasku (PDF)",
+          "withPrototypes": "Mallien kanssa"
+        },
+        "placeholders": {
+          "employee": "Valitse vastuuhenkilö",
+          "status": "Valitse...",
+          "store": "Valitse...",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "Tuote",
+          "status": "Tila",
+          "quantity": "Määrä",
+          "available": "Saatavilla",
+          "await": "Odottaa",
+          "price": "Kappalehinta",
+          "tax": "Vero",
+          "priceWithTax": "Yksikköhinta (sis. veron)",
+          "discount": "Alennus",
+          "discountWithTax": "Alennus (sis. veron)",
+          "total": "Yhteensä",
+          "dynamic-properties": "Dynaamiset ominaisuudet",
+          "sub-total": "Välisumma",
+          "discount-total": "Alennus",
+          "tax-total": "Vero",
+          "fee-total": "Kulu",
+          "currency": "Valuutta"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Tuotteen nimi",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-list": {
+        "title": "Asiakkaiden tilaukset",
+        "labels": {
+          "new-filter": "Lisää uusi suodatin",
+          "unnamed-filter": "Suodata",
+          "today-filter": "Tänään",
+          "last-day-filter": "Eilen",
+          "last-week-filter": "Viime viikko",
+          "last-month-filter": "Viime kuukausi",
+          "last-year-filter": "Viime vuosi",
+          "number": "Tilausnumero",
+          "customer": "Asiakas",
+          "confirmed": "Vahvistettu",
+          "status": "Tila",
+          "total": "Yhteensä",
+          "currency": "Valuutta",
+          "store": "Kauppa",
+          "created": "Luotu",
+          "copy-id": "Kopioi ID",
+          "copy-number": "Kopioi numero",
+          "filter-by": "Suodata"
+        },
+        "placeholders": {
+          "select-filter": "Valitse suodatin"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "Muokkaa suodatinta",
+        "new-title": "Uusi suodatin",
+        "new-subtitle": "Luo uusi suodatin",
+        "labels": {
+          "name": "Suodattimen nimi",
+          "name_": "Nimeä suodatin",
+          "criteria": "Suodatusehdot",
+          "from": "Luotu jälkeen",
+          "to": "Luotu ennen"
+        },
+        "placeholders": {
+          "all": "Ei määritetty"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "Kommentit"
+        }
+      },
+      "payment-detail": {
+        "title": "Saapuva maksu #{{number}}",
+        "title-new": "Uusi saapuva maksu",
+        "subtitle": "Muokkaa maksun tietoja ja liittyviä asiakirjoja",
+        "labels": {
+          "approved": "Hyväksytty",
+          "payment-number": "Maksun ID",
+          "status": "Tila",
+          "amount": "Summa",
+          "from": "Päivämäärä ja aika",
+          "payment-gateway": "Maksupalvelu",
+          "payment-purpose": "Maksun tarkoitus",
+          "price": "Maksukulut",
+          "price-with-tax": "Maksukulut (sis. veron)",
+          "vendor": "Toimittaja",
+          "capture-payment": "Veloita maksu",
+          "refund-payment": "Hyvitä maksu"
+        },
+        "placeholders": {
+          "status": "Valitse...",
+          "payment-gateway": "Valitse...",
+          "vendor": "Valitse..."
+        }
+      },
+      "refund-add": {
+        "title": "Luo hyvitys",
+        "labels": {
+          "amount": "Hyvityksen summa",
+          "reasonCode": "Hyvityksen syy",
+          "message": "Hyvitysviesti",
+          "transactionId": "Tapahtuman ID",
+          "outerId": "Ulkoinen ID"
+        },
+        "placeholders": {
+          "amount": "Anna arvo...",
+          "reasonCode": "Valitse...",
+          "message": "Anna arvo...",
+          "transactionId": "Anna arvo...",
+          "outerId": "Anna arvo..."
+        }
+      },
+      "refund-details": {
+        "title": "Hyvitys #{{number}}",
+        "subtitle": "Muokkaa maksun tietoja ja liittyviä asiakirjoja",
+        "labels": {
+          "status": "Tila",
+          "amount": "Summa",
+          "vendor": "Toimittaja",
+          "reasonCode": "Hyvityksen syy"
+        },
+        "refund-status": {
+          "pending": "Odottaa",
+          "approved": "Hyväksytty",
+          "rejected": "Hylätty",
+          "processed": "Käsitelty"
+        },
+        "placeholders": {
+          "status": "Valitse...",
+          "vendor": "Valitse...",
+          "reasonCode": "Valitse..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "Tapahtuman ID",
+          "outerId": "Ulkoinen ID"
+        }
+      },
+      "capture-add": {
+        "title": "Luo veloitus",
+        "labels": {
+          "amount": "Veloituksen summa",
+          "message": "Veloitusviesti",
+          "transactionId": "Tapahtuman ID",
+          "outerId": "Ulkoinen ID",
+          "closeTransaction": "Sulje tapahtuma"
+        },
+        "placeholders": {
+          "amount": "Anna arvo...",
+          "message": "Anna arvo...",
+          "transactionId": "Anna arvo...",
+          "outerId": "Anna arvo..."
+        },
+        "descr": {
+          "closeTransaction": "Sulje tapahtuma, jolloin tähän tilaukseen ei voi enää kohdistaa veloituksia"
+        }
+      },
+      "capture-details": {
+        "title": "Veloitus #{{number}}",
+        "subtitle": "Muokkaa maksun tietoja ja liittyviä asiakirjoja",
+        "labels": {
+          "amount": "Summa",
+          "vendor": "Toimittaja",
+          "closeTransaction": "Sulje tapahtuma"
+        },
+        "placeholders": {
+          "amount": "Anna arvo...",
+          "vendor": "Valitse..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Tapahtuman ID",
+          "outerId": "Ulkoinen ID"
+        }
+      },
+      "customerOrder-item-configuration": {
+        "title": "Konfiguraatio",
+        "labels": {
+          "picture": "Kuva",
+          "quantity": "Määrä",
+          "text": "Teksti",
+          "product-name": "Tuotteen nimi",
+          "file-name": "Tiedoston nimi",
+          "file-size": "Tiedoston koko",
+          "file-content-type": "Tiedostotyyppi"
+        },
+        "menu": {
+          "products": {
+            "title": "Konfiguraation tuotteet",
+            "description": "Tuotteet, joista konfiguraatio koostuu"
+          },
+          "texts": {
+            "title": "Konfiguraation tekstit",
+            "description": "Mukautetut tekstit, joilla luodaan yksilöllinen tuotekonfiguraatio"
+          },
+          "files": {
+            "title": "Konfiguraation tiedostot",
+            "description": "Tiedostot, joilla luodaan yksilöllinen tuotekonfiguraatio"
+          }
+        },
+        "description": {
+          "no-configuration": "Tätä tuotetta ei voi konfiguroida.",
+          "no-products": "Tässä konfiguraatiossa ei ole vielä tuotteita.",
+          "no-texts": "Tässä konfiguraatiossa ei ole vielä tekstejä.",
+          "no-files": "Tässä konfiguraatiossa ei ole vielä tiedostoja."
+        }
+      },
+      "transactions-list": {
+        "title": "Maksupalvelun tapahtumat",
+        "subtitle": "Kaikki maksupalvelun kanssa käydyt tapahtumat"
+      },
+      "transaction-detail": {
+        "title": "Tapahtuman tiedot",
+        "subtitle": "Tapahtuman raakadata"
+      },
+      "shipment-detail": {
+        "title": "Lähetys #{{number}}",
+        "title-new": "Uusi lähetys",
+        "subtitle": "Muokkaa lähetyksen tietoja",
+        "labels": {
+          "shipment-method": "Toimitustapa",
+          "approved": "Hyväksytty",
+          "shipment-number": "Lähetyksen ID",
+          "status": "Tila",
+          "fulfillment-center": "Jakelukeskus",
+          "from": "Päivämäärä ja aika",
+          "employee": "Vastuuhenkilö",
+          "price": "Toimituksen hinta",
+          "price-with-tax": "Toimituksen hinta (sis. veron)",
+          "shipment-method-option": "Toimitustapa",
+          "tracking-number": "Seurantanumero",
+          "tracking-url": "Seurannan URL",
+          "delivery-date": "Toimituspäivä",
+          "vendor": "Toimittaja"
+        },
+        "placeholders": {
+          "status": "Valitse...",
+          "shipment-method": "Valitse...",
+          "fulfillment-center": "Valitse tai hae keskus...",
+          "shipment-method-option": "Oletustoimitustapa",
+          "vendor": "Valitse..."
+        }
+      },
+      "shipment-items": {
+        "title": "{{title}}: tilausrivit",
+        "subtitle": "Muokkaa lähetyksen tuotteita",
+        "labels": {
+          "item": "Tuote",
+          "status": "Tila",
+          "quantity": "Määrä",
+          "price": "Hinta",
+          "total": "Yhteensä"
+        }
+      },
+      "catalog-items-select": {
+        "title": "Lisää tuote tilaukseen"
+      },
+      "newOperation-wizard": {
+        "title": "Uusi toiminto",
+        "subtitle": "Valitse toiminnon tyyppi",
+        "menu": {
+          "shipment-operation": {
+            "description": "Lähetysasiakirja"
+          },
+          "payment-operation": {
+            "description": "Saapuvan maksun asiakirja"
+          },
+          "refund-operation": {
+            "description": "Hyvitysasiakirja"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Alennukset",
+        "labels": {
+          "name": "Nimi",
+          "coupon": "Kuponki",
+          "discountAmount": "Alennuksen määrä",
+          "discountAmountWithTax": "Alennuksen määrä (sis. veron)",
+          "currency": "Valuutta"
+        },
+        "descr": {
+          "no-discounts": "Tällä kohteella ei ole vielä alennuksia."
+        }
+      },
+      "address-details": {
+        "labels": {
+          "name": "Osoitteen nimi",
+          "address-type": "Osoitteen tyyppi",
+          "first-name": "Etunimi",
+          "middle-name": "Toinen nimi",
+          "last-name": "Sukunimi",
+          "country": "Maa",
+          "region": "Alue",
+          "city": "Kaupunki",
+          "address1": "Osoiterivi 1",
+          "address2": "Osoiterivi 2",
+          "zip-code": "Postinumero",
+          "email": "Sähköposti",
+          "phone": "Puhelin",
+          "description": "Kuvaus"
+        },
+        "placeholders": {
+          "address-type": "Valitse osoitteen tyyppi...",
+          "first-name": "Anna etunimi...",
+          "middle-name": "Anna toinen nimi...",
+          "last-name": "Anna sukunimi...",
+          "country": "Valitse maa...",
+          "region": "Valitse alue...",
+          "city": "Anna kaupunki...",
+          "address1": "Anna osoiterivi 1...",
+          "address2": "Anna osoiterivi 2...",
+          "zip-code": "Anna postinumero...",
+          "email": "Anna sähköposti...",
+          "phone": "Anna puhelinnumero...",
+          "description": "Anna kuvaus..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "Ei vielä osoitteita"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "Ilmoitussyöte",
+        "subtitle": "Tilauksen ilmoitussyöte"
+      },
+      "customerOrder-address": {
+        "title": "Osoitteet",
+        "blade-title": "Hallitse osoitteita"
+      },
+      "customerOrder-items": {
+        "title": "Tilausrivit",
+        "blade-title": "{{title}}: tilausrivit",
+        "blade-subtitle": "Muokkaa tilausrivejä"
+      },
+      "customerOrder-totals": {
+        "sub-total": "Välisumma",
+        "shipping-total": "Toimitus yhteensä",
+        "shipping-sub-total": "Toimituksen välisumma",
+        "payment-sub-total": "Maksujen välisumma",
+        "tax-total": "Verot yhteensä",
+        "fee-total": "Kulut yhteensä",
+        "discount": "Alennus",
+        "discount-total": "Alennukset yhteensä",
+        "discount-total-with-tax": "Alennukset yhteensä (sis. veron)",
+        "total": "Yhteensä"
+      },
+      "operation-comment": {
+        "no-comments": "Ei kommentteja",
+        "blade-title": "Jätä kommentti"
+      },
+      "shipment-address": {
+        "blade-title": "Hallitse toimitusosoitetta",
+        "title": "Toimitusosoite"
+      },
+      "shipment-items": {
+        "title": "Lähetyksen tuotteet"
+      },
+      "shipment-totals": {
+        "tax-total": "Verot yhteensä",
+        "fee-total": "Kulut yhteensä",
+        "shipment-total": "Toimitus yhteensä",
+        "shipment-price": "Toimituksen hinta",
+        "discount-total": "Alennukset yhteensä",
+        "total": "Yhteensä"
+      },
+      "payment-totals": {
+        "tax-total": "Verot yhteensä",
+        "payment-total": "Maksu yhteensä",
+        "payment-price": "Maksun hinta",
+        "discount-total": "Alennukset yhteensä",
+        "total": "Yhteensä"
+      },
+      "payment-address": {
+        "blade-title": "Hallitse laskutusosoitetta",
+        "title": "Laskutusosoite"
+      },
+      "statistics-templates": {
+        "revenue": "Liikevaihto",
+        "customers-with-orders": "Tilanneet asiakkaat",
+        "average-order-value": "Keskimääräinen tilausarvo",
+        "items-purchased": "Ostetut tuotteet",
+        "lines-per-order": "Rivejä tilausta kohden",
+        "revenue-per-customer": "Liikevaihto asiakasta kohden",
+        "title": "Tilaustilastot",
+        "not-authorized": "Tähän toimintoon ei ole tällä hetkellä käyttöoikeutta. Pyydä käyttöoikeutta tilin järjestelmänvalvojalta"
+      },
+      "customerOrder-list": {
+        "title": "Tilaukset"
+      },
+      "configuration": {
+        "title": "Konfiguraatio"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Alennukset"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Samanaikaisen muokkauksen ristiriita",
+        "message": "Toinen käyttäjä on muuttanut tilausta. Lataa uusimmat tiedot valitsemalla OK ja yritä uudelleen"
+      },
+      "orders-delete": {
+        "title": "Poiston vahvistus",
+        "message": "Haluatko varmasti poistaa valitut asiakastilaukset?",
+        "order": "Tilauksia: {{count}}"
+      },
+      "operation-save": {
+        "title": "Tallenna muutokset",
+        "message": "Toimintoa on muutettu. Haluatko tallentaa muutokset?"
+      },
+      "operation-delete": {
+        "title": "Poiston vahvistus",
+        "message": "Haluatko varmasti poistaa toiminnon '{{name}}'?"
+      },
+      "operation-cancel": {
+        "title": "Peruuta toiminto",
+        "message": "Haluatko varmasti poistaa tämän asiakirjan?",
+        "placeholders": {
+          "reason": "Anna poiston syy..."
+        }
+      },
+      "payment-capture": {
+        "title": "Veloituksen vahvistus",
+        "message": "Haluatko varmasti veloittaa maksun summalla {{amount}}?"
+      },
+      "address-delete": {
+        "title": "Vahvista poisto",
+        "message": "Haluatko varmasti poistaa osoitteen '{{name}}'?"
+      },
+      "address-save": {
+        "title": "Tallenna muutokset",
+        "message": "Osoitetta on muutettu. Haluatko tallentaa muutokset?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "Uusi",
+        "not payed": "Maksamatta",
+        "pending": "Odottaa",
+        "processing": "Käsittelyssä",
+        "ready to send": "Valmis lähetettäväksi",
+        "cancelled": "Peruutettu",
+        "partially sent": "Osittain lähetetty",
+        "completed": "Valmis"
+      },
+      "line-item-status": {
+        "pending": "Odottaa",
+        "inprogress": "Käsittelyssä",
+        "shipped": "Lähetetty",
+        "delivered": "Toimitettu",
+        "cancelled": "Peruutettu"
+      },
+      "shipment-status": {
+        "new": "Uusi",
+        "pickpack": "Keräily ja pakkaus",
+        "cancelled": "Peruutettu",
+        "readytosend": "Valmis lähetettäväksi",
+        "sent": "Lähetetty"
+      },
+      "paymentin-status": {
+        "new": "Uusi",
+        "pending": "Odottaa",
+        "authorized": "Valtuutettu",
+        "paid": "Maksettu",
+        "partiallyrefunded": "Osittain hyvitetty",
+        "refunded": "Hyvitetty",
+        "voided": "Mitätöity",
+        "custom": "Mukautettu",
+        "cancelled": "Peruutettu"
+      },
+      "refund-status": {
+        "pending": "Odottaa",
+        "rejected": "Hylätty",
+        "processed": "Käsitelty"
+      },
+      "reason-codes": {
+        "duplicate": "Kaksoiskappale",
+        "fraudulent": "Petollinen",
+        "requestedbycustomer": "Asiakkaan pyytämä",
+        "other": "Muu"
+      }
+    },
+    "commands": {
+      "new-document": "Uusi asiakirja",
+      "cancel-document": "Peruuta asiakirja",
+      "add-selected": "Lisää valitut",
+      "add-item": "Lisää tuote"
+    }
+  },
+  "permissions": {
+    "order:read": "Tarkastele tilauksiin liittyviä tietoja",
+    "order:create": "Luo tilauksiin liittyviä tietoja",
+    "order:update": "Päivitä tilauksiin liittyviä tietoja",
+    "order:delete": "Poista tilauksiin liittyviä tietoja",
+    "order:access": "Käytä tilauksiin liittyviä tietoja",
+    "order:read_prices": "Tarkastele tilausten hintoja",
+    "order:invoice:download": "Lataa lasku PDF-muodossa"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Asiakastilausten tilat",
+      "description": "Asiakastilausten käytettävissä olevat tilat"
+    },
+    "Order.InitialStatus": {
+      "title": "Asiakastilauksen alkutila",
+      "description": "Uuden asiakastilauksen alkutila"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Alkutila tilauksille, joiden maksu keskeytyi",
+      "description": "Tätä tilaa käytetään kaikille tilauksille, joiden maksua ei käsitelty"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Tilausrivien tilat",
+      "description": "Tilausrivien käytettävissä olevat tilat"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Tilausrivin alkutila",
+      "description": "Tilausrivin alkutila uudessa asiakastilauksessa"
+    },
+    "Shipment.Status": {
+      "description": "Lähetysten tilat",
+      "title": "Lähetysten tilat"
+    },
+    "PaymentIn.Status": {
+      "description": "Saapuvien maksujen tilat",
+      "title": "Maksujen tilat"
+    },
+    "Refund.Status": {
+      "title": "Hyvitysten tilat",
+      "description": "Hyvitysten tilat"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Käytetään uuden asiakastilauksen numeron muodostamiseen. Parametrit:\n\n0: Päivämäärä ja aika (UTC)\n1: Laskuri\n\nLaskurin asetukset voi määrittää suoraan mallissa muodossa:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nOletusarvot:\n* reset_counter_type: Daily. Vaihtoehdot: None, Daily, Weekly, Monthly ja Yearly.\n* start_counter_from: 1.\n* counter_increment: 1.\n\nEsimerkki: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nTulos: CO240101-00001.",
+      "title": "Tilausnumeron malli"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Käytetään uuden lähetyksen numeron muodostamiseen. Parametrit:\n\n0: Päivämäärä ja aika (UTC)\n1: Laskuri\n\nLaskurin asetukset voi määrittää suoraan mallissa muodossa:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nOletusarvot:\n* reset_counter_type: Daily. Vaihtoehdot: None, Daily, Weekly, Monthly ja Yearly.\n* start_counter_from: 1.\n* counter_increment: 1.\n\nEsimerkki: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nTulos: CO240101-00001.",
+      "title": "Lähetysnumeron malli"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Käytetään uuden maksun numeron muodostamiseen. Parametrit:\n\n0: Päivämäärä ja aika (UTC)\n1: Laskuri\n\nLaskurin asetukset voi määrittää suoraan mallissa muodossa:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nOletusarvot:\n* reset_counter_type: Daily. Vaihtoehdot: None, Daily, Weekly, Monthly ja Yearly.\n* start_counter_from: 1.\n* counter_increment: 1.\n\nEsimerkki: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nTulos: CO240101-00001.",
+      "title": "Maksunumeron malli"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Käytetään uuden hyvityksen numeron muodostamiseen. Parametrit:\n\n0: Päivämäärä ja aika (UTC)\n1: Laskuri\n\nLaskurin asetukset voi määrittää suoraan mallissa muodossa:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nOletusarvot:\n* reset_counter_type: Daily. Vaihtoehdot: None, Daily, Weekly, Monthly ja Yearly.\n* start_counter_from: 1.\n* counter_increment: 1.\n\nEsimerkki: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nTulos: CO240101-00001.",
+      "title": "Hyvitysnumeron malli"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Lähettää ilmoituksen, kun tilauksen tila muuttuu",
+      "title": "Ota käyttöön tilausten ilmoitukset"
+    },
+    "Order.AdjustInventory": {
+      "description": "Päivittää varastosaldon, kun tilauksen tila muuttuu",
+      "title": "Päivitä varastosaldo tilausten mukaan"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Kirjaa tilausten muutokset",
+      "description": "Kirjaa tilausten muutokset alustan toimintolokiin"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Tilausten tapahtumapohjainen indeksointi",
+      "description": "Kaikki asiakasentiteetin muutokset käynnistävät taustatehtävän, joka päivittää muutokset hakuindeksiin"
+    },
+    "Order.Validation.Enable": {
+      "title": "Tilauksen tallennuksen validointi",
+      "description": "Ottaa käyttöön validoinnin tilausta tallennettaessa"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Tilausten indeksoinnin päivämäärä ja aika",
+      "description": "Viimeisimmän tilausten indeksointitehtävän päivämäärä ja aika"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Käytä ilmoituksia maksetuista ja lähetetyistä tilauksista",
+      "description": "Käytä ilmoituksia maksetuista ja lähetetyistä tilauksista"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Käytä ilmoituksia maksujen ja lähetysten tilamuutoksista",
+      "description": "Käytetään maksujen ja lähetysten tilamuutosilmoituksiin"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Ota käyttöön ostettujen tuotteiden indeksointi",
+      "description": "Ottaa käyttöön ostettujen tuotteiden indeksoinnin. Tämä asetus on yleinen"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Ostettujen tuotteiden tapahtumapohjainen indeksointi",
+      "description": "Kaikki tilauksen muutokset käynnistävät taustatehtävän, joka lisää ostotiedot tuoteindeksiin"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Ota käyttöön ostettujen tuotteiden suodatin kaupassa",
+      "description": "Näytä ostettujen tuotteiden suodatin kaupassa"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Tallenna tuotteiden tilannekuvat tilauksiin",
+      "description": "Tallentaa sarjallistetut tuotetiedot tilausriveille historiatietojen säilyttämiseksi"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Tilauksen alidokumenttien enimmäismäärä",
+      "description": "Määrittää, montako alidokumenttia (maksuja, lähetyksiä, veloituksia, hyvityksiä jne.) tilaukselle voidaan luoda tai tallentaa. Tämä varmistaa järjestelmän suorituskyvyn, tallennustilan optimoinnin ja tietojen johdonmukaisuuden. Jos raja ylittyy, tallennus aiheuttaa poikkeuksen"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Ota käyttöön koontinäytön tilastot",
+      "description": "Ottaa tilaustilastojen pienoisohjelmat käyttöön tai pois käytöstä pääkoontinäytöllä"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Koontinäytön tilastojen aikaväli (kuukautta)",
+      "description": "Määrittää, montako kuukautta koontinäytön tilastoihin sisällytetään. Oletus on 12 kuukautta"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Asiakastilausten vienti ja tuonti kaikkine liittyvine objekteineen (tilausrivit, lähetykset, maksut jne.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Ilmoitus peruutetusta tilauksesta",
+      "description": "Asiakas saa sähköposti-ilmoituksen, kun tilaus peruutetaan"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Asiakastilauksen lasku",
+      "description": "Asiakastilauksen laskun malli, jota käytetään PDF-version luomiseen"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Ilmoitus tilauksen uudesta tilasta",
+      "description": "Asiakas saa sähköposti-ilmoituksen, kun minkä tahansa tilauksen tila muuttuu"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Ilmoitus luodusta tilauksesta",
+      "description": "Asiakas saa sähköposti-ilmoituksen lähetettyään tietonsa Frontend-sovelluksen lomakkeella, esimerkiksi yhteydenottolomakkeella"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Ilmoitus tilauksen maksusta",
+      "description": "Asiakas saa sähköposti-ilmoituksen, kun kaikki tilaukseen liittyvät maksut on suoritettu"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Ilmoitus lähetetystä tilauksesta",
+      "description": "Asiakas saa sähköposti-ilmoituksen, kun kaikki tilatut tuotteet on lähetetty"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Ilmoitus maksujen tilan muutoksesta",
+      "description": "Asiakas saa sähköposti-ilmoituksen kaikista maksujen tilamuutoksista"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Ilmoitus lähetysten tilan muutoksesta",
+      "description": "Asiakas saa sähköposti-ilmoituksen kaikista lähetysten tilamuutoksista"
+    }
+  }
+}

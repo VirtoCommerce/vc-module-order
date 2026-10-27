@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Tilaukset",
+      "COUNTER": "Uusia tilauksia: {count}"
+    },
+    "YES": "Kyllä",
+    "NO": "Ei",
+    "WIDGETS": {
+      "PAYMENTS": "Maksut",
+      "SHIPMENTS": "Lähetykset",
+      "CHANGES": "Muutokset",
+      "ADDRESSES": "Osoitteet",
+      "DISCOUNTS": "Alennukset",
+      "PROPERTIES": "Ominaisuudet",
+      "NOTIFICATIONS": "Ilmoitukset",
+      "CAPTURES": "Veloitukset",
+      "REFUNDS": "Hyvitykset",
+      "TRANSACTIONS": "Tapahtumat",
+      "BILLING_ADDRESS": "Laskutusosoite",
+      "DELIVERY_ADDRESS": "Toimitusosoite",
+      "SHIPMENT_ITEMS": "Tuotteet",
+      "CONFIGURATION": "Konfiguraatio",
+      "MEMBER_ORDERS": "Tilaukset"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Asiakkaiden tilaukset",
+        "COLUMNS": {
+          "NUMBER": "Tilausnumero",
+          "CUSTOMER": "Asiakas",
+          "STORE": "Kauppa",
+          "CREATED_DATE": "Luotu",
+          "STATUS": "Tila",
+          "TOTAL": "Yhteensä",
+          "CURRENCY": "Valuutta",
+          "CONFIRMED": "Vahvistettu"
+        },
+        "AMOUNTS": {
+          "subTotal": "Välisumma",
+          "subTotalDiscount": "Tuotealennus",
+          "subTotalTaxTotal": "Tuotteiden vero",
+          "shippingTotal": "Toimitus yhteensä",
+          "shippingDiscountTotal": "Toimitusalennus",
+          "paymentTotal": "Maksu yhteensä",
+          "paymentDiscountTotal": "Maksualennus",
+          "discountAmount": "Tilausalennus",
+          "discountTotal": "Alennukset yhteensä",
+          "feeTotal": "Maksut yhteensä",
+          "taxTotal": "Verot yhteensä",
+          "sum": "Summa"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Päivitä",
+          "DELETE": "Poista"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Kopioi ID",
+          "COPY_NUMBER": "Kopioi numero",
+          "FILTER_BY": "Suodata: ”{value}”"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Valitse suodatin",
+          "EDIT": "Muokkaa suodatinta",
+          "NEW": "+ Uusi suodatin",
+          "TODAY": "Tänään",
+          "LAST_DAY": "Viimeinen vuorokausi",
+          "LAST_WEEK": "Viime viikko",
+          "LAST_MONTH": "Viime kuukausi",
+          "LAST_YEAR": "Viime vuosi"
+        },
+        "EMPTY": "Tilauksia ei löytynyt",
+        "FILTERS": {
+          "STATUS": "Tila",
+          "STORE": "Kauppa",
+          "CREATED": "Luotu",
+          "PROTOTYPES": "Prototyypit",
+          "WITH_PROTOTYPES": "Sisällytä prototyypit"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Uusi suodatin",
+        "NAME": "Suodattimen nimi",
+        "UNNAMED": "Nimetön suodatin",
+        "ALL": "Kaikki",
+        "FROM": "Alkaen",
+        "TO": "Asti",
+        "APPLY": "Käytä suodatinta"
+      },
+      "DETAILS": {
+        "TITLE": "Tilaus",
+        "FIELDS": {
+          "NUMBER": "Tilausnumero",
+          "STATUS": "Tila",
+          "CUSTOMER": "Asiakas",
+          "ORGANIZATION": "Organisaatio",
+          "STORE": "Kauppa",
+          "EMPLOYEE": "Työntekijä",
+          "EMPLOYEE_PLACEHOLDER": "Valitse työntekijä",
+          "CREATED": "Luotu",
+          "DISCOUNT": "Alennus",
+          "APPROVED": "Hyväksytty",
+          "COMMENT": "Kommentti"
+        },
+        "ITEMS": {
+          "TITLE": "Tilausrivit",
+          "IMAGE": "Kuva",
+          "NAME": "Nimi",
+          "SKU": "SKU",
+          "STATUS": "Tila",
+          "QUANTITY": "Määrä",
+          "PRICE": "Hinta",
+          "DISCOUNT": "Alennus",
+          "TAX": "Vero",
+          "TOTAL": "Yhteensä",
+          "SUBTOTAL": "Välisumma",
+          "DISCOUNT_TOTAL": "Alennus",
+          "TAX_TOTAL": "Vero"
+        },
+        "TOTALS": {
+          "TITLE": "Summat",
+          "SUBTOTAL": "Välisumma",
+          "SHIPPING": "Toimitus",
+          "PAYMENT": "Maksukulu",
+          "TAX": "Vero",
+          "FEE": "Kulu",
+          "DISCOUNT": "Alennus",
+          "TOTAL": "Yhteensä"
+        },
+        "ADDRESSES": {
+          "TITLE": "Osoitteet",
+          "MANAGE": "Hallitse"
+        },
+        "TOOLBAR": {
+          "SAVE": "Tallenna",
+          "RESET": "Palauta",
+          "NEW_DOCUMENT": "Uusi asiakirja",
+          "CANCEL_DOCUMENT": "Peruuta asiakirja",
+          "INVOICE": "Lasku",
+          "DELETE": "Poista"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Uusi asiakirja",
+        "TYPE": "Asiakirjatyyppi",
+        "SHIPMENT": "Lähetys",
+        "SHIPMENT_DESCR": "Lähetä osa tilauksen tuotteista tai kaikki",
+        "PAYMENT": "Saapuva maksu",
+        "PAYMENT_DESCR": "Kirjaa tilaukselle maksu"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Tuote",
+        "PRICE_WITH_TAX": "Hinta sis. veron",
+        "DISCOUNT_WITH_TAX": "Alennus sis. veron"
+      },
+      "OPERATION": {
+        "CREATED": "Luotu",
+        "STATUS": "Tila",
+        "PRICE": "Hinta",
+        "PRICE_WITH_TAX": "Hinta sis. veron",
+        "VENDOR": "Toimittaja",
+        "APPROVED": "Hyväksytty",
+        "CANCELLED_STATE": "Peruutus: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Lisää",
+        "EMPTY": "Täällä ei ole vielä mitään",
+        "COLUMNS": {
+          "NUMBER": "Numero",
+          "GATEWAY": "Maksupalvelu",
+          "METHOD": "Toimitustapa",
+          "TRANSACTION": "Tapahtuman ID",
+          "STATUS": "Tila",
+          "CREATED": "Luotu",
+          "AMOUNT": "Summa"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Maksu {number}",
+        "NEW_TITLE": "Uusi maksu",
+        "NUMBER": "Maksun numero",
+        "GATEWAY": "Maksutapa",
+        "AMOUNT": "Summa",
+        "PURPOSE": "Maksun tarkoitus",
+        "CAPTURE": "Veloita maksu",
+        "REFUND": "Hyvitä maksu"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Veloita maksu",
+        "NEW_REFUND": "Hyvitä maksu",
+        "CAPTURE_TITLE": "Veloitus {number}",
+        "REFUND_TITLE": "Hyvitys {number}",
+        "AMOUNT": "Summa",
+        "CAPTURE_DETAILS": "Tiliotteen kuvaus",
+        "MESSAGE": "Syyviesti",
+        "REASON": "Syy",
+        "OUTER_ID": "Ulkoinen ID",
+        "CLOSE_TRANSACTION": "Sulje tapahtuma",
+        "CLOSE_TRANSACTION_HINT": "Estää tähän maksuun kohdistuvat uudet veloitukset"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Tyyppi",
+        "RESPONSE_CODE": "Vastauskoodi"
+      },
+      "SHIPMENT": {
+        "TITLE": "Lähetys {number}",
+        "NEW_TITLE": "Uusi lähetys",
+        "NUMBER": "Lähetysnumero",
+        "METHOD": "Toimitustapa",
+        "METHOD_OPTION": "Toimitustavan vaihtoehto",
+        "FULFILLMENT_CENTER": "Jakelukeskus",
+        "TRACKING_NUMBER": "Seurantanumero",
+        "TRACKING_URL": "Seurannan URL",
+        "DELIVERY_DATE": "Toimituspäivä"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Lisää tuotteita",
+        "REMOVE": "Poista",
+        "SELECT_TITLE": "Valitse tilauksen tuotteet",
+        "AVAILABLE": "Tilattu"
+      },
+      "ADDRESSES": {
+        "TITLE": "Osoite",
+        "NEW_TITLE": "Uusi osoite",
+        "EMPTY": "Ei osoitteita",
+        "ADDRESS": "Osoite",
+        "PERSON": "Nimi",
+        "TYPE": "Osoitteen tyyppi",
+        "DESCRIPTION": "Kuvaus",
+        "FIRST_NAME": "Etunimi",
+        "MIDDLE_NAME": "Toinen nimi",
+        "LAST_NAME": "Sukunimi",
+        "COUNTRY": "Maa",
+        "REGION": "Alue",
+        "CITY": "Kaupunki",
+        "POSTAL_CODE": "Postinumero",
+        "LINE1": "Osoiterivi 1",
+        "LINE2": "Osoiterivi 2",
+        "EMAIL": "Sähköposti",
+        "PHONE": "Puhelin"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Alennuksia ei ole käytetty",
+        "NAME": "Kampanja",
+        "COUPON": "Kuponki",
+        "AMOUNT": "Alennus",
+        "CURRENCY": "Valuutta"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Tälle tyypille ei ole määritetty ominaisuuksia",
+        "LANGUAGE": "Kieli"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Tuotteet",
+        "TEXTS": "Tekstit",
+        "TEXT": "Teksti",
+        "FILES": "Tiedostot",
+        "CONTENT_TYPE": "Tyyppi",
+        "SIZE": "Koko"
+      },
+      "CHANGES": {
+        "EMPTY": "Ei muutoksia",
+        "COLUMNS": {
+          "TYPE": "Toiminto",
+          "DATE": "Päivämäärä",
+          "USER": "Käyttäjä",
+          "DETAIL": "Muutos"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Peruuta asiakirja",
+      "MESSAGE": "Asiakirja merkitään peruutetuksi.",
+      "REASON": "Syy",
+      "REASON_PLACEHOLDER": "Miksi se peruutetaan? (valinnainen)",
+      "CONFIRM": "Vahvista",
+      "BACK": "Takaisin"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Kaksoiskappale",
+      "FRAUDULENT": "Petollinen",
+      "REQUESTEDBYCUSTOMER": "Asiakkaan pyytämä",
+      "OTHER": "Muu"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Muutoksia ei ole tallennettu. Haluatko varmasti sulkea?",
+      "DELETE_CONFIRMATION": "Poistetaanko valitut tilaukset ({count})? Toimintoa ei voi kumota.",
+      "DELETE_ORDER_CONFIRMATION": "Poistetaanko tilaus {number}? Toimintoa ei voi kumota.",
+      "DELETE_OPERATION_CONFIRMATION": "Poistetaanko tämä kohde ({name}) tilauksesta? Se poistetaan, kun tilaus tallennetaan.",
+      "DELETE_ADDRESS_CONFIRMATION": "Poistetaanko tämä osoite?",
+      "CONCURRENCY_CONFLICT": "Joku muu on muuttanut tilausta. Se on ladattu uudelleen; tee muutoksesi uudelleen.",
+      "MEMBER_UNAVAILABLE": "Asiakasnäkymä ei ole vielä käytettävissä tässä hallintapaneelissa.",
+      "MEMBER_NOT_FOUND": "Tähän asiakastiliin ei ole linkitetty yhteyshenkilöä.",
+      "PRODUCT_UNAVAILABLE": "Tuotenäkymä ei ole vielä käytettävissä tässä hallintapaneelissa.",
+      "NOTIFICATIONS_UNAVAILABLE": "Ilmoitusloki ei ole vielä käytettävissä tässä hallintapaneelissa.",
+      "PAYMENT_ACTION_FAILED": "Maksupalvelu hylkäsi pyynnön.",
+      "COPIED": "Kopioitu: {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Kokonaismyynti",
+      "SALES_TRENDS": "Myynnin kehitys",
+      "RECENT_ORDERS": "Viimeisimmät tilaukset",
+      "REVENUE": "Liikevaihto",
+      "ORDERS": "Tilaukset",
+      "AVG_ORDER_VALUE": "Keskimääräinen tilausarvo",
+      "PERIOD": "Jakso",
+      "PERIODS": {
+        "YEAR": "Vuosi",
+        "QUARTER": "Vuosineljännes",
+        "MONTH": "Kuukausi"
+      },
+      "VIEW_ALL": "Näytä kaikki",
+      "NO_ORDERS": "Ei vielä tilauksia",
+      "TO_PROCESS": "Käsiteltävät tilaukset",
+      "WAITING": "Käsittelyä odottavat tilaukset",
+      "NOTHING_TO_PROCESS": "Kaikki tilaukset ovat valmiita tai peruutettuja",
+      "OUTSTANDING_PAYMENTS": "Avoimet maksut",
+      "PAYMENT": "Maksu",
+      "AMOUNT": "Summa",
+      "NO_OUTSTANDING_PAYMENTS": "Ei odottavia maksuja",
+      "FULFILLMENT": "Toimitus",
+      "COMPLETED": "Valmiit",
+      "CANCELLED": "Peruutetut",
+      "COMPLETED_HINT": "Valmiit tilaukset viimeisten 90 päivän {count} tilauksesta",
+      "CANCELLED_HINT": "Peruutetut tilaukset viimeisten 90 päivän {count} tilauksesta"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Tilaukset"
+    }
+  }
+}
