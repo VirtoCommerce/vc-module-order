@@ -1,0 +1,683 @@
+{
+  "orders": {
+    "main-menu-title": "الطلبات",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "طلب {{customer}}",
+        "subtitle": "تحرير تفاصيل الطلب والمستندات المرتبطة به",
+        "labels": {
+          "approved": "معتمد",
+          "employee": "مُسند إلى",
+          "order-number": "رقم طلب العميل",
+          "status": "الحالة",
+          "store": "المتجر",
+          "from": "تاريخ الإنشاء",
+          "channel": "القناة",
+          "customer": "العميل",
+          "organization": "المؤسسة",
+          "invoice": "الحصول على الفاتورة بتنسيق PDF",
+          "withPrototypes": "مع القوالب"
+        },
+        "placeholders": {
+          "employee": "اختر الموظف المسؤول",
+          "status": "اختر...",
+          "store": "اختر...",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "العنصر",
+          "status": "الحالة",
+          "quantity": "الكمية",
+          "available": "المتاح",
+          "await": "قيد الانتظار",
+          "price": "سعر الوحدة",
+          "tax": "الضريبة",
+          "priceWithTax": "سعر الوحدة (شاملًا الضريبة)",
+          "discount": "الخصم",
+          "discountWithTax": "الخصم (شاملًا الضريبة)",
+          "total": "الإجمالي",
+          "dynamic-properties": "الخصائص الديناميكية",
+          "sub-total": "المجموع الفرعي",
+          "discount-total": "الخصم",
+          "tax-total": "الضريبة",
+          "fee-total": "الرسوم",
+          "currency": "العملة"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "اسم المنتج",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-list": {
+        "title": "طلبات العملاء",
+        "labels": {
+          "new-filter": "إضافة عامل تصفية جديد",
+          "unnamed-filter": "تصفية حسب",
+          "today-filter": "اليوم",
+          "last-day-filter": "أمس",
+          "last-week-filter": "آخر أسبوع",
+          "last-month-filter": "آخر شهر",
+          "last-year-filter": "آخر سنة",
+          "number": "رقم الطلب",
+          "customer": "العميل",
+          "confirmed": "مؤكد",
+          "status": "الحالة",
+          "total": "الإجمالي",
+          "currency": "العملة",
+          "store": "المتجر",
+          "created": "تاريخ الإنشاء",
+          "copy-id": "نسخ المعرّف",
+          "copy-number": "نسخ الرقم",
+          "filter-by": "تصفية حسب"
+        },
+        "placeholders": {
+          "select-filter": "اختر عامل تصفية"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "تحرير عامل التصفية",
+        "new-title": "عامل تصفية جديد",
+        "new-subtitle": "إنشاء عامل تصفية جديد",
+        "labels": {
+          "name": "اسم عامل التصفية",
+          "name_": "أدخل اسمًا لعامل التصفية",
+          "criteria": "معايير التصفية",
+          "from": "تاريخ الإنشاء من",
+          "to": "تاريخ الإنشاء إلى"
+        },
+        "placeholders": {
+          "all": "غير محدد"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "التعليقات"
+        }
+      },
+      "payment-detail": {
+        "title": "الدفعة الواردة #{{number}}",
+        "title-new": "دفعة واردة جديدة",
+        "subtitle": "تحرير تفاصيل الدفعة والمستندات المرتبطة بها",
+        "labels": {
+          "approved": "معتمدة",
+          "payment-number": "معرّف الدفعة",
+          "status": "الحالة",
+          "amount": "المبلغ",
+          "from": "التاريخ والوقت",
+          "payment-gateway": "بوابة الدفع",
+          "payment-purpose": "الغرض من الدفعة",
+          "price": "رسوم الدفع",
+          "price-with-tax": "رسوم الدفع (شاملًا الضريبة)",
+          "vendor": "المورّد",
+          "capture-payment": "تحصيل الدفعة",
+          "refund-payment": "استرداد الدفعة"
+        },
+        "placeholders": {
+          "status": "اختر...",
+          "payment-gateway": "اختر...",
+          "vendor": "اختر..."
+        }
+      },
+      "refund-add": {
+        "title": "إنشاء عملية استرداد",
+        "labels": {
+          "amount": "مبلغ الاسترداد",
+          "reasonCode": "سبب الاسترداد",
+          "message": "رسالة الاسترداد",
+          "transactionId": "معرّف المعاملة",
+          "outerId": "المعرّف الخارجي"
+        },
+        "placeholders": {
+          "amount": "أدخل...",
+          "reasonCode": "اختر...",
+          "message": "أدخل...",
+          "transactionId": "أدخل...",
+          "outerId": "أدخل..."
+        }
+      },
+      "refund-details": {
+        "title": "الاسترداد #{{number}}",
+        "subtitle": "تحرير تفاصيل الدفعة والمستندات المرتبطة بها",
+        "labels": {
+          "status": "الحالة",
+          "amount": "المبلغ",
+          "vendor": "المورّد",
+          "reasonCode": "سبب الاسترداد"
+        },
+        "refund-status": {
+          "pending": "قيد الانتظار",
+          "approved": "معتمد",
+          "rejected": "مرفوض",
+          "processed": "تمت المعالجة"
+        },
+        "placeholders": {
+          "status": "اختر...",
+          "vendor": "اختر...",
+          "reasonCode": "اختر..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "معرّف المعاملة",
+          "outerId": "المعرّف الخارجي"
+        }
+      },
+      "capture-add": {
+        "title": "إنشاء عملية تحصيل",
+        "labels": {
+          "amount": "مبلغ التحصيل",
+          "message": "رسالة التحصيل",
+          "transactionId": "معرّف المعاملة",
+          "outerId": "المعرّف الخارجي",
+          "closeTransaction": "إغلاق المعاملة"
+        },
+        "placeholders": {
+          "amount": "أدخل...",
+          "message": "أدخل...",
+          "transactionId": "أدخل...",
+          "outerId": "أدخل..."
+        },
+        "descr": {
+          "closeTransaction": "إغلاق المعاملة ومنع أي عمليات تحصيل لاحقة على هذا الطلب"
+        }
+      },
+      "capture-details": {
+        "title": "التحصيل #{{number}}",
+        "subtitle": "تحرير تفاصيل الدفعة والمستندات المرتبطة بها",
+        "labels": {
+          "amount": "المبلغ",
+          "vendor": "المورّد",
+          "closeTransaction": "إغلاق المعاملة"
+        },
+        "placeholders": {
+          "amount": "أدخل...",
+          "vendor": "اختر..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "معرّف المعاملة",
+          "outerId": "المعرّف الخارجي"
+        }
+      },
+      "customerOrder-item-configuration": {
+        "title": "التهيئة",
+        "labels": {
+          "picture": "الصورة",
+          "quantity": "الكمية",
+          "text": "النص",
+          "product-name": "اسم المنتج",
+          "file-name": "اسم الملف",
+          "file-size": "حجم الملف",
+          "file-content-type": "نوع الملف"
+        },
+        "menu": {
+          "products": {
+            "title": "منتجات التهيئة",
+            "description": "المنتجات التي تتكوّن منها التهيئة"
+          },
+          "texts": {
+            "title": "نصوص التهيئة",
+            "description": "نصوص مخصّصة متنوعة تُستخدم لإنشاء تهيئة فريدة للمنتج"
+          },
+          "files": {
+            "title": "ملفات التهيئة",
+            "description": "ملفات متنوعة تُستخدم لإنشاء تهيئة فريدة للمنتج"
+          }
+        },
+        "description": {
+          "no-configuration": "لا يدعم هذا المنتج التهيئة.",
+          "no-products": "لا تحتوي هذه التهيئة على أي منتجات بعد.",
+          "no-texts": "لا تحتوي هذه التهيئة على أي نصوص بعد.",
+          "no-files": "لا تحتوي هذه التهيئة على أي ملفات بعد."
+        }
+      },
+      "transactions-list": {
+        "title": "معاملات بوابة الدفع",
+        "subtitle": "قائمة بجميع التفاعلات مع بوابة الدفع"
+      },
+      "transaction-detail": {
+        "title": "تفاصيل المعاملة",
+        "subtitle": "بيانات المعاملة الأولية"
+      },
+      "shipment-detail": {
+        "title": "الشحنة #{{number}}",
+        "title-new": "شحنة جديدة",
+        "subtitle": "تحرير تفاصيل الشحنة",
+        "labels": {
+          "shipment-method": "طريقة الشحن",
+          "approved": "معتمدة",
+          "shipment-number": "معرّف الشحنة",
+          "status": "الحالة",
+          "fulfillment-center": "مركز التوزيع",
+          "from": "التاريخ والوقت",
+          "employee": "مُسند إلى",
+          "price": "مبلغ الشحن",
+          "price-with-tax": "مبلغ الشحن شاملًا الضريبة",
+          "shipment-method-option": "طريقة الشحن",
+          "tracking-number": "رقم التتبع",
+          "tracking-url": "عنوان URL للتتبع",
+          "delivery-date": "تاريخ التسليم",
+          "vendor": "المورّد"
+        },
+        "placeholders": {
+          "status": "اختر...",
+          "shipment-method": "اختر...",
+          "fulfillment-center": "اختر مركزًا أو ابحث عنه...",
+          "shipment-method-option": "طريقة الشحن الافتراضية",
+          "vendor": "اختر..."
+        }
+      },
+      "shipment-items": {
+        "title": "بنود {{title}}",
+        "subtitle": "تحرير عناصر الشحنة",
+        "labels": {
+          "item": "العنصر",
+          "status": "الحالة",
+          "quantity": "الكمية",
+          "price": "السعر",
+          "total": "الإجمالي"
+        }
+      },
+      "catalog-items-select": {
+        "title": "إضافة عنصر إلى الطلب"
+      },
+      "newOperation-wizard": {
+        "title": "عملية جديدة",
+        "subtitle": "اختر نوع العملية",
+        "menu": {
+          "shipment-operation": {
+            "description": "مستند شحنة"
+          },
+          "payment-operation": {
+            "description": "مستند دفعة واردة"
+          },
+          "refund-operation": {
+            "description": "مستند استرداد"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "الخصومات",
+        "labels": {
+          "name": "الاسم",
+          "coupon": "القسيمة",
+          "discountAmount": "مبلغ الخصم",
+          "discountAmountWithTax": "مبلغ الخصم شاملًا الضريبة",
+          "currency": "العملة"
+        },
+        "descr": {
+          "no-discounts": "لا توجد أي خصومات لهذا الكيان بعد."
+        }
+      },
+      "address-details": {
+        "labels": {
+          "name": "اسم العنوان",
+          "address-type": "نوع العنوان",
+          "first-name": "الاسم الأول",
+          "middle-name": "الاسم الأوسط",
+          "last-name": "اسم العائلة",
+          "country": "البلد",
+          "region": "المنطقة",
+          "city": "المدينة",
+          "address1": "سطر العنوان 1",
+          "address2": "سطر العنوان 2",
+          "zip-code": "الرمز البريدي",
+          "email": "البريد الإلكتروني",
+          "phone": "الهاتف",
+          "description": "الوصف"
+        },
+        "placeholders": {
+          "address-type": "اختر نوع العنوان...",
+          "first-name": "أدخل الاسم الأول...",
+          "middle-name": "أدخل الاسم الأوسط...",
+          "last-name": "أدخل اسم العائلة...",
+          "country": "اختر البلد...",
+          "region": "اختر المنطقة...",
+          "city": "أدخل المدينة...",
+          "address1": "أدخل سطر العنوان 1...",
+          "address2": "أدخل سطر العنوان 2...",
+          "zip-code": "أدخل الرمز البريدي...",
+          "email": "أدخل البريد الإلكتروني...",
+          "phone": "أدخل رقم الهاتف...",
+          "description": "أدخل الوصف..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "لا توجد عناوين بعد"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "موجز الإشعارات",
+        "subtitle": "موجز إشعارات الطلب"
+      },
+      "customerOrder-address": {
+        "title": "العناوين",
+        "blade-title": "إدارة العناوين"
+      },
+      "customerOrder-items": {
+        "title": "بنود الطلب",
+        "blade-title": "بنود {{title}}",
+        "blade-subtitle": "تحرير بنود الطلب"
+      },
+      "customerOrder-totals": {
+        "sub-total": "المجموع الفرعي",
+        "shipping-total": "إجمالي الشحن",
+        "shipping-sub-total": "المجموع الفرعي للشحن",
+        "payment-sub-total": "المجموع الفرعي للدفع",
+        "tax-total": "إجمالي الضريبة",
+        "fee-total": "إجمالي الرسوم",
+        "discount": "الخصم",
+        "discount-total": "إجمالي الخصم",
+        "discount-total-with-tax": "إجمالي الخصم شاملًا الضريبة",
+        "total": "الإجمالي"
+      },
+      "operation-comment": {
+        "no-comments": "لا توجد تعليقات",
+        "blade-title": "إضافة تعليق"
+      },
+      "shipment-address": {
+        "blade-title": "إدارة عنوان التسليم",
+        "title": "عنوان التسليم"
+      },
+      "shipment-items": {
+        "title": "عناصر الشحنة"
+      },
+      "shipment-totals": {
+        "tax-total": "إجمالي الضريبة",
+        "fee-total": "إجمالي الرسوم",
+        "shipment-total": "إجمالي الشحنة",
+        "shipment-price": "سعر الشحن",
+        "discount-total": "إجمالي الخصم",
+        "total": "الإجمالي"
+      },
+      "payment-totals": {
+        "tax-total": "إجمالي الضريبة",
+        "payment-total": "إجمالي الدفعة",
+        "payment-price": "سعر الدفع",
+        "discount-total": "إجمالي الخصم",
+        "total": "الإجمالي"
+      },
+      "payment-address": {
+        "blade-title": "إدارة عنوان الفوترة",
+        "title": "عنوان الفوترة"
+      },
+      "statistics-templates": {
+        "revenue": "الإيرادات",
+        "customers-with-orders": "العملاء الذين لديهم طلبات",
+        "average-order-value": "متوسط قيمة الطلب",
+        "items-purchased": "العناصر المشتراة",
+        "lines-per-order": "عدد البنود لكل طلب",
+        "revenue-per-customer": "الإيرادات لكل عميل",
+        "title": "إحصاءات الطلبات",
+        "not-authorized": "ليست لديك حاليًا صلاحية الوصول إلى هذه الميزة. تواصل مع مسؤول حسابك للحصول على الصلاحية"
+      },
+      "customerOrder-list": {
+        "title": "الطلبات"
+      },
+      "configuration": {
+        "title": "التهيئة"
+      },
+      "customerOrder-item-discounts": {
+        "title": "الخصومات"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "تم اكتشاف تعارض في التعديل المتزامن",
+        "message": "عدّل مستخدم آخر هذا الطلب. انقر على «موافق» لإعادة تحميل أحدث البيانات ثم حاول مرة أخرى"
+      },
+      "orders-delete": {
+        "title": "تأكيد الحذف",
+        "message": "هل تريد حذف طلبات العملاء المحددة؟",
+        "order": "الطلبات: {{count}}"
+      },
+      "operation-save": {
+        "title": "حفظ التغييرات",
+        "message": "تم تعديل العملية. هل تريد حفظ التغييرات؟"
+      },
+      "operation-delete": {
+        "title": "تأكيد الحذف",
+        "message": "هل تريد حذف العملية «{{name}}»؟"
+      },
+      "operation-cancel": {
+        "title": "إلغاء العملية",
+        "message": "هل تريد إزالة هذا المستند؟",
+        "placeholders": {
+          "reason": "أدخل سبب الإزالة..."
+        }
+      },
+      "payment-capture": {
+        "title": "تأكيد التحصيل",
+        "message": "هل تريد تحصيل دفعة بمبلغ {{amount}}؟"
+      },
+      "address-delete": {
+        "title": "تأكيد الحذف",
+        "message": "هل تريد حذف العنوان «{{name}}»؟"
+      },
+      "address-save": {
+        "title": "حفظ التغييرات",
+        "message": "تم تعديل العنوان. هل تريد حفظ التغييرات؟"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "جديد",
+        "not payed": "غير مدفوع",
+        "pending": "قيد الانتظار",
+        "processing": "قيد المعالجة",
+        "ready to send": "جاهز للإرسال",
+        "cancelled": "ملغى",
+        "partially sent": "مُرسل جزئيًا",
+        "completed": "مكتمل"
+      },
+      "line-item-status": {
+        "pending": "قيد الانتظار",
+        "inprogress": "قيد التنفيذ",
+        "shipped": "تم الشحن",
+        "delivered": "تم التسليم",
+        "cancelled": "ملغى"
+      },
+      "shipment-status": {
+        "new": "جديدة",
+        "pickpack": "الانتقاء والتعبئة",
+        "cancelled": "ملغاة",
+        "readytosend": "جاهزة للإرسال",
+        "sent": "تم الإرسال"
+      },
+      "paymentin-status": {
+        "new": "جديدة",
+        "pending": "قيد الانتظار",
+        "authorized": "مصرّح بها",
+        "paid": "مدفوعة",
+        "partiallyrefunded": "مستردة جزئيًا",
+        "refunded": "مستردة",
+        "voided": "مُبطلة",
+        "custom": "مخصصة",
+        "cancelled": "ملغاة"
+      },
+      "refund-status": {
+        "pending": "قيد الانتظار",
+        "rejected": "مرفوض",
+        "processed": "تمت المعالجة"
+      },
+      "reason-codes": {
+        "duplicate": "مكرر",
+        "fraudulent": "احتيالي",
+        "requestedbycustomer": "بطلب من العميل",
+        "other": "سبب آخر"
+      }
+    },
+    "commands": {
+      "new-document": "مستند جديد",
+      "cancel-document": "إلغاء المستند",
+      "add-selected": "إضافة المحدد",
+      "add-item": "إضافة عنصر"
+    }
+  },
+  "permissions": {
+    "order:read": "عرض البيانات المتعلقة بالطلبات",
+    "order:create": "إنشاء البيانات المتعلقة بالطلبات",
+    "order:update": "تحديث البيانات المتعلقة بالطلبات",
+    "order:delete": "حذف البيانات المتعلقة بالطلبات",
+    "order:access": "الوصول إلى البيانات المتعلقة بالطلبات",
+    "order:read_prices": "عرض أسعار الطلبات",
+    "order:invoice:download": "تنزيل الفاتورة بتنسيق PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "حالات طلبات العملاء",
+      "description": "قائمة الحالات المتاحة لطلبات العملاء"
+    },
+    "Order.InitialStatus": {
+      "title": "الحالة الأولية لطلب العميل",
+      "description": "الحالة الأولية لطلب العميل الجديد"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "الحالة الأولية للطلبات التي لم يكتمل دفعها",
+      "description": "تُستخدم هذه الحالة لكل الطلبات التي لم تتم معالجة الدفع فيها"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "حالات بنود الطلب",
+      "description": "قائمة الحالات المتاحة لبنود الطلب"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "الحالة الأولية لبند الطلب",
+      "description": "الحالة الأولية لبند في طلب عميل جديد"
+    },
+    "Shipment.Status": {
+      "description": "حالات الشحنات",
+      "title": "حالات الشحنات"
+    },
+    "PaymentIn.Status": {
+      "description": "حالات المدفوعات الواردة",
+      "title": "حالات المدفوعات"
+    },
+    "Refund.Status": {
+      "title": "حالات الاسترداد",
+      "description": "حالات عمليات الاسترداد"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم طلب عميل جديد، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم الطلب"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم شحنة جديدة، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم شحنة الطلب"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم دفعة جديدة، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم دفعة الطلب"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "يُستخدم لإنشاء رقم استرداد جديد، بالمعلمات التالية:\n\n0: التاريخ والوقت بتوقيت UTC\n1: العدّاد\n\nيدعم التنسيق خيارات العدّاد مباشرةً داخل القالب بالصيغة التالية:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nالقيم الافتراضية:\n* Daily للمعلمة reset_counter_type. اختر أحد أنواع إعادة تعيين العدّاد: None أو Daily أو Weekly أو Monthly أو Yearly.\n* 1 للمعلمة start_counter_from.\n* 1 للمعلمة counter_increment.\n\nمثال: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nالنتيجة: CO240101-00001.",
+      "title": "قالب رقم استرداد الطلب"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "يرسل إشعارًا عند تغيّر حالة الطلب",
+      "title": "تفعيل الإشعارات للطلبات"
+    },
+    "Order.AdjustInventory": {
+      "description": "يعدّل المخزون عند تغيّر حالة الطلب",
+      "title": "تعديل المخزون للطلبات"
+    },
+    "Order.LogOrderChanges": {
+      "title": "تسجيل تغييرات الطلبات",
+      "description": "يسجّل تغييرات الطلبات في سجل عمليات المنصة"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "الفهرسة المستندة إلى الأحداث لكيانات الطلبات",
+      "description": "أي تغييرات على كيان الطلب ستشغّل مهمة في الخلفية لتطبيق هذه التغييرات على فهرس البحث"
+    },
+    "Order.Validation.Enable": {
+      "title": "التحقق عند حفظ الطلب",
+      "description": "يفعّل التحقق من صحة الطلب عند حفظه"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "تاريخ ووقت فهرسة الطلبات",
+      "description": "تاريخ ووقت آخر مهمة لفهرسة الطلبات"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "استخدام إشعارَي «تم دفع الطلب» و«تم إرسال الطلب»",
+      "description": "استخدام إشعارَي «تم دفع الطلب» و«تم إرسال الطلب»"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "استخدام إشعارات تغيّر حالة المدفوعات/الشحنات",
+      "description": "يُستخدم لإشعارات تغيّر حالة المدفوعات/الشحنات"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "تفعيل فهرسة المنتجات المشتراة",
+      "description": "يفعّل عملية فهرسة المنتجات المشتراة. هذا الإعداد عام"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "الفهرسة المستندة إلى الأحداث للمنتجات المشتراة",
+      "description": "أي تغييرات على كيان الطلب ستشغّل مهمة في الخلفية لإضافة بيانات الشراء إلى فهرس المنتجات"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "تفعيل عامل تصفية المنتجات المشتراة في المتجر",
+      "description": "عرض عامل تصفية المنتجات المشتراة للمتجر"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "حفظ لقطات المنتجات في الطلبات",
+      "description": "يخزّن بيانات المنتج المتسلسلة في بنود الطلب للحفاظ على المعلومات التاريخية"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "الحد الأقصى لعدد المستندات الفرعية لكل طلب",
+      "description": "يحدد الحد الأقصى لعدد المستندات الفرعية (المدفوعات والشحنات وعمليات التحصيل وعمليات الاسترداد وغيرها) التي يمكن إنشاؤها أو تخزينها لكل طلب. يضمن ذلك أداء النظام وتحسين التخزين واتساق البيانات. سيُطرح استثناء عند الحفظ إذا تم تجاوز هذا الحد"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "تفعيل إحصاءات لوحة المعلومات",
+      "description": "تشغيل أدوات إحصاءات الطلبات في لوحة المعلومات الرئيسية أو إيقافها"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "نطاق إحصاءات لوحة المعلومات (بالأشهر)",
+      "description": "يحدد عدد الأشهر المضمّنة في حسابات إحصاءات لوحة المعلومات. القيمة الافتراضية 12 شهرًا"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "تصدير طلبات العملاء واستيرادها مع جميع الكائنات المرتبطة بها (بنود الطلب والشحنات والمدفوعات وغيرها)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "إشعار عند إلغاء الطلب",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني عند إلغاء الطلب"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "فاتورة طلب العميل",
+      "description": "قالب فاتورة طلب العميل المستخدم لإنشاء نسخة PDF"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "إشعار بالحالة الجديدة للطلب",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني عند تغيّر حالة أي طلب"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "إشعار عند إنشاء الطلب",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني بعد إرسال بياناته عبر نموذج في تطبيق الواجهة الأمامية، مثل نموذج «اتصل بنا»"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "إشعار عند دفع الطلب",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني عند اكتمال جميع المدفوعات المتعلقة بالطلب"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "إشعار عند شحن الطلب",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني عند شحن جميع العناصر المطلوبة"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "إشعار عند تغيّر حالة المدفوعات",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني يتضمن جميع حالات المدفوعات التي تغيّرت"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "إشعار عند تغيّر حالة الشحنات",
+      "description": "يتلقى العميل إشعارًا بالبريد الإلكتروني يتضمن جميع حالات الشحنات التي تغيّرت"
+    }
+  }
+}

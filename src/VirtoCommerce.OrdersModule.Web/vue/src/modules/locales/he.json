@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "הזמנות",
+      "COUNTER": "הזמנות חדשות: {count}"
+    },
+    "YES": "כן",
+    "NO": "לא",
+    "WIDGETS": {
+      "PAYMENTS": "תשלומים",
+      "SHIPMENTS": "משלוחים",
+      "CHANGES": "שינויים",
+      "ADDRESSES": "כתובות",
+      "DISCOUNTS": "הנחות",
+      "PROPERTIES": "מאפיינים",
+      "NOTIFICATIONS": "התראות",
+      "CAPTURES": "גביות תשלום",
+      "REFUNDS": "החזרים כספיים",
+      "TRANSACTIONS": "עסקאות",
+      "BILLING_ADDRESS": "כתובת לחיוב",
+      "DELIVERY_ADDRESS": "כתובת למשלוח",
+      "SHIPMENT_ITEMS": "פריטים",
+      "CONFIGURATION": "תצורה",
+      "MEMBER_ORDERS": "הזמנות"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "הזמנות לקוחות",
+        "COLUMNS": {
+          "NUMBER": "מספר הזמנה",
+          "CUSTOMER": "לקוח",
+          "STORE": "חנות",
+          "CREATED_DATE": "תאריך יצירה",
+          "STATUS": "סטטוס",
+          "TOTAL": "סה״כ",
+          "CURRENCY": "מטבע",
+          "CONFIRMED": "מאושרת"
+        },
+        "AMOUNTS": {
+          "subTotal": "סכום ביניים",
+          "subTotalDiscount": "הנחה על פריטים",
+          "subTotalTaxTotal": "מס על פריטים",
+          "shippingTotal": "סה״כ משלוח",
+          "shippingDiscountTotal": "הנחה על משלוח",
+          "paymentTotal": "סה״כ תשלום",
+          "paymentDiscountTotal": "הנחה על תשלום",
+          "discountAmount": "הנחה על ההזמנה",
+          "discountTotal": "סה״כ הנחות",
+          "feeTotal": "סה״כ עמלות",
+          "taxTotal": "סה״כ מס",
+          "sum": "סכום"
+        },
+        "TOOLBAR": {
+          "REFRESH": "רענון",
+          "DELETE": "מחיקה"
+        },
+        "ACTIONS": {
+          "COPY_ID": "העתקת מזהה",
+          "COPY_NUMBER": "העתקת מספר",
+          "FILTER_BY": "סינון לפי \"{value}\""
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "יש לבחור מסנן",
+          "EDIT": "עריכת מסנן",
+          "NEW": "+ מסנן חדש",
+          "TODAY": "היום",
+          "LAST_DAY": "היום האחרון",
+          "LAST_WEEK": "השבוע האחרון",
+          "LAST_MONTH": "החודש האחרון",
+          "LAST_YEAR": "השנה האחרונה"
+        },
+        "EMPTY": "לא נמצאו הזמנות",
+        "FILTERS": {
+          "STATUS": "סטטוס",
+          "STORE": "חנות",
+          "CREATED": "תאריך יצירה",
+          "PROTOTYPES": "אבות טיפוס",
+          "WITH_PROTOTYPES": "הכללת אבות טיפוס"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "מסנן חדש",
+        "NAME": "שם המסנן",
+        "UNNAMED": "מסנן ללא שם",
+        "ALL": "הכול",
+        "FROM": "מתאריך",
+        "TO": "עד תאריך",
+        "APPLY": "החלת המסנן"
+      },
+      "DETAILS": {
+        "TITLE": "הזמנה",
+        "FIELDS": {
+          "NUMBER": "מספר הזמנה",
+          "STATUS": "סטטוס",
+          "CUSTOMER": "לקוח",
+          "ORGANIZATION": "ארגון",
+          "STORE": "חנות",
+          "EMPLOYEE": "עובד",
+          "EMPLOYEE_PLACEHOLDER": "יש לבחור עובד",
+          "CREATED": "תאריך יצירה",
+          "DISCOUNT": "הנחה",
+          "APPROVED": "מאושרת",
+          "COMMENT": "הערה"
+        },
+        "ITEMS": {
+          "TITLE": "פריטי הזמנה",
+          "IMAGE": "תמונה",
+          "NAME": "שם",
+          "SKU": "SKU",
+          "STATUS": "סטטוס",
+          "QUANTITY": "כמות",
+          "PRICE": "מחיר",
+          "DISCOUNT": "הנחה",
+          "TAX": "מס",
+          "TOTAL": "סה״כ",
+          "SUBTOTAL": "סכום ביניים",
+          "DISCOUNT_TOTAL": "הנחה",
+          "TAX_TOTAL": "מס"
+        },
+        "TOTALS": {
+          "TITLE": "סיכומים",
+          "SUBTOTAL": "סכום ביניים",
+          "SHIPPING": "משלוח",
+          "PAYMENT": "עמלת תשלום",
+          "TAX": "מס",
+          "FEE": "עמלה",
+          "DISCOUNT": "הנחה",
+          "TOTAL": "סה״כ"
+        },
+        "ADDRESSES": {
+          "TITLE": "כתובות",
+          "MANAGE": "ניהול"
+        },
+        "TOOLBAR": {
+          "SAVE": "שמירה",
+          "RESET": "איפוס",
+          "NEW_DOCUMENT": "מסמך חדש",
+          "CANCEL_DOCUMENT": "ביטול מסמך",
+          "INVOICE": "חשבונית",
+          "DELETE": "מחיקה"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "מסמך חדש",
+        "TYPE": "סוג מסמך",
+        "SHIPMENT": "משלוח",
+        "SHIPMENT_DESCR": "משלוח של חלק מפריטי ההזמנה או של כולם",
+        "PAYMENT": "תשלום נכנס",
+        "PAYMENT_DESCR": "רישום תשלום עבור ההזמנה"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "מוצר",
+        "PRICE_WITH_TAX": "מחיר כולל מס",
+        "DISCOUNT_WITH_TAX": "הנחה כולל מס"
+      },
+      "OPERATION": {
+        "CREATED": "תאריך יצירה",
+        "STATUS": "סטטוס",
+        "PRICE": "מחיר",
+        "PRICE_WITH_TAX": "מחיר כולל מס",
+        "VENDOR": "ספק",
+        "APPROVED": "מאושר",
+        "CANCELLED_STATE": "ביטול: {state}",
+        "TOOLBAR": {
+          "APPLY": "אישור"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "הוספה",
+        "EMPTY": "אין כאן עדיין כלום",
+        "COLUMNS": {
+          "NUMBER": "מספר",
+          "GATEWAY": "שער תשלום",
+          "METHOD": "שיטת משלוח",
+          "TRANSACTION": "מזהה עסקה",
+          "STATUS": "סטטוס",
+          "CREATED": "תאריך יצירה",
+          "AMOUNT": "סכום"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "תשלום {number}",
+        "NEW_TITLE": "תשלום חדש",
+        "NUMBER": "מספר תשלום",
+        "GATEWAY": "אמצעי תשלום",
+        "AMOUNT": "סכום",
+        "PURPOSE": "מטרת התשלום",
+        "CAPTURE": "גביית תשלום",
+        "REFUND": "החזר כספי"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "גביית תשלום",
+        "NEW_REFUND": "החזר כספי",
+        "CAPTURE_TITLE": "גביית תשלום {number}",
+        "REFUND_TITLE": "החזר כספי {number}",
+        "AMOUNT": "סכום",
+        "CAPTURE_DETAILS": "תיאור בדף החשבון",
+        "MESSAGE": "הודעת סיבה",
+        "REASON": "סיבה",
+        "OUTER_ID": "מזהה חיצוני",
+        "CLOSE_TRANSACTION": "סגירת העסקה",
+        "CLOSE_TRANSACTION_HINT": "מונע גביות נוספות מתשלום זה"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "סוג",
+        "RESPONSE_CODE": "קוד תגובה"
+      },
+      "SHIPMENT": {
+        "TITLE": "משלוח {number}",
+        "NEW_TITLE": "משלוח חדש",
+        "NUMBER": "מספר משלוח",
+        "METHOD": "שיטת משלוח",
+        "METHOD_OPTION": "אפשרות של שיטת המשלוח",
+        "FULFILLMENT_CENTER": "מרכז הפצה",
+        "TRACKING_NUMBER": "מספר מעקב",
+        "TRACKING_URL": "URL למעקב",
+        "DELIVERY_DATE": "תאריך מסירה"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "הוספת פריטים",
+        "REMOVE": "הסרה",
+        "SELECT_TITLE": "בחירת פריטי הזמנה",
+        "AVAILABLE": "כמות שהוזמנה"
+      },
+      "ADDRESSES": {
+        "TITLE": "כתובת",
+        "NEW_TITLE": "כתובת חדשה",
+        "EMPTY": "אין כתובות",
+        "ADDRESS": "כתובת",
+        "PERSON": "שם",
+        "TYPE": "סוג כתובת",
+        "DESCRIPTION": "תיאור",
+        "FIRST_NAME": "שם פרטי",
+        "MIDDLE_NAME": "שם אמצעי",
+        "LAST_NAME": "שם משפחה",
+        "COUNTRY": "מדינה",
+        "REGION": "אזור",
+        "CITY": "עיר",
+        "POSTAL_CODE": "מיקוד",
+        "LINE1": "שורת כתובת 1",
+        "LINE2": "שורת כתובת 2",
+        "EMAIL": "דוא״ל",
+        "PHONE": "טלפון"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "לא הוחלו הנחות",
+        "NAME": "מבצע",
+        "COUPON": "קופון",
+        "AMOUNT": "הנחה",
+        "CURRENCY": "מטבע"
+      },
+      "PROPERTIES": {
+        "EMPTY": "לא הוגדרו מאפיינים לסוג זה",
+        "LANGUAGE": "שפה"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "מוצרים",
+        "TEXTS": "טקסטים",
+        "TEXT": "טקסט",
+        "FILES": "קבצים",
+        "CONTENT_TYPE": "סוג",
+        "SIZE": "גודל"
+      },
+      "CHANGES": {
+        "EMPTY": "אין שינויים",
+        "COLUMNS": {
+          "TYPE": "פעולה",
+          "DATE": "תאריך",
+          "USER": "משתמש",
+          "DETAIL": "שינוי"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "ביטול מסמך",
+      "MESSAGE": "המסמך יסומן כמבוטל.",
+      "REASON": "סיבה",
+      "REASON_PLACEHOLDER": "מה סיבת הביטול? (לא חובה)",
+      "CONFIRM": "אישור",
+      "BACK": "חזרה"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "כפילות",
+      "FRAUDULENT": "הונאה",
+      "REQUESTEDBYCUSTOMER": "לבקשת הלקוח",
+      "OTHER": "אחר"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "יש שינויים שלא נשמרו. האם לסגור בכל זאת?",
+      "DELETE_CONFIRMATION": "האם למחוק את ההזמנות שנבחרו ({count})? לא ניתן לבטל פעולה זו.",
+      "DELETE_ORDER_CONFIRMATION": "האם למחוק את הזמנה {number}? לא ניתן לבטל פעולה זו.",
+      "DELETE_OPERATION_CONFIRMATION": "האם להסיר את הרשומה ({name}) מההזמנה? היא תימחק עם שמירת ההזמנה.",
+      "DELETE_ADDRESS_CONFIRMATION": "האם להסיר את הכתובת?",
+      "CONCURRENCY_CONFLICT": "ההזמנה שונתה על ידי משתמש אחר. היא נטענה מחדש; יש להחיל את השינויים שוב.",
+      "MEMBER_UNAVAILABLE": "מסך הלקוח עדיין אינו זמין בממשק ניהול זה.",
+      "MEMBER_NOT_FOUND": "לא מקושר איש קשר לחשבון לקוח זה.",
+      "PRODUCT_UNAVAILABLE": "מסך המוצר עדיין אינו זמין בממשק ניהול זה.",
+      "NOTIFICATIONS_UNAVAILABLE": "יומן ההתראות עדיין אינו זמין בממשק ניהול זה.",
+      "PAYMENT_ACTION_FAILED": "ספק התשלומים דחה את הבקשה.",
+      "COPIED": "הועתק: {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "סה״כ מכירות",
+      "SALES_TRENDS": "מגמות מכירות",
+      "RECENT_ORDERS": "הזמנות אחרונות",
+      "REVENUE": "הכנסות",
+      "ORDERS": "הזמנות",
+      "AVG_ORDER_VALUE": "ערך הזמנה ממוצע",
+      "PERIOD": "תקופה",
+      "PERIODS": {
+        "YEAR": "שנה",
+        "QUARTER": "רבעון",
+        "MONTH": "חודש"
+      },
+      "VIEW_ALL": "הצגת הכול",
+      "NO_ORDERS": "אין עדיין הזמנות",
+      "TO_PROCESS": "הזמנות לטיפול",
+      "WAITING": "הזמנות שממתינות לטיפול",
+      "NOTHING_TO_PROCESS": "כל ההזמנות הושלמו או בוטלו",
+      "OUTSTANDING_PAYMENTS": "תשלומים פתוחים",
+      "PAYMENT": "תשלום",
+      "AMOUNT": "סכום",
+      "NO_OUTSTANDING_PAYMENTS": "אין תשלומים ממתינים",
+      "FULFILLMENT": "ביצוע הזמנות",
+      "COMPLETED": "הושלמו",
+      "CANCELLED": "בוטלו",
+      "COMPLETED_HINT": "הזמנות שהושלמו, מתוך {count} ב-90 הימים האחרונים",
+      "CANCELLED_HINT": "הזמנות שבוטלו, מתוך {count} ב-90 הימים האחרונים"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "הזמנות"
+    }
+  }
+}

@@ -1,0 +1,683 @@
+{
+  "orders": {
+    "main-menu-title": "Beställningar",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "Beställning från {{customer}}",
+        "subtitle": "Redigera beställningsinformation och relaterade dokument",
+        "labels": {
+          "approved": "Godkänd",
+          "employee": "Tilldelad",
+          "order-number": "Kundbeställningsnummer",
+          "status": "Status",
+          "store": "Butik",
+          "from": "Skapad",
+          "channel": "Kanal",
+          "customer": "Kund",
+          "organization": "Organisation",
+          "invoice": "Hämta faktura som PDF",
+          "withPrototypes": "Med mallar"
+        },
+        "placeholders": {
+          "employee": "Välj ansvarig",
+          "status": "Välj...",
+          "store": "Välj...",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "Artikel",
+          "status": "Status",
+          "quantity": "Kvantitet",
+          "available": "Tillgängligt",
+          "await": "Väntar",
+          "price": "Pris per artikel",
+          "tax": "Skatt",
+          "priceWithTax": "Enhetspris (inkl. skatt)",
+          "discount": "Rabatt",
+          "discountWithTax": "Rabatt (inkl. skatt)",
+          "total": "Totalt",
+          "dynamic-properties": "Dynamiska egenskaper",
+          "sub-total": "Delsumma",
+          "discount-total": "Rabatt",
+          "tax-total": "Skatt",
+          "fee-total": "Avgift",
+          "currency": "Valuta"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Produktnamn",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-list": {
+        "title": "Kundbeställningar",
+        "labels": {
+          "new-filter": "Lägg till nytt filter",
+          "unnamed-filter": "Filtrera på",
+          "today-filter": "Idag",
+          "last-day-filter": "Igår",
+          "last-week-filter": "Senaste veckan",
+          "last-month-filter": "Senaste månaden",
+          "last-year-filter": "Senaste året",
+          "number": "Beställningsnummer",
+          "customer": "Kund",
+          "confirmed": "Bekräftad",
+          "status": "Status",
+          "total": "Totalt",
+          "currency": "Valuta",
+          "store": "Butik",
+          "created": "Skapad",
+          "copy-id": "Kopiera ID",
+          "copy-number": "Kopiera nummer",
+          "filter-by": "Filtrera på"
+        },
+        "placeholders": {
+          "select-filter": "Välj filter"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "Redigera filter",
+        "new-title": "Nytt filter",
+        "new-subtitle": "Skapa nytt filter",
+        "labels": {
+          "name": "Filternamn",
+          "name_": "Namnge filtret",
+          "criteria": "Filtervillkor",
+          "from": "Skapad efter",
+          "to": "Skapad före"
+        },
+        "placeholders": {
+          "all": "Inte angivet"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "Kommentarer"
+        }
+      },
+      "payment-detail": {
+        "title": "Inkommande betalning #{{number}}",
+        "title-new": "Ny inkommande betalning",
+        "subtitle": "Redigera betalningsinformation och relaterade dokument",
+        "labels": {
+          "approved": "Godkänd",
+          "payment-number": "Betalnings-ID",
+          "status": "Status",
+          "amount": "Belopp",
+          "from": "Datum och tid",
+          "payment-gateway": "Betalningsgateway",
+          "payment-purpose": "Betalningens syfte",
+          "price": "Betalningsavgifter",
+          "price-with-tax": "Betalningsavgifter (inkl. skatt)",
+          "vendor": "Leverantör",
+          "capture-payment": "Dra betalning",
+          "refund-payment": "Återbetala betalning"
+        },
+        "placeholders": {
+          "status": "Välj...",
+          "payment-gateway": "Välj...",
+          "vendor": "Välj..."
+        }
+      },
+      "refund-add": {
+        "title": "Skapa återbetalning",
+        "labels": {
+          "amount": "Återbetalningsbelopp",
+          "reasonCode": "Orsak till återbetalning",
+          "message": "Återbetalningsmeddelande",
+          "transactionId": "Transaktions-ID",
+          "outerId": "Yttre ID"
+        },
+        "placeholders": {
+          "amount": "Ange...",
+          "reasonCode": "Välj...",
+          "message": "Ange...",
+          "transactionId": "Ange...",
+          "outerId": "Ange..."
+        }
+      },
+      "refund-details": {
+        "title": "Återbetalning #{{number}}",
+        "subtitle": "Redigera betalningsinformation och relaterade dokument",
+        "labels": {
+          "status": "Status",
+          "amount": "Belopp",
+          "vendor": "Leverantör",
+          "reasonCode": "Orsak till återbetalning"
+        },
+        "refund-status": {
+          "pending": "Väntande",
+          "approved": "Godkänd",
+          "rejected": "Avvisad",
+          "processed": "Behandlad"
+        },
+        "placeholders": {
+          "status": "Välj...",
+          "vendor": "Välj...",
+          "reasonCode": "Välj..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "Transaktions-ID",
+          "outerId": "Yttre ID"
+        }
+      },
+      "capture-add": {
+        "title": "Skapa dragning",
+        "labels": {
+          "amount": "Dragningsbelopp",
+          "message": "Dragningsmeddelande",
+          "transactionId": "Transaktions-ID",
+          "outerId": "Yttre ID",
+          "closeTransaction": "Stäng transaktion"
+        },
+        "placeholders": {
+          "amount": "Ange...",
+          "message": "Ange...",
+          "transactionId": "Ange...",
+          "outerId": "Ange..."
+        },
+        "descr": {
+          "closeTransaction": "Stäng transaktionen så att inga fler dragningar kan göras mot den här beställningen"
+        }
+      },
+      "capture-details": {
+        "title": "Dragning #{{number}}",
+        "subtitle": "Redigera betalningsinformation och relaterade dokument",
+        "labels": {
+          "amount": "Belopp",
+          "vendor": "Leverantör",
+          "closeTransaction": "Stäng transaktion"
+        },
+        "placeholders": {
+          "amount": "Ange...",
+          "vendor": "Välj..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Transaktions-ID",
+          "outerId": "Yttre ID"
+        }
+      },
+      "customerOrder-item-configuration": {
+        "title": "Konfiguration",
+        "labels": {
+          "picture": "Bild",
+          "quantity": "Kvantitet",
+          "text": "Text",
+          "product-name": "Produktnamn",
+          "file-name": "Filnamn",
+          "file-size": "Filstorlek",
+          "file-content-type": "Filtyp"
+        },
+        "menu": {
+          "products": {
+            "title": "Konfigurationsprodukter",
+            "description": "Produkter som ingår i konfigurationen"
+          },
+          "texts": {
+            "title": "Konfigurationstexter",
+            "description": "Anpassade texter som används för att skapa en unik produktkonfiguration"
+          },
+          "files": {
+            "title": "Konfigurationsfiler",
+            "description": "Filer som används för att skapa en unik produktkonfiguration"
+          }
+        },
+        "description": {
+          "no-configuration": "Den här produkten stöder inte konfiguration.",
+          "no-products": "Den här konfigurationen har inga produkter ännu.",
+          "no-texts": "Den här konfigurationen har inga texter ännu.",
+          "no-files": "Den här konfigurationen har inga filer ännu."
+        }
+      },
+      "transactions-list": {
+        "title": "Transaktioner i betalningsgatewayen",
+        "subtitle": "Alla interaktioner med betalningsgatewayen"
+      },
+      "transaction-detail": {
+        "title": "Transaktionsinformation",
+        "subtitle": "Rå transaktionsdata"
+      },
+      "shipment-detail": {
+        "title": "Leverans #{{number}}",
+        "title-new": "Ny leverans",
+        "subtitle": "Redigera leveransinformation",
+        "labels": {
+          "shipment-method": "Leveranssätt",
+          "approved": "Godkänd",
+          "shipment-number": "Leverans-ID",
+          "status": "Status",
+          "fulfillment-center": "Distributionscenter",
+          "from": "Datum och tid",
+          "employee": "Tilldelad",
+          "price": "Fraktbelopp",
+          "price-with-tax": "Fraktbelopp inkl. skatt",
+          "shipment-method-option": "Leveranssätt",
+          "tracking-number": "Spårningsnummer",
+          "tracking-url": "Spårnings-URL",
+          "delivery-date": "Leveransdatum",
+          "vendor": "Leverantör"
+        },
+        "placeholders": {
+          "status": "Välj...",
+          "shipment-method": "Välj...",
+          "fulfillment-center": "Välj eller sök efter ett center...",
+          "shipment-method-option": "Standardleveranssätt",
+          "vendor": "Välj..."
+        }
+      },
+      "shipment-items": {
+        "title": "{{title}}: orderrader",
+        "subtitle": "Redigera leveransens artiklar",
+        "labels": {
+          "item": "Artikel",
+          "status": "Status",
+          "quantity": "Kvantitet",
+          "price": "Pris",
+          "total": "Totalt"
+        }
+      },
+      "catalog-items-select": {
+        "title": "Lägg till artikel i beställningen"
+      },
+      "newOperation-wizard": {
+        "title": "Ny åtgärd",
+        "subtitle": "Välj typ av åtgärd",
+        "menu": {
+          "shipment-operation": {
+            "description": "Leveransdokument"
+          },
+          "payment-operation": {
+            "description": "Dokument för inkommande betalning"
+          },
+          "refund-operation": {
+            "description": "Återbetalningsdokument"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatter",
+        "labels": {
+          "name": "Namn",
+          "coupon": "Kupong",
+          "discountAmount": "Rabattbelopp",
+          "discountAmountWithTax": "Rabattbelopp inkl. skatt",
+          "currency": "Valuta"
+        },
+        "descr": {
+          "no-discounts": "Det här objektet har inga rabatter ännu."
+        }
+      },
+      "address-details": {
+        "labels": {
+          "name": "Adressnamn",
+          "address-type": "Adresstyp",
+          "first-name": "Förnamn",
+          "middle-name": "Mellannamn",
+          "last-name": "Efternamn",
+          "country": "Land",
+          "region": "Region",
+          "city": "Ort",
+          "address1": "Adressrad 1",
+          "address2": "Adressrad 2",
+          "zip-code": "Postnummer",
+          "email": "E-post",
+          "phone": "Telefon",
+          "description": "Beskrivning"
+        },
+        "placeholders": {
+          "address-type": "Välj adresstyp...",
+          "first-name": "Ange förnamn...",
+          "middle-name": "Ange mellannamn...",
+          "last-name": "Ange efternamn...",
+          "country": "Välj land...",
+          "region": "Välj region...",
+          "city": "Ange ort...",
+          "address1": "Ange adressrad 1...",
+          "address2": "Ange adressrad 2...",
+          "zip-code": "Ange postnummer...",
+          "email": "Ange e-post...",
+          "phone": "Ange telefonnummer...",
+          "description": "Ange beskrivning..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "Inga adresser ännu"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "Aviseringsflöde",
+        "subtitle": "Beställningens aviseringsflöde"
+      },
+      "customerOrder-address": {
+        "title": "Adresser",
+        "blade-title": "Hantera adresser"
+      },
+      "customerOrder-items": {
+        "title": "Orderrader",
+        "blade-title": "{{title}}: orderrader",
+        "blade-subtitle": "Redigera orderrader"
+      },
+      "customerOrder-totals": {
+        "sub-total": "Delsumma",
+        "shipping-total": "Frakt totalt",
+        "shipping-sub-total": "Delsumma frakt",
+        "payment-sub-total": "Delsumma betalning",
+        "tax-total": "Skatt totalt",
+        "fee-total": "Avgifter totalt",
+        "discount": "Rabatt",
+        "discount-total": "Rabatt totalt",
+        "discount-total-with-tax": "Rabatt totalt inkl. skatt",
+        "total": "Totalt"
+      },
+      "operation-comment": {
+        "no-comments": "Inga kommentarer",
+        "blade-title": "Lämna en kommentar"
+      },
+      "shipment-address": {
+        "blade-title": "Hantera leveransadress",
+        "title": "Leveransadress"
+      },
+      "shipment-items": {
+        "title": "Leveransens artiklar"
+      },
+      "shipment-totals": {
+        "tax-total": "Skatt totalt",
+        "fee-total": "Avgifter totalt",
+        "shipment-total": "Leverans totalt",
+        "shipment-price": "Fraktpris",
+        "discount-total": "Rabatt totalt",
+        "total": "Totalt"
+      },
+      "payment-totals": {
+        "tax-total": "Skatt totalt",
+        "payment-total": "Betalning totalt",
+        "payment-price": "Betalningspris",
+        "discount-total": "Rabatt totalt",
+        "total": "Totalt"
+      },
+      "payment-address": {
+        "blade-title": "Hantera faktureringsadress",
+        "title": "Faktureringsadress"
+      },
+      "statistics-templates": {
+        "revenue": "Intäkter",
+        "customers-with-orders": "Kunder med beställningar",
+        "average-order-value": "Genomsnittligt ordervärde",
+        "items-purchased": "Köpta artiklar",
+        "lines-per-order": "Rader per beställning",
+        "revenue-per-customer": "Intäkter per kund",
+        "title": "Beställningsstatistik",
+        "not-authorized": "Du har för närvarande inte åtkomst till den här funktionen. Kontakta kontoadministratören för att få åtkomst"
+      },
+      "customerOrder-list": {
+        "title": "Beställningar"
+      },
+      "configuration": {
+        "title": "Konfiguration"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatter"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Samtidighetskonflikt upptäckt",
+        "message": "Beställningen har ändrats av en annan användare. Klicka på OK för att läsa in de senaste uppgifterna och försök igen"
+      },
+      "orders-delete": {
+        "title": "Bekräfta borttagning",
+        "message": "Vill du verkligen ta bort de markerade kundbeställningarna?",
+        "order": "{{count}} beställning(ar)"
+      },
+      "operation-save": {
+        "title": "Spara ändringar",
+        "message": "Åtgärden har ändrats. Vill du spara ändringarna?"
+      },
+      "operation-delete": {
+        "title": "Bekräfta borttagning",
+        "message": "Vill du verkligen ta bort åtgärden '{{name}}'?"
+      },
+      "operation-cancel": {
+        "title": "Annullera åtgärd",
+        "message": "Vill du verkligen ta bort det här dokumentet?",
+        "placeholders": {
+          "reason": "Ange orsaken till borttagningen..."
+        }
+      },
+      "payment-capture": {
+        "title": "Bekräfta dragning",
+        "message": "Vill du verkligen dra betalningen på {{amount}}?"
+      },
+      "address-delete": {
+        "title": "Bekräfta borttagning",
+        "message": "Vill du verkligen ta bort adressen '{{name}}'?"
+      },
+      "address-save": {
+        "title": "Spara ändringar",
+        "message": "Adressen har ändrats. Vill du spara ändringarna?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "Ny",
+        "not payed": "Ej betald",
+        "pending": "Väntande",
+        "processing": "Bearbetas",
+        "ready to send": "Klar att skicka",
+        "cancelled": "Annullerad",
+        "partially sent": "Delvis skickad",
+        "completed": "Slutförd"
+      },
+      "line-item-status": {
+        "pending": "Väntande",
+        "inprogress": "Pågår",
+        "shipped": "Skickad",
+        "delivered": "Levererad",
+        "cancelled": "Annullerad"
+      },
+      "shipment-status": {
+        "new": "Ny",
+        "pickpack": "Plock och pack",
+        "cancelled": "Annullerad",
+        "readytosend": "Klar att skicka",
+        "sent": "Skickad"
+      },
+      "paymentin-status": {
+        "new": "Ny",
+        "pending": "Väntande",
+        "authorized": "Auktoriserad",
+        "paid": "Betald",
+        "partiallyrefunded": "Delvis återbetald",
+        "refunded": "Återbetald",
+        "voided": "Ogiltigförklarad",
+        "custom": "Anpassad",
+        "cancelled": "Annullerad"
+      },
+      "refund-status": {
+        "pending": "Väntande",
+        "rejected": "Avvisad",
+        "processed": "Behandlad"
+      },
+      "reason-codes": {
+        "duplicate": "Dubblett",
+        "fraudulent": "Bedrägligt",
+        "requestedbycustomer": "Begärt av kunden",
+        "other": "Annat"
+      }
+    },
+    "commands": {
+      "new-document": "Nytt dokument",
+      "cancel-document": "Annullera dokument",
+      "add-selected": "Lägg till markerade",
+      "add-item": "Lägg till artikel"
+    }
+  },
+  "permissions": {
+    "order:read": "Visa beställningsrelaterade data",
+    "order:create": "Skapa beställningsrelaterade data",
+    "order:update": "Uppdatera beställningsrelaterade data",
+    "order:delete": "Ta bort beställningsrelaterade data",
+    "order:access": "Åtkomst till beställningsrelaterade data",
+    "order:read_prices": "Visa beställningspriser",
+    "order:invoice:download": "Ladda ned faktura som PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Statusar för kundbeställningar",
+      "description": "Lista över tillgängliga statusar för kundbeställningar"
+    },
+    "Order.InitialStatus": {
+      "title": "Startstatus för kundbeställningar",
+      "description": "Startstatusen för en ny kundbeställning"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Startstatus för beställningar med avbruten betalning",
+      "description": "Den här statusen används för alla beställningar där betalningen inte behandlades"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Statusar för orderrader",
+      "description": "Lista över tillgängliga statusar för orderrader"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Startstatus för orderrader",
+      "description": "Startstatusen för en orderrad i en ny kundbeställning"
+    },
+    "Shipment.Status": {
+      "description": "Statusar för leveranser",
+      "title": "Statusar för leveranser"
+    },
+    "PaymentIn.Status": {
+      "description": "Statusar för inkommande betalningar",
+      "title": "Betalningsstatusar"
+    },
+    "Refund.Status": {
+      "title": "Återbetalningsstatusar",
+      "description": "Återbetalningsstatusar"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Används för att generera nya kundbeställningsnummer, med parametrar:\n\n0: Datum och tid i UTC\n1: Räknare\n\nFormatet stöder räknaralternativ direkt i mallen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardvärden:\n* Daily för reset_counter_type. Välj mellan återställningstyperna None, Daily, Weekly, Monthly och Yearly.\n* 1 för start_counter_from.\n* 1 för counter_increment.\n\nExempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mall för beställningsnummer"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Används för att generera nya leveransnummer, med parametrar:\n\n0: Datum och tid i UTC\n1: Räknare\n\nFormatet stöder räknaralternativ direkt i mallen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardvärden:\n* Daily för reset_counter_type. Välj mellan återställningstyperna None, Daily, Weekly, Monthly och Yearly.\n* 1 för start_counter_from.\n* 1 för counter_increment.\n\nExempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mall för leveransnummer"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Används för att generera nya betalningsnummer, med parametrar:\n\n0: Datum och tid i UTC\n1: Räknare\n\nFormatet stöder räknaralternativ direkt i mallen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardvärden:\n* Daily för reset_counter_type. Välj mellan återställningstyperna None, Daily, Weekly, Monthly och Yearly.\n* 1 för start_counter_from.\n* 1 för counter_increment.\n\nExempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mall för betalningsnummer"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Används för att generera nya återbetalningsnummer, med parametrar:\n\n0: Datum och tid i UTC\n1: Räknare\n\nFormatet stöder räknaralternativ direkt i mallen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardvärden:\n* Daily för reset_counter_type. Välj mellan återställningstyperna None, Daily, Weekly, Monthly och Yearly.\n* 1 för start_counter_from.\n* 1 för counter_increment.\n\nExempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mall för återbetalningsnummer"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Skickar en avisering när beställningens status ändras",
+      "title": "Aktivera aviseringar för beställningar"
+    },
+    "Order.AdjustInventory": {
+      "description": "Justerar lagersaldot när beställningens status ändras",
+      "title": "Justera lagersaldo för beställningar"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Logga beställningsändringar",
+      "description": "Loggar beställningsändringar i plattformens åtgärdslogg"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Händelsebaserad indexering av beställningar",
+      "description": "Alla ändringar i kundentiteten startar en bakgrundsuppgift som uppdaterar sökindexet med ändringarna"
+    },
+    "Order.Validation.Enable": {
+      "title": "Validering vid sparande av beställningar",
+      "description": "Aktiverar validering när en beställning sparas"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Datum och tid för indexering av beställningar",
+      "description": "Datum och tid för den senaste indexeringsuppgiften för beställningar"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Använd aviseringar om betald och skickad beställning",
+      "description": "Använd aviseringar om betald och skickad beställning"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Använd aviseringar om ändrad status för betalningar/leveranser",
+      "description": "Används för aviseringar om statusändringar för betalningar/leveranser"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Aktivera indexering av köpta produkter",
+      "description": "Aktiverar indexeringen av köpta produkter. Den här inställningen är global"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Händelsebaserad indexering av köpta produkter",
+      "description": "Alla ändringar i beställningen startar en bakgrundsuppgift som lägger till köpdata i produktindexet"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Aktivera butiksfilter för köpta produkter",
+      "description": "Visa filtret för köpta produkter i butiken"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Spara produktögonblicksbilder i beställningar",
+      "description": "Lagrar serialiserade produktdata i orderrader för att bevara historisk information"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Högsta antal underordnade dokument per beställning",
+      "description": "Anger högsta antal underordnade dokument (betalningar, leveranser, dragningar, återbetalningar osv.) som kan skapas eller lagras per beställning. Detta säkerställer systemets prestanda, optimerad lagring och datakonsistens. Ett undantag utlöses vid sparande om gränsen överskrids"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Aktivera statistik på instrumentpanelen",
+      "description": "Aktiverar eller inaktiverar widgetarna för beställningsstatistik på huvudinstrumentpanelen"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Period för statistik på instrumentpanelen (månader)",
+      "description": "Anger hur många månader som ingår i beräkningen av statistiken på instrumentpanelen. Standard är 12 månader"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Export/import av kundbeställningar med alla relaterade objekt (orderrader, leveranser, betalningar osv.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Avisering om annullerad beställning",
+      "description": "Kunden får en avisering via e-post när en beställning annulleras"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Faktura för kundbeställning",
+      "description": "Mall för faktura för kundbeställning som används för att generera PDF-versionen"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Avisering om ny beställningsstatus",
+      "description": "Kunden får en avisering via e-post när statusen för en beställning ändras"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Avisering om skapad beställning",
+      "description": "Kunden får en avisering via e-post efter att ha skickat in sina uppgifter via ett formulär i Frontend-applikationen, t.ex. via kontaktformuläret"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Avisering om betalning av beställning",
+      "description": "Kunden får en avisering via e-post när alla betalningar för en beställning har slutförts"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Avisering om skickad beställning",
+      "description": "Kunden får en avisering via e-post när alla beställda artiklar har skickats"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Avisering om ändrad betalningsstatus",
+      "description": "Kunden får en avisering via e-post med alla ändrade betalningsstatusar"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Avisering om ändrad leveransstatus",
+      "description": "Kunden får en avisering via e-post med alla ändrade leveransstatusar"
+    }
+  }
+}

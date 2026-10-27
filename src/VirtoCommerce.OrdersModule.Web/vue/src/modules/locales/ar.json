@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "الطلبات",
+      "COUNTER": "الطلبات الجديدة: {count}"
+    },
+    "YES": "نعم",
+    "NO": "لا",
+    "WIDGETS": {
+      "PAYMENTS": "المدفوعات",
+      "SHIPMENTS": "الشحنات",
+      "CHANGES": "التغييرات",
+      "ADDRESSES": "العناوين",
+      "DISCOUNTS": "الخصومات",
+      "PROPERTIES": "الخصائص",
+      "NOTIFICATIONS": "الإشعارات",
+      "CAPTURES": "عمليات التحصيل",
+      "REFUNDS": "عمليات الاسترداد",
+      "TRANSACTIONS": "المعاملات",
+      "BILLING_ADDRESS": "عنوان الفوترة",
+      "DELIVERY_ADDRESS": "عنوان التسليم",
+      "SHIPMENT_ITEMS": "العناصر",
+      "CONFIGURATION": "التهيئة",
+      "MEMBER_ORDERS": "الطلبات"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "طلبات العملاء",
+        "COLUMNS": {
+          "NUMBER": "رقم الطلب",
+          "CUSTOMER": "العميل",
+          "STORE": "المتجر",
+          "CREATED_DATE": "تاريخ الإنشاء",
+          "STATUS": "الحالة",
+          "TOTAL": "الإجمالي",
+          "CURRENCY": "العملة",
+          "CONFIRMED": "مؤكد"
+        },
+        "AMOUNTS": {
+          "subTotal": "المجموع الفرعي",
+          "subTotalDiscount": "خصم العناصر",
+          "subTotalTaxTotal": "ضريبة العناصر",
+          "shippingTotal": "إجمالي الشحن",
+          "shippingDiscountTotal": "خصم الشحن",
+          "paymentTotal": "إجمالي الدفع",
+          "paymentDiscountTotal": "خصم الدفع",
+          "discountAmount": "خصم الطلب",
+          "discountTotal": "إجمالي الخصم",
+          "feeTotal": "إجمالي الرسوم",
+          "taxTotal": "إجمالي الضريبة",
+          "sum": "المجموع"
+        },
+        "TOOLBAR": {
+          "REFRESH": "تحديث",
+          "DELETE": "حذف"
+        },
+        "ACTIONS": {
+          "COPY_ID": "نسخ المعرّف",
+          "COPY_NUMBER": "نسخ الرقم",
+          "FILTER_BY": "تصفية حسب «{value}»"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "اختر عامل تصفية",
+          "EDIT": "تحرير عامل التصفية",
+          "NEW": "+ عامل تصفية جديد",
+          "TODAY": "اليوم",
+          "LAST_DAY": "آخر يوم",
+          "LAST_WEEK": "آخر أسبوع",
+          "LAST_MONTH": "آخر شهر",
+          "LAST_YEAR": "آخر سنة"
+        },
+        "EMPTY": "لم يتم العثور على طلبات",
+        "FILTERS": {
+          "STATUS": "الحالة",
+          "STORE": "المتجر",
+          "CREATED": "تاريخ الإنشاء",
+          "PROTOTYPES": "النماذج الأولية",
+          "WITH_PROTOTYPES": "تضمين النماذج الأولية"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "عامل تصفية جديد",
+        "NAME": "اسم عامل التصفية",
+        "UNNAMED": "عامل تصفية بلا اسم",
+        "ALL": "الكل",
+        "FROM": "من",
+        "TO": "إلى",
+        "APPLY": "تطبيق عامل التصفية"
+      },
+      "DETAILS": {
+        "TITLE": "الطلب",
+        "FIELDS": {
+          "NUMBER": "رقم الطلب",
+          "STATUS": "الحالة",
+          "CUSTOMER": "العميل",
+          "ORGANIZATION": "المؤسسة",
+          "STORE": "المتجر",
+          "EMPLOYEE": "الموظف",
+          "EMPLOYEE_PLACEHOLDER": "اختر موظفًا",
+          "CREATED": "تاريخ الإنشاء",
+          "DISCOUNT": "الخصم",
+          "APPROVED": "معتمد",
+          "COMMENT": "التعليق"
+        },
+        "ITEMS": {
+          "TITLE": "بنود الطلب",
+          "IMAGE": "الصورة",
+          "NAME": "الاسم",
+          "SKU": "SKU",
+          "STATUS": "الحالة",
+          "QUANTITY": "الكمية",
+          "PRICE": "السعر",
+          "DISCOUNT": "الخصم",
+          "TAX": "الضريبة",
+          "TOTAL": "الإجمالي",
+          "SUBTOTAL": "المجموع الفرعي",
+          "DISCOUNT_TOTAL": "الخصم",
+          "TAX_TOTAL": "الضريبة"
+        },
+        "TOTALS": {
+          "TITLE": "الإجماليات",
+          "SUBTOTAL": "المجموع الفرعي",
+          "SHIPPING": "الشحن",
+          "PAYMENT": "رسوم الدفع",
+          "TAX": "الضريبة",
+          "FEE": "الرسوم",
+          "DISCOUNT": "الخصم",
+          "TOTAL": "الإجمالي"
+        },
+        "ADDRESSES": {
+          "TITLE": "العناوين",
+          "MANAGE": "إدارة"
+        },
+        "TOOLBAR": {
+          "SAVE": "حفظ",
+          "RESET": "إعادة تعيين",
+          "NEW_DOCUMENT": "مستند جديد",
+          "CANCEL_DOCUMENT": "إلغاء المستند",
+          "INVOICE": "الفاتورة",
+          "DELETE": "حذف"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "مستند جديد",
+        "TYPE": "نوع المستند",
+        "SHIPMENT": "شحنة",
+        "SHIPMENT_DESCR": "اشحن بعض عناصر الطلب أو كلها",
+        "PAYMENT": "دفعة واردة",
+        "PAYMENT_DESCR": "سجّل دفعة للطلب"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "المنتج",
+        "PRICE_WITH_TAX": "السعر شاملًا الضريبة",
+        "DISCOUNT_WITH_TAX": "الخصم شاملًا الضريبة"
+      },
+      "OPERATION": {
+        "CREATED": "تاريخ الإنشاء",
+        "STATUS": "الحالة",
+        "PRICE": "السعر",
+        "PRICE_WITH_TAX": "السعر شاملًا الضريبة",
+        "VENDOR": "المورّد",
+        "APPROVED": "معتمد",
+        "CANCELLED_STATE": "الإلغاء: {state}",
+        "TOOLBAR": {
+          "APPLY": "موافق"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "إضافة",
+        "EMPTY": "لا يوجد شيء هنا بعد",
+        "COLUMNS": {
+          "NUMBER": "الرقم",
+          "GATEWAY": "بوابة الدفع",
+          "METHOD": "طريقة الشحن",
+          "TRANSACTION": "معرّف المعاملة",
+          "STATUS": "الحالة",
+          "CREATED": "تاريخ الإنشاء",
+          "AMOUNT": "المبلغ"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "الدفعة {number}",
+        "NEW_TITLE": "دفعة جديدة",
+        "NUMBER": "رقم الدفعة",
+        "GATEWAY": "طريقة الدفع",
+        "AMOUNT": "المبلغ",
+        "PURPOSE": "الغرض من الدفعة",
+        "CAPTURE": "تحصيل الدفعة",
+        "REFUND": "استرداد الدفعة"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "تحصيل الدفعة",
+        "NEW_REFUND": "استرداد الدفعة",
+        "CAPTURE_TITLE": "التحصيل {number}",
+        "REFUND_TITLE": "الاسترداد {number}",
+        "AMOUNT": "المبلغ",
+        "CAPTURE_DETAILS": "الوصف في كشف الحساب",
+        "MESSAGE": "رسالة السبب",
+        "REASON": "السبب",
+        "OUTER_ID": "المعرّف الخارجي",
+        "CLOSE_TRANSACTION": "إغلاق المعاملة",
+        "CLOSE_TRANSACTION_HINT": "يمنع أي عمليات تحصيل أخرى على هذه الدفعة"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "النوع",
+        "RESPONSE_CODE": "رمز الاستجابة"
+      },
+      "SHIPMENT": {
+        "TITLE": "الشحنة {number}",
+        "NEW_TITLE": "شحنة جديدة",
+        "NUMBER": "رقم الشحنة",
+        "METHOD": "طريقة الشحن",
+        "METHOD_OPTION": "خيار طريقة الشحن",
+        "FULFILLMENT_CENTER": "مركز التوزيع",
+        "TRACKING_NUMBER": "رقم التتبع",
+        "TRACKING_URL": "عنوان URL للتتبع",
+        "DELIVERY_DATE": "تاريخ التسليم"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "إضافة عناصر",
+        "REMOVE": "إزالة",
+        "SELECT_TITLE": "اختيار عناصر الطلب",
+        "AVAILABLE": "الكمية المطلوبة"
+      },
+      "ADDRESSES": {
+        "TITLE": "العنوان",
+        "NEW_TITLE": "عنوان جديد",
+        "EMPTY": "لا توجد عناوين",
+        "ADDRESS": "العنوان",
+        "PERSON": "الاسم",
+        "TYPE": "نوع العنوان",
+        "DESCRIPTION": "الوصف",
+        "FIRST_NAME": "الاسم الأول",
+        "MIDDLE_NAME": "الاسم الأوسط",
+        "LAST_NAME": "اسم العائلة",
+        "COUNTRY": "البلد",
+        "REGION": "المنطقة",
+        "CITY": "المدينة",
+        "POSTAL_CODE": "الرمز البريدي",
+        "LINE1": "سطر العنوان 1",
+        "LINE2": "سطر العنوان 2",
+        "EMAIL": "البريد الإلكتروني",
+        "PHONE": "الهاتف"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "لم تُطبَّق أي خصومات",
+        "NAME": "العرض الترويجي",
+        "COUPON": "القسيمة",
+        "AMOUNT": "الخصم",
+        "CURRENCY": "العملة"
+      },
+      "PROPERTIES": {
+        "EMPTY": "لا توجد خصائص معرّفة لهذا النوع",
+        "LANGUAGE": "اللغة"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "المنتجات",
+        "TEXTS": "النصوص",
+        "TEXT": "النص",
+        "FILES": "الملفات",
+        "CONTENT_TYPE": "النوع",
+        "SIZE": "الحجم"
+      },
+      "CHANGES": {
+        "EMPTY": "لا توجد تغييرات",
+        "COLUMNS": {
+          "TYPE": "العملية",
+          "DATE": "التاريخ",
+          "USER": "المستخدم",
+          "DETAIL": "التغيير"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "إلغاء المستند",
+      "MESSAGE": "سيتم وضع علامة «ملغى» على المستند.",
+      "REASON": "السبب",
+      "REASON_PLACEHOLDER": "لماذا تم إلغاؤه؟ (اختياري)",
+      "CONFIRM": "تأكيد",
+      "BACK": "رجوع"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "مكرر",
+      "FRAUDULENT": "احتيالي",
+      "REQUESTEDBYCUSTOMER": "بطلب من العميل",
+      "OTHER": "سبب آخر"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "لديك تغييرات غير محفوظة. هل تريد الإغلاق بالتأكيد؟",
+      "DELETE_CONFIRMATION": "هل تريد حذف الطلبات ({count})؟ لا يمكن التراجع عن هذا الإجراء.",
+      "DELETE_ORDER_CONFIRMATION": "هل تريد حذف الطلب {number}؟ لا يمكن التراجع عن هذا الإجراء.",
+      "DELETE_OPERATION_CONFIRMATION": "هل تريد إزالة {name} من الطلب؟ يتم الحذف عند حفظ الطلب.",
+      "DELETE_ADDRESS_CONFIRMATION": "هل تريد إزالة هذا العنوان؟",
+      "CONCURRENCY_CONFLICT": "غيّر شخص آخر هذا الطلب. تمت إعادة تحميله، فطبّق تغييراتك مرة أخرى.",
+      "MEMBER_UNAVAILABLE": "شاشة العميل غير متاحة في لوحة الإدارة هذه بعد.",
+      "MEMBER_NOT_FOUND": "لا توجد جهة اتصال مرتبطة بحساب العميل هذا.",
+      "PRODUCT_UNAVAILABLE": "شاشة المنتج غير متاحة في لوحة الإدارة هذه بعد.",
+      "NOTIFICATIONS_UNAVAILABLE": "سجل الإشعارات غير متاح في لوحة الإدارة هذه بعد.",
+      "PAYMENT_ACTION_FAILED": "رفض مزوّد الدفع هذا الإجراء.",
+      "COPIED": "تم نسخ {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "إجمالي المبيعات",
+      "SALES_TRENDS": "اتجاهات المبيعات",
+      "RECENT_ORDERS": "الطلبات الأخيرة",
+      "REVENUE": "الإيرادات",
+      "ORDERS": "الطلبات",
+      "AVG_ORDER_VALUE": "متوسط قيمة الطلب",
+      "PERIOD": "الفترة",
+      "PERIODS": {
+        "YEAR": "سنة",
+        "QUARTER": "ربع سنة",
+        "MONTH": "شهر"
+      },
+      "VIEW_ALL": "عرض الكل",
+      "NO_ORDERS": "لا توجد طلبات بعد",
+      "TO_PROCESS": "طلبات للمعالجة",
+      "WAITING": "طلبات بانتظار المعالجة",
+      "NOTHING_TO_PROCESS": "كل الطلبات مكتملة أو ملغاة",
+      "OUTSTANDING_PAYMENTS": "المدفوعات المستحقة",
+      "PAYMENT": "الدفعة",
+      "AMOUNT": "المبلغ",
+      "NO_OUTSTANDING_PAYMENTS": "لا توجد مدفوعات بانتظار السداد",
+      "FULFILLMENT": "التنفيذ",
+      "COMPLETED": "مكتملة",
+      "CANCELLED": "ملغاة",
+      "COMPLETED_HINT": "الطلبات المكتملة من أصل {count} خلال آخر 90 يومًا",
+      "CANCELLED_HINT": "الطلبات الملغاة من أصل {count} خلال آخر 90 يومًا"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "الطلبات"
+    }
+  }
+}

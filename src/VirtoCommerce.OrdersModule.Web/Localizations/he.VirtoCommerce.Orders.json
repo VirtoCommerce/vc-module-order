@@ -1,0 +1,683 @@
+{
+  "orders": {
+    "main-menu-title": "הזמנות",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "ההזמנה של {{customer}}",
+        "subtitle": "עריכת פרטי ההזמנה והמסמכים הקשורים",
+        "labels": {
+          "approved": "מאושרת",
+          "employee": "עובד מטפל",
+          "order-number": "מספר הזמנת לקוח",
+          "status": "סטטוס",
+          "store": "חנות",
+          "from": "תאריך יצירה",
+          "channel": "ערוץ",
+          "customer": "לקוח",
+          "organization": "ארגון",
+          "invoice": "הורדת חשבונית PDF",
+          "withPrototypes": "כולל תבניות"
+        },
+        "placeholders": {
+          "employee": "יש לבחור עובד מטפל",
+          "status": "יש לבחור...",
+          "store": "יש לבחור...",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "פריט",
+          "status": "סטטוס",
+          "quantity": "כמות",
+          "available": "זמין",
+          "await": "ממתין",
+          "price": "מחיר ליחידה",
+          "tax": "מס",
+          "priceWithTax": "מחיר ליחידה (כולל מס)",
+          "discount": "הנחה",
+          "discountWithTax": "הנחה (כולל מס)",
+          "total": "סה״כ",
+          "dynamic-properties": "מאפיינים דינמיים",
+          "sub-total": "סכום ביניים",
+          "discount-total": "הנחה",
+          "tax-total": "מס",
+          "fee-total": "עמלה",
+          "currency": "מטבע"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "שם המוצר",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-list": {
+        "title": "הזמנות לקוחות",
+        "labels": {
+          "new-filter": "הוספת מסנן חדש",
+          "unnamed-filter": "סינון לפי",
+          "today-filter": "היום",
+          "last-day-filter": "אתמול",
+          "last-week-filter": "השבוע האחרון",
+          "last-month-filter": "החודש האחרון",
+          "last-year-filter": "השנה האחרונה",
+          "number": "מספר הזמנה",
+          "customer": "לקוח",
+          "confirmed": "מאושרת",
+          "status": "סטטוס",
+          "total": "סה״כ",
+          "currency": "מטבע",
+          "store": "חנות",
+          "created": "תאריך יצירה",
+          "copy-id": "העתקת מזהה",
+          "copy-number": "העתקת מספר",
+          "filter-by": "סינון לפי"
+        },
+        "placeholders": {
+          "select-filter": "יש לבחור מסנן"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "עריכת מסנן",
+        "new-title": "מסנן חדש",
+        "new-subtitle": "יצירת מסנן חדש",
+        "labels": {
+          "name": "שם המסנן",
+          "name_": "יש לתת שם למסנן",
+          "criteria": "קריטריוני סינון",
+          "from": "תאריך יצירה מ-",
+          "to": "תאריך יצירה עד"
+        },
+        "placeholders": {
+          "all": "לא צוין"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "הערות"
+        }
+      },
+      "payment-detail": {
+        "title": "תשלום נכנס #{{number}}",
+        "title-new": "תשלום נכנס חדש",
+        "subtitle": "עריכת פרטי התשלום והמסמכים הקשורים",
+        "labels": {
+          "approved": "מאושר",
+          "payment-number": "מזהה תשלום",
+          "status": "סטטוס",
+          "amount": "סכום",
+          "from": "תאריך ושעה",
+          "payment-gateway": "שער תשלום",
+          "payment-purpose": "מטרת התשלום",
+          "price": "עמלות תשלום",
+          "price-with-tax": "עמלות תשלום (כולל מס)",
+          "vendor": "ספק",
+          "capture-payment": "גביית תשלום",
+          "refund-payment": "החזר כספי"
+        },
+        "placeholders": {
+          "status": "יש לבחור...",
+          "payment-gateway": "יש לבחור...",
+          "vendor": "יש לבחור..."
+        }
+      },
+      "refund-add": {
+        "title": "יצירת החזר כספי",
+        "labels": {
+          "amount": "סכום ההחזר",
+          "reasonCode": "סיבת ההחזר",
+          "message": "הודעת החזר",
+          "transactionId": "מזהה עסקה",
+          "outerId": "מזהה חיצוני"
+        },
+        "placeholders": {
+          "amount": "יש להזין...",
+          "reasonCode": "יש לבחור...",
+          "message": "יש להזין...",
+          "transactionId": "יש להזין...",
+          "outerId": "יש להזין..."
+        }
+      },
+      "refund-details": {
+        "title": "החזר כספי #{{number}}",
+        "subtitle": "עריכת פרטי התשלום והמסמכים הקשורים",
+        "labels": {
+          "status": "סטטוס",
+          "amount": "סכום",
+          "vendor": "ספק",
+          "reasonCode": "סיבת ההחזר"
+        },
+        "refund-status": {
+          "pending": "ממתין",
+          "approved": "מאושר",
+          "rejected": "נדחה",
+          "processed": "טופל"
+        },
+        "placeholders": {
+          "status": "יש לבחור...",
+          "vendor": "יש לבחור...",
+          "reasonCode": "יש לבחור..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "מזהה עסקה",
+          "outerId": "מזהה חיצוני"
+        }
+      },
+      "capture-add": {
+        "title": "יצירת גביית תשלום",
+        "labels": {
+          "amount": "סכום הגבייה",
+          "message": "הודעת גבייה",
+          "transactionId": "מזהה עסקה",
+          "outerId": "מזהה חיצוני",
+          "closeTransaction": "סגירת העסקה"
+        },
+        "placeholders": {
+          "amount": "יש להזין...",
+          "message": "יש להזין...",
+          "transactionId": "יש להזין...",
+          "outerId": "יש להזין..."
+        },
+        "descr": {
+          "closeTransaction": "סגירת העסקה ומניעת גביות נוספות עבור הזמנה זו"
+        }
+      },
+      "capture-details": {
+        "title": "גביית תשלום #{{number}}",
+        "subtitle": "עריכת פרטי התשלום והמסמכים הקשורים",
+        "labels": {
+          "amount": "סכום",
+          "vendor": "ספק",
+          "closeTransaction": "סגירת העסקה"
+        },
+        "placeholders": {
+          "amount": "יש להזין...",
+          "vendor": "יש לבחור..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "מזהה עסקה",
+          "outerId": "מזהה חיצוני"
+        }
+      },
+      "customerOrder-item-configuration": {
+        "title": "תצורה",
+        "labels": {
+          "picture": "תמונה",
+          "quantity": "כמות",
+          "text": "טקסט",
+          "product-name": "שם המוצר",
+          "file-name": "שם הקובץ",
+          "file-size": "גודל הקובץ",
+          "file-content-type": "סוג הקובץ"
+        },
+        "menu": {
+          "products": {
+            "title": "מוצרי התצורה",
+            "description": "המוצרים שמרכיבים את התצורה"
+          },
+          "texts": {
+            "title": "טקסטים של התצורה",
+            "description": "טקסטים מותאמים שונים המשמשים ליצירת תצורת מוצר ייחודית"
+          },
+          "files": {
+            "title": "קבצי התצורה",
+            "description": "קבצים שונים המשמשים ליצירת תצורת מוצר ייחודית"
+          }
+        },
+        "description": {
+          "no-configuration": "מוצר זה אינו תומך בתצורה.",
+          "no-products": "אין עדיין מוצרים בתצורה זו.",
+          "no-texts": "אין עדיין טקסטים בתצורה זו.",
+          "no-files": "אין עדיין קבצים בתצורה זו."
+        }
+      },
+      "transactions-list": {
+        "title": "עסקאות שער התשלום",
+        "subtitle": "רשימת כל הפעולות מול שער התשלום"
+      },
+      "transaction-detail": {
+        "title": "פרטי העסקה",
+        "subtitle": "נתוני העסקה הגולמיים"
+      },
+      "shipment-detail": {
+        "title": "משלוח #{{number}}",
+        "title-new": "משלוח חדש",
+        "subtitle": "עריכת פרטי המשלוח",
+        "labels": {
+          "shipment-method": "שיטת משלוח",
+          "approved": "מאושר",
+          "shipment-number": "מזהה משלוח",
+          "status": "סטטוס",
+          "fulfillment-center": "מרכז הפצה",
+          "from": "תאריך ושעה",
+          "employee": "עובד מטפל",
+          "price": "סכום המשלוח",
+          "price-with-tax": "סכום המשלוח כולל מס",
+          "shipment-method-option": "שיטת משלוח",
+          "tracking-number": "מספר מעקב",
+          "tracking-url": "URL למעקב",
+          "delivery-date": "תאריך מסירה",
+          "vendor": "ספק"
+        },
+        "placeholders": {
+          "status": "יש לבחור...",
+          "shipment-method": "יש לבחור...",
+          "fulfillment-center": "יש לבחור מרכז או לחפש...",
+          "shipment-method-option": "שיטת משלוח ברירת מחדל",
+          "vendor": "יש לבחור..."
+        }
+      },
+      "shipment-items": {
+        "title": "פריטי {{title}}",
+        "subtitle": "עריכת פריטי המשלוח",
+        "labels": {
+          "item": "פריט",
+          "status": "סטטוס",
+          "quantity": "כמות",
+          "price": "מחיר",
+          "total": "סה״כ"
+        }
+      },
+      "catalog-items-select": {
+        "title": "הוספת פריט להזמנה"
+      },
+      "newOperation-wizard": {
+        "title": "פעולה חדשה",
+        "subtitle": "יש לבחור סוג פעולה",
+        "menu": {
+          "shipment-operation": {
+            "description": "מסמך משלוח"
+          },
+          "payment-operation": {
+            "description": "מסמך תשלום נכנס"
+          },
+          "refund-operation": {
+            "description": "מסמך החזר כספי"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "הנחות",
+        "labels": {
+          "name": "שם",
+          "coupon": "קופון",
+          "discountAmount": "סכום ההנחה",
+          "discountAmountWithTax": "סכום ההנחה כולל מס",
+          "currency": "מטבע"
+        },
+        "descr": {
+          "no-discounts": "אין עדיין הנחות עבור ישות זו."
+        }
+      },
+      "address-details": {
+        "labels": {
+          "name": "שם הכתובת",
+          "address-type": "סוג כתובת",
+          "first-name": "שם פרטי",
+          "middle-name": "שם אמצעי",
+          "last-name": "שם משפחה",
+          "country": "מדינה",
+          "region": "אזור",
+          "city": "עיר",
+          "address1": "שורת כתובת 1",
+          "address2": "שורת כתובת 2",
+          "zip-code": "מיקוד",
+          "email": "דוא״ל",
+          "phone": "טלפון",
+          "description": "תיאור"
+        },
+        "placeholders": {
+          "address-type": "יש לבחור סוג כתובת...",
+          "first-name": "יש להזין שם פרטי...",
+          "middle-name": "יש להזין שם אמצעי...",
+          "last-name": "יש להזין שם משפחה...",
+          "country": "יש לבחור מדינה...",
+          "region": "יש לבחור אזור...",
+          "city": "יש להזין עיר...",
+          "address1": "יש להזין שורת כתובת 1...",
+          "address2": "יש להזין שורת כתובת 2...",
+          "zip-code": "יש להזין מיקוד...",
+          "email": "יש להזין דוא״ל...",
+          "phone": "יש להזין טלפון...",
+          "description": "יש להזין תיאור..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "אין עדיין כתובות"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "פיד התראות",
+        "subtitle": "פיד ההתראות של ההזמנה"
+      },
+      "customerOrder-address": {
+        "title": "כתובות",
+        "blade-title": "ניהול כתובות"
+      },
+      "customerOrder-items": {
+        "title": "פריטי הזמנה",
+        "blade-title": "פריטי {{title}}",
+        "blade-subtitle": "עריכת פריטי ההזמנה"
+      },
+      "customerOrder-totals": {
+        "sub-total": "סכום ביניים",
+        "shipping-total": "סה״כ משלוח",
+        "shipping-sub-total": "סכום ביניים למשלוח",
+        "payment-sub-total": "סכום ביניים לתשלום",
+        "tax-total": "סה״כ מס",
+        "fee-total": "סה״כ עמלות",
+        "discount": "הנחה",
+        "discount-total": "סה״כ הנחות",
+        "discount-total-with-tax": "סה״כ הנחות כולל מס",
+        "total": "סה״כ"
+      },
+      "operation-comment": {
+        "no-comments": "אין הערות",
+        "blade-title": "הוספת הערה"
+      },
+      "shipment-address": {
+        "blade-title": "ניהול כתובת למשלוח",
+        "title": "כתובת למשלוח"
+      },
+      "shipment-items": {
+        "title": "פריטי המשלוח"
+      },
+      "shipment-totals": {
+        "tax-total": "סה״כ מס",
+        "fee-total": "סה״כ עמלות",
+        "shipment-total": "סה״כ משלוח",
+        "shipment-price": "מחיר המשלוח",
+        "discount-total": "סה״כ הנחות",
+        "total": "סה״כ"
+      },
+      "payment-totals": {
+        "tax-total": "סה״כ מס",
+        "payment-total": "סה״כ תשלום",
+        "payment-price": "מחיר התשלום",
+        "discount-total": "סה״כ הנחות",
+        "total": "סה״כ"
+      },
+      "payment-address": {
+        "blade-title": "ניהול כתובת לחיוב",
+        "title": "כתובת לחיוב"
+      },
+      "statistics-templates": {
+        "revenue": "הכנסות",
+        "customers-with-orders": "לקוחות עם הזמנות",
+        "average-order-value": "ערך הזמנה ממוצע",
+        "items-purchased": "פריטים שנרכשו",
+        "lines-per-order": "שורות להזמנה",
+        "revenue-per-customer": "הכנסה ללקוח",
+        "title": "סטטיסטיקות הזמנות",
+        "not-authorized": "אין כרגע גישה לתכונה זו. לקבלת גישה יש לפנות למנהל החשבון"
+      },
+      "customerOrder-list": {
+        "title": "הזמנות"
+      },
+      "configuration": {
+        "title": "תצורה"
+      },
+      "customerOrder-item-discounts": {
+        "title": "הנחות"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "זוהתה התנגשות בעריכה מקבילה",
+        "message": "ההזמנה שונתה על ידי משתמש אחר. יש ללחוץ על 'אישור' כדי לטעון מחדש את הנתונים העדכניים ולנסות שוב"
+      },
+      "orders-delete": {
+        "title": "אישור מחיקה",
+        "message": "האם למחוק את הזמנות הלקוחות שנבחרו?",
+        "order": "הזמנות: {{count}}"
+      },
+      "operation-save": {
+        "title": "שמירת שינויים",
+        "message": "הפעולה שונתה. האם לשמור את השינויים?"
+      },
+      "operation-delete": {
+        "title": "אישור מחיקה",
+        "message": "האם למחוק את הפעולה '{{name}}'?"
+      },
+      "operation-cancel": {
+        "title": "ביטול פעולה",
+        "message": "האם להסיר את המסמך?",
+        "placeholders": {
+          "reason": "יש להזין את סיבת ההסרה..."
+        }
+      },
+      "payment-capture": {
+        "title": "אישור גבייה",
+        "message": "האם לגבות תשלום בסך {{amount}}?"
+      },
+      "address-delete": {
+        "title": "אישור מחיקה",
+        "message": "האם למחוק את הכתובת '{{name}}'?"
+      },
+      "address-save": {
+        "title": "שמירת שינויים",
+        "message": "הכתובת שונתה. האם לשמור את השינויים?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "חדשה",
+        "not payed": "לא שולמה",
+        "pending": "ממתינה",
+        "processing": "בטיפול",
+        "ready to send": "מוכנה למשלוח",
+        "cancelled": "בוטלה",
+        "partially sent": "נשלחה חלקית",
+        "completed": "הושלמה"
+      },
+      "line-item-status": {
+        "pending": "ממתין",
+        "inprogress": "בתהליך",
+        "shipped": "נשלח",
+        "delivered": "נמסר",
+        "cancelled": "בוטל"
+      },
+      "shipment-status": {
+        "new": "חדש",
+        "pickpack": "ליקוט ואריזה",
+        "cancelled": "בוטל",
+        "readytosend": "מוכן למשלוח",
+        "sent": "נשלח"
+      },
+      "paymentin-status": {
+        "new": "חדש",
+        "pending": "ממתין",
+        "authorized": "מאושר",
+        "paid": "שולם",
+        "partiallyrefunded": "הוחזר חלקית",
+        "refunded": "הוחזר",
+        "voided": "בטל",
+        "custom": "מותאם אישית",
+        "cancelled": "בוטל"
+      },
+      "refund-status": {
+        "pending": "ממתין",
+        "rejected": "נדחה",
+        "processed": "טופל"
+      },
+      "reason-codes": {
+        "duplicate": "כפילות",
+        "fraudulent": "הונאה",
+        "requestedbycustomer": "לבקשת הלקוח",
+        "other": "אחר"
+      }
+    },
+    "commands": {
+      "new-document": "מסמך חדש",
+      "cancel-document": "ביטול מסמך",
+      "add-selected": "הוספת הנבחרים",
+      "add-item": "הוספת פריט"
+    }
+  },
+  "permissions": {
+    "order:read": "צפייה בנתונים הקשורים להזמנות",
+    "order:create": "יצירת נתונים הקשורים להזמנות",
+    "order:update": "עדכון נתונים הקשורים להזמנות",
+    "order:delete": "מחיקת נתונים הקשורים להזמנות",
+    "order:access": "גישה לנתונים הקשורים להזמנות",
+    "order:read_prices": "צפייה במחירי הזמנות",
+    "order:invoice:download": "הורדת חשבונית PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "סטטוסי הזמנות לקוח",
+      "description": "רשימת הסטטוסים הזמינים להזמנות לקוח"
+    },
+    "Order.InitialStatus": {
+      "title": "סטטוס התחלתי של הזמנת לקוח",
+      "description": "הסטטוס ההתחלתי של הזמנת לקוח חדשה"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "סטטוס התחלתי להזמנות שהתשלום שלהן הופסק",
+      "description": "סטטוס זה משמש לכל ההזמנות שהתשלום שלהן לא טופל"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "סטטוסי פריטי שורה",
+      "description": "רשימת הסטטוסים הזמינים לפריטי שורה בהזמנה"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "סטטוס התחלתי של פריט שורה",
+      "description": "הסטטוס ההתחלתי של פריט שורה בהזמנת לקוח חדשה"
+    },
+    "Shipment.Status": {
+      "description": "סטטוסי משלוחים",
+      "title": "סטטוסי משלוחים"
+    },
+    "PaymentIn.Status": {
+      "description": "סטטוסי תשלומים נכנסים",
+      "title": "סטטוסי תשלומים"
+    },
+    "Refund.Status": {
+      "title": "סטטוסי החזרים כספיים",
+      "description": "סטטוסי החזרים כספיים"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש להזמנת לקוח, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר הזמנה"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש למשלוח, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר משלוח של הזמנה"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש לתשלום, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר תשלום של הזמנה"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "משמשת ליצירת מספר חדש להחזר כספי, עם הפרמטרים:\n\n0: תאריך ושעה ב-UTC\n1: מונה\n\nהפורמט תומך באפשרויות מונה ישירות בתוך התבנית, בפורמט:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nערכי ברירת מחדל:\n* Daily עבור reset_counter_type. ניתן לבחור מבין סוגי איפוס המונה None, Daily, Weekly, Monthly ו-Yearly.\n* 1 עבור start_counter_from.\n* 1 עבור counter_increment.\n\nדוגמה: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nתוצאה: CO240101-00001.",
+      "title": "תבנית מספר החזר כספי של הזמנה"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "שליחת התראה כאשר סטטוס ההזמנה משתנה",
+      "title": "הפעלת התראות להזמנות"
+    },
+    "Order.AdjustInventory": {
+      "description": "עדכון המלאי כאשר סטטוס ההזמנה משתנה",
+      "title": "התאמת המלאי להזמנות"
+    },
+    "Order.LogOrderChanges": {
+      "title": "רישום שינויים בהזמנות",
+      "description": "רישום השינויים בהזמנות ביומן הפעולות של הפלטפורמה"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "אינדוקס מבוסס אירועים עבור ישויות הזמנה",
+      "description": "כל שינוי בישות הלקוח יפעיל משימת רקע שתחיל את השינויים על אינדקס החיפוש"
+    },
+    "Order.Validation.Enable": {
+      "title": "אימות בעת שמירת הזמנה",
+      "description": "הפעלת אימות בעת שמירת הזמנה"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "תאריך ושעת אינדוקס הזמנות",
+      "description": "התאריך והשעה של משימת אינדוקס ההזמנות האחרונה"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "שימוש בהתראות 'הזמנה שולמה' ו'הזמנה נשלחה'",
+      "description": "שימוש בהתראות 'הזמנה שולמה' ו'הזמנה נשלחה'"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "שימוש בהתראות על שינוי סטטוס של תשלומים/משלוחים",
+      "description": "שימוש בהתראות על שינוי סטטוס של תשלומים/משלוחים"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "הפעלת אינדוקס של מוצרים שנרכשו",
+      "description": "הפעלת תהליך האינדוקס של מוצרים שנרכשו. הגדרה זו היא גלובלית"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "אינדוקס מבוסס אירועים של מוצרים שנרכשו",
+      "description": "כל שינוי בישות ההזמנה יפעיל משימת רקע שתוסיף נתוני רכישה לאינדקס המוצרים"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "הפעלת מסנן מוצרים שנרכשו בחנות",
+      "description": "הצגת המסנן של מוצרים שנרכשו עבור החנות"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "שמירת תמונות מצב של מוצרים בהזמנות",
+      "description": "שמירת נתוני המוצר לאחר סריאליזציה בפריטי השורה של ההזמנה, כדי לשמר מידע היסטורי"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "מספר מרבי של מסמכי משנה להזמנה",
+      "description": "מגדיר את המספר המרבי של מסמכי משנה (תשלומים, משלוחים, חיובים, החזרים כספיים וכו') שניתן ליצור או לשמור לכל הזמנה. הדבר מבטיח את ביצועי המערכת, אופטימיזציה של האחסון ועקביות הנתונים. חריגה מהמגבלה תגרום לחריגה (exception) בעת השמירה"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "הפעלת סטטיסטיקות בלוח הבקרה",
+      "description": "הפעלה או השבתה של וידג'טים של סטטיסטיקות הזמנות בלוח הבקרה הראשי"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "טווח הסטטיסטיקות בלוח הבקרה (חודשים)",
+      "description": "מגדיר את מספר החודשים שייכללו בחישובי הסטטיסטיקות בלוח הבקרה. ברירת המחדל היא 12 חודשים"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "ייצוא וייבוא של הזמנות לקוחות עם כל האובייקטים הקשורים (פריטי שורה, משלוחים, תשלומים וכו')"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "התראה על הזמנה שבוטלה",
+      "description": "הלקוח מקבל התראה בדוא״ל כאשר הזמנה מבוטלת"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "חשבונית להזמנת לקוח",
+      "description": "תבנית לחשבונית של הזמנת לקוח, המשמשת ליצירת גרסת PDF"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "התראה על סטטוס הזמנה חדש",
+      "description": "הלקוח מקבל התראה בדוא״ל כאשר הסטטוס של הזמנה כלשהי משתנה"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "התראה על יצירת הזמנה",
+      "description": "הלקוח מקבל התראה בדוא״ל לאחר שליחת הפרטים בטופס באפליקציית החזית, למשל בטופס 'צור קשר'"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "התראה על תשלום הזמנה",
+      "description": "הלקוח מקבל התראה בדוא״ל כאשר כל התשלומים הקשורים להזמנה הושלמו"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "התראה על הזמנה שנשלחה",
+      "description": "הלקוח מקבל התראה בדוא״ל כאשר כל הפריטים שהוזמנו נשלחו"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "התראה על שינוי סטטוס תשלומים",
+      "description": "הלקוח מקבל התראה בדוא״ל עם כל סטטוסי התשלומים שהשתנו"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "התראה על שינוי סטטוס משלוחים",
+      "description": "הלקוח מקבל התראה בדוא״ל עם כל סטטוסי המשלוחים שהשתנו"
+    }
+  }
+}
