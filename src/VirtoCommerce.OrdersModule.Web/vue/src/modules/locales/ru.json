@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Заказы",
+      "COUNTER": "Новые заказы: {count}"
+    },
+    "YES": "Да",
+    "NO": "Нет",
+    "WIDGETS": {
+      "PAYMENTS": "Платежи",
+      "SHIPMENTS": "Отправки",
+      "CHANGES": "Изменения",
+      "ADDRESSES": "Адреса",
+      "DISCOUNTS": "Скидки",
+      "PROPERTIES": "Свойства",
+      "NOTIFICATIONS": "Уведомления",
+      "CAPTURES": "Захваты",
+      "REFUNDS": "Возвраты",
+      "TRANSACTIONS": "Транзакции",
+      "BILLING_ADDRESS": "Платежный адрес",
+      "DELIVERY_ADDRESS": "Адрес доставки",
+      "SHIPMENT_ITEMS": "Позиции",
+      "CONFIGURATION": "Конфигурация",
+      "MEMBER_ORDERS": "Заказы"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Заказы клиентов",
+        "COLUMNS": {
+          "NUMBER": "Номер заказа",
+          "CUSTOMER": "Клиент",
+          "STORE": "Магазин",
+          "CREATED_DATE": "Создан",
+          "STATUS": "Статус",
+          "TOTAL": "Итого",
+          "CURRENCY": "Валюта",
+          "CONFIRMED": "Подтвержден"
+        },
+        "AMOUNTS": {
+          "subTotal": "Подытог",
+          "subTotalDiscount": "Скидка на позиции",
+          "subTotalTaxTotal": "Налог на позиции",
+          "shippingTotal": "Итого доставка",
+          "shippingDiscountTotal": "Скидка на доставку",
+          "paymentTotal": "Итого оплата",
+          "paymentDiscountTotal": "Скидка на оплату",
+          "discountAmount": "Скидка на заказ",
+          "discountTotal": "Итого скидки",
+          "feeTotal": "Итого комиссии",
+          "taxTotal": "Итого налоги",
+          "sum": "Сумма"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Обновить",
+          "DELETE": "Удалить"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Копировать ID",
+          "COPY_NUMBER": "Копировать номер",
+          "FILTER_BY": "Фильтровать по «{value}»"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Выберите фильтр",
+          "EDIT": "Редактировать фильтр",
+          "NEW": "+ Новый фильтр",
+          "TODAY": "Сегодня",
+          "LAST_DAY": "Последний день",
+          "LAST_WEEK": "Последняя неделя",
+          "LAST_MONTH": "Последний месяц",
+          "LAST_YEAR": "Последний год"
+        },
+        "EMPTY": "Заказы не найдены",
+        "FILTERS": {
+          "STATUS": "Статус",
+          "STORE": "Магазин",
+          "CREATED": "Создан",
+          "PROTOTYPES": "Прототипы",
+          "WITH_PROTOTYPES": "Включить прототипы"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Новый фильтр",
+        "NAME": "Имя фильтра",
+        "UNNAMED": "Фильтр без имени",
+        "ALL": "Все",
+        "FROM": "С",
+        "TO": "По",
+        "APPLY": "Применить фильтр"
+      },
+      "DETAILS": {
+        "TITLE": "Заказ",
+        "FIELDS": {
+          "NUMBER": "Номер заказа",
+          "STATUS": "Статус",
+          "CUSTOMER": "Клиент",
+          "ORGANIZATION": "Организация",
+          "STORE": "Магазин",
+          "EMPLOYEE": "Сотрудник",
+          "EMPLOYEE_PLACEHOLDER": "Выберите сотрудника",
+          "CREATED": "Создан",
+          "DISCOUNT": "Скидка",
+          "APPROVED": "Утвержден",
+          "COMMENT": "Комментарий"
+        },
+        "ITEMS": {
+          "TITLE": "Позиции",
+          "IMAGE": "Изображение",
+          "NAME": "Название",
+          "SKU": "SKU",
+          "STATUS": "Статус",
+          "QUANTITY": "Количество",
+          "PRICE": "Цена",
+          "DISCOUNT": "Скидка",
+          "TAX": "Налог",
+          "TOTAL": "Итого",
+          "SUBTOTAL": "Подытог",
+          "DISCOUNT_TOTAL": "Скидка",
+          "TAX_TOTAL": "Налог"
+        },
+        "TOTALS": {
+          "TITLE": "Итоги",
+          "SUBTOTAL": "Подытог",
+          "SHIPPING": "Доставка",
+          "PAYMENT": "Комиссия за оплату",
+          "TAX": "Налог",
+          "FEE": "Комиссия",
+          "DISCOUNT": "Скидка",
+          "TOTAL": "Итого"
+        },
+        "ADDRESSES": {
+          "TITLE": "Адреса",
+          "MANAGE": "Управлять"
+        },
+        "TOOLBAR": {
+          "SAVE": "Сохранить",
+          "RESET": "Сбросить",
+          "NEW_DOCUMENT": "Новый документ",
+          "CANCEL_DOCUMENT": "Отменить документ",
+          "INVOICE": "Счет",
+          "DELETE": "Удалить"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Новый документ",
+        "TYPE": "Тип документа",
+        "SHIPMENT": "Отправка",
+        "SHIPMENT_DESCR": "Отправить часть или все позиции заказа",
+        "PAYMENT": "Входящий платеж",
+        "PAYMENT_DESCR": "Зарегистрировать платеж по заказу"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Продукт",
+        "PRICE_WITH_TAX": "Цена с налогом",
+        "DISCOUNT_WITH_TAX": "Скидка с налогом"
+      },
+      "OPERATION": {
+        "CREATED": "Создано",
+        "STATUS": "Статус",
+        "PRICE": "Цена",
+        "PRICE_WITH_TAX": "Цена с налогом",
+        "VENDOR": "Поставщик",
+        "APPROVED": "Утверждено",
+        "CANCELLED_STATE": "Отмена: {state}",
+        "TOOLBAR": {
+          "APPLY": "ОК"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Добавить",
+        "EMPTY": "Здесь пока ничего нет",
+        "COLUMNS": {
+          "NUMBER": "Номер",
+          "GATEWAY": "Платежный шлюз",
+          "METHOD": "Метод отправки",
+          "TRANSACTION": "ID транзакции",
+          "STATUS": "Статус",
+          "CREATED": "Создано",
+          "AMOUNT": "Сумма"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Платеж {number}",
+        "NEW_TITLE": "Новый платеж",
+        "NUMBER": "Номер платежа",
+        "GATEWAY": "Способ оплаты",
+        "AMOUNT": "Сумма",
+        "PURPOSE": "Назначение платежа",
+        "CAPTURE": "Захватить платеж",
+        "REFUND": "Вернуть платеж"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Захватить платеж",
+        "NEW_REFUND": "Вернуть платеж",
+        "CAPTURE_TITLE": "Захват {number}",
+        "REFUND_TITLE": "Возврат {number}",
+        "AMOUNT": "Сумма",
+        "CAPTURE_DETAILS": "Описание в выписке",
+        "MESSAGE": "Сообщение о причине",
+        "REASON": "Причина",
+        "OUTER_ID": "Внешний ID",
+        "CLOSE_TRANSACTION": "Закрыть транзакцию",
+        "CLOSE_TRANSACTION_HINT": "Запрещает дальнейшие захваты по этому платежу"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Тип",
+        "RESPONSE_CODE": "Код ответа"
+      },
+      "SHIPMENT": {
+        "TITLE": "Отправка {number}",
+        "NEW_TITLE": "Новая отправка",
+        "NUMBER": "Номер отправки",
+        "METHOD": "Метод отправки",
+        "METHOD_OPTION": "Вариант метода отправки",
+        "FULFILLMENT_CENTER": "Центр выполнения",
+        "TRACKING_NUMBER": "Номер отслеживания",
+        "TRACKING_URL": "URL отслеживания",
+        "DELIVERY_DATE": "Дата доставки"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Добавить позиции",
+        "REMOVE": "Удалить",
+        "SELECT_TITLE": "Выберите позиции заказа",
+        "AVAILABLE": "Заказано"
+      },
+      "ADDRESSES": {
+        "TITLE": "Адрес",
+        "NEW_TITLE": "Новый адрес",
+        "EMPTY": "Нет адресов",
+        "ADDRESS": "Адрес",
+        "PERSON": "Имя",
+        "TYPE": "Тип адреса",
+        "DESCRIPTION": "Описание",
+        "FIRST_NAME": "Имя",
+        "MIDDLE_NAME": "Отчество",
+        "LAST_NAME": "Фамилия",
+        "COUNTRY": "Страна",
+        "REGION": "Регион",
+        "CITY": "Город",
+        "POSTAL_CODE": "Почтовый индекс",
+        "LINE1": "Адрес, строка 1",
+        "LINE2": "Адрес, строка 2",
+        "EMAIL": "Эл. почта",
+        "PHONE": "Телефон"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Скидки не применены",
+        "NAME": "Промоакция",
+        "COUPON": "Купон",
+        "AMOUNT": "Скидка",
+        "CURRENCY": "Валюта"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Для этого типа не определены свойства",
+        "LANGUAGE": "Язык"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Продукты",
+        "TEXTS": "Тексты",
+        "TEXT": "Текст",
+        "FILES": "Файлы",
+        "CONTENT_TYPE": "Тип",
+        "SIZE": "Размер"
+      },
+      "CHANGES": {
+        "EMPTY": "Нет изменений",
+        "COLUMNS": {
+          "TYPE": "Операция",
+          "DATE": "Дата",
+          "USER": "Пользователь",
+          "DETAIL": "Изменение"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Отменить документ",
+      "MESSAGE": "Документ будет помечен как отмененный.",
+      "REASON": "Причина",
+      "REASON_PLACEHOLDER": "Почему он отменяется? (необязательно)",
+      "CONFIRM": "Подтвердить",
+      "BACK": "Назад"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Дубликат",
+      "FRAUDULENT": "Мошенничество",
+      "REQUESTEDBYCUSTOMER": "По запросу клиента",
+      "OTHER": "Другое"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Есть несохраненные изменения. Вы действительно хотите закрыть?",
+      "DELETE_CONFIRMATION": "Удалить выбранные заказы ({count})? Это действие нельзя отменить.",
+      "DELETE_ORDER_CONFIRMATION": "Удалить заказ {number}? Это действие нельзя отменить.",
+      "DELETE_OPERATION_CONFIRMATION": "Удалить этот элемент ({name}) из заказа? Он будет удален при сохранении заказа.",
+      "DELETE_ADDRESS_CONFIRMATION": "Удалить этот адрес?",
+      "CONCURRENCY_CONFLICT": "Заказ был изменен другим пользователем. Он перезагружен; внесите свои изменения снова.",
+      "MEMBER_UNAVAILABLE": "Экран клиента пока недоступен в этой панели администрирования.",
+      "MEMBER_NOT_FOUND": "С этой учетной записью клиента не связан ни один контакт.",
+      "PRODUCT_UNAVAILABLE": "Экран продукта пока недоступен в этой панели администрирования.",
+      "NOTIFICATIONS_UNAVAILABLE": "Журнал уведомлений пока недоступен в этой панели администрирования.",
+      "PAYMENT_ACTION_FAILED": "Платежный провайдер отклонил запрос.",
+      "COPIED": "Скопировано: {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Общие продажи",
+      "SALES_TRENDS": "Динамика продаж",
+      "RECENT_ORDERS": "Последние заказы",
+      "REVENUE": "Выручка",
+      "ORDERS": "Заказы",
+      "AVG_ORDER_VALUE": "Средняя стоимость заказа",
+      "PERIOD": "Период",
+      "PERIODS": {
+        "YEAR": "Год",
+        "QUARTER": "Квартал",
+        "MONTH": "Месяц"
+      },
+      "VIEW_ALL": "Показать все",
+      "NO_ORDERS": "Заказов пока нет",
+      "TO_PROCESS": "Заказы к обработке",
+      "WAITING": "Заказы, ожидающие обработки",
+      "NOTHING_TO_PROCESS": "Все заказы завершены или отменены",
+      "OUTSTANDING_PAYMENTS": "Ожидающие платежи",
+      "PAYMENT": "Платеж",
+      "AMOUNT": "Сумма",
+      "NO_OUTSTANDING_PAYMENTS": "Нет ожидающих платежей",
+      "FULFILLMENT": "Выполнение",
+      "COMPLETED": "Завершено",
+      "CANCELLED": "Отменено",
+      "COMPLETED_HINT": "Завершенные заказы из {count} за последние 90 дней",
+      "CANCELLED_HINT": "Отмененные заказы из {count} за последние 90 дней"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Заказы"
+    }
+  }
+}

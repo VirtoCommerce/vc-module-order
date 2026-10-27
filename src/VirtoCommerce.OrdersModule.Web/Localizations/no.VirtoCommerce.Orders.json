@@ -1,0 +1,683 @@
+{
+  "orders": {
+    "main-menu-title": "Bestillinger",
+    "blades": {
+      "customerOrder-detail": {
+        "title": "Bestilling fra {{customer}}",
+        "subtitle": "Rediger bestillingsdetaljer og tilknyttede dokumenter",
+        "labels": {
+          "approved": "Godkjent",
+          "employee": "Tildelt",
+          "order-number": "Kundebestillingsnummer",
+          "status": "Status",
+          "store": "Butikk",
+          "from": "Opprettet",
+          "channel": "Kanal",
+          "customer": "Kunde",
+          "organization": "Organisasjon",
+          "invoice": "Hent faktura som PDF",
+          "withPrototypes": "Med maler"
+        },
+        "placeholders": {
+          "employee": "Velg ansvarlig",
+          "status": "Velg...",
+          "store": "Velg...",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-items": {
+        "labels": {
+          "item": "Vare",
+          "status": "Status",
+          "quantity": "Antall",
+          "available": "Tilgjengelig",
+          "await": "Venter",
+          "price": "Pris per vare",
+          "tax": "Skatt",
+          "priceWithTax": "Enhetspris (inkl. skatt)",
+          "discount": "Rabatt",
+          "discountWithTax": "Rabatt (inkl. skatt)",
+          "total": "Totalt",
+          "dynamic-properties": "Dynamiske egenskaper",
+          "sub-total": "Delsum",
+          "discount-total": "Rabatt",
+          "tax-total": "Skatt",
+          "fee-total": "Gebyr",
+          "currency": "Valuta"
+        }
+      },
+      "customerOrder-item-detail": {
+        "labels": {
+          "product": "Produktnavn",
+          "sku": "SKU"
+        }
+      },
+      "customerOrder-list": {
+        "title": "Kundebestillinger",
+        "labels": {
+          "new-filter": "Legg til nytt filter",
+          "unnamed-filter": "Filtrer etter",
+          "today-filter": "I dag",
+          "last-day-filter": "I går",
+          "last-week-filter": "Siste uke",
+          "last-month-filter": "Siste måned",
+          "last-year-filter": "Siste år",
+          "number": "Bestillingsnummer",
+          "customer": "Kunde",
+          "confirmed": "Bekreftet",
+          "status": "Status",
+          "total": "Totalt",
+          "currency": "Valuta",
+          "store": "Butikk",
+          "created": "Opprettet",
+          "copy-id": "Kopier ID",
+          "copy-number": "Kopier nummer",
+          "filter-by": "Filtrer etter"
+        },
+        "placeholders": {
+          "select-filter": "Velg filter"
+        }
+      },
+      "filter-detail": {
+        "subtitle": "Rediger filter",
+        "new-title": "Nytt filter",
+        "new-subtitle": "Opprett nytt filter",
+        "labels": {
+          "name": "Filternavn",
+          "name_": "Gi filteret et navn",
+          "criteria": "Filterkriterier",
+          "from": "Opprettet etter",
+          "to": "Opprettet før"
+        },
+        "placeholders": {
+          "all": "Ikke angitt"
+        }
+      },
+      "operation-comment": {
+        "labels": {
+          "comments": "Kommentarer"
+        }
+      },
+      "payment-detail": {
+        "title": "Innkommende betaling #{{number}}",
+        "title-new": "Ny innkommende betaling",
+        "subtitle": "Rediger betalingsdetaljer og tilknyttede dokumenter",
+        "labels": {
+          "approved": "Godkjent",
+          "payment-number": "Betalings-ID",
+          "status": "Status",
+          "amount": "Beløp",
+          "from": "Dato og tid",
+          "payment-gateway": "Betalingsgateway",
+          "payment-purpose": "Formål med betalingen",
+          "price": "Betalingsgebyrer",
+          "price-with-tax": "Betalingsgebyrer (inkl. skatt)",
+          "vendor": "Leverandør",
+          "capture-payment": "Trekk betaling",
+          "refund-payment": "Refunder betaling"
+        },
+        "placeholders": {
+          "status": "Velg...",
+          "payment-gateway": "Velg...",
+          "vendor": "Velg..."
+        }
+      },
+      "refund-add": {
+        "title": "Opprett refusjon",
+        "labels": {
+          "amount": "Refusjonsbeløp",
+          "reasonCode": "Refusjonsårsak",
+          "message": "Refusjonsmelding",
+          "transactionId": "Transaksjons-ID",
+          "outerId": "Ekstern ID"
+        },
+        "placeholders": {
+          "amount": "Angi...",
+          "reasonCode": "Velg...",
+          "message": "Angi...",
+          "transactionId": "Angi...",
+          "outerId": "Angi..."
+        }
+      },
+      "refund-details": {
+        "title": "Refusjon #{{number}}",
+        "subtitle": "Rediger betalingsdetaljer og tilknyttede dokumenter",
+        "labels": {
+          "status": "Status",
+          "amount": "Beløp",
+          "vendor": "Leverandør",
+          "reasonCode": "Refusjonsårsak"
+        },
+        "refund-status": {
+          "pending": "Venter",
+          "approved": "Godkjent",
+          "rejected": "Avvist",
+          "processed": "Behandlet"
+        },
+        "placeholders": {
+          "status": "Velg...",
+          "vendor": "Velg...",
+          "reasonCode": "Velg..."
+        }
+      },
+      "refund-detail": {
+        "labels": {
+          "transactionId": "Transaksjons-ID",
+          "outerId": "Ekstern ID"
+        }
+      },
+      "capture-add": {
+        "title": "Opprett trekk",
+        "labels": {
+          "amount": "Trekkbeløp",
+          "message": "Trekkmelding",
+          "transactionId": "Transaksjons-ID",
+          "outerId": "Ekstern ID",
+          "closeTransaction": "Lukk transaksjon"
+        },
+        "placeholders": {
+          "amount": "Angi...",
+          "message": "Angi...",
+          "transactionId": "Angi...",
+          "outerId": "Angi..."
+        },
+        "descr": {
+          "closeTransaction": "Lukk transaksjonen slik at det ikke kan gjøres flere trekk mot denne bestillingen"
+        }
+      },
+      "capture-details": {
+        "title": "Trekk #{{number}}",
+        "subtitle": "Rediger betalingsdetaljer og tilknyttede dokumenter",
+        "labels": {
+          "amount": "Beløp",
+          "vendor": "Leverandør",
+          "closeTransaction": "Lukk transaksjon"
+        },
+        "placeholders": {
+          "amount": "Angi...",
+          "vendor": "Velg..."
+        }
+      },
+      "capture-detail": {
+        "labels": {
+          "transactionId": "Transaksjons-ID",
+          "outerId": "Ekstern ID"
+        }
+      },
+      "customerOrder-item-configuration": {
+        "title": "Konfigurasjon",
+        "labels": {
+          "picture": "Bilde",
+          "quantity": "Antall",
+          "text": "Tekst",
+          "product-name": "Produktnavn",
+          "file-name": "Filnavn",
+          "file-size": "Filstørrelse",
+          "file-content-type": "Filtype"
+        },
+        "menu": {
+          "products": {
+            "title": "Konfigurasjonsprodukter",
+            "description": "Produktene som utgjør konfigurasjonen"
+          },
+          "texts": {
+            "title": "Konfigurasjonstekster",
+            "description": "Tilpassede tekster som brukes til å lage en unik produktkonfigurasjon"
+          },
+          "files": {
+            "title": "Konfigurasjonsfiler",
+            "description": "Filer som brukes til å lage en unik produktkonfigurasjon"
+          }
+        },
+        "description": {
+          "no-configuration": "Dette produktet støtter ikke konfigurasjon.",
+          "no-products": "Denne konfigurasjonen har ingen produkter ennå.",
+          "no-texts": "Denne konfigurasjonen har ingen tekster ennå.",
+          "no-files": "Denne konfigurasjonen har ingen filer ennå."
+        }
+      },
+      "transactions-list": {
+        "title": "Transaksjoner i betalingsgatewayen",
+        "subtitle": "Alle interaksjoner med betalingsgatewayen"
+      },
+      "transaction-detail": {
+        "title": "Transaksjonsdetaljer",
+        "subtitle": "Rå transaksjonsdata"
+      },
+      "shipment-detail": {
+        "title": "Forsendelse #{{number}}",
+        "title-new": "Ny forsendelse",
+        "subtitle": "Rediger forsendelsesdetaljer",
+        "labels": {
+          "shipment-method": "Forsendelsesmetode",
+          "approved": "Godkjent",
+          "shipment-number": "Forsendelses-ID",
+          "status": "Status",
+          "fulfillment-center": "Distribusjonssenter",
+          "from": "Dato og tid",
+          "employee": "Tildelt",
+          "price": "Fraktbeløp",
+          "price-with-tax": "Fraktbeløp inkl. skatt",
+          "shipment-method-option": "Forsendelsesmetode",
+          "tracking-number": "Sporingsnummer",
+          "tracking-url": "Sporings-URL",
+          "delivery-date": "Leveringsdato",
+          "vendor": "Leverandør"
+        },
+        "placeholders": {
+          "status": "Velg...",
+          "shipment-method": "Velg...",
+          "fulfillment-center": "Velg eller søk etter et senter...",
+          "shipment-method-option": "Standard forsendelsesmetode",
+          "vendor": "Velg..."
+        }
+      },
+      "shipment-items": {
+        "title": "{{title}}: ordrelinjer",
+        "subtitle": "Rediger varer i forsendelsen",
+        "labels": {
+          "item": "Vare",
+          "status": "Status",
+          "quantity": "Antall",
+          "price": "Pris",
+          "total": "Totalt"
+        }
+      },
+      "catalog-items-select": {
+        "title": "Legg til vare i bestillingen"
+      },
+      "newOperation-wizard": {
+        "title": "Ny operasjon",
+        "subtitle": "Velg operasjonstype",
+        "menu": {
+          "shipment-operation": {
+            "description": "Forsendelsesdokument"
+          },
+          "payment-operation": {
+            "description": "Dokument for innkommende betaling"
+          },
+          "refund-operation": {
+            "description": "Refusjonsdokument"
+          }
+        }
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatter",
+        "labels": {
+          "name": "Navn",
+          "coupon": "Kupong",
+          "discountAmount": "Rabattbeløp",
+          "discountAmountWithTax": "Rabattbeløp inkl. skatt",
+          "currency": "Valuta"
+        },
+        "descr": {
+          "no-discounts": "Dette elementet har ingen rabatter ennå."
+        }
+      },
+      "address-details": {
+        "labels": {
+          "name": "Adressenavn",
+          "address-type": "Adressetype",
+          "first-name": "Fornavn",
+          "middle-name": "Mellomnavn",
+          "last-name": "Etternavn",
+          "country": "Land",
+          "region": "Region",
+          "city": "Sted",
+          "address1": "Adresselinje 1",
+          "address2": "Adresselinje 2",
+          "zip-code": "Postnummer",
+          "email": "E-post",
+          "phone": "Telefon",
+          "description": "Beskrivelse"
+        },
+        "placeholders": {
+          "address-type": "Velg adressetype...",
+          "first-name": "Angi fornavn...",
+          "middle-name": "Angi mellomnavn...",
+          "last-name": "Angi etternavn...",
+          "country": "Velg land...",
+          "region": "Velg region...",
+          "city": "Angi sted...",
+          "address1": "Angi adresselinje 1...",
+          "address2": "Angi adresselinje 2...",
+          "zip-code": "Angi postnummer...",
+          "email": "Angi e-post...",
+          "phone": "Angi telefonnummer...",
+          "description": "Angi beskrivelse..."
+        }
+      },
+      "address-list": {
+        "labels": {
+          "no-addresses": "Ingen adresser ennå"
+        }
+      }
+    },
+    "widgets": {
+      "notifications": {
+        "title": "Varselfeed",
+        "subtitle": "Varselfeed for bestillingen"
+      },
+      "customerOrder-address": {
+        "title": "Adresser",
+        "blade-title": "Administrer adresser"
+      },
+      "customerOrder-items": {
+        "title": "Ordrelinjer",
+        "blade-title": "{{title}}: ordrelinjer",
+        "blade-subtitle": "Rediger ordrelinjer"
+      },
+      "customerOrder-totals": {
+        "sub-total": "Delsum",
+        "shipping-total": "Frakt totalt",
+        "shipping-sub-total": "Delsum frakt",
+        "payment-sub-total": "Delsum betaling",
+        "tax-total": "Skatt totalt",
+        "fee-total": "Gebyrer totalt",
+        "discount": "Rabatt",
+        "discount-total": "Rabatt totalt",
+        "discount-total-with-tax": "Rabatt totalt inkl. skatt",
+        "total": "Totalt"
+      },
+      "operation-comment": {
+        "no-comments": "Ingen kommentarer",
+        "blade-title": "Legg igjen en kommentar"
+      },
+      "shipment-address": {
+        "blade-title": "Administrer leveringsadresse",
+        "title": "Leveringsadresse"
+      },
+      "shipment-items": {
+        "title": "Varer i forsendelsen"
+      },
+      "shipment-totals": {
+        "tax-total": "Skatt totalt",
+        "fee-total": "Gebyrer totalt",
+        "shipment-total": "Forsendelse totalt",
+        "shipment-price": "Fraktpris",
+        "discount-total": "Rabatt totalt",
+        "total": "Totalt"
+      },
+      "payment-totals": {
+        "tax-total": "Skatt totalt",
+        "payment-total": "Betaling totalt",
+        "payment-price": "Betalingspris",
+        "discount-total": "Rabatt totalt",
+        "total": "Totalt"
+      },
+      "payment-address": {
+        "blade-title": "Administrer fakturaadresse",
+        "title": "Fakturaadresse"
+      },
+      "statistics-templates": {
+        "revenue": "Inntekter",
+        "customers-with-orders": "Kunder med bestillinger",
+        "average-order-value": "Gjennomsnittlig ordreverdi",
+        "items-purchased": "Kjøpte varer",
+        "lines-per-order": "Linjer per bestilling",
+        "revenue-per-customer": "Inntekter per kunde",
+        "title": "Bestillingsstatistikk",
+        "not-authorized": "Du har for øyeblikket ikke tilgang til denne funksjonen. Kontakt kontoadministratoren for å få tilgang"
+      },
+      "customerOrder-list": {
+        "title": "Bestillinger"
+      },
+      "configuration": {
+        "title": "Konfigurasjon"
+      },
+      "customerOrder-item-discounts": {
+        "title": "Rabatter"
+      }
+    },
+    "dialogs": {
+      "concurrency-сonflict": {
+        "title": "Samtidighetskonflikt oppdaget",
+        "message": "Bestillingen er endret av en annen bruker. Klikk OK for å laste inn de nyeste dataene og prøv igjen"
+      },
+      "orders-delete": {
+        "title": "Bekreft sletting",
+        "message": "Er du sikker på at du vil slette de valgte kundebestillingene?",
+        "order": "{{count}} bestilling(er)"
+      },
+      "operation-save": {
+        "title": "Lagre endringer",
+        "message": "Operasjonen er endret. Vil du lagre endringene?"
+      },
+      "operation-delete": {
+        "title": "Bekreft sletting",
+        "message": "Er du sikker på at du vil slette operasjonen '{{name}}'?"
+      },
+      "operation-cancel": {
+        "title": "Kanseller operasjon",
+        "message": "Er du sikker på at du vil fjerne dette dokumentet?",
+        "placeholders": {
+          "reason": "Angi årsaken til fjerningen..."
+        }
+      },
+      "payment-capture": {
+        "title": "Bekreft trekk",
+        "message": "Er du sikker på at du vil trekke betalingen på {{amount}}?"
+      },
+      "address-delete": {
+        "title": "Bekreft sletting",
+        "message": "Er du sikker på at du vil slette adressen '{{name}}'?"
+      },
+      "address-save": {
+        "title": "Lagre endringer",
+        "message": "Adressen er endret. Vil du lagre endringene?"
+      }
+    },
+    "settings": {
+      "customerorder-status": {
+        "new": "Ny",
+        "not payed": "Ikke betalt",
+        "pending": "Venter",
+        "processing": "Behandles",
+        "ready to send": "Klar til sending",
+        "cancelled": "Kansellert",
+        "partially sent": "Delvis sendt",
+        "completed": "Fullført"
+      },
+      "line-item-status": {
+        "pending": "Venter",
+        "inprogress": "Pågår",
+        "shipped": "Sendt",
+        "delivered": "Levert",
+        "cancelled": "Kansellert"
+      },
+      "shipment-status": {
+        "new": "Ny",
+        "pickpack": "Plukking og pakking",
+        "cancelled": "Kansellert",
+        "readytosend": "Klar til sending",
+        "sent": "Sendt"
+      },
+      "paymentin-status": {
+        "new": "Ny",
+        "pending": "Venter",
+        "authorized": "Autorisert",
+        "paid": "Betalt",
+        "partiallyrefunded": "Delvis refundert",
+        "refunded": "Refundert",
+        "voided": "Annullert",
+        "custom": "Egendefinert",
+        "cancelled": "Kansellert"
+      },
+      "refund-status": {
+        "pending": "Venter",
+        "rejected": "Avvist",
+        "processed": "Behandlet"
+      },
+      "reason-codes": {
+        "duplicate": "Duplikat",
+        "fraudulent": "Svindel",
+        "requestedbycustomer": "Forespurt av kunden",
+        "other": "Annet"
+      }
+    },
+    "commands": {
+      "new-document": "Nytt dokument",
+      "cancel-document": "Kanseller dokument",
+      "add-selected": "Legg til valgte",
+      "add-item": "Legg til vare"
+    }
+  },
+  "permissions": {
+    "order:read": "Vise bestillingsrelaterte data",
+    "order:create": "Opprette bestillingsrelaterte data",
+    "order:update": "Oppdatere bestillingsrelaterte data",
+    "order:delete": "Slette bestillingsrelaterte data",
+    "order:access": "Tilgang til bestillingsrelaterte data",
+    "order:read_prices": "Vise bestillingspriser",
+    "order:invoice:download": "Laste ned faktura som PDF"
+  },
+  "settings": {
+    "Order.Status": {
+      "title": "Statuser for kundebestillinger",
+      "description": "Liste over tilgjengelige statuser for kundebestillinger"
+    },
+    "Order.InitialStatus": {
+      "title": "Startstatus for kundebestillinger",
+      "description": "Startstatusen for en ny kundebestilling"
+    },
+    "Order.InitialProcessingStatus": {
+      "title": "Startstatus for bestillinger med avbrutt betaling",
+      "description": "Denne statusen brukes for alle bestillinger der betalingen ikke ble behandlet"
+    },
+    "OrderLineItem.Statuses": {
+      "title": "Statuser for ordrelinjer",
+      "description": "Liste over tilgjengelige statuser for ordrelinjer"
+    },
+    "OrderLineItem.InitialStatus": {
+      "title": "Startstatus for ordrelinjer",
+      "description": "Startstatusen for en ordrelinje i en ny kundebestilling"
+    },
+    "Shipment.Status": {
+      "description": "Statuser for forsendelser",
+      "title": "Statuser for forsendelser"
+    },
+    "PaymentIn.Status": {
+      "description": "Statuser for innkommende betalinger",
+      "title": "Betalingsstatuser"
+    },
+    "Refund.Status": {
+      "title": "Refusjonsstatuser",
+      "description": "Refusjonsstatuser"
+    },
+    "Order.CustomerOrderNewNumberTemplate": {
+      "description": "Brukes til å generere nye kundebestillingsnumre, med parametere:\n\n0: Dato og tid i UTC\n1: Teller\n\nFormatet støtter telleralternativer direkte i malen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardverdier:\n* Daily for reset_counter_type. Velg mellom tilbakestillingstypene None, Daily, Weekly, Monthly og Yearly.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nEksempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mal for bestillingsnummer"
+    },
+    "Order.ShipmentNewNumberTemplate": {
+      "description": "Brukes til å generere nye forsendelsesnumre, med parametere:\n\n0: Dato og tid i UTC\n1: Teller\n\nFormatet støtter telleralternativer direkte i malen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardverdier:\n* Daily for reset_counter_type. Velg mellom tilbakestillingstypene None, Daily, Weekly, Monthly og Yearly.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nEksempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mal for forsendelsesnummer"
+    },
+    "Order.PaymentInNewNumberTemplate": {
+      "description": "Brukes til å generere nye betalingsnumre, med parametere:\n\n0: Dato og tid i UTC\n1: Teller\n\nFormatet støtter telleralternativer direkte i malen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardverdier:\n* Daily for reset_counter_type. Velg mellom tilbakestillingstypene None, Daily, Weekly, Monthly og Yearly.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nEksempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mal for betalingsnummer"
+    },
+    "Order.RefundNewNumberTemplate": {
+      "description": "Brukes til å generere nye refusjonsnumre, med parametere:\n\n0: Dato og tid i UTC\n1: Teller\n\nFormatet støtter telleralternativer direkte i malen i formatet:\n<number_template>@<reset_counter_type>[:<start_counter_from>[:<counter_increment>]]\n\nStandardverdier:\n* Daily for reset_counter_type. Velg mellom tilbakestillingstypene None, Daily, Weekly, Monthly og Yearly.\n* 1 for start_counter_from.\n* 1 for counter_increment.\n\nEksempel: CO{0:yyMMdd}-{1:D5}@Weekly:1:10.\nResultat: CO240101-00001.",
+      "title": "Mal for refusjonsnummer"
+    },
+    "Order.SendOrderNotifications": {
+      "description": "Sender et varsel når bestillingsstatusen endres",
+      "title": "Aktiver varsler for bestillinger"
+    },
+    "Order.AdjustInventory": {
+      "description": "Justerer lagerbeholdningen når bestillingsstatusen endres",
+      "title": "Juster lagerbeholdning for bestillinger"
+    },
+    "Order.LogOrderChanges": {
+      "title": "Loggfør bestillingsendringer",
+      "description": "Logger bestillingsendringer i plattformens operasjonslogg"
+    },
+    "Order.Search.EventBasedIndexation.Enable": {
+      "title": "Hendelsesbasert indeksering av bestillinger",
+      "description": "Alle endringer i kundeenheten starter en bakgrunnsoppgave som oppdaterer søkeindeksen med endringene"
+    },
+    "Order.Validation.Enable": {
+      "title": "Validering ved lagring av bestillinger",
+      "description": "Aktiverer validering når en bestilling lagres"
+    },
+    "VirtoCommerce.Search.IndexingJobs.IndexationDate.CustomerOrder": {
+      "title": "Dato og tid for indeksering av bestillinger",
+      "description": "Dato og tid for siste indekseringsoppgave for bestillinger"
+    },
+    "Order.OrderPaidAndOrderSentNotifications.Enable": {
+      "title": "Bruk varsler om betalt og sendt bestilling",
+      "description": "Bruk varsler om betalt og sendt bestilling"
+    },
+    "Order.PaymentShipmentStatusChangedNotifications.Enable": {
+      "title": "Bruk varsler om endret status for betalinger/forsendelser",
+      "description": "Brukes for varsler om statusendringer for betalinger/forsendelser"
+    },
+    "Order.PurchasedProductIndexation.Enable": {
+      "title": "Aktiver indeksering av kjøpte produkter",
+      "description": "Aktiverer indekseringen av kjøpte produkter. Denne innstillingen er global"
+    },
+    "Order.EventBasedPurchasedProductIndexation.Enable": {
+      "title": "Hendelsesbasert indeksering av kjøpte produkter",
+      "description": "Alle endringer i bestillingen starter en bakgrunnsoppgave som legger til kjøpsdata i produktindeksen"
+    },
+    "Order.PurchasedProductStoreFilter.Enable": {
+      "title": "Aktiver butikkfilter for kjøpte produkter",
+      "description": "Vis filteret for kjøpte produkter i butikken"
+    },
+    "Order.ProductSnapshot.Enable": {
+      "title": "Lagre produktøyeblikksbilder i bestillinger",
+      "description": "Lagrer serialiserte produktdata i ordrelinjer for å bevare historisk informasjon"
+    },
+    "Order.MaxOrderDocumentCount": {
+      "title": "Maksimalt antall underordnede dokumenter per bestilling",
+      "description": "Angir maksimalt antall underordnede dokumenter (betalinger, forsendelser, trekk, refusjoner osv.) som kan opprettes eller lagres per bestilling. Dette sikrer systemytelse, optimalisert lagring og datakonsistens. Det utløses et unntak ved lagring hvis grensen overskrides"
+    },
+    "Order.DashboardStatistics.Enable": {
+      "title": "Aktiver statistikk i kontrollpanelet",
+      "description": "Slår widgetene for bestillingsstatistikk på hovedkontrollpanelet av eller på"
+    },
+    "Order.DashboardStatistics.RangeMonths": {
+      "title": "Periode for statistikk i kontrollpanelet (måneder)",
+      "description": "Angir hvor mange måneder som tas med i beregningen av statistikken i kontrollpanelet. Standard er 12 måneder"
+    }
+  },
+  "module": {
+    "VirtoCommerce.Orders": {
+      "description": "Eksport/import av kundebestillinger med alle tilknyttede objekter (ordrelinjer, forsendelser, betalinger osv.)"
+    }
+  },
+  "notificationTypes": {
+    "CancelOrderEmailNotification": {
+      "displayName": "Varsel om kansellert bestilling",
+      "description": "Kunden får et varsel på e-post når en bestilling kanselleres"
+    },
+    "InvoiceEmailNotification": {
+      "displayName": "Faktura for kundebestilling",
+      "description": "Mal for faktura for kundebestilling som brukes til å generere PDF-versjonen"
+    },
+    "NewOrderStatusEmailNotification": {
+      "displayName": "Varsel om ny bestillingsstatus",
+      "description": "Kunden får et varsel på e-post når statusen for en bestilling endres"
+    },
+    "OrderCreateEmailNotification": {
+      "displayName": "Varsel om opprettet bestilling",
+      "description": "Kunden får et varsel på e-post etter å ha sendt inn opplysningene sine via et skjema i Frontend-applikasjonen, f.eks. via kontaktskjemaet"
+    },
+    "OrderPaidEmailNotification": {
+      "displayName": "Varsel om betaling av bestilling",
+      "description": "Kunden får et varsel på e-post når alle betalinger for en bestilling er fullført"
+    },
+    "OrderSentEmailNotification": {
+      "displayName": "Varsel om sendt bestilling",
+      "description": "Kunden får et varsel på e-post når alle bestilte varer er sendt"
+    },
+    "PaymentStatusChangedEmailNotification": {
+      "displayName": "Varsel om endret betalingsstatus",
+      "description": "Kunden får et varsel på e-post med alle endrede betalingsstatuser"
+    },
+    "ShipmentStatusChangedEmailNotification": {
+      "displayName": "Varsel om endret forsendelsesstatus",
+      "description": "Kunden får et varsel på e-post med alle endrede forsendelsesstatuser"
+    }
+  }
+}

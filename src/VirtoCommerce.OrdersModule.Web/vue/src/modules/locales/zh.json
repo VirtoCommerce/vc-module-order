@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "订单",
+      "COUNTER": "{count} 个新订单"
+    },
+    "YES": "是",
+    "NO": "否",
+    "WIDGETS": {
+      "PAYMENTS": "付款",
+      "SHIPMENTS": "发货",
+      "CHANGES": "更改",
+      "ADDRESSES": "地址",
+      "DISCOUNTS": "折扣",
+      "PROPERTIES": "属性",
+      "NOTIFICATIONS": "通知",
+      "CAPTURES": "捕获",
+      "REFUNDS": "退款",
+      "TRANSACTIONS": "交易",
+      "BILLING_ADDRESS": "账单地址",
+      "DELIVERY_ADDRESS": "配送地址",
+      "SHIPMENT_ITEMS": "项目",
+      "CONFIGURATION": "配置",
+      "MEMBER_ORDERS": "订单"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "客户订单",
+        "COLUMNS": {
+          "NUMBER": "订单号",
+          "CUSTOMER": "客户",
+          "STORE": "商店",
+          "CREATED_DATE": "创建时间",
+          "STATUS": "状态",
+          "TOTAL": "总计",
+          "CURRENCY": "货币",
+          "CONFIRMED": "已确认"
+        },
+        "AMOUNTS": {
+          "subTotal": "小计",
+          "subTotalDiscount": "项目折扣",
+          "subTotalTaxTotal": "项目税额",
+          "shippingTotal": "运费总计",
+          "shippingDiscountTotal": "运费折扣",
+          "paymentTotal": "付款总计",
+          "paymentDiscountTotal": "付款折扣",
+          "discountAmount": "订单折扣",
+          "discountTotal": "折扣总计",
+          "feeTotal": "费用总计",
+          "taxTotal": "税额总计",
+          "sum": "合计"
+        },
+        "TOOLBAR": {
+          "REFRESH": "刷新",
+          "DELETE": "删除"
+        },
+        "ACTIONS": {
+          "COPY_ID": "复制ID",
+          "COPY_NUMBER": "复制号码",
+          "FILTER_BY": "按“{value}”过滤"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "选择过滤器",
+          "EDIT": "编辑过滤器",
+          "NEW": "+ 新过滤器",
+          "TODAY": "今天",
+          "LAST_DAY": "最近一天",
+          "LAST_WEEK": "上周",
+          "LAST_MONTH": "上月",
+          "LAST_YEAR": "去年"
+        },
+        "EMPTY": "未找到订单",
+        "FILTERS": {
+          "STATUS": "状态",
+          "STORE": "商店",
+          "CREATED": "创建时间",
+          "PROTOTYPES": "原型",
+          "WITH_PROTOTYPES": "包括原型"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "新过滤器",
+        "NAME": "过滤器名称",
+        "UNNAMED": "未命名过滤器",
+        "ALL": "全部",
+        "FROM": "从",
+        "TO": "至",
+        "APPLY": "应用过滤器"
+      },
+      "DETAILS": {
+        "TITLE": "订单",
+        "FIELDS": {
+          "NUMBER": "订单号",
+          "STATUS": "状态",
+          "CUSTOMER": "客户",
+          "ORGANIZATION": "组织",
+          "STORE": "商店",
+          "EMPLOYEE": "员工",
+          "EMPLOYEE_PLACEHOLDER": "选择员工",
+          "CREATED": "创建时间",
+          "DISCOUNT": "折扣",
+          "APPROVED": "已批准",
+          "COMMENT": "备注"
+        },
+        "ITEMS": {
+          "TITLE": "行项目",
+          "IMAGE": "图片",
+          "NAME": "名称",
+          "SKU": "SKU",
+          "STATUS": "状态",
+          "QUANTITY": "数量",
+          "PRICE": "价格",
+          "DISCOUNT": "折扣",
+          "TAX": "税",
+          "TOTAL": "总计",
+          "SUBTOTAL": "小计",
+          "DISCOUNT_TOTAL": "折扣",
+          "TAX_TOTAL": "税"
+        },
+        "TOTALS": {
+          "TITLE": "总计",
+          "SUBTOTAL": "小计",
+          "SHIPPING": "运费",
+          "PAYMENT": "付款手续费",
+          "TAX": "税",
+          "FEE": "费用",
+          "DISCOUNT": "折扣",
+          "TOTAL": "总计"
+        },
+        "ADDRESSES": {
+          "TITLE": "地址",
+          "MANAGE": "管理"
+        },
+        "TOOLBAR": {
+          "SAVE": "保存",
+          "RESET": "重置",
+          "NEW_DOCUMENT": "新文档",
+          "CANCEL_DOCUMENT": "取消文档",
+          "INVOICE": "发票",
+          "DELETE": "删除"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "新文档",
+        "TYPE": "文档类型",
+        "SHIPMENT": "发货",
+        "SHIPMENT_DESCR": "发运订单中的部分或全部项目",
+        "PAYMENT": "收款",
+        "PAYMENT_DESCR": "为订单登记一笔付款"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "产品",
+        "PRICE_WITH_TAX": "含税价格",
+        "DISCOUNT_WITH_TAX": "含税折扣"
+      },
+      "OPERATION": {
+        "CREATED": "创建时间",
+        "STATUS": "状态",
+        "PRICE": "价格",
+        "PRICE_WITH_TAX": "含税价格",
+        "VENDOR": "供应商",
+        "APPROVED": "已批准",
+        "CANCELLED_STATE": "取消：{state}",
+        "TOOLBAR": {
+          "APPLY": "确定"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "添加",
+        "EMPTY": "暂无内容",
+        "COLUMNS": {
+          "NUMBER": "编号",
+          "GATEWAY": "支付网关",
+          "METHOD": "发货方式",
+          "TRANSACTION": "交易ID",
+          "STATUS": "状态",
+          "CREATED": "创建时间",
+          "AMOUNT": "金额"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "付款 {number}",
+        "NEW_TITLE": "新付款",
+        "NUMBER": "付款编号",
+        "GATEWAY": "付款方式",
+        "AMOUNT": "金额",
+        "PURPOSE": "付款目的",
+        "CAPTURE": "捕获付款",
+        "REFUND": "退款"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "捕获付款",
+        "NEW_REFUND": "退款",
+        "CAPTURE_TITLE": "捕获 {number}",
+        "REFUND_TITLE": "退款 {number}",
+        "AMOUNT": "金额",
+        "CAPTURE_DETAILS": "对账单描述",
+        "MESSAGE": "原因说明",
+        "REASON": "原因",
+        "OUTER_ID": "外部ID",
+        "CLOSE_TRANSACTION": "关闭交易",
+        "CLOSE_TRANSACTION_HINT": "禁止对此付款进行后续捕获"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "类型",
+        "RESPONSE_CODE": "响应代码"
+      },
+      "SHIPMENT": {
+        "TITLE": "发货 {number}",
+        "NEW_TITLE": "新发货",
+        "NUMBER": "发货编号",
+        "METHOD": "发货方式",
+        "METHOD_OPTION": "发货方式选项",
+        "FULFILLMENT_CENTER": "履行中心",
+        "TRACKING_NUMBER": "跟踪号",
+        "TRACKING_URL": "跟踪URL",
+        "DELIVERY_DATE": "交付日期"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "添加项目",
+        "REMOVE": "移除",
+        "SELECT_TITLE": "选择订单项目",
+        "AVAILABLE": "订购数量"
+      },
+      "ADDRESSES": {
+        "TITLE": "地址",
+        "NEW_TITLE": "新地址",
+        "EMPTY": "没有地址",
+        "ADDRESS": "地址",
+        "PERSON": "姓名",
+        "TYPE": "地址类型",
+        "DESCRIPTION": "描述",
+        "FIRST_NAME": "名",
+        "MIDDLE_NAME": "中间名",
+        "LAST_NAME": "姓",
+        "COUNTRY": "国家/地区",
+        "REGION": "地区",
+        "CITY": "城市",
+        "POSTAL_CODE": "邮政编码",
+        "LINE1": "地址行1",
+        "LINE2": "地址行2",
+        "EMAIL": "电子邮件",
+        "PHONE": "电话"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "未应用折扣",
+        "NAME": "促销",
+        "COUPON": "优惠券",
+        "AMOUNT": "折扣",
+        "CURRENCY": "货币"
+      },
+      "PROPERTIES": {
+        "EMPTY": "此类型未定义属性",
+        "LANGUAGE": "语言"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "产品",
+        "TEXTS": "文本",
+        "TEXT": "文本",
+        "FILES": "文件",
+        "CONTENT_TYPE": "类型",
+        "SIZE": "大小"
+      },
+      "CHANGES": {
+        "EMPTY": "没有更改",
+        "COLUMNS": {
+          "TYPE": "操作",
+          "DATE": "日期",
+          "USER": "用户",
+          "DETAIL": "更改"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "取消文档",
+      "MESSAGE": "该文档将被标记为已取消。",
+      "REASON": "原因",
+      "REASON_PLACEHOLDER": "取消原因（可选）",
+      "CONFIRM": "确认",
+      "BACK": "返回"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "重复",
+      "FRAUDULENT": "欺诈",
+      "REQUESTEDBYCUSTOMER": "客户要求",
+      "OTHER": "其他"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "有未保存的更改。确定要关闭吗？",
+      "DELETE_CONFIRMATION": "删除 {count} 个订单？此操作无法撤销。",
+      "DELETE_ORDER_CONFIRMATION": "删除订单 {number}？此操作无法撤销。",
+      "DELETE_OPERATION_CONFIRMATION": "从订单中移除此{name}？保存订单时将删除它。",
+      "DELETE_ADDRESS_CONFIRMATION": "移除此地址？",
+      "CONCURRENCY_CONFLICT": "该订单已被其他人更改，现已重新加载；请重新应用您的更改。",
+      "MEMBER_UNAVAILABLE": "此管理后台尚未提供客户页面。",
+      "MEMBER_NOT_FOUND": "没有联系人关联到此客户账户。",
+      "PRODUCT_UNAVAILABLE": "此管理后台尚未提供产品页面。",
+      "NOTIFICATIONS_UNAVAILABLE": "此管理后台尚未提供通知日志。",
+      "PAYMENT_ACTION_FAILED": "支付提供商拒绝了该请求。",
+      "COPIED": "已复制 {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "总销售额",
+      "SALES_TRENDS": "销售趋势",
+      "RECENT_ORDERS": "最近订单",
+      "REVENUE": "收入",
+      "ORDERS": "订单",
+      "AVG_ORDER_VALUE": "平均订单价值",
+      "PERIOD": "期间",
+      "PERIODS": {
+        "YEAR": "年",
+        "QUARTER": "季度",
+        "MONTH": "月"
+      },
+      "VIEW_ALL": "查看全部",
+      "NO_ORDERS": "暂无订单",
+      "TO_PROCESS": "待处理订单",
+      "WAITING": "等待处理的订单",
+      "NOTHING_TO_PROCESS": "所有订单均已完成或取消",
+      "OUTSTANDING_PAYMENTS": "未结付款",
+      "PAYMENT": "付款",
+      "AMOUNT": "金额",
+      "NO_OUTSTANDING_PAYMENTS": "没有待处理的付款",
+      "FULFILLMENT": "履行",
+      "COMPLETED": "已完成",
+      "CANCELLED": "已取消",
+      "COMPLETED_HINT": "过去 90 天 {count} 个订单中已完成的订单",
+      "CANCELLED_HINT": "过去 90 天 {count} 个订单中已取消的订单"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "订单"
+    }
+  }
+}

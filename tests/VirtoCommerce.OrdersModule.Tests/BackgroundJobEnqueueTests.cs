@@ -35,9 +35,11 @@ namespace VirtoCommerce.OrdersModule.Tests
     [Collection(nameof(BackgroundJobEnqueueTests))]
     public class BackgroundJobEnqueueTests
     {
-        // Mirrors JobJsonSettings.Default of the BackgroundJobs module: no TypeNameHandling, which is precisely what
-        // every payload has to survive. The order module depends on the Platform.Core.Jobs abstractions only, so the
-        // settings are restated here rather than referenced.
+        // The part of the BackgroundJobs module's payload serialization these tests depend on: JobJsonSettings, with no
+        // TypeNameHandling, which is precisely what every payload has to survive. On a host the engine also writes
+        // payloads in the API's wire format (camelCase names, enums as names, the host's converters); the round trips
+        // here only check what survives without type information. The order module depends on the Platform.Core.Jobs
+        // abstractions only, so the settings are restated here rather than referenced.
         private static readonly JsonSerializerSettings JobSerializerSettings = new()
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,

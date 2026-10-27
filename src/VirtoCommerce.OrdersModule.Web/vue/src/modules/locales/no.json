@@ -1,0 +1,334 @@
+{
+  "ORDERS": {
+    "MENU": {
+      "TITLE": "Bestillinger",
+      "COUNTER": "{count} nye bestillinger"
+    },
+    "YES": "Ja",
+    "NO": "Nei",
+    "WIDGETS": {
+      "PAYMENTS": "Betalinger",
+      "SHIPMENTS": "Forsendelser",
+      "CHANGES": "Endringer",
+      "ADDRESSES": "Adresser",
+      "DISCOUNTS": "Rabatter",
+      "PROPERTIES": "Egenskaper",
+      "NOTIFICATIONS": "Varsler",
+      "CAPTURES": "Trekk",
+      "REFUNDS": "Refusjoner",
+      "TRANSACTIONS": "Transaksjoner",
+      "BILLING_ADDRESS": "Fakturaadresse",
+      "DELIVERY_ADDRESS": "Leveringsadresse",
+      "SHIPMENT_ITEMS": "Varer",
+      "CONFIGURATION": "Konfigurasjon",
+      "MEMBER_ORDERS": "Bestillinger"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Kundebestillinger",
+        "COLUMNS": {
+          "NUMBER": "Bestillingsnummer",
+          "CUSTOMER": "Kunde",
+          "STORE": "Butikk",
+          "CREATED_DATE": "Opprettet",
+          "STATUS": "Status",
+          "TOTAL": "Totalt",
+          "CURRENCY": "Valuta",
+          "CONFIRMED": "Bekreftet"
+        },
+        "AMOUNTS": {
+          "subTotal": "Delsum",
+          "subTotalDiscount": "Varerabatt",
+          "subTotalTaxTotal": "Vareskatt",
+          "shippingTotal": "Frakt totalt",
+          "shippingDiscountTotal": "Fraktrabatt",
+          "paymentTotal": "Betaling totalt",
+          "paymentDiscountTotal": "Betalingsrabatt",
+          "discountAmount": "Bestillingsrabatt",
+          "discountTotal": "Rabatt totalt",
+          "feeTotal": "Gebyrer totalt",
+          "taxTotal": "Skatt totalt",
+          "sum": "Sum"
+        },
+        "TOOLBAR": {
+          "REFRESH": "Oppdater",
+          "DELETE": "Slett"
+        },
+        "ACTIONS": {
+          "COPY_ID": "Kopier ID",
+          "COPY_NUMBER": "Kopier nummer",
+          "FILTER_BY": "Filtrer etter «{value}»"
+        },
+        "SAVED_FILTERS": {
+          "PLACEHOLDER": "Velg filter",
+          "EDIT": "Rediger filter",
+          "NEW": "+ Nytt filter",
+          "TODAY": "I dag",
+          "LAST_DAY": "Siste døgn",
+          "LAST_WEEK": "Siste uke",
+          "LAST_MONTH": "Siste måned",
+          "LAST_YEAR": "Siste år"
+        },
+        "EMPTY": "Fant ingen bestillinger",
+        "FILTERS": {
+          "STATUS": "Status",
+          "STORE": "Butikk",
+          "CREATED": "Opprettet",
+          "PROTOTYPES": "Prototyper",
+          "WITH_PROTOTYPES": "Inkluder prototyper"
+        }
+      },
+      "FILTER": {
+        "NEW_TITLE": "Nytt filter",
+        "NAME": "Filternavn",
+        "UNNAMED": "Navnløst filter",
+        "ALL": "Alle",
+        "FROM": "Fra",
+        "TO": "Til",
+        "APPLY": "Bruk filter"
+      },
+      "DETAILS": {
+        "TITLE": "Bestilling",
+        "FIELDS": {
+          "NUMBER": "Bestillingsnummer",
+          "STATUS": "Status",
+          "CUSTOMER": "Kunde",
+          "ORGANIZATION": "Organisasjon",
+          "STORE": "Butikk",
+          "EMPLOYEE": "Ansatt",
+          "EMPLOYEE_PLACEHOLDER": "Velg ansatt",
+          "CREATED": "Opprettet",
+          "DISCOUNT": "Rabatt",
+          "APPROVED": "Godkjent",
+          "COMMENT": "Kommentar"
+        },
+        "ITEMS": {
+          "TITLE": "Ordrelinjer",
+          "IMAGE": "Bilde",
+          "NAME": "Navn",
+          "SKU": "SKU",
+          "STATUS": "Status",
+          "QUANTITY": "Antall",
+          "PRICE": "Pris",
+          "DISCOUNT": "Rabatt",
+          "TAX": "Skatt",
+          "TOTAL": "Totalt",
+          "SUBTOTAL": "Delsum",
+          "DISCOUNT_TOTAL": "Rabatt",
+          "TAX_TOTAL": "Skatt"
+        },
+        "TOTALS": {
+          "TITLE": "Summer",
+          "SUBTOTAL": "Delsum",
+          "SHIPPING": "Frakt",
+          "PAYMENT": "Betalingsgebyr",
+          "TAX": "Skatt",
+          "FEE": "Gebyr",
+          "DISCOUNT": "Rabatt",
+          "TOTAL": "Totalt"
+        },
+        "ADDRESSES": {
+          "TITLE": "Adresser",
+          "MANAGE": "Administrer"
+        },
+        "TOOLBAR": {
+          "SAVE": "Lagre",
+          "RESET": "Tilbakestill",
+          "NEW_DOCUMENT": "Nytt dokument",
+          "CANCEL_DOCUMENT": "Kanseller dokument",
+          "INVOICE": "Faktura",
+          "DELETE": "Slett"
+        }
+      },
+      "NEW_DOCUMENT": {
+        "TITLE": "Nytt dokument",
+        "TYPE": "Dokumenttype",
+        "SHIPMENT": "Forsendelse",
+        "SHIPMENT_DESCR": "Send en del av eller alle varene i bestillingen",
+        "PAYMENT": "Innkommende betaling",
+        "PAYMENT_DESCR": "Registrer en betaling for bestillingen"
+      },
+      "LINE_ITEM": {
+        "PRODUCT": "Produkt",
+        "PRICE_WITH_TAX": "Pris inkl. skatt",
+        "DISCOUNT_WITH_TAX": "Rabatt inkl. skatt"
+      },
+      "OPERATION": {
+        "CREATED": "Opprettet",
+        "STATUS": "Status",
+        "PRICE": "Pris",
+        "PRICE_WITH_TAX": "Pris inkl. skatt",
+        "VENDOR": "Leverandør",
+        "APPROVED": "Godkjent",
+        "CANCELLED_STATE": "Kansellering: {state}",
+        "TOOLBAR": {
+          "APPLY": "OK"
+        }
+      },
+      "OPERATIONS": {
+        "ADD": "Legg til",
+        "EMPTY": "Ingenting her ennå",
+        "COLUMNS": {
+          "NUMBER": "Nummer",
+          "GATEWAY": "Betalingsgateway",
+          "METHOD": "Forsendelsesmetode",
+          "TRANSACTION": "Transaksjons-ID",
+          "STATUS": "Status",
+          "CREATED": "Opprettet",
+          "AMOUNT": "Beløp"
+        }
+      },
+      "PAYMENT": {
+        "TITLE": "Betaling {number}",
+        "NEW_TITLE": "Ny betaling",
+        "NUMBER": "Betalingsnummer",
+        "GATEWAY": "Betalingsmetode",
+        "AMOUNT": "Beløp",
+        "PURPOSE": "Formål med betalingen",
+        "CAPTURE": "Trekk betaling",
+        "REFUND": "Refunder betaling"
+      },
+      "PAYMENT_ACTION": {
+        "NEW_CAPTURE": "Trekk betaling",
+        "NEW_REFUND": "Refunder betaling",
+        "CAPTURE_TITLE": "Trekk {number}",
+        "REFUND_TITLE": "Refusjon {number}",
+        "AMOUNT": "Beløp",
+        "CAPTURE_DETAILS": "Tekst på kontoutskrift",
+        "MESSAGE": "Årsaksmelding",
+        "REASON": "Årsak",
+        "OUTER_ID": "Ekstern ID",
+        "CLOSE_TRANSACTION": "Lukk transaksjon",
+        "CLOSE_TRANSACTION_HINT": "Hindrer flere trekk mot denne betalingen"
+      },
+      "TRANSACTIONS": {
+        "TYPE": "Type",
+        "RESPONSE_CODE": "Svarkode"
+      },
+      "SHIPMENT": {
+        "TITLE": "Forsendelse {number}",
+        "NEW_TITLE": "Ny forsendelse",
+        "NUMBER": "Forsendelsesnummer",
+        "METHOD": "Forsendelsesmetode",
+        "METHOD_OPTION": "Alternativ for forsendelsesmetode",
+        "FULFILLMENT_CENTER": "Distribusjonssenter",
+        "TRACKING_NUMBER": "Sporingsnummer",
+        "TRACKING_URL": "Sporings-URL",
+        "DELIVERY_DATE": "Leveringsdato"
+      },
+      "SHIPMENT_ITEMS": {
+        "ADD": "Legg til varer",
+        "REMOVE": "Fjern",
+        "SELECT_TITLE": "Velg varer fra bestillingen",
+        "AVAILABLE": "Bestilt"
+      },
+      "ADDRESSES": {
+        "TITLE": "Adresse",
+        "NEW_TITLE": "Ny adresse",
+        "EMPTY": "Ingen adresser",
+        "ADDRESS": "Adresse",
+        "PERSON": "Navn",
+        "TYPE": "Adressetype",
+        "DESCRIPTION": "Beskrivelse",
+        "FIRST_NAME": "Fornavn",
+        "MIDDLE_NAME": "Mellomnavn",
+        "LAST_NAME": "Etternavn",
+        "COUNTRY": "Land",
+        "REGION": "Region",
+        "CITY": "Sted",
+        "POSTAL_CODE": "Postnummer",
+        "LINE1": "Adresselinje 1",
+        "LINE2": "Adresselinje 2",
+        "EMAIL": "E-post",
+        "PHONE": "Telefon"
+      },
+      "DISCOUNTS": {
+        "EMPTY": "Ingen rabatter brukt",
+        "NAME": "Kampanje",
+        "COUPON": "Kupong",
+        "AMOUNT": "Rabatt",
+        "CURRENCY": "Valuta"
+      },
+      "PROPERTIES": {
+        "EMPTY": "Ingen egenskaper er definert for denne typen",
+        "LANGUAGE": "Språk"
+      },
+      "CONFIGURATION": {
+        "PRODUCTS": "Produkter",
+        "TEXTS": "Tekster",
+        "TEXT": "Tekst",
+        "FILES": "Filer",
+        "CONTENT_TYPE": "Type",
+        "SIZE": "Størrelse"
+      },
+      "CHANGES": {
+        "EMPTY": "Ingen endringer",
+        "COLUMNS": {
+          "TYPE": "Operasjon",
+          "DATE": "Dato",
+          "USER": "Bruker",
+          "DETAIL": "Endring"
+        }
+      }
+    },
+    "CANCEL": {
+      "TITLE": "Kanseller dokument",
+      "MESSAGE": "Dokumentet blir merket som kansellert.",
+      "REASON": "Årsak",
+      "REASON_PLACEHOLDER": "Hvorfor kanselleres det? (valgfritt)",
+      "CONFIRM": "Bekreft",
+      "BACK": "Tilbake"
+    },
+    "REFUND_REASONS": {
+      "DUPLICATE": "Duplikat",
+      "FRAUDULENT": "Svindel",
+      "REQUESTEDBYCUSTOMER": "Forespurt av kunden",
+      "OTHER": "Annet"
+    },
+    "ALERTS": {
+      "CLOSE_CONFIRMATION": "Det finnes ulagrede endringer. Er du sikker på at du vil lukke?",
+      "DELETE_CONFIRMATION": "Slette {count} bestilling(er)? Dette kan ikke angres.",
+      "DELETE_ORDER_CONFIRMATION": "Slette bestilling {number}? Dette kan ikke angres.",
+      "DELETE_OPERATION_CONFIRMATION": "Fjerne dette elementet ({name}) fra bestillingen? Det slettes når bestillingen lagres.",
+      "DELETE_ADDRESS_CONFIRMATION": "Fjerne denne adressen?",
+      "CONCURRENCY_CONFLICT": "Bestillingen er endret av noen andre. Den er lastet inn på nytt; gjør endringene dine på nytt.",
+      "MEMBER_UNAVAILABLE": "Kundevisningen er ennå ikke tilgjengelig i denne administrasjonen.",
+      "MEMBER_NOT_FOUND": "Ingen kontakt er knyttet til denne kundekontoen.",
+      "PRODUCT_UNAVAILABLE": "Produktvisningen er ennå ikke tilgjengelig i denne administrasjonen.",
+      "NOTIFICATIONS_UNAVAILABLE": "Varselloggen er ennå ikke tilgjengelig i denne administrasjonen.",
+      "PAYMENT_ACTION_FAILED": "Betalingsleverandøren avviste forespørselen.",
+      "COPIED": "Kopierte {text}"
+    },
+    "DASHBOARD": {
+      "TOTAL_SALES": "Totalt salg",
+      "SALES_TRENDS": "Salgstrender",
+      "RECENT_ORDERS": "Nylige bestillinger",
+      "REVENUE": "Inntekter",
+      "ORDERS": "Bestillinger",
+      "AVG_ORDER_VALUE": "Gjennomsnittlig ordreverdi",
+      "PERIOD": "Periode",
+      "PERIODS": {
+        "YEAR": "År",
+        "QUARTER": "Kvartal",
+        "MONTH": "Måned"
+      },
+      "VIEW_ALL": "Vis alle",
+      "NO_ORDERS": "Ingen bestillinger ennå",
+      "TO_PROCESS": "Bestillinger som skal behandles",
+      "WAITING": "Bestillinger som venter på behandling",
+      "NOTHING_TO_PROCESS": "Alle bestillinger er fullført eller kansellert",
+      "OUTSTANDING_PAYMENTS": "Utestående betalinger",
+      "PAYMENT": "Betaling",
+      "AMOUNT": "Beløp",
+      "NO_OUTSTANDING_PAYMENTS": "Ingen betalinger venter",
+      "FULFILLMENT": "Ordrehåndtering",
+      "COMPLETED": "Fullført",
+      "CANCELLED": "Kansellert",
+      "COMPLETED_HINT": "Fullførte bestillinger av {count} de siste 90 dagene",
+      "CANCELLED_HINT": "Kansellerte bestillinger av {count} de siste 90 dagene"
+    },
+    "SEARCH": {
+      "GROUP_TITLE": "Bestillinger"
+    }
+  }
+}
