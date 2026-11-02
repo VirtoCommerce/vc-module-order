@@ -1,1 +1,1 @@
-You successfully created your order {{customer_order.number}}
+We have received your order {{ customer_order.number }}

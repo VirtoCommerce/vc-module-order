@@ -236,7 +236,7 @@ namespace VirtoCommerce.OrdersModule.Web
             notificationRegistrar.RegisterNotification<CancelOrderEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<InvoiceEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<NewOrderStatusEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
-            notificationRegistrar.RegisterNotification<OrderCreateEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
+            notificationRegistrar.RegisterNotification<OrderCreateEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory).WithLayout("Default");
             notificationRegistrar.RegisterNotification<OrderPaidEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<OrderSentEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
             notificationRegistrar.RegisterNotification<PaymentStatusChangedEmailNotification>().WithTemplatesFromPath(defaultTemplatesDirectory);
