@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Ilmoitus luodusta tilauksesta",
-      "description": "Asiakas saa sähköposti-ilmoituksen lähetettyään tietonsa Frontend-sovelluksen lomakkeella, esimerkiksi yhteydenottolomakkeella"
+      "description": "Asiakas saa sähköposti-ilmoituksen, kun hän tekee tilauksen"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Ilmoitus tilauksen maksusta",

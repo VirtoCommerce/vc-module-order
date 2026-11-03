@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Avisering om skapad beställning",
-      "description": "Kunden får en avisering via e-post efter att ha skickat in sina uppgifter via ett formulär i Frontend-applikationen, t.ex. via kontaktformuläret"
+      "description": "Kunden får ett e-postmeddelande när hen lägger en beställning"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Avisering om betalning av beställning",

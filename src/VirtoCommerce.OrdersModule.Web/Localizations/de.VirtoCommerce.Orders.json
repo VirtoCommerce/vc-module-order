@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Benachrichtigung über erstellte Bestellung",
-      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, nachdem er seine Daten über ein Formular in der Frontend-Anwendung übermittelt hat, z.B. über das Kontaktformular"
+      "description": "Der Kunde erhält eine E-Mail-Benachrichtigung, wenn er eine Bestellung aufgibt"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Benachrichtigung über Bestellungszahlung",

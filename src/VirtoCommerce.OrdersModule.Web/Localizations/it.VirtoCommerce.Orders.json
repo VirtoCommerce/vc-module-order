@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Notifica su ordine creato",
-      "description": "Il cliente riceve una notifica via email dopo aver inviato i propri dati attraverso un modulo nell'Applicazione Frontend, ad esempio, attraverso il modulo Contattaci"
+      "description": "Il cliente riceve una notifica via e-mail quando effettua un ordine"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Notifica su pagamento ordine",

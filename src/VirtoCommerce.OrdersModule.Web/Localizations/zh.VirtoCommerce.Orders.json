@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "订单创建通知",
-      "description": "客户通过前端应用程序中的表单（如联系我们表单）提交详细信息后收到电子邮件通知"
+      "description": "客户下单后会收到电子邮件通知"
     },
     "OrderPaidEmailNotification": {
       "displayName": "订单支付通知",

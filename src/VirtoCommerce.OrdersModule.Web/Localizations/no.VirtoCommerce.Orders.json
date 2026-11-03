@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Varsel om opprettet bestilling",
-      "description": "Kunden får et varsel på e-post etter å ha sendt inn opplysningene sine via et skjema i Frontend-applikasjonen, f.eks. via kontaktskjemaet"
+      "description": "Kunden får en e-postvarsling når de legger inn en bestilling"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Varsel om betaling av bestilling",

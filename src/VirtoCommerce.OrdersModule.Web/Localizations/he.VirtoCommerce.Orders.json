@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "התראה על יצירת הזמנה",
-      "description": "הלקוח מקבל התראה בדוא״ל לאחר שליחת הפרטים בטופס באפליקציית החזית, למשל בטופס 'צור קשר'"
+      "description": "הלקוח מקבל הודעה בדוא\"ל כאשר הוא מבצע הזמנה"
     },
     "OrderPaidEmailNotification": {
       "displayName": "התראה על תשלום הזמנה",

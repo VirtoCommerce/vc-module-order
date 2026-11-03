@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "注文作成の通知",
-      "description": "顧客がフロントエンドアプリケーションのフォーム（例：お問い合わせフォーム）を通じて詳細を送信した後、メール通知が送信されます"
+      "description": "顧客が注文すると、メール通知が送信されます"
     },
     "OrderPaidEmailNotification": {
       "displayName": "注文支払いの通知",

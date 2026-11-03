@@ -661,7 +661,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Powiadomienie o utworzonym zamówieniu",
-      "description": "Klient otrzymuje powiadomienie e-mail po przesłaniu swoich danych przez formularz w Aplikacji Frontendowej, np. przez formularz Kontakt"
+      "description": "Klient otrzymuje powiadomienie e-mail po złożeniu zamówienia"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Powiadomienie o płatności za zamówienie",

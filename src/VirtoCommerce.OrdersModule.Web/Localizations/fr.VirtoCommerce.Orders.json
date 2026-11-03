@@ -662,7 +662,7 @@
     },
     "OrderCreateEmailNotification": {
       "displayName": "Notification de création de commande",
-      "description": "Le client reçoit une notification par e-mail après avoir soumis ses coordonnées via un formulaire dans l'application Frontend, par exemple via le formulaire de contact"
+      "description": "Le client reçoit une notification par e-mail lorsqu'il passe une commande"
     },
     "OrderPaidEmailNotification": {
       "displayName": "Notification de paiement de commande",
