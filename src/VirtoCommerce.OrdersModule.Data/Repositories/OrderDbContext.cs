@@ -32,6 +32,7 @@ namespace VirtoCommerce.OrdersModule.Data.Repositories
                 builder.ToAuditableEntityTable("CustomerOrder");
                 builder.Property(x => x.TaxPercentRate).HasColumnType("decimal(18,4)");
                 builder.HasIndex(x => x.OuterId);
+                builder.HasIndex(x => new { x.CustomerId, x.CreatedDate });
             });
 
             #endregion
