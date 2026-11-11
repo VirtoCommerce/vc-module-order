@@ -17,7 +17,7 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.5")
+                .HasAnnotation("ProductVersion", "10.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -594,6 +594,8 @@ namespace VirtoCommerce.OrdersModule.Data.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OuterId");
+
+                    b.HasIndex("CustomerId", "CreatedDate");
 
                     b.ToTable("CustomerOrder", (string)null);
                 });
