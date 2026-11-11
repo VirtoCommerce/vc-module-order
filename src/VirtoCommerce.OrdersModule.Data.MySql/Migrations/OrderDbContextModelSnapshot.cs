@@ -616,6 +616,8 @@ namespace VirtoCommerce.OrdersModule.Data.MySql.Migrations
 
                     b.HasIndex("OuterId");
 
+                    b.HasIndex("CustomerId", "CreatedDate");
+
                     b.ToTable("CustomerOrder", (string)null);
                 });
 

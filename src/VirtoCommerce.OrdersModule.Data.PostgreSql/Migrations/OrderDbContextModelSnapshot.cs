@@ -595,6 +595,8 @@ namespace VirtoCommerce.OrdersModule.Data.PostgreSql.Migrations
 
                     b.HasIndex("OuterId");
 
+                    b.HasIndex("CustomerId", "CreatedDate");
+
                     b.ToTable("CustomerOrder", (string)null);
                 });
 
