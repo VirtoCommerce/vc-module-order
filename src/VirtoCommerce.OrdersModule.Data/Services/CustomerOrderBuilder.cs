@@ -280,6 +280,7 @@ namespace VirtoCommerce.OrdersModule.Data.Services
             retVal.VendorId = lineItem.VendorId;
 
             retVal.IsConfigured = lineItem.IsConfigured;
+            retVal.PurchaseOrderLineNumber = lineItem.PurchaseOrderLineNumber;
 
             if (lineItem.DynamicProperties != null)
             {
