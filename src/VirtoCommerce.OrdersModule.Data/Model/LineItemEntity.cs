@@ -110,6 +110,9 @@ namespace VirtoCommerce.OrdersModule.Data.Model
 
         public bool IsConfigured { get; set; }
 
+        [StringLength(128)]
+        public string PurchaseOrderLineNumber { get; set; }
+
         #region NavigationProperties
 
         public string CustomerOrderId { get; set; }
@@ -185,6 +188,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             lineItem.FulfillmentCenterName = FulfillmentCenterName;
             lineItem.VendorId = VendorId;
             lineItem.IsConfigured = IsConfigured;
+            lineItem.PurchaseOrderLineNumber = PurchaseOrderLineNumber;
 
             lineItem.Discounts = Discounts.Select(x => x.ToModel(AbstractTypeFactory<Discount>.TryCreateInstance())).ToList();
             lineItem.TaxDetails = TaxDetails.Select(x => x.ToModel(AbstractTypeFactory<TaxDetail>.TryCreateInstance())).ToList();
@@ -262,6 +266,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             VendorId = lineItem.VendorId;
 
             IsConfigured = lineItem.IsConfigured;
+            PurchaseOrderLineNumber = lineItem.PurchaseOrderLineNumber;
 
             if (lineItem.Discounts != null)
             {
@@ -318,6 +323,7 @@ namespace VirtoCommerce.OrdersModule.Data.Model
             target.VendorId = VendorId;
             target.IsConfigured = IsConfigured;
             target.IsDiscountAmountRounded = IsDiscountAmountRounded;
+            target.PurchaseOrderLineNumber = PurchaseOrderLineNumber;
 
             target.TaxPercentRate = TaxPercentRate;
             target.Price = Price;
