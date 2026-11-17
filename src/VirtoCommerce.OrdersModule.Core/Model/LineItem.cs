@@ -115,6 +115,8 @@ namespace VirtoCommerce.OrdersModule.Core.Model
 
         public bool IsConfigured { get; set; }
 
+        public string PurchaseOrderLineNumber { get; set; }
+
         #region IHaveDimension Members
 
         public string WeightUnit { get; set; }
