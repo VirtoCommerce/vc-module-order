@@ -15,6 +15,8 @@
       :total-count="totalCount"
       :pagination="pagination"
       :searchable="true"
+      search-bar
+      :search-views="searchViews"
       :state-key="'ORDERS'"
       :active-item-id="activeItemId"
       :show-all-columns="!activeItemId"
@@ -27,25 +29,6 @@
       @pagination-click="pagination.goToPage"
       @filter="onFilter"
     >
-      <template #search-header-actions>
-        <div class="orders-saved-filter">
-          <VcSelect
-            :model-value="currentId"
-            :options="savedFilterOptions"
-            :placeholder="$t('ORDERS.PAGES.LIST.SAVED_FILTERS.PLACEHOLDER')"
-            size="small"
-            @update:model-value="onSavedFilterPicked"
-          />
-          <VcButton
-            v-if="currentFilter && !currentFilter.predefined"
-            icon="lucide-pencil"
-            variant="ghost"
-            size="sm"
-            :aria-label="$t('ORDERS.PAGES.LIST.SAVED_FILTERS.EDIT')"
-            @click="openFilter(currentFilter.id)"
-          />
-        </div>
-      </template>
       <VcColumn
         id="number"
         :title="$t('ORDERS.PAGES.LIST.COLUMNS.NUMBER')"
@@ -145,18 +128,20 @@ import {
   usePopup,
   notification,
   usePermissions,
+  type GlobalFilterConfig,
   type IBladeToolbar,
+  type SearchBarField,
+  type SearchBarView,
 } from "@vc-shell/framework";
-import { VcBlade, VcButton, VcColumn, VcDataTable, VcSelect, VcStatus } from "@vc-shell/framework/ui";
+import { VcBlade, VcColumn, VcDataTable, VcStatus } from "@vc-shell/framework/ui";
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import useOrdersList from "../composables/useList";
-import { useSavedFilters, predefinedFilters, type SavedOrderFilter } from "../composables/useSavedFilters";
 import { useSettingValues } from "../composables/useSettingValues";
 import { statusVariant } from "../utils/status";
 import { useMoney } from "../utils/operations";
 import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToolbar";
-import { useStores } from "../composables/useStores";
+import { STORE_READ, useStores } from "../composables/useStores";
 import { indexedSearchEnabled } from "../api";
 import { requestedKeyword } from "../search";
 import type { CustomerOrder, CustomerOrderSearchCriteria } from "../../api_client/virtocommerce.orders";
@@ -236,32 +221,46 @@ indexedSearchEnabled()
   .then((x) => (indexed.value = x))
   .catch(() => undefined);
 
-// filter panel: statuses, stores, created range, prototypes
+// vc-shell's search bar (Admin Shell 3.1099.0+): filters as chips, built-in views and the user's own saved views
 const statuses = useSettingValues("Order.Status");
 const stores = useStores();
 const panelFilters = ref<CustomerOrderSearchCriteria>({});
 
-const globalFilters = computed(() => [
-  {
-    id: "statuses",
-    label: t("ORDERS.PAGES.LIST.FILTERS.STATUS"),
-    filter: { options: statuses.value.map((s) => ({ value: s.id, label: s.title })), multiple: true },
-  },
-  {
-    id: "storeIds",
-    label: t("ORDERS.PAGES.LIST.FILTERS.STORE"),
-    filter: { options: stores.value.map((s) => ({ value: s.id!, label: s.name ?? s.id! })), multiple: true },
-  },
-  {
-    id: "dateRange",
-    label: t("ORDERS.PAGES.LIST.FILTERS.CREATED"),
-    filter: { range: ["startDate", "endDate"] as [string, string] },
-  },
-  {
-    id: "withPrototypes",
-    label: t("ORDERS.PAGES.LIST.FILTERS.PROTOTYPES"),
-    filter: { options: [{ value: "true", label: t("ORDERS.PAGES.LIST.FILTERS.WITH_PROTOTYPES") }] },
-  },
+// VcDataTable hands its global filters to the bar as they are, but still types them as the older filters, without toggles
+const tableFilters = (fields: SearchBarField[]) => fields as GlobalFilterConfig[];
+
+const globalFilters = computed(() =>
+  tableFilters([
+    {
+      id: "statuses",
+      label: t("ORDERS.PAGES.LIST.FILTERS.STATUS"),
+      filter: { options: statuses.value.map((s) => ({ value: s.id, label: s.title })), multiple: true },
+    },
+    // the store list needs store:read (VCST-6547): without it there is nothing to pick
+    ...(hasAccess(STORE_READ)
+      ? [
+          {
+            id: "storeIds",
+            label: t("ORDERS.PAGES.LIST.FILTERS.STORE"),
+            filter: { options: stores.value.map((s) => ({ value: s.id!, label: s.name ?? s.id! })), multiple: true },
+          },
+        ]
+      : []),
+    {
+      id: "created",
+      label: t("ORDERS.PAGES.LIST.FILTERS.CREATED"),
+      filter: { range: ["startDate", "endDate"] as [string, string] },
+    },
+    { id: "withPrototypes", label: t("ORDERS.PAGES.LIST.FILTERS.WITH_PROTOTYPES"), filter: { toggle: true } },
+  ]),
+);
+
+// the views everyone gets (the AngularJS list's predefined periods); users save their own in the bar
+const searchViews = computed<SearchBarView[]>(() => [
+  { id: "new", name: t("ORDERS.PAGES.LIST.VIEWS.NEW"), values: { statuses: ["New"] } },
+  { id: "today", name: t("ORDERS.PAGES.LIST.VIEWS.TODAY"), values: { created: { relative: "today" } } },
+  { id: "last7", name: t("ORDERS.PAGES.LIST.VIEWS.LAST_7_DAYS"), values: { created: { relative: "7d" } } },
+  { id: "last30", name: t("ORDERS.PAGES.LIST.VIEWS.LAST_30_DAYS"), values: { created: { relative: "30d" } } },
 ]);
 
 function asArray(v: unknown) {
@@ -269,57 +268,32 @@ function asArray(v: unknown) {
   return v ? [String(v)] : undefined;
 }
 
+/**
+ * A date range's days as the instants a search takes: from the start of the first day to the end of the last, in the
+ * user's time zone. The bar sends whole days ("2026-11-10"), which `new Date` would read as UTC midnight.
+ */
+function day(value: unknown, endOfDay: boolean) {
+  if (typeof value !== "string" || !value) return undefined;
+  const ymd = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!ymd) return new Date(value);
+  const [y, m, d] = ymd.slice(1).map(Number);
+  return endOfDay ? new Date(y, m - 1, d, 23, 59, 59, 999) : new Date(y, m - 1, d);
+}
+
 function onFilter(event: { filters: Record<string, unknown> }) {
   const f = event.filters;
   panelFilters.value = {
     statuses: asArray(f.statuses)?.length ? asArray(f.statuses) : undefined,
     storeIds: asArray(f.storeIds)?.length ? asArray(f.storeIds) : undefined,
-    startDate: f.startDate ? new Date(f.startDate as string) : undefined,
-    endDate: f.endDate ? new Date(f.endDate as string) : undefined,
+    startDate: day(f.startDate, false),
+    endDate: day(f.endDate, true),
     withPrototypes: f.withPrototypes ? true : undefined,
   };
   reloadFirstPage();
 }
 
-// saved filters (the AngularJS filter dropdown): predefined periods, the user's filters, "new filter"
-const { filters: savedFilters, currentId, find } = useSavedFilters();
-const NEW_FILTER = "__new";
-const currentFilter = computed(() => find(currentId.value));
-const savedFilterOptions = computed(() => [
-  ...predefinedFilters().map((f) => ({ id: f.id, title: t(`ORDERS.PAGES.LIST.SAVED_FILTERS.${f.name}`) })),
-  ...savedFilters.value.map((f) => ({ id: f.id, title: f.name })),
-  { id: NEW_FILTER, title: t("ORDERS.PAGES.LIST.SAVED_FILTERS.NEW") },
-]);
-
-function onSavedFilterPicked(id: unknown) {
-  if (id === NEW_FILTER) {
-    openFilter();
-    return;
-  }
-  currentId.value = (id as string) || undefined;
-  reloadFirstPage();
-}
-
-const openFilter = (filterId?: string) => openBlade({ name: "OrderFilterDetails", options: { filterId } });
-
-function savedCriteria(f?: SavedOrderFilter): CustomerOrderSearchCriteria {
-  if (!f) return {};
-  return {
-    statuses: f.statuses?.length ? f.statuses : undefined,
-    storeIds: f.storeIds?.length ? f.storeIds : undefined,
-    customerIds: f.customerIds?.length ? f.customerIds : undefined,
-    // sent too, as the AngularJS list did: with no accounts found the server filters by it (no orders), not by nothing
-    customerId: f.customerId || undefined,
-    organizationId: f.organizationId || undefined,
-    employeeId: f.employeeId || undefined,
-    startDate: f.startDate ? new Date(f.startDate) : undefined,
-    endDate: f.endDate ? new Date(f.endDate) : undefined,
-    withPrototypes: f.withPrototypes || undefined,
-  };
-}
-
 function load() {
-  const criteria = { ...savedCriteria(currentFilter.value), ...stripEmpty(panelFilters.value) };
+  const criteria = stripEmpty(panelFilters.value);
   const filtered = Object.values(criteria).some((v) => v !== undefined);
   return getItems({
     ...criteria,
@@ -465,10 +439,4 @@ exposeToChildren({ reload, reloadFirstPage });
   color: var(--neutrals-900);
 }
 
-.orders-saved-filter {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  min-width: 200px;
-}
 </style>

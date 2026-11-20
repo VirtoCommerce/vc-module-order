@@ -59,33 +59,19 @@
           "COPY_NUMBER": "Copier le numéro",
           "FILTER_BY": "Filtrer par « {value} »"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Sélectionner un filtre",
-          "EDIT": "Modifier le filtre",
-          "NEW": "+ Nouveau filtre",
+        "VIEWS": {
+          "NEW": "Nouvelles commandes",
           "TODAY": "Aujourd'hui",
-          "LAST_DAY": "Dernier jour",
-          "LAST_WEEK": "La semaine dernière",
-          "LAST_MONTH": "Le mois dernier",
-          "LAST_YEAR": "L'année dernière"
+          "LAST_7_DAYS": "7 derniers jours",
+          "LAST_30_DAYS": "30 derniers jours"
         },
         "EMPTY": "Aucune commande trouvée",
         "FILTERS": {
           "STATUS": "Statut",
           "STORE": "Magasin",
           "CREATED": "Créée",
-          "PROTOTYPES": "Prototypes",
           "WITH_PROTOTYPES": "Inclure les prototypes"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "Nouveau filtre",
-        "NAME": "Nom du filtre",
-        "UNNAMED": "Filtre sans nom",
-        "ALL": "Tous",
-        "FROM": "Du",
-        "TO": "Au",
-        "APPLY": "Appliquer le filtre"
       },
       "DETAILS": {
         "TITLE": "Commande",

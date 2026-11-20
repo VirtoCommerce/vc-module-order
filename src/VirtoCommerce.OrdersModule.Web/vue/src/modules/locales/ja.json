@@ -59,33 +59,19 @@
           "COPY_NUMBER": "番号をコピー",
           "FILTER_BY": "「{value}」で絞り込む"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "フィルターを選択",
-          "EDIT": "フィルターを編集",
-          "NEW": "+ 新しいフィルター",
+        "VIEWS": {
+          "NEW": "新規注文",
           "TODAY": "今日",
-          "LAST_DAY": "過去 1 日",
-          "LAST_WEEK": "先週",
-          "LAST_MONTH": "先月",
-          "LAST_YEAR": "昨年"
+          "LAST_7_DAYS": "過去 7 日間",
+          "LAST_30_DAYS": "過去 30 日間"
         },
         "EMPTY": "注文が見つかりません",
         "FILTERS": {
           "STATUS": "ステータス",
           "STORE": "店舗",
           "CREATED": "作成日",
-          "PROTOTYPES": "プロトタイプ",
           "WITH_PROTOTYPES": "プロトタイプを含める"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "新しいフィルター",
-        "NAME": "フィルター名",
-        "UNNAMED": "名前のないフィルター",
-        "ALL": "すべて",
-        "FROM": "開始",
-        "TO": "終了",
-        "APPLY": "フィルターを適用"
       },
       "DETAILS": {
         "TITLE": "注文",

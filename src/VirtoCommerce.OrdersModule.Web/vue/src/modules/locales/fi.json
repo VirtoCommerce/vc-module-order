@@ -59,33 +59,19 @@
           "COPY_NUMBER": "Kopioi numero",
           "FILTER_BY": "Suodata: ”{value}”"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Valitse suodatin",
-          "EDIT": "Muokkaa suodatinta",
-          "NEW": "+ Uusi suodatin",
+        "VIEWS": {
+          "NEW": "Uudet tilaukset",
           "TODAY": "Tänään",
-          "LAST_DAY": "Viimeinen vuorokausi",
-          "LAST_WEEK": "Viime viikko",
-          "LAST_MONTH": "Viime kuukausi",
-          "LAST_YEAR": "Viime vuosi"
+          "LAST_7_DAYS": "Viimeiset 7 päivää",
+          "LAST_30_DAYS": "Viimeiset 30 päivää"
         },
         "EMPTY": "Tilauksia ei löytynyt",
         "FILTERS": {
           "STATUS": "Tila",
           "STORE": "Kauppa",
           "CREATED": "Luotu",
-          "PROTOTYPES": "Prototyypit",
           "WITH_PROTOTYPES": "Sisällytä prototyypit"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "Uusi suodatin",
-        "NAME": "Suodattimen nimi",
-        "UNNAMED": "Nimetön suodatin",
-        "ALL": "Kaikki",
-        "FROM": "Alkaen",
-        "TO": "Asti",
-        "APPLY": "Käytä suodatinta"
       },
       "DETAILS": {
         "TITLE": "Tilaus",

@@ -18,4 +18,3 @@ export { default as OrderDiscounts } from "./discounts.vue";
 export { default as OrderDynamicProperties } from "./dynamic-properties.vue";
 export { default as OrderChanges } from "./changes.vue";
 export { default as OrdersMemberOrders } from "./member-orders.vue";
-export { default as OrderFilterDetails } from "./filter-details.vue";

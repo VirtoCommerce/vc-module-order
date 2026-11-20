@@ -59,33 +59,19 @@
           "COPY_NUMBER": "Kopier nummer",
           "FILTER_BY": "Filtrer etter «{value}»"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Velg filter",
-          "EDIT": "Rediger filter",
-          "NEW": "+ Nytt filter",
+        "VIEWS": {
+          "NEW": "Nye bestillinger",
           "TODAY": "I dag",
-          "LAST_DAY": "Siste døgn",
-          "LAST_WEEK": "Siste uke",
-          "LAST_MONTH": "Siste måned",
-          "LAST_YEAR": "Siste år"
+          "LAST_7_DAYS": "Siste 7 dager",
+          "LAST_30_DAYS": "Siste 30 dager"
         },
         "EMPTY": "Fant ingen bestillinger",
         "FILTERS": {
           "STATUS": "Status",
           "STORE": "Butikk",
           "CREATED": "Opprettet",
-          "PROTOTYPES": "Prototyper",
           "WITH_PROTOTYPES": "Inkluder prototyper"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "Nytt filter",
-        "NAME": "Filternavn",
-        "UNNAMED": "Navnløst filter",
-        "ALL": "Alle",
-        "FROM": "Fra",
-        "TO": "Til",
-        "APPLY": "Bruk filter"
       },
       "DETAILS": {
         "TITLE": "Bestilling",
