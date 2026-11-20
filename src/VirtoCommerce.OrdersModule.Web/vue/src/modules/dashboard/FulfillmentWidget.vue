@@ -74,8 +74,19 @@ onMounted(load);
 
 const percent = (part: number) => (total.value ? Math.round((part / total.value) * 100) : 0);
 
+// the host's theme tokens, so the bars follow light and dark; the fallbacks are the light values for a host without them
 const bars = computed(() => [
-  { key: "COMPLETED", percent: percent(completed.value), track: "#D6EBDD", fill: "#3F8F5B" },
-  { key: "CANCELLED", percent: percent(cancelled.value), track: "#FBEFC8", fill: "#F0AD4E" },
+  {
+    key: "COMPLETED",
+    percent: percent(completed.value),
+    track: "var(--color-success-100, #D6EBDD)",
+    fill: "var(--color-success-500, #3F8F5B)",
+  },
+  {
+    key: "CANCELLED",
+    percent: percent(cancelled.value),
+    track: "var(--color-warning-100, #FBEFC8)",
+    fill: "var(--color-warning-500, #F0AD4E)",
+  },
 ]);
 </script>
