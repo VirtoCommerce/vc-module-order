@@ -51,8 +51,10 @@
       <VcColumn
         id="createdDate"
         :title="$t('ORDERS.PAGES.OPERATIONS.COLUMNS.CREATED')"
-        type="date"
-      />
+        min-width="120px"
+      >
+        <template #body="{ data }"><DateTimeCell :value="data.createdDate" /></template>
+      </VcColumn>
       <!-- formatted here: the framework's money cell shows a 0 amount as "Not set" -->
       <VcColumn
         id="amount"
@@ -69,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import DateTimeCell from "../components/DateTimeCell.vue";
 // payments / shipments of the order, captures / refunds of a payment (the AngularJS operations tree, per branch)
 import { useBlade, type IBladeToolbar } from "@vc-shell/framework";
 import { VcBlade, VcColumn, VcDataTable, VcStatus } from "@vc-shell/framework/ui";

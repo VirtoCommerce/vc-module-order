@@ -91,8 +91,7 @@
             <VcField
               v-else
               :label="$t('ORDERS.PAGES.OPERATION.CREATED')"
-              :model-value="entity.createdDate"
-              type="date"
+              :model-value="dateTime(entity.createdDate)"
             />
           </VcCol>
         </VcRow>
@@ -180,6 +179,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDateTime } from "../utils/dateTime";
 import { useBlade, useBladeWidgets, usePermissions, type IBladeToolbar } from "@vc-shell/framework";
 import {
   VcBlade,
@@ -206,6 +206,10 @@ import { useDynamicPropertyCount } from "../composables/useDynamicProps";
 import OperationTotals from "../components/OperationTotals.vue";
 import { statusVariant } from "../utils/status";
 import { searchAnyMember, searchPaymentMethods, type NamedEntity } from "../api";
+
+// Created with its time, in the user's regional format and time zone (VCST-6559)
+const { dateTime } = useDateTime();
+
 
 defineBlade({ name: "OrderPaymentDetails" });
 

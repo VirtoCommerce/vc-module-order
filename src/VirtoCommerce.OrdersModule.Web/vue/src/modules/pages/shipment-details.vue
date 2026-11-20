@@ -108,8 +108,7 @@
             <VcField
               v-else
               :label="$t('ORDERS.PAGES.OPERATION.CREATED')"
-              :model-value="entity.createdDate"
-              type="date"
+              :model-value="dateTime(entity.createdDate)"
             />
           </VcCol>
         </VcRow>
@@ -216,6 +215,7 @@
 </template>
 
 <script setup lang="ts">
+import { useDateTime } from "../utils/dateTime";
 import { useBlade, useBladeWidgets, usePermissions } from "@vc-shell/framework";
 import {
   VcBlade,
@@ -249,6 +249,10 @@ import {
   searchShippingMethods,
   type NamedEntity,
 } from "../api";
+
+// Created with its time, in the user's regional format and time zone (VCST-6559)
+const { dateTime } = useDateTime();
+
 
 defineBlade({ name: "OrderShipmentDetails" });
 

@@ -110,8 +110,7 @@
           <VcCol>
             <VcField
               :label="$t('ORDERS.PAGES.DETAILS.FIELDS.CREATED')"
-              :model-value="item.createdDate"
-              type="date"
+              :model-value="dateTime(item.createdDate)"
             />
           </VcCol>
           <VcCol>
@@ -307,6 +306,8 @@
 </template>
 
 <script setup lang="ts">
+import { useDateTime } from "../utils/dateTime";
+
 /**
  * Extension point "orders-details-toolbar": other modules add toolbar commands to the order blade
  * (legacy: toolbarService.register(..., "virtoCommerce.orderModule.operationDetailController") for the order, e.g.
@@ -371,6 +372,9 @@ import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToo
 import { statusVariant } from "../utils/status";
 import { employeeName, getMemberByUserId, searchEmployees, type NamedEntity } from "../api";
 import type { CustomerOrder, OrderLineItem } from "../../api_client/virtocommerce.orders";
+
+// Created with its time, in the user's regional format and time zone (VCST-6559)
+const { dateTime } = useDateTime();
 
 defineBlade({
   url: "/order",

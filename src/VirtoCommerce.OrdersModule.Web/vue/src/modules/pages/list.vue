@@ -66,9 +66,11 @@
       <VcColumn
         id="createdDate"
         :title="$t('ORDERS.PAGES.LIST.COLUMNS.CREATED_DATE')"
-        type="date"
+        min-width="120px"
         sortable
-      />
+      >
+        <template #body="{ data }"><DateTimeCell :value="data.createdDate" /></template>
+      </VcColumn>
       <VcColumn
         id="isApproved"
         :title="$t('ORDERS.PAGES.LIST.COLUMNS.CONFIRMED')"
@@ -121,6 +123,7 @@
 </template>
 
 <script setup lang="ts">
+import DateTimeCell from "../components/DateTimeCell.vue";
 /**
  * Extension point "orders-list-toolbar": other modules add toolbar commands to this list
  * (legacy: toolbarService.register(..., "virtoCommerce.orderModule.customerOrderListController"), e.g. AvaTax's
