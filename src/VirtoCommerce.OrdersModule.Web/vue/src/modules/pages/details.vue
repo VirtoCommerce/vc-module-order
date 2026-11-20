@@ -71,7 +71,14 @@
         </VcRow>
         <VcRow class="tw-gap-4">
           <VcCol>
+            <!-- without store:read the store list can't be read (VCST-6547): the order's own store, as text -->
+            <VcField
+              v-if="!hasAccess(STORE_READ)"
+              :label="$t('ORDERS.PAGES.DETAILS.FIELDS.STORE')"
+              :model-value="item.storeName || item.storeId"
+            />
             <Field
+              v-else
               v-slot="{ errorMessage, handleChange, errors }"
               name="storeId"
               rules="required"
@@ -366,7 +373,7 @@ import { provideOrder } from "../composables/useOrder";
 import { useCancelPrompt } from "../composables/useCancelPrompt";
 import { useDynamicPropertyCount } from "../composables/useDynamicProps";
 import { useSettingValues } from "../composables/useSettingValues";
-import { useStores } from "../composables/useStores";
+import { STORE_READ, useStores } from "../composables/useStores";
 import { applyCancel, assetUrl, canCancel, clone, isLocked, useMoney } from "../utils/operations";
 import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToolbar";
 import { statusVariant } from "../utils/status";
