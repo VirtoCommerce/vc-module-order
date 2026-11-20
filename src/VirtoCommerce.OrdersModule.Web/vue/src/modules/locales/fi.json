@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "Tila",
           "STORE": "Kauppa",
-          "CREATED": "Luotu",
-          "WITH_PROTOTYPES": "Sisällytä prototyypit"
+          "CREATED": "Luotu"
         }
       },
       "DETAILS": {

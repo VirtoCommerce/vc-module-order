@@ -236,6 +236,11 @@ const globalFilters = computed(() =>
       label: t("ORDERS.PAGES.LIST.FILTERS.STATUS"),
       filter: { options: statuses.value.map((s) => ({ value: s.id, label: s.title })), multiple: true },
     },
+    {
+      id: "created",
+      label: t("ORDERS.PAGES.LIST.FILTERS.CREATED"),
+      filter: { range: ["startDate", "endDate"] as [string, string] },
+    },
     // the store list needs store:read (VCST-6547): without it there is nothing to pick
     ...(hasAccess(STORE_READ)
       ? [
@@ -246,12 +251,6 @@ const globalFilters = computed(() =>
           },
         ]
       : []),
-    {
-      id: "created",
-      label: t("ORDERS.PAGES.LIST.FILTERS.CREATED"),
-      filter: { range: ["startDate", "endDate"] as [string, string] },
-    },
-    { id: "withPrototypes", label: t("ORDERS.PAGES.LIST.FILTERS.WITH_PROTOTYPES"), filter: { toggle: true } },
   ]),
 );
 
@@ -287,7 +286,6 @@ function onFilter(event: { filters: Record<string, unknown> }) {
     storeIds: asArray(f.storeIds)?.length ? asArray(f.storeIds) : undefined,
     startDate: day(f.startDate, false),
     endDate: day(f.endDate, true),
-    withPrototypes: f.withPrototypes ? true : undefined,
   };
   reloadFirstPage();
 }

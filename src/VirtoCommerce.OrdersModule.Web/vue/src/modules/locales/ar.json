@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "الحالة",
           "STORE": "المتجر",
-          "CREATED": "تاريخ الإنشاء",
-          "WITH_PROTOTYPES": "تضمين النماذج الأولية"
+          "CREATED": "تاريخ الإنشاء"
         }
       },
       "DETAILS": {

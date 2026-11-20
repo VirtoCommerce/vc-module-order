@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "状态",
           "STORE": "商店",
-          "CREATED": "创建时间",
-          "WITH_PROTOTYPES": "包括原型"
+          "CREATED": "创建时间"
         }
       },
       "DETAILS": {

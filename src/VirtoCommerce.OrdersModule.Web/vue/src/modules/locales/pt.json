@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "Estado",
           "STORE": "Loja",
-          "CREATED": "Criada",
-          "WITH_PROTOTYPES": "Incluir protótipos"
+          "CREATED": "Criada"
         }
       },
       "DETAILS": {

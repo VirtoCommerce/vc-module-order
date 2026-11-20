@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "סטטוס",
           "STORE": "חנות",
-          "CREATED": "תאריך יצירה",
-          "WITH_PROTOTYPES": "הכללת אבות טיפוס"
+          "CREATED": "תאריך יצירה"
         }
       },
       "DETAILS": {

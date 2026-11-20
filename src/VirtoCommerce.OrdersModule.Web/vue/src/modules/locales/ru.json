@@ -69,8 +69,7 @@
         "FILTERS": {
           "STATUS": "Статус",
           "STORE": "Магазин",
-          "CREATED": "Создан",
-          "WITH_PROTOTYPES": "Включить прототипы"
+          "CREATED": "Создан"
         }
       },
       "DETAILS": {
