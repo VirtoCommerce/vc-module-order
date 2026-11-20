@@ -1,4 +1,5 @@
 using System.Linq;
+using VirtoCommerce.OrdersModule.Core.Extensions;
 using VirtoCommerce.OrdersModule.Core.Model;
 using Xunit;
 
@@ -188,6 +189,30 @@ namespace VirtoCommerce.OrdersModule.Tests
 
             Assert.Equal(42m, reduced.InPayments.First().Sum);
             Assert.True(reduced.InPayments.First().WithPrices);
+        }
+
+        // VCST-6483: the API returns a payment's captures and refunds twice, in Captures / Refunds and in
+        // ChildrenOperations; a clone reduced for a user without order:read_prices must hide the amounts in both
+        [Fact]
+        public void Clone_PaymentWithCapturesAndRefunds_ReducedCloneHidesChildAmountsAndOriginalKeepsThem()
+        {
+            var payment = GetPayment();
+            payment.Captures = [new Capture { Id = "captureId", Amount = 100m }];
+            payment.Refunds = [new Refund { Id = "refundId", Amount = 20m }];
+            payment.FillChildOperations();
+
+            var clone = (PaymentIn)payment.Clone();
+            clone.ReduceDetails(WithoutPrices);
+
+            var children = clone.ChildrenOperations.ToList();
+            Assert.Contains(children, x => ReferenceEquals(x, clone.Captures.First()));
+            Assert.Contains(children, x => ReferenceEquals(x, clone.Refunds.First()));
+            Assert.Equal(0m, children.OfType<Capture>().Single().Amount);
+            Assert.Equal(0m, children.OfType<Refund>().Single().Amount);
+
+            // the original (cached) payment is untouched
+            Assert.Equal(100m, payment.Captures.First().Amount);
+            Assert.Equal(20m, payment.Refunds.First().Amount);
         }
     }
 }

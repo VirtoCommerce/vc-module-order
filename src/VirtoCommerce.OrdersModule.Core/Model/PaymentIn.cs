@@ -196,6 +196,10 @@ namespace VirtoCommerce.OrdersModule.Core.Model
             result.Refunds = Refunds?.Select(x => x.Clone()).OfType<Refund>().ToList();
             result.Captures = Captures?.Select(x => x.Clone()).OfType<Capture>().ToList();
 
+            // the clone's children are its own captures and refunds, not the original's (which may be cached),
+            // so reducing the clone hides their amounts too (as CustomerOrder.Clone does)
+            result.FillChildOperations();
+
             return result;
         }
 
