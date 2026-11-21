@@ -71,7 +71,14 @@
         </VcRow>
         <VcRow class="tw-gap-4">
           <VcCol>
+            <!-- without store:read the store list can't be read (VCST-6547): the order's own store, as text -->
+            <VcField
+              v-if="!hasAccess(STORE_READ)"
+              :label="$t('ORDERS.PAGES.DETAILS.FIELDS.STORE')"
+              :model-value="item.storeName || item.storeId"
+            />
             <Field
+              v-else
               v-slot="{ errorMessage, handleChange, errors }"
               name="storeId"
               rules="required"
@@ -110,8 +117,7 @@
           <VcCol>
             <VcField
               :label="$t('ORDERS.PAGES.DETAILS.FIELDS.CREATED')"
-              :model-value="item.createdDate"
-              type="date"
+              :model-value="dateTime(item.createdDate)"
             />
           </VcCol>
           <VcCol>
@@ -307,6 +313,8 @@
 </template>
 
 <script setup lang="ts">
+import { useDateTime } from "../utils/dateTime";
+
 /**
  * Extension point "orders-details-toolbar": other modules add toolbar commands to the order blade
  * (legacy: toolbarService.register(..., "virtoCommerce.orderModule.operationDetailController") for the order, e.g.
@@ -365,12 +373,15 @@ import { provideOrder } from "../composables/useOrder";
 import { useCancelPrompt } from "../composables/useCancelPrompt";
 import { useDynamicPropertyCount } from "../composables/useDynamicProps";
 import { useSettingValues } from "../composables/useSettingValues";
-import { useStores } from "../composables/useStores";
+import { STORE_READ, useStores } from "../composables/useStores";
 import { applyCancel, assetUrl, canCancel, clone, isLocked, useMoney } from "../utils/operations";
 import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToolbar";
 import { statusVariant } from "../utils/status";
 import { employeeName, getMemberByUserId, searchEmployees, type NamedEntity } from "../api";
 import type { CustomerOrder, OrderLineItem } from "../../api_client/virtocommerce.orders";
+
+// Created with its time, in the user's regional format and time zone (VCST-6559)
+const { dateTime } = useDateTime();
 
 defineBlade({
   url: "/order",

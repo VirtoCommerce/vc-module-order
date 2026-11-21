@@ -59,33 +59,18 @@
           "COPY_NUMBER": "העתקת מספר",
           "FILTER_BY": "סינון לפי \"{value}\""
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "יש לבחור מסנן",
-          "EDIT": "עריכת מסנן",
-          "NEW": "+ מסנן חדש",
+        "VIEWS": {
+          "NEW": "הזמנות חדשות",
           "TODAY": "היום",
-          "LAST_DAY": "היום האחרון",
-          "LAST_WEEK": "השבוע האחרון",
-          "LAST_MONTH": "החודש האחרון",
-          "LAST_YEAR": "השנה האחרונה"
+          "LAST_7_DAYS": "7 הימים האחרונים",
+          "LAST_30_DAYS": "30 הימים האחרונים"
         },
         "EMPTY": "לא נמצאו הזמנות",
         "FILTERS": {
           "STATUS": "סטטוס",
           "STORE": "חנות",
-          "CREATED": "תאריך יצירה",
-          "PROTOTYPES": "אבות טיפוס",
-          "WITH_PROTOTYPES": "הכללת אבות טיפוס"
+          "CREATED": "תאריך יצירה"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "מסנן חדש",
-        "NAME": "שם המסנן",
-        "UNNAMED": "מסנן ללא שם",
-        "ALL": "הכול",
-        "FROM": "מתאריך",
-        "TO": "עד תאריך",
-        "APPLY": "החלת המסנן"
       },
       "DETAILS": {
         "TITLE": "הזמנה",
