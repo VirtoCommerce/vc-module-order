@@ -59,33 +59,18 @@
           "COPY_NUMBER": "Copy number",
           "FILTER_BY": "Filter by \"{value}\""
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Select filter",
-          "EDIT": "Edit filter",
-          "NEW": "+ New filter",
+        "VIEWS": {
+          "NEW": "New orders",
           "TODAY": "Today",
-          "LAST_DAY": "Last day",
-          "LAST_WEEK": "Last week",
-          "LAST_MONTH": "Last month",
-          "LAST_YEAR": "Last year"
+          "LAST_7_DAYS": "Last 7 days",
+          "LAST_30_DAYS": "Last 30 days"
         },
         "EMPTY": "No orders found",
         "FILTERS": {
           "STATUS": "Status",
           "STORE": "Store",
-          "CREATED": "Created",
-          "PROTOTYPES": "Prototypes",
-          "WITH_PROTOTYPES": "Include prototypes"
+          "CREATED": "Created"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "New filter",
-        "NAME": "Filter name",
-        "UNNAMED": "Unnamed filter",
-        "ALL": "All",
-        "FROM": "From",
-        "TO": "To",
-        "APPLY": "Apply filter"
       },
       "DETAILS": {
         "TITLE": "Order",

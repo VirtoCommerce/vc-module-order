@@ -59,33 +59,18 @@
           "COPY_NUMBER": "Copiar número",
           "FILTER_BY": "Filtrar por «{value}»"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Seleccionar filtro",
-          "EDIT": "Editar filtro",
-          "NEW": "+ Nuevo filtro",
+        "VIEWS": {
+          "NEW": "Pedidos nuevos",
           "TODAY": "Hoy",
-          "LAST_DAY": "Último día",
-          "LAST_WEEK": "Última semana",
-          "LAST_MONTH": "Último mes",
-          "LAST_YEAR": "Último año"
+          "LAST_7_DAYS": "Últimos 7 días",
+          "LAST_30_DAYS": "Últimos 30 días"
         },
         "EMPTY": "No se encontraron órdenes",
         "FILTERS": {
           "STATUS": "Estado",
           "STORE": "Tienda",
-          "CREATED": "Creada",
-          "PROTOTYPES": "Prototipos",
-          "WITH_PROTOTYPES": "Incluir prototipos"
+          "CREATED": "Creada"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "Nuevo filtro",
-        "NAME": "Nombre del filtro",
-        "UNNAMED": "Filtro sin nombre",
-        "ALL": "Todos",
-        "FROM": "Desde",
-        "TO": "Hasta",
-        "APPLY": "Aplicar filtro"
       },
       "DETAILS": {
         "TITLE": "Orden",

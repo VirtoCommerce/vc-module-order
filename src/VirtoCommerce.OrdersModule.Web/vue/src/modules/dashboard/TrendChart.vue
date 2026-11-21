@@ -24,12 +24,12 @@
         >
           <stop
             offset="0%"
-            stop-color="#3BA3DF"
+            class="trend-chart__stop"
             stop-opacity="0.28"
           />
           <stop
             offset="100%"
-            stop-color="#3BA3DF"
+            class="trend-chart__stop"
             stop-opacity="0.02"
           />
         </linearGradient>
@@ -62,7 +62,7 @@
         y="0"
         :width="step"
         :height="bottom"
-        fill="#EAF5FC"
+        class="trend-chart__band"
       />
       <path
         :d="area"
@@ -71,7 +71,7 @@
       <path
         :d="line"
         fill="none"
-        stroke="#3BA3DF"
+        class="trend-chart__line"
         stroke-width="3"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -81,8 +81,7 @@
         :cx="selected.x"
         :cy="selected.y"
         r="6"
-        fill="#fff"
-        stroke="#E9A23B"
+        class="trend-chart__marker"
         stroke-width="3"
       />
 
@@ -97,7 +96,7 @@
           width="52"
           height="24"
           rx="12"
-          fill="#86C7EA"
+          class="trend-chart__pill"
         />
         <text
           :x="xOf(index)"
@@ -245,30 +244,52 @@ function onMove(event: MouseEvent) {
     display: block;
   }
 
+  /* the host's theme tokens, so the chart follows light and dark; the fallbacks are the light values */
   &__grid {
-    stroke: #f0f0f0;
+    stroke: var(--border-default, #f0f0f0);
     stroke-dasharray: 4 4;
   }
 
   &__tick {
-    fill: #a3a3a3;
+    fill: var(--fg-3, #a3a3a3);
     font-size: 11px;
   }
 
+  &__stop {
+    stop-color: var(--color-info-500, #3ba3df);
+  }
+
+  &__line {
+    stroke: var(--color-info-500, #3ba3df);
+  }
+
+  &__band {
+    fill: var(--color-info-100, #eaf5fc);
+  }
+
+  &__marker {
+    fill: var(--bg-surface, #fff);
+    stroke: #e9a23b;
+  }
+
+  &__pill {
+    fill: var(--color-info-300, #86c7ea);
+  }
+
   &__label {
-    fill: #9ca3af;
+    fill: var(--fg-2, #9ca3af);
     font-size: 13px;
 
     &--active {
-      fill: #0f3a57;
+      fill: var(--fg-strong, #0f3a57);
       font-weight: 600;
     }
   }
 
   &__tip {
     align-items: center;
-    background: #fff;
-    border: 1px solid #ececec;
+    background: var(--bg-surface, #fff);
+    border: 1px solid var(--border-strong, #ececec);
     border-radius: 9px;
     box-shadow: 0 4px 12px rgba(23, 23, 23, 0.08);
     display: flex;
@@ -281,7 +302,7 @@ function onMove(event: MouseEvent) {
     white-space: nowrap;
 
     strong {
-      color: var(--neutrals-900);
+      color: var(--fg-strong, var(--neutrals-900));
       font-size: 15px;
       font-weight: 700;
     }

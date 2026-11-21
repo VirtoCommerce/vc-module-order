@@ -59,33 +59,18 @@
           "COPY_NUMBER": "Kopiera nummer",
           "FILTER_BY": "Filtrera på ”{value}”"
         },
-        "SAVED_FILTERS": {
-          "PLACEHOLDER": "Välj filter",
-          "EDIT": "Redigera filter",
-          "NEW": "+ Nytt filter",
+        "VIEWS": {
+          "NEW": "Nya beställningar",
           "TODAY": "Idag",
-          "LAST_DAY": "Senaste dygnet",
-          "LAST_WEEK": "Senaste veckan",
-          "LAST_MONTH": "Senaste månaden",
-          "LAST_YEAR": "Senaste året"
+          "LAST_7_DAYS": "Senaste 7 dagarna",
+          "LAST_30_DAYS": "Senaste 30 dagarna"
         },
         "EMPTY": "Inga beställningar hittades",
         "FILTERS": {
           "STATUS": "Status",
           "STORE": "Butik",
-          "CREATED": "Skapad",
-          "PROTOTYPES": "Prototyper",
-          "WITH_PROTOTYPES": "Inkludera prototyper"
+          "CREATED": "Skapad"
         }
-      },
-      "FILTER": {
-        "NEW_TITLE": "Nytt filter",
-        "NAME": "Filternamn",
-        "UNNAMED": "Namnlöst filter",
-        "ALL": "Alla",
-        "FROM": "Från",
-        "TO": "Till",
-        "APPLY": "Tillämpa filter"
       },
       "DETAILS": {
         "TITLE": "Beställning",

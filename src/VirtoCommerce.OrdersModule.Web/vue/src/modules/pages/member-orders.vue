@@ -40,9 +40,11 @@
       <VcColumn
         id="createdDate"
         :title="$t('ORDERS.PAGES.LIST.COLUMNS.CREATED_DATE')"
-        type="date"
+        min-width="120px"
         sortable
-      />
+      >
+        <template #body="{ data }"><DateTimeCell :value="data.createdDate" /></template>
+      </VcColumn>
       <VcColumn
         id="total"
         :title="$t('ORDERS.PAGES.LIST.COLUMNS.TOTAL')"
@@ -59,6 +61,7 @@
 </template>
 
 <script setup lang="ts">
+import DateTimeCell from "../components/DateTimeCell.vue";
 // the orders list the AngularJS customer/organization widget opens (customerOrderListController with searchCriteria)
 import {
   useBlade,
