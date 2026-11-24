@@ -13,6 +13,7 @@
       :total-count="totalCount"
       :pagination="isOrder ? pagination : undefined"
       :searchable="isOrder"
+      :search-bar="isOrder"
       :global-filters="isOrder ? globalFilters : undefined"
       :state-key="'ORDER_CHANGES_V3'"
       :empty-state="{ icon: 'lucide-history', title: $t('ORDERS.PAGES.CHANGES.EMPTY') }"
@@ -62,6 +63,7 @@ import { VcBlade, VcColumn, VcDataTable } from "@vc-shell/framework/ui";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { OrderModuleClient, type OperationLog } from "../../api_client/virtocommerce.orders";
+import { asTableFilters, filterDay, filterList } from "../composables/useOrderFilters";
 
 defineBlade({
   url: "/order-changes",
@@ -109,25 +111,28 @@ const { loading, action: load } = useAsync(async () => {
   }
 });
 
-const globalFilters = computed(() => [
-  {
-    id: "operationType",
-    label: t("ORDERS.PAGES.CHANGES.COLUMNS.TYPE"),
-    filter: { options: ["Added", "Modified", "Deleted"].map((x) => ({ value: x, label: x })) },
-  },
-  {
-    id: "dateRange",
-    label: t("ORDERS.PAGES.CHANGES.COLUMNS.DATE"),
-    filter: { range: ["startDate", "endDate"] as [string, string] },
-  },
-]);
+// the search bar: change type (the API takes several) and a date range, both days included
+const globalFilters = computed(() =>
+  asTableFilters([
+    {
+      id: "operationTypes",
+      label: t("ORDERS.PAGES.CHANGES.COLUMNS.TYPE"),
+      filter: { options: ["Added", "Modified", "Deleted"].map((x) => ({ value: x, label: x })), multiple: true },
+    },
+    {
+      id: "date",
+      label: t("ORDERS.PAGES.CHANGES.COLUMNS.DATE"),
+      filter: { range: ["startDate", "endDate"] as [string, string] },
+    },
+  ]),
+);
 
 function onFilter(event: { filters: Record<string, unknown> }) {
   const f = event.filters;
   filters.value = {
-    operationTypes: f.operationType ? [f.operationType as string] : undefined,
-    startDate: f.startDate ? new Date(f.startDate as string) : undefined,
-    endDate: f.endDate ? new Date(f.endDate as string) : undefined,
+    operationTypes: filterList(f.operationTypes),
+    startDate: filterDay(f.startDate, false),
+    endDate: filterDay(f.endDate, true),
   };
   // off the first page, the page change loads
   if (pagination.skip) pagination.setPage(1);
