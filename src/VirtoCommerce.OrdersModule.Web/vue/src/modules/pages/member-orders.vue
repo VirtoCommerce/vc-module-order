@@ -13,11 +13,14 @@
       :total-count="totalCount"
       :pagination="pagination"
       :searchable="true"
-      :active-item-id="activeItemId"
+      search-bar
       :state-key="'MEMBER_ORDERS'"
+      :global-filters="globalFilters"
+      :active-item-id="activeItemId"
       :empty-state="{ icon: 'lucide-shopping-cart', title: $t('ORDERS.PAGES.LIST.EMPTY') }"
       @row-click="open"
       @pagination-click="pagination.goToPage"
+      @filter="onFilter"
     >
       <VcColumn
         id="number"
@@ -74,6 +77,7 @@ import { VcBlade, VcColumn, VcDataTable, VcStatus } from "@vc-shell/framework/ui
 import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import useOrdersList from "../composables/useList";
+import { useOrderFilters } from "../composables/useOrderFilters";
 import { statusVariant } from "../utils/status";
 import { useMoney } from "../utils/operations";
 import type { CustomerOrder, CustomerOrderSearchCriteria } from "../../api_client/virtocommerce.orders";
@@ -93,9 +97,13 @@ const activeItemId = ref<string>();
 const { sortField, sortOrder, sortExpression } = useDataTableSort({ initialField: "createdDate", initialDirection: "DESC" });
 const pagination = useDataTablePagination({ pageSize: PAGE_SIZE, totalCount });
 
+// a customer's or organization's orders: still open ones (Status), or the one from last week (Created)
+const { globalFilters, criteria, applyFilters } = useOrderFilters(false);
+
 const load = () =>
   getItems({
     ...options.value,
+    ...criteria.value,
     keyword: keyword.value || undefined,
     sort: sortExpression.value,
     skip: pagination.skip,
@@ -105,6 +113,13 @@ const load = () =>
 load();
 watch(keyword, () => pagination.setPage(1));
 watch([sortExpression, keyword, () => pagination.skip], debounce(load, 300));
+
+function onFilter(event: { filters: Record<string, unknown> }) {
+  applyFilters(event.filters);
+  // off the first page, the page change loads
+  if (pagination.skip) pagination.setPage(1);
+  else load();
+}
 
 function open(event: { data: CustomerOrder }) {
   activeItemId.value = event.data.id;
