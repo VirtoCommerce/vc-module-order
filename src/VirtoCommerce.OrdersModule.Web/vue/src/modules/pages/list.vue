@@ -128,23 +128,20 @@ import {
   usePopup,
   notification,
   usePermissions,
-  type GlobalFilterConfig,
   type IBladeToolbar,
-  type SearchBarField,
   type SearchBarView,
 } from "@vc-shell/framework";
 import { VcBlade, VcColumn, VcDataTable, VcStatus } from "@vc-shell/framework/ui";
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import useOrdersList from "../composables/useList";
-import { useSettingValues } from "../composables/useSettingValues";
+import { useOrderFilters } from "../composables/useOrderFilters";
 import { statusVariant } from "../utils/status";
 import { useMoney } from "../utils/operations";
 import { useToolbarExtensions, type ToolbarCommand } from "../utils/extensionToolbar";
-import { STORE_READ, useStores } from "../composables/useStores";
 import { indexedSearchEnabled } from "../api";
 import { requestedKeyword } from "../search";
-import type { CustomerOrder, CustomerOrderSearchCriteria } from "../../api_client/virtocommerce.orders";
+import type { CustomerOrder } from "../../api_client/virtocommerce.orders";
 
 export interface OrdersListToolbarContext {
   selection: CustomerOrder[];
@@ -222,37 +219,7 @@ indexedSearchEnabled()
   .catch(() => undefined);
 
 // vc-shell's search bar (Admin Shell 3.1099.0+): filters as chips, built-in views and the user's own saved views
-const statuses = useSettingValues("Order.Status");
-const stores = useStores();
-const panelFilters = ref<CustomerOrderSearchCriteria>({});
-
-// VcDataTable hands its global filters to the bar as they are, but still types them as the older filters, without toggles
-const tableFilters = (fields: SearchBarField[]) => fields as GlobalFilterConfig[];
-
-const globalFilters = computed(() =>
-  tableFilters([
-    {
-      id: "statuses",
-      label: t("ORDERS.PAGES.LIST.FILTERS.STATUS"),
-      filter: { options: statuses.value.map((s) => ({ value: s.id, label: s.title })), multiple: true },
-    },
-    {
-      id: "created",
-      label: t("ORDERS.PAGES.LIST.FILTERS.CREATED"),
-      filter: { range: ["startDate", "endDate"] as [string, string] },
-    },
-    // the store list needs store:read (VCST-6547): without it there is nothing to pick
-    ...(hasAccess(STORE_READ)
-      ? [
-          {
-            id: "storeIds",
-            label: t("ORDERS.PAGES.LIST.FILTERS.STORE"),
-            filter: { options: stores.value.map((s) => ({ value: s.id!, label: s.name ?? s.id! })), multiple: true },
-          },
-        ]
-      : []),
-  ]),
-);
+const { globalFilters, criteria, applyFilters } = useOrderFilters(true);
 
 // the views everyone gets (the AngularJS list's predefined periods); users save their own in the bar
 const searchViews = computed<SearchBarView[]>(() => [
@@ -262,39 +229,15 @@ const searchViews = computed<SearchBarView[]>(() => [
   { id: "last30", name: t("ORDERS.PAGES.LIST.VIEWS.LAST_30_DAYS"), values: { created: { relative: "30d" } } },
 ]);
 
-function asArray(v: unknown) {
-  if (Array.isArray(v)) return v as string[];
-  return v ? [String(v)] : undefined;
-}
-
-/**
- * A date range's days as the instants a search takes: from the start of the first day to the end of the last, in the
- * user's time zone. The bar sends whole days ("2026-11-10"), which `new Date` would read as UTC midnight.
- */
-function day(value: unknown, endOfDay: boolean) {
-  if (typeof value !== "string" || !value) return undefined;
-  const ymd = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!ymd) return new Date(value);
-  const [y, m, d] = ymd.slice(1).map(Number);
-  return endOfDay ? new Date(y, m - 1, d, 23, 59, 59, 999) : new Date(y, m - 1, d);
-}
-
 function onFilter(event: { filters: Record<string, unknown> }) {
-  const f = event.filters;
-  panelFilters.value = {
-    statuses: asArray(f.statuses)?.length ? asArray(f.statuses) : undefined,
-    storeIds: asArray(f.storeIds)?.length ? asArray(f.storeIds) : undefined,
-    startDate: day(f.startDate, false),
-    endDate: day(f.endDate, true),
-  };
+  applyFilters(event.filters);
   reloadFirstPage();
 }
 
 function load() {
-  const criteria = stripEmpty(panelFilters.value);
-  const filtered = Object.values(criteria).some((v) => v !== undefined);
+  const filtered = Object.keys(criteria.value).length > 0;
   return getItems({
-    ...criteria,
+    ...criteria.value,
     keyword: searchValue.value || undefined,
     // the AngularJS list drops sorting for keyword (relevance) searches only when the user didn't pick one
     sort: sortExpression.value,
@@ -302,10 +245,6 @@ function load() {
     take: PAGE_SIZE,
     indexed: indexed.value && (!!searchValue.value || filtered),
   });
-}
-
-function stripEmpty(c: CustomerOrderSearchCriteria) {
-  return Object.fromEntries(Object.entries(c).filter(([, v]) => v !== undefined)) as CustomerOrderSearchCriteria;
 }
 
 function reloadFirstPage() {
