@@ -7,8 +7,8 @@ import { STORE_READ, useStores } from "./useStores";
 
 /** A search bar value as a list: a multi-select sends an array, a single select one value */
 export function filterList(value: unknown): string[] | undefined {
-  const list = Array.isArray(value) ? value.map(String) : value ? [String(value)] : [];
-  return list.length ? list : undefined;
+  if (!Array.isArray(value)) return value ? [String(value)] : undefined;
+  return value.length ? value.map(String) : undefined;
 }
 
 /**
