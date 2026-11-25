@@ -64,6 +64,56 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(order.Items.Sum(x => x.ExtendedPriceWithTax), order.Total);
         }
 
+        [Fact]
+        public void CalculateTotals_LineWithFee_FeeDoesNotChangeLineTotals()
+        {
+            // Arrange
+            var currency = CreateCurrency("Rounding001", 2);
+            var lineItem = CreateLineItem(12.5549m, 6.52m, 0.20m, 1);
+            lineItem.Fee = 1.005m;
+            var order = new CustomerOrder { Currency = currency.Code, Items = new List<LineItem> { lineItem } };
+
+            // Act
+            CreateCalculator(currency).CalculateTotals(order);
+
+            // Assert
+            Assert.Equal(6.52m, lineItem.ExtendedPrice);
+            Assert.Equal(7.82m, lineItem.ExtendedPriceWithTax);
+            Assert.Equal(1.30m, lineItem.TaxTotal);
+            Assert.Equal(1.01m, order.FeeTotal);
+            Assert.Equal(lineItem.ExtendedPriceWithTax + order.FeeTotal, order.Total);
+        }
+
+        [Fact]
+        public void CalculateTotals_CashRounding_LinesAreMultiplesOfStepAndOrderTotalIsSumOfLines()
+        {
+            // Arrange
+            var currency = CreateCurrency("Rounding005Up", 2);
+            var order = new CustomerOrder
+            {
+                Currency = currency.Code,
+                Items = new List<LineItem>
+                {
+                    CreateLineItem(24.99m, 8.01m, 0.21m, 1),
+                    CreateLineItem(19.99m, 14.97m, 0.081m, 3),
+                    CreateLineItem(12.5549m, 6.52m, 0.20m, 7),
+                },
+            };
+
+            // Act
+            CreateCalculator(currency).CalculateTotals(order);
+
+            // Assert
+            Assert.All(order.Items, x =>
+            {
+                Assert.Equal(0m, x.ExtendedPrice % 0.05m);
+                Assert.Equal(0m, x.ExtendedPriceWithTax % 0.05m);
+                Assert.Equal(x.ExtendedPrice, x.ListTotal - x.DiscountTotal);
+                Assert.Equal(x.ExtendedPriceWithTax, x.ExtendedPrice + x.TaxTotal);
+            });
+            Assert.Equal(order.Items.Sum(x => x.ExtendedPriceWithTax), order.Total);
+        }
+
         private static LineItem CreateLineItem(decimal price, decimal salePrice, decimal tax, int quantity)
         {
             return new LineItem
