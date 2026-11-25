@@ -18,14 +18,14 @@ namespace VirtoCommerce.OrdersModule.Tests
         [
             //                                                                    Expected  Expected       Expected
             // MidpointRounding,             ListPrice, DiscountAmount, Quantity, SubTotal, DiscountTotal, Total
-            [MidpointRounding.AwayFromZero,  49.95m,      4.9950m,       1,         49.95m,    5.00m,        44.95m],
-            [MidpointRounding.ToZero,        49.95m,      4.9950m,       1,         49.95m,    4.99m,        44.96m],
+            [MidpointRounding.AwayFromZero,  49.95m,      4.9950m,       1,         49.95m,    4.99m,        44.96m],
+            [MidpointRounding.ToZero,        49.95m,      4.9950m,       1,         49.95m,    5.00m,        44.95m],
             [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
-            [MidpointRounding.ToZero,        26.25m,      1.3125m,       1,         26.25m,    1.31m,        24.94m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       1,         26.25m,    1.32m,        24.93m],
             [MidpointRounding.AwayFromZero,  26.25m,      1.3125m,       3,         78.75m,    3.94m,        74.81m],
-            [MidpointRounding.ToZero,        26.25m,      1.3125m,       3,         78.75m,    3.93m,        74.82m],
-            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,       1,        422.50m,  190.13m,       232.37m],
-            [MidpointRounding.ToZero,       422.50m,    190.1250m,       1,        422.50m,  190.12m,       232.38m],
+            [MidpointRounding.ToZero,        26.25m,      1.3125m,       3,         78.75m,    3.94m,        74.81m],
+            [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,       1,        422.50m,  190.12m,       232.38m],
+            [MidpointRounding.ToZero,       422.50m,    190.1250m,       1,        422.50m,  190.13m,       232.37m],
             [MidpointRounding.AwayFromZero, 422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
             [MidpointRounding.ToZero,       422.50m,    190.1250m,      10,       4225.00m, 1901.25m,      2323.75m],
         ];
@@ -158,9 +158,9 @@ namespace VirtoCommerce.OrdersModule.Tests
             Assert.Equal(2.66m, item1.DiscountTotal);
             Assert.Equal(0.3696m, item1.FeeWithTax);
             Assert.Equal(10.8192m, item1.PlacedPriceWithTax);
-            Assert.Equal(21.6384m, item1.ExtendedPriceWithTax);
-            Assert.Equal(2.9792m, item1.DiscountTotalWithTax);
-            Assert.Equal(2.3184m, item1.TaxTotal);
+            Assert.Equal(21.64m, item1.ExtendedPriceWithTax);
+            Assert.Equal(2.98m, item1.DiscountTotalWithTax);
+            Assert.Equal(2.32m, item1.TaxTotal);
 
             Assert.Equal(5.6m, shipment.DiscountAmountWithTax);
             Assert.Equal(24.64m, shipment.PriceWithTax);
